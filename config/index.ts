@@ -123,12 +123,12 @@ export default defineConfig<'vite'>(async (merge, _env) => {
       publicPath: '/',
       staticDirectory: 'static',
       devServer: {
-          port: 5000,
+          port: 8080,
           host: '0.0.0.0',
           open: false,
           proxy: {
             '/api': {
-              target: 'http://localhost:5000',
+              target: 'http://localhost:3000',
               changeOrigin: true,
             },
           },

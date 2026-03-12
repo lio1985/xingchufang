@@ -136,17 +136,25 @@ start_service() {
 
     # 判断运行模式
     if [ "${COZE_DEVBOX_ENV}" = "prod" ]; then
-        # 生产环境：使用 npm run start:prod
-        echo "🚀 Production mode detected, starting with npm run start:prod..."
+        # 生产环境：同时启动前端和后端
+        echo "🚀 Production mode detected, starting frontend and backend..."
 
+        # 启动后端
         cd server
         npm run start:prod &
-        local dev_pid=$!
-        echo "${dev_pid}" > "${PID_FILE}"
-        echo "📝 Production server started with PID: ${dev_pid} (saved to ${PID_FILE})"
+        local server_pid=$!
 
-        # 前台等待
-        wait "${dev_pid}" || true
+        # 启动前端（使用 serve 静态服务）
+        cd "${COZE_WORKSPACE_PATH}/dist-web"
+        npx serve -s . -l 8080 -p 8080 &
+        local frontend_pid=$!
+
+        echo "${frontend_pid}" > "${PID_FILE}"
+        echo "📝 Backend server started with PID: ${server_pid} on port 3000"
+        echo "📝 Frontend server started with PID: ${frontend_pid} on port 8080 (saved to ${PID_FILE})"
+
+        # 前台等待任一进程
+        wait -n || true
     else
         # 开发环境：使用 pnpm dev
         echo "🔧 Development mode detected, starting Taro H5 Dev Server and NestJS Server..."
