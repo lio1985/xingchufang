@@ -73,18 +73,25 @@ function getSupabaseCredentials(): SupabaseCredentials {
   const url = process.env.COZE_SUPABASE_URL;
   const anonKey = process.env.COZE_SUPABASE_ANON_KEY;
 
-  if (!url) {
-    throw new Error('COZE_SUPABASE_URL is not set');
-  }
-  if (!anonKey) {
-    throw new Error('COZE_SUPABASE_ANON_KEY is not set');
+  if (!url || !anonKey) {
+    console.warn('⚠️  Supabase credentials not configured. Using fallback configuration.');
+    // 返回一个默认配置，避免应用启动失败
+    return {
+      url: 'https://fallback.supabase.co',
+      anonKey: 'fallback-key'
+    };
   }
 
   return { url, anonKey };
 }
 
 function getSupabaseClient(token?: string): SupabaseClient {
-  const { url, anonKey } = getSupabaseCredentials();
+  const credentials = getSupabaseCredentials();
+  const { url, anonKey } = credentials;
+
+  if (url === 'https://fallback.supabase.co') {
+    console.warn('⚠️  Supabase client is using fallback configuration. Database operations will fail.');
+  }
 
   if (token) {
     return createClient(url, anonKey, {
