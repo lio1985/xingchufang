@@ -1,0 +1,97 @@
+export default defineAppConfig({
+  pages: [
+    'pages/index/index',
+    'pages/login/index',
+    'pages/quick-note/index',
+    'pages/knowledge-share/index',
+    'pages/knowledge-share/create',
+    'pages/knowledge-share/edit',
+    'pages/knowledge-share/detail',
+    'pages/admin-knowledge-share/index',
+    'pages/news/index',
+    'pages/ai-chat/index',
+    'pages/systems/index',
+    'pages/content-system/index',
+    'pages/lexicon-system/index',
+    'pages/lexicon-manage/index',
+    'pages/viral-system/index',
+    'pages/viral-favorites/index',
+    'pages/viral-remix/index',
+    'pages/input-sources/index',
+    'pages/hotspot/index',
+    'pages/hotspot-detail/index',
+    'pages/admin/users/index',
+    'pages/admin/user-data/index',
+    'pages/admin/dashboard/index',
+    'pages/admin/audit/index',
+    'pages/admin/lexicon-manage/index',
+    'pages/admin/quick-note-manage/index',
+    'pages/admin/ai-report/index',
+    'pages/admin/share-manage/index',
+    'pages/admin/share-stats/index',
+    'pages/admin/data-export/index',
+    'pages/dev-tools/index',
+    'pages/admin/customer-management/index',
+    'pages/customer/index',
+    'pages/customer/detail',
+    'pages/customer/edit',
+    'pages/customer/statistics',
+    'pages/customer/churn-warning',
+    'pages/customer/churn-analysis',
+    'pages/customer/sales-target',
+    'pages/customer/sales-dashboard',
+    'pages/recycle/index',
+    'pages/recycle/detail',
+    'pages/recycle/edit',
+    'pages/recycle/dashboard',
+    'pages/admin/recycle-management/index',
+    'pages/admin/team-management/index',
+    'pages/admin/team-detail/index',
+    'pages/admin/team-create/index',
+    'pages/team/index',
+  ],
+  window: {
+    backgroundTextStyle: 'light',
+    navigationBarBackgroundColor: '#0f172a',
+    navigationBarTitleText: '星厨房创作助手',
+    navigationBarTextStyle: 'white',
+    backgroundColor: '#0f172a'
+  },
+  permission: {
+    'scope.userLocation': {
+      desc: '您的位置信息将用于展示同城热点'
+    }
+  },
+  tabBar: {
+    color: '#94a3b8',
+    selectedColor: '#60a5fa',
+    backgroundColor: '#0f172a',
+    borderStyle: 'black',
+    list: [
+      {
+        pagePath: 'pages/index/index',
+        text: '首页',
+        iconPath: 'assets/tabbar/home.png',
+        selectedIconPath: 'assets/tabbar/home-active.png',
+      },
+      {
+        pagePath: 'pages/systems/index',
+        text: '工具箱',
+        iconPath: 'assets/tabbar/layers.png',
+        selectedIconPath: 'assets/tabbar/layers-active.png',
+      },
+      {
+        pagePath: 'pages/hotspot/index',
+        text: '热力图',
+        iconPath: 'assets/tabbar/flame.png',
+        selectedIconPath: 'assets/tabbar/flame-active.png',
+      },
+      {
+        pagePath: 'pages/ai-chat/index',
+        text: '助手',
+        iconPath: 'assets/tabbar/message-square.png',
+        selectedIconPath: 'assets/tabbar/message-square-active.png',
+      }
+    ]
+  }
+})
