@@ -63,15 +63,16 @@ const AiChatPage = () => {
     }
     
     // 其次使用userId storage
-    const userId = Taro.getStorageSync('userId');
-    if (userId) {
-      return userId;
+    let userId = Taro.getStorageSync('userId');
+    
+    // 如果没有userId，或者格式不正确（带user_前缀），生成新的UUID
+    if (!userId || !userId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+      // 生成UUID格式的用户ID
+      userId = crypto.randomUUID();
+      Taro.setStorageSync('userId', userId);
     }
     
-    // 如果都没有，使用localStorage中存储的（兼容旧数据）
-    const newUserId = 'user_' + Date.now();
-    Taro.setStorageSync('userId', newUserId);
-    return newUserId;
+    return userId;
   };
 
   // 加载对话列表
