@@ -9,11 +9,15 @@ export class WelcomeService {
     const { data, error } = await this.client
       .from('welcome_messages')
       .select('*')
-      .eq('is_active', 'true')
       .order('order', { ascending: true });
 
-    if (error) throw new Error(error.message);
-    return data;
+    if (error) {
+      console.error('获取欢迎消息失败:', error);
+      // 如果出错，返回空数组
+      return [];
+    }
+
+    return data || [];
   }
 
   async create(body: { title: string; content: string; imageUrl?: string; order: string }) {
