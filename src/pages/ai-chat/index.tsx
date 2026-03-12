@@ -54,15 +54,24 @@ const AiChatPage = () => {
   const recorderManagerRef = useRef<Taro.RecorderManager | null>(null);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 获取用户ID（从localStorage或登录状态获取）
+  // 获取用户ID（优先使用登录时的真实userId，否则使用localStorage）
   const getUserId = () => {
-    const userId = Taro.getStorageSync('userId');
-    if (!userId) {
-      const newUserId = 'user_' + Date.now();
-      Taro.setStorageSync('userId', newUserId);
-      return newUserId;
+    // 优先使用登录时存储的真实用户ID（UUID格式）
+    const user = Taro.getStorageSync('user');
+    if (user && user.id) {
+      return user.id;
     }
-    return userId;
+    
+    // 其次使用userId storage
+    const userId = Taro.getStorageSync('userId');
+    if (userId) {
+      return userId;
+    }
+    
+    // 如果都没有，使用localStorage中存储的（兼容旧数据）
+    const newUserId = 'user_' + Date.now();
+    Taro.setStorageSync('userId', newUserId);
+    return newUserId;
   };
 
   // 加载对话列表
