@@ -4,8 +4,10 @@ import { AiChatService } from './ai-chat.service';
 import { IntentRecognitionService } from './intent-recognition.service';
 import { ConversationManagerService } from './conversation-manager.service';
 import { FunctionExecutorService } from './function-executor.service';
+import { ContentGenerationModule } from '../content-generation/content-generation.module';
 
 @Module({
+  imports: [ContentGenerationModule],
   controllers: [AiChatController],
   providers: [
     AiChatService,
