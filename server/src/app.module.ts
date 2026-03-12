@@ -37,7 +37,7 @@ import { TeamModule } from './team/team.module';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: '/workspace/projects/dist-web',
-      exclude: ['api/{*path}'],
+      exclude: ['/api/(.*)'],
     }),
     UserModule,
     AdminModule,

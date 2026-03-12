@@ -6,7 +6,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getRoot(): { service: string; version: string; status: string; docs: string } {
+  getApiInfo(): { service: string; version: string; status: string; docs: string } {
     return {
       service: '智能赋能系统 API',
       version: '1.0.0',
