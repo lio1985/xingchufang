@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from '@/app.controller';
@@ -35,6 +36,7 @@ import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: '/workspace/projects/dist-web',
       exclude: ['/api/(.*)'],

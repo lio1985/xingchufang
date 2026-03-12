@@ -1,15 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { HotTopic, HotTopicSource } from '@/types/input-sources.types';
 
 @Injectable()
 export class HotTopicsService {
+  private readonly logger = new Logger(HotTopicsService.name);
   private httpService: HttpService;
   private cache: { topics: HotTopic[]; timestamp: number } | null = null;
-  private readonly CACHE_TTL = 30 * 1000; // 30秒缓存
+  private readonly CACHE_TTL = 30 * 60 * 1000; // 30分钟缓存（增加到30分钟，减少频繁刷新）
 
   constructor(private readonly httpServiceRef: HttpService) {
     this.httpService = httpServiceRef;
+  }
+
+  /**
+   * 定时任务：每小时自动刷新热点数据
+   */
+  @Cron(CronExpression.EVERY_HOUR)
+  async refreshHotTopics(): Promise<void> {
+    this.logger.log('=== 定时任务：自动刷新热点数据 ===');
+    try {
+      await this.getHotTopics('all', 'national');
+      this.logger.log('=== 热点数据刷新成功 ===');
+    } catch (error) {
+      this.logger.error('=== 热点数据刷新失败 ===', error);
+    }
   }
 
   /**
@@ -26,9 +42,8 @@ export class HotTopicsService {
     }
 
     try {
-      console.log('=== 调用 TopHub API ===');
-      console.log('位置模式:', locationMode);
-      console.log('城市:', city || '全国');
+      this.logger.log('=== 调用 TopHub API ===');
+      this.logger.log(`位置模式: ${locationMode}, 城市: ${city || '全国'}`);
 
       // 调用TopHub API获取全站热点
       const response = await this.httpService.axiosRef.get('https://api.tophub.today/all', {
@@ -38,7 +53,7 @@ export class HotTopicsService {
         }
       });
 
-      console.log('=== TopHub 响应状态 ===', response.status);
+      this.logger.log(`=== TopHub 响应状态: ${response.status} ===`);
 
       // 解析TopHub数据
       const data = response.data;
@@ -70,7 +85,7 @@ export class HotTopicsService {
         });
       }
 
-      console.log(`=== 成功获取 ${topics.length} 个热点 ===`);
+      this.logger.log(`=== 成功获取 ${topics.length} 个热点 ===`);
 
       // 更新缓存
       this.cache = {
@@ -80,10 +95,13 @@ export class HotTopicsService {
 
       return topics;
     } catch (error) {
-      console.error('调用TopHub API失败:', error);
+      this.logger.error('调用TopHub API失败:', error);
       // 如果TopHub失败，返回mock数据
-      console.log('=== 使用 Mock 数据作为 fallback ===');
-      return this.getMockHotTopics();
+      this.logger.warn('=== 使用 Mock 数据作为 fallback ===');
+      const now = new Date();
+      const mockTopics = this.getMockHotTopics();
+      this.logger.log(`=== Mock 数据：${mockTopics.length} 个热点，今日数据轮换标识：${now.toISOString().split('T')[0]} ===`);
+      return mockTopics;
     }
   }
 
@@ -92,123 +110,114 @@ export class HotTopicsService {
    */
   private getMockHotTopics(): HotTopic[] {
     const now = new Date();
+    const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+    const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
 
     // 随机热度值生成（让数据看起来更动态）
     const generateHotness = (base: number) => base + Math.floor(Math.random() * 100000);
 
-    // Mock数据列表
-    const mockData = [
-      {
-        id: 'mock-1',
-        source: 'weibo' as HotTopicSource,
-        title: '2025年科技创新突破：AI赋能千行百业',
-        hotness: generateHotness(985432),
-        trend: 'up' as const,
-        url: '#',
-        category: '科技',
-        siteName: '微博',
-        publishTime: new Date(now.getTime() - 30 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-2',
-        source: 'zhihu' as HotTopicSource,
-        title: '如何提高工作效率？这些方法帮你事半功倍',
-        hotness: generateHotness(876543),
-        trend: 'up' as const,
-        url: '#',
-        category: '生活',
-        siteName: '知乎',
-        publishTime: new Date(now.getTime() - 60 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-3',
-        source: 'douyin' as HotTopicSource,
-        title: '周末去哪里玩？这些地方风景绝美',
-        hotness: generateHotness(765432),
-        trend: 'stable' as const,
-        url: '#',
-        category: '娱乐',
-        siteName: '抖音',
-        publishTime: new Date(now.getTime() - 90 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-4',
-        source: 'bilibili' as HotTopicSource,
-        title: '最新技术趋势解读：未来已来',
-        hotness: generateHotness(654321),
-        trend: 'down' as const,
-        url: '#',
-        category: '科技',
-        siteName: 'B站',
-        publishTime: new Date(now.getTime() - 120 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-5',
-        source: 'baidu' as HotTopicSource,
-        title: '健康生活指南：科学饮食与运动',
-        hotness: generateHotness(543210),
-        trend: 'up' as const,
-        url: '#',
-        category: '健康',
-        siteName: '百度',
-        publishTime: new Date(now.getTime() - 150 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-6',
-        source: 'toutiao' as HotTopicSource,
-        title: '经济热点分析：新质生产力加速发展',
-        hotness: generateHotness(432109),
-        trend: 'stable' as const,
-        url: '#',
-        category: '财经',
-        siteName: '今日头条',
-        publishTime: new Date(now.getTime() - 180 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-7',
-        source: 'juejin' as HotTopicSource,
-        title: '前端开发最佳实践：提升代码质量',
-        hotness: generateHotness(321098),
-        trend: 'up' as const,
-        url: '#',
-        category: '科技',
-        siteName: '掘金',
-        publishTime: new Date(now.getTime() - 210 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-8',
-        source: 'github' as HotTopicSource,
-        title: '开源项目推荐：这些工具帮你提高开发效率',
-        hotness: generateHotness(210987),
-        trend: 'up' as const,
-        url: '#',
-        category: '科技',
-        siteName: 'GitHub',
-        publishTime: new Date(now.getTime() - 240 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-9',
-        source: 'weibo' as HotTopicSource,
-        title: '体育赛事精彩回顾：冠军诞生',
-        hotness: generateHotness(109876),
-        trend: 'down' as const,
-        url: '#',
-        category: '体育',
-        siteName: '微博',
-        publishTime: new Date(now.getTime() - 270 * 60000).toISOString(),
-      },
-      {
-        id: 'mock-10',
-        source: 'zhihu' as HotTopicSource,
-        title: '国际形势分析：世界格局变化',
-        hotness: generateHotness(98765),
-        trend: 'stable' as const,
-        url: '#',
-        category: '国际',
-        siteName: '知乎',
-        publishTime: new Date(now.getTime() - 300 * 60000).toISOString(),
-      },
+    // 动态新闻标题池（按日期和天数循环选择，每天都有不同内容）
+    const newsPool = [
+      // 科技类
+      { title: '2025年科技创新突破：AI赋能千行百业', category: '科技', site: '微博' },
+      { title: '国产芯片迎来新突破，性能提升50%', category: '科技', site: '知乎' },
+      { title: '5G网络全面覆盖，智慧城市建设提速', category: '科技', site: '百度' },
+      { title: '量子计算取得重大进展，商业应用指日可待', category: '科技', site: '科技日报' },
+      { title: '新能源汽车销量创新高，智能化成主流', category: '科技', site: '今日头条' },
+      { title: '大模型应用落地，AI助手走进千家万户', category: '科技', site: '掘金' },
+      { title: '工业互联网加速发展，制造业数字化转型', category: '科技', site: 'GitHub' },
+      { title: '区块链技术在金融领域应用前景广阔', category: '科技', site: '知乎' },
+      { title: '元宇宙概念遇冷？AR眼镜或成新风口', category: '科技', site: 'B站' },
+      { title: '卫星互联网建设提速，全球互联新选择', category: '科技', site: '微博' },
+
+      // 生活类
+      { title: '如何提高工作效率？这些方法帮你事半功倍', category: '生活', site: '知乎' },
+      { title: '健康生活指南：科学饮食与运动', category: '健康', site: '百度' },
+      { title: '春季养生须知：这5件事一定要做', category: '生活', site: '今日头条' },
+      { title: '职场新人必看：如何快速融入团队', category: '生活', site: '知乎' },
+      { title: '家居收纳小技巧，让空间大一倍', category: '生活', site: '抖音' },
+      { title: '周末去哪里玩？这些地方风景绝美', category: '生活', site: '小红书' },
+      { title: '如何平衡工作与生活？专家给出建议', category: '生活', site: '知乎' },
+      { title: '城市骑行热兴起，绿色出行成时尚', category: '生活', site: '微博' },
+      { title: '租房注意事项，避开这些坑', category: '生活', site: '知乎' },
+      { title: '疫情后旅游复苏，这些线路最受欢迎', category: '生活', site: '今日头条' },
+
+      // 娱乐类
+      { title: '年度电影票房排行榜揭晓', category: '娱乐', site: '微博' },
+      { title: '热播剧口碑爆棚，观众评价两极分化', category: '娱乐', site: '豆瓣' },
+      { title: '明星演唱会门票秒罄，粉丝热情高涨', category: '娱乐', site: '微博' },
+      { title: '综艺节目创新模式引发讨论', category: '娱乐', site: '知乎' },
+      { title: '短视频平台发力长视频，内容生态升级', category: '娱乐', site: '抖音' },
+      { title: '游戏行业年度报告发布，市场规模创新高', category: '娱乐', site: 'B站' },
+      { title: '网红经济持续火热，品牌合作新模式', category: '娱乐', site: '小红书' },
+      { title: '音乐节票房创新高，线下演出全面复苏', category: '娱乐', site: '微博' },
+      { title: '影视IP跨界开发，产业链价值最大化', category: '娱乐', site: '今日头条' },
+      { title: '虚拟偶像出道，元宇宙娱乐新尝试', category: '娱乐', site: 'B站' },
+
+      // 财经类
+      { title: '经济热点分析：新质生产力加速发展', category: '财经', site: '今日头条' },
+      { title: '股市震荡，投资者如何应对？', category: '财经', site: '知乎' },
+      { title: '房地产政策调整，市场迎来新变化', category: '财经', site: '百度' },
+      { title: '数字人民币试点扩大，支付新选择', category: '财经', site: '今日头条' },
+      { title: '跨境电商蓬勃发展，外贸新业态', category: '财经', site: '知乎' },
+      { title: '人民币汇率波动，进出口企业关注', category: '财经', site: '财经网' },
+      { title: '消费升级趋势明显，新消费品牌崛起', category: '财经', site: '今日头条' },
+      { title: '央行降准，释放哪些信号？', category: '财经', site: '知乎' },
+      { title: '绿色金融助力碳中和，投资新方向', category: '财经', site: '百度' },
+      { title: '独角兽企业名单发布，这些公司值得关注', category: '财经', site: '今日头条' },
+
+      // 体育类
+      { title: '体育赛事精彩回顾：冠军诞生', category: '体育', site: '微博' },
+      { title: '世界杯预选赛激战正酣，出线形势扑朔迷离', category: '体育', site: '知乎' },
+      { title: 'NBA季后赛前瞻：谁能问鼎总冠军？', category: '体育', site: '百度' },
+      { title: '马拉松赛事掀起热潮，全民健身意识提升', category: '体育', site: '微博' },
+      { title: '电竞入选亚运会，行业迎来新机遇', category: '体育', site: 'B站' },
+      { title: '本土球员崛起，中超联赛竞争更激烈', category: '体育', site: '知乎' },
+      { title: '花样滑冰世锦赛落幕，中国选手创造历史', category: '体育', site: '微博' },
+      { title: '网球公开赛开赛，明星阵容豪华', category: '体育', site: '百度' },
+      { title: '健身成为新时尚，运动消费大幅增长', category: '体育', site: '今日头条' },
+      { title: '体育产业发展迅速，带动就业增长', category: '体育', site: '知乎' },
+
+      // 国际类
+      { title: '国际形势分析：世界格局变化', category: '国际', site: '知乎' },
+      { title: '全球气候变化应对：各国行动盘点', category: '国际', site: '百度' },
+      { title: '国际贸易新规则：跨境电商机遇与挑战', category: '国际', site: '今日头条' },
+      { title: '科技竞争加剧：大国博弈新焦点', category: '国际', site: '知乎' },
+      { title: '文化交流互鉴：中国故事走向世界', category: '国际', site: '微博' },
+      { title: '全球经济复苏进程：各国表现不一', category: '国际', site: '财经网' },
+      { title: '国际难民问题：人道主义危机持续', category: '国际', site: '知乎' },
+      { title: '区域合作深化：一带一路新进展', category: '国际', site: '百度' },
+      { title: '太空探索新突破：火星任务持续进行', category: '国际', site: '今日头条' },
+      { title: '数字治理新规则：国际合作亟待加强', category: '国际', site: '知乎' },
     ];
+
+    // 根据日期随机选择10条新闻（每天的组合不同）
+    const selectedNews: { title: string; category: string; site: string }[] = [];
+    const startIndex = (dayOfYear * 7) % newsPool.length; // 使用天数作为起始偏移
+
+    for (let i = 0; i < 10 && i < newsPool.length; i++) {
+      const newsIndex = (startIndex + i) % newsPool.length;
+      selectedNews.push(newsPool[newsIndex]);
+    }
+
+    // 生成 mock 数据
+    const mockData = selectedNews.map((news, index) => {
+      const hotness = generateHotness(1000000 - index * 100000);
+      const trendOptions = ['up', 'down', 'stable'] as const;
+      const trend = trendOptions[Math.floor(Math.random() * trendOptions.length)];
+
+      return {
+        id: `mock-${dateStr}-${index}`,
+        source: this.mapSiteToSource(news.site) as HotTopicSource,
+        title: news.title,
+        hotness: hotness,
+        trend: trend,
+        url: '#',
+        category: news.category,
+        siteName: news.site,
+        publishTime: new Date(now.getTime() - index * 30 * 60000).toISOString(),
+      };
+    });
 
     // 为每个mock数据添加增强信息
     return mockData.map(item => ({
