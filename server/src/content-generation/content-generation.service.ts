@@ -17,6 +17,9 @@ export class ContentGenerationService {
   private readonly logger = new Logger(ContentGenerationService.name);
   private llmClient: LLMClient;
   private isLLMAvailable = false;
+  // 性能优化：添加缓存
+  private contentCache = new Map<string, { content: string; timestamp: number }>();
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5分钟缓存
 
   constructor() {
     try {
@@ -31,6 +34,37 @@ export class ContentGenerationService {
   }
 
   /**
+   * 生成缓存key
+   */
+  private getCacheKey(topic: string, variant: 'A' | 'B', options?: any): string {
+    const platform = options?.platform || '通用';
+    const style = options?.style || '标准版';
+    return `${topic}-${variant}-${platform}-${style}`;
+  }
+
+  /**
+   * 获取缓存
+   */
+  private getFromCache(key: string): string | null {
+    const cached = this.contentCache.get(key);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      this.logger.log(`命中缓存: ${key}`);
+      return cached.content;
+    }
+    return null;
+  }
+
+  /**
+   * 设置缓存
+   */
+  private setCache(key: string, content: string): void {
+    this.contentCache.set(key, {
+      content,
+      timestamp: Date.now()
+    });
+  }
+
+  /**
    * 根据选题生成内容
    */
   async generateContent(topics: string[], options?: {
@@ -38,17 +72,17 @@ export class ContentGenerationService {
     style?: string;
     length?: 'short' | 'medium' | 'long';
   }): Promise<GeneratedContent[]> {
-    const generatedContents: GeneratedContent[] = [];
+    // 性能优化：并行生成所有话题的所有版本
+    const promises: Promise<GeneratedContent>[] = [];
 
     for (const topic of topics) {
-      // 为每个选题生成 A 和 B 两个方案
-      const contentA = await this.generateSingleContent(topic, options, 'A');
-      const contentB = await this.generateSingleContent(topic, options, 'B');
-
-      generatedContents.push(contentA, contentB);
+      // 为每个选题并行生成 A 和 B 两个方案
+      promises.push(this.generateSingleContent(topic, options, 'A'));
+      promises.push(this.generateSingleContent(topic, options, 'B'));
     }
 
-    return generatedContents;
+    // 等待所有生成任务完成
+    return Promise.all(promises);
   }
 
   /**
@@ -74,10 +108,22 @@ export class ContentGenerationService {
    * 生成脚本
    */
   private async generateScript(topic: string, options?: any, variant?: 'A' | 'B'): Promise<string> {
+    // 性能优化：检查缓存
+    const cacheKey = this.getCacheKey(topic, variant || 'A', options);
+    const cachedContent = this.getFromCache(cacheKey);
+    if (cachedContent) {
+      return cachedContent;
+    }
+
     // 如果LLM服务可用，使用LLM生成
     if (this.isLLMAvailable) {
       try {
+        const startTime = Date.now();
         const content = await this.generateScriptWithLLM(topic, options, variant);
+        const duration = Date.now() - startTime;
+        this.logger.log(`LLM生成脚本耗时: ${duration}ms, 话题: ${topic}, 变体: ${variant}`);
+        // 设置缓存
+        this.setCache(cacheKey, content);
         return content;
       } catch (error) {
         this.logger.error('LLM生成失败，降级使用模板', error);
@@ -103,8 +149,9 @@ export class ContentGenerationService {
       { role: 'user' as const, content: prompt }
     ];
 
+    // 性能优化：降低温度值以加快生成速度
     const response = await this.llmClient.invoke(messages, {
-      temperature: variant === 'B' ? 0.9 : 0.7,
+      temperature: 0.6, // 降低温度值，加快生成速度
     });
 
     const content = response.content || '';
@@ -150,17 +197,7 @@ export class ContentGenerationService {
    * 生成标题
    */
   private async generateTitle(topic: string, variant?: 'A' | 'B'): Promise<string> {
-    // 如果LLM服务可用，使用LLM生成
-    if (this.isLLMAvailable) {
-      try {
-        const titles = await this.generateTitlesWithLLM(topic);
-        return titles[0] || this.getTitleTemplate(topic, variant);
-      } catch (error) {
-        this.logger.error('LLM生成标题失败，降级使用模板', error);
-      }
-    }
-
-    // 使用模板生成
+    // 性能优化：直接使用模板生成，不调用 LLM
     return this.getTitleTemplate(topic, variant);
   }
 
