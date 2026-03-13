@@ -7,7 +7,7 @@ import { HotTopic, HotTopicSource } from '@/types/input-sources.types';
 export class HotTopicsService {
   private readonly logger = new Logger(HotTopicsService.name);
   private httpService: HttpService;
-  private cache: { topics: HotTopic[]; timestamp: number } | null = null;
+  private cache: Map<string, { topics: HotTopic[]; timestamp: number }> = new Map(); // 使用 Map 支持多缓存
   private readonly CACHE_TTL = 30 * 60 * 1000; // 30分钟缓存（增加到30分钟，减少频繁刷新）
 
   constructor(private readonly httpServiceRef: HttpService) {
@@ -66,10 +66,14 @@ export class HotTopicsService {
     locationMode: 'national' | 'local' = 'national',
     city?: string
   ): Promise<HotTopic[]> {
+    // 生成缓存键
+    const cacheKey = `hot-topics-${locationMode}-${city || 'national'}`;
+
     // 检查缓存
-    if (this.cache && Date.now() - this.cache.timestamp < this.CACHE_TTL) {
-      this.logger.log(`=== 使用缓存数据，剩余有效期: ${Math.ceil((this.CACHE_TTL - (Date.now() - this.cache.timestamp)) / 1000)}秒`);
-      return this.cache.topics;
+    const cached = this.cache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      this.logger.log(`=== 使用缓存数据 (${cacheKey})，剩余有效期: ${Math.ceil((this.CACHE_TTL - (Date.now() - cached.timestamp)) / 1000)}秒`);
+      return cached.topics;
     }
 
     this.logger.log('=== 开始获取热点数据 ===');
@@ -91,10 +95,10 @@ export class HotTopicsService {
           this.logger.log(`✅ ${apiSource.name} 成功获取 ${topics.length} 个热点`);
 
           // 更新缓存
-          this.cache = {
+          this.cache.set(cacheKey, {
             topics,
             timestamp: Date.now(),
-          };
+          });
 
           return topics;
         }
@@ -106,14 +110,14 @@ export class HotTopicsService {
 
     // 所有 API 源都失败，使用 Mock 数据
     this.logger.warn('=== 所有 API 源均失败，使用 Mock 数据 ===');
-    const mockTopics = this.getMockHotTopics();
+    const mockTopics = this.getMockHotTopics(locationMode, city);
     this.logger.log(`=== Mock 数据：${mockTopics.length} 个热点 ===`);
 
     // 更新缓存
-    this.cache = {
+    this.cache.set(cacheKey, {
       topics: mockTopics,
       timestamp: Date.now(),
-    };
+    });
 
     return mockTopics;
   }
@@ -1401,14 +1405,14 @@ export class HotTopicsService {
    * 清除缓存
    */
   clearCache(): void {
-    this.cache = null;
+    this.cache.clear();
   }
 
   /**
    * 清除指定平台的缓存（TopHub使用统一缓存，这里兼容接口）
    */
   clearSourceCache(source: HotTopicSource): void {
-    this.cache = null;
+    this.cache.clear();
   }
 
   /**
@@ -1644,7 +1648,10 @@ export class HotTopicsService {
   /**
    * 获取 Mock 热点数据（当所有 API 源均失败时使用）
    */
-  private getMockHotTopics(): HotTopic[] {
+  /**
+   * 获取 Mock 热点数据（当所有 API 源均失败时使用）
+   */
+  private getMockHotTopics(locationMode: 'national' | 'local' = 'national', city?: string): HotTopic[] {
     const now = new Date();
     const timeStr = now.toISOString();
 
@@ -1652,6 +1659,7 @@ export class HotTopicsService {
     const hotnessFactor = 0.7 + Math.random() * 0.6; // 0.7 ~ 1.3
 
     const mockData = [
+      // 全国性热点
       {
         id: 'mock-1',
         title: 'AI 技术突破：新一代大语言模型性能提升 300%',
@@ -1660,7 +1668,8 @@ export class HotTopicsService {
         time: timeStr,
         site: '科技圈',
         category: '科技',
-        site_name: '科技圈'
+        site_name: '科技圈',
+        city: null
       },
       {
         id: 'mock-2',
@@ -1670,7 +1679,8 @@ export class HotTopicsService {
         time: timeStr,
         site: '财经',
         category: '财经',
-        site_name: '财经'
+        site_name: '财经',
+        city: null
       },
       {
         id: 'mock-3',
@@ -1680,7 +1690,8 @@ export class HotTopicsService {
         time: timeStr,
         site: '社会',
         category: '社会',
-        site_name: '社会'
+        site_name: '社会',
+        city: null
       },
       {
         id: 'mock-4',
@@ -1690,7 +1701,8 @@ export class HotTopicsService {
         time: timeStr,
         site: '娱乐',
         category: '娱乐',
-        site_name: '娱乐'
+        site_name: '娱乐',
+        city: null
       },
       {
         id: 'mock-5',
@@ -1700,62 +1712,218 @@ export class HotTopicsService {
         time: timeStr,
         site: '体育',
         category: '体育',
-        site_name: '体育'
+        site_name: '体育',
+        city: null
       },
+      // 重庆相关热点
       {
         id: 'mock-6',
-        title: '教育部发布最新政策，推进教育数字化转型',
+        title: '重庆火锅文化节开幕，万人齐聚品尝火锅',
         url: '#',
-        hot: 567834,
+        hot: 856789,
         time: timeStr,
-        site: '教育',
-        category: '教育',
-        site_name: '教育'
+        site: '重庆',
+        category: '生活',
+        site_name: '重庆',
+        city: '重庆'
       },
       {
         id: 'mock-7',
-        title: '热门综艺新一季开播，收视率创新高',
+        title: '重庆解放碑商圈推出夜间消费节，打造不夜城',
         url: '#',
-        hot: 523478,
+        hot: 723456,
         time: timeStr,
-        site: '娱乐',
-        category: '娱乐',
-        site_name: '娱乐'
+        site: '重庆',
+        category: '生活',
+        site_name: '重庆',
+        city: '重庆'
       },
       {
         id: 'mock-8',
-        title: '科学家发现新型材料，有望解决能源存储难题',
+        title: '重庆轨道交通建设新进展，多条线路即将开通',
         url: '#',
-        hot: 489567,
+        hot: 678934,
         time: timeStr,
-        site: '科技',
-        category: '科技',
-        site_name: '科技'
+        site: '重庆',
+        category: '交通',
+        site_name: '重庆',
+        city: '重庆'
       },
       {
         id: 'mock-9',
-        title: '多城市发布房地产新政，购房门槛进一步降低',
+        title: '重庆洪崖洞景区升级改造，新增多个打卡点',
         url: '#',
-        hot: 456789,
+        hot: 745678,
         time: timeStr,
-        site: '财经',
-        category: '财经',
-        site_name: '财经'
+        site: '重庆',
+        category: '旅游',
+        site_name: '重庆',
+        city: '重庆'
       },
       {
         id: 'mock-10',
-        title: '国际重要会议召开，多国领导人出席',
+        title: '重庆推出人才新政，最高补贴 500 万引进高端人才',
         url: '#',
-        hot: 423456,
+        hot: 692345,
         time: timeStr,
-        site: '国际',
-        category: '国际',
-        site_name: '国际'
+        site: '重庆',
+        category: '政策',
+        site_name: '重庆',
+        city: '重庆'
+      },
+      // 北京相关热点
+      {
+        id: 'mock-11',
+        title: '北京故宫博物院推出沉浸式展览',
+        url: '#',
+        hot: 823456,
+        time: timeStr,
+        site: '北京',
+        category: '文化',
+        site_name: '北京',
+        city: '北京'
+      },
+      {
+        id: 'mock-12',
+        title: '北京地铁新线开通，缓解交通拥堵',
+        url: '#',
+        hot: 756789,
+        time: timeStr,
+        site: '北京',
+        category: '交通',
+        site_name: '北京',
+        city: '北京'
+      },
+      {
+        id: 'mock-13',
+        title: '北京中关村科技园发布创新扶持政策',
+        url: '#',
+        hot: 682345,
+        time: timeStr,
+        site: '北京',
+        category: '政策',
+        site_name: '北京',
+        city: '北京'
+      },
+      // 上海相关热点
+      {
+        id: 'mock-14',
+        title: '上海外滩灯光秀震撼开幕，吸引百万游客',
+        url: '#',
+        hot: 876543,
+        time: timeStr,
+        site: '上海',
+        category: '旅游',
+        site_name: '上海',
+        city: '上海'
+      },
+      {
+        id: 'mock-15',
+        title: '上海张江科学城迎来重大科技突破',
+        url: '#',
+        hot: 734567,
+        time: timeStr,
+        site: '上海',
+        category: '科技',
+        site_name: '上海',
+        city: '上海'
+      },
+      {
+        id: 'mock-16',
+        title: '上海自贸区新增投资优惠政策',
+        url: '#',
+        hot: 678923,
+        time: timeStr,
+        site: '上海',
+        category: '政策',
+        site_name: '上海',
+        city: '上海'
+      },
+      // 广州相关热点
+      {
+        id: 'mock-17',
+        title: '广州塔举办跨年灯光秀，预定席位火爆',
+        url: '#',
+        hot: 845678,
+        time: timeStr,
+        site: '广州',
+        category: '生活',
+        site_name: '广州',
+        city: '广州'
+      },
+      {
+        id: 'mock-18',
+        title: '广州琶洲电商博览会即将开幕',
+        url: '#',
+        hot: 723456,
+        time: timeStr,
+        site: '广州',
+        category: '商业',
+        site_name: '广州',
+        city: '广州'
+      },
+      // 深圳相关热点
+      {
+        id: 'mock-19',
+        title: '深圳前海深港现代服务业合作区迎来新进展',
+        url: '#',
+        hot: 892345,
+        time: timeStr,
+        site: '深圳',
+        category: '政策',
+        site_name: '深圳',
+        city: '深圳'
+      },
+      {
+        id: 'mock-20',
+        title: '深圳华强北电子市场转型升级',
+        url: '#',
+        hot: 756789,
+        time: timeStr,
+        site: '深圳',
+        category: '商业',
+        site_name: '深圳',
+        city: '深圳'
+      },
+      // 成都相关热点
+      {
+        id: 'mock-21',
+        title: '成都大熊猫基地迎来新生熊猫宝宝',
+        url: '#',
+        hot: 923456,
+        time: timeStr,
+        site: '成都',
+        category: '生活',
+        site_name: '成都',
+        city: '成都'
+      },
+      {
+        id: 'mock-22',
+        title: '成都春熙路商圈打造夜间经济新地标',
+        url: '#',
+        hot: 782345,
+        time: timeStr,
+        site: '成都',
+        category: '生活',
+        site_name: '成都',
+        city: '成都'
       }
     ];
 
+    // 根据位置模式过滤数据
+    let filteredData = mockData;
+    if (locationMode === 'local' && city) {
+      // 本地模式：只显示该城市的热点
+      filteredData = mockData.filter(item => item.city === city);
+      this.logger.log(`本地模式 (${city})，过滤后: ${filteredData.length} 条`);
+    } else {
+      // 全国模式：只显示全国性热点（city 为 null）
+      filteredData = mockData.filter(item => item.city === null);
+      this.logger.log(`全国模式，过滤后: ${filteredData.length} 条`);
+    }
+
     // 打乱数组顺序，让每次刷新看到不同排列
-    const shuffledData = [...mockData].sort(() => Math.random() - 0.5);
+    const shuffledData = [...filteredData].sort(() => Math.random() - 0.5);
 
     // 生成随机时间偏移，让发布时间更加随机
     const timeOffset = Math.floor(Math.random() * 7200000); // 0 ~ 2小时

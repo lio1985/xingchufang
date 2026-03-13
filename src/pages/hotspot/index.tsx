@@ -104,18 +104,15 @@ const HotspotPage = () => {
   const loadHotKeywords = useCallback(async () => {
     setLoadingHotTopics(true);
     try {
-      // 构建查询参数
-      const params: any = {
-        locationMode
-      };
+      // 构建 URL 查询参数
+      let url = `/api/hot-topics?locationMode=${locationMode}`;
       if (locationMode === 'local' && userCity) {
-        params.city = userCity;
+        url += `&city=${encodeURIComponent(userCity)}`;
       }
 
       const response = await Network.request({
-        url: `/api/hot-topics`,
-        method: 'GET',
-        data: params
+        url,
+        method: 'GET'
       });
 
       console.log('=== 热力图响应数据 ===');
