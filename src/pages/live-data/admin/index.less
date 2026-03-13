@@ -1,0 +1,148 @@
+.live-admin-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+
+  .header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 24px 16px;
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    margin-top: -20px;
+
+    .stat-card {
+      flex: 1;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 12px;
+      text-align: center;
+
+      .value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin: 8px 0;
+        display: block;
+      }
+
+      .label {
+        font-size: 12px;
+        color: #999;
+      }
+    }
+  }
+
+  .search-section {
+    padding: 0 16px 16px;
+
+    .search-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
+
+      .search-input {
+        flex: 1;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .list-container {
+    padding: 0 16px;
+    min-height: calc(100vh - 300px);
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+
+      .empty-text {
+        font-size: 16px;
+        color: #999;
+      }
+    }
+
+    .data-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+
+        .title {
+          font-size: 15px;
+          font-weight: 600;
+          color: #333;
+          flex: 1;
+        }
+
+        .date {
+          font-size: 12px;
+          color: #999;
+        }
+      }
+
+      .card-body {
+        .info-item {
+          margin-bottom: 8px;
+
+          .label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+            display: block;
+          }
+
+          .value {
+            font-size: 14px;
+            color: #333;
+
+            &.highlight {
+              color: #ff6b6b;
+              font-weight: 600;
+            }
+          }
+        }
+
+        .info-row {
+          display: flex;
+          justify-content: space-between;
+
+          .info-item {
+            text-align: center;
+            flex: 1;
+
+            .label {
+              font-size: 11px;
+              color: #999;
+            }
+
+            .value {
+              font-size: 16px;
+              font-weight: 600;
+              color: #333;
+            }
+          }
+        }
+      }
+    }
+  }
+}

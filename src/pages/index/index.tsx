@@ -1,7 +1,7 @@
 import { View, Text, Swiper, SwiperItem, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { Lightbulb, PenTool, Sparkles, TrendingUp, LogOut, Settings, Shield, User, BookOpen, Users, ShieldAlert, UsersRound, Bell } from 'lucide-react-taro';
+import { Lightbulb, PenTool, Sparkles, TrendingUp, LogOut, Settings, Shield, User, BookOpen, Users, ShieldAlert, UsersRound, Bell, Video } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface WelcomeMessage {
@@ -456,6 +456,22 @@ const IndexPage = () => {
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">知识分享</Text>
               <Text className="block text-sm text-white/80">分享创作经验和技巧</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 直播数据统计 */}
+        <View
+          className="bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-rose-500/20"
+          onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
+        >
+          <View className="flex items-center gap-4">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+              <Video size={32} color="white" strokeWidth={2.5} />
+            </View>
+            <View className="flex-1">
+              <Text className="block text-xl font-bold text-white mb-1">直播数据统计</Text>
+              <Text className="block text-sm text-white/80">抖音直播数据分析与AI复盘</Text>
             </View>
           </View>
         </View>

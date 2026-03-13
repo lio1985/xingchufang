@@ -1,0 +1,245 @@
+import { useState, useEffect } from 'react';
+import { showToast, showLoading, hideLoading } from '@tarojs/taro';
+import { View, Text, ScrollView } from '@tarojs/components';
+import { Network } from '@/network';
+import { Calendar, TrendingUp, Eye, Users, Heart, TrendingDown } from 'lucide-react-taro';
+import './index.less';
+
+type TimeRange = 'day' | 'week' | 'month' | 'year';
+
+interface DashboardStats {
+  totalViews: number;
+  peakOnline: number;
+  avgOnline: number;
+  newFollowers: number;
+  totalComments: number;
+  totalLikes: number;
+  ordersCount: number;
+  gmv: number;
+  avgWatchDuration: number;
+  conversionRate: number;
+  interactionRate: number;
+  followerConversionRate: number;
+  streamCount: number;
+  prevPeriod: {
+    gmv: number;
+    ordersCount: number;
+    totalViews: number;
+    newFollowers: number;
+  };
+}
+
+const LiveDashboardPage = () => {
+  const [timeRange, setTimeRange] = useState<TimeRange>('week');
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const timeRangeOptions: { value: TimeRange; label: string }[] = [
+    { value: 'day', label: '今日' },
+    { value: 'week', label: '本周' },
+    { value: 'month', label: '本月' },
+    { value: 'year', label: '本年' },
+  ];
+
+  const fetchStats = async () => {
+    if (loading) return;
+    setLoading(true);
+    showLoading({ title: '加载中...' });
+
+    try {
+      const response = await Network.request({
+        url: '/api/live-data/dashboard',
+        method: 'GET',
+        data: { range: timeRange },
+      });
+
+      if (response.data?.success) {
+        setStats(response.data.data);
+      }
+    } catch (error) {
+      showToast({ title: '加载失败', icon: 'none' });
+    } finally {
+      setLoading(false);
+      hideLoading();
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeRange]);
+
+  const calculateChange = (current: number, prev: number) => {
+    if (!prev) return 0;
+    return ((current - prev) / prev) * 100;
+  };
+
+  const formatChange = (change: number) => {
+    const sign = change >= 0 ? '+' : '';
+    return `${sign}${change.toFixed(1)}%`;
+  };
+
+  if (!stats) return null;
+
+  const gmvChange = calculateChange(stats.gmv, stats.prevPeriod?.gmv || 0);
+  const ordersChange = calculateChange(stats.ordersCount, stats.prevPeriod?.ordersCount || 0);
+  const viewsChange = calculateChange(stats.totalViews, stats.prevPeriod?.totalViews || 0);
+  const followersChange = calculateChange(stats.newFollowers, stats.prevPeriod?.newFollowers || 0);
+
+  return (
+    <View className="live-dashboard-page">
+      <View className="header">
+        <Text className="title">数据看板</Text>
+        <View className="time-tabs">
+          {timeRangeOptions.map((option) => (
+            <View
+              key={option.value}
+              className={`tab ${timeRange === option.value ? 'active' : ''}`}
+              onClick={() => setTimeRange(option.value)}
+            >
+              <Text>{option.label}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <ScrollView className="dashboard-container" scrollY>
+        {/* 核心指标 */}
+        <View className="section-card">
+          <Text className="section-title">核心指标</Text>
+          <View className="metrics-grid">
+            <View className="metric-card highlight">
+              <Text className="label">成交金额</Text>
+              <Text className="value">¥{stats.gmv.toFixed(2)}</Text>
+              <View className={`change ${gmvChange >= 0 ? 'up' : 'down'}`}>
+                {gmvChange >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                <Text>{formatChange(gmvChange)}</Text>
+              </View>
+            </View>
+
+            <View className="metric-card">
+              <Text className="label">订单数</Text>
+              <Text className="value">{stats.ordersCount.toLocaleString()}</Text>
+              <View className={`change ${ordersChange >= 0 ? 'up' : 'down'}`}>
+                <Text>{formatChange(ordersChange)}</Text>
+              </View>
+            </View>
+
+            <View className="metric-card">
+              <Text className="label">观看人数</Text>
+              <Text className="value">{stats.totalViews.toLocaleString()}</Text>
+              <View className={`change ${viewsChange >= 0 ? 'up' : 'down'}`}>
+                <Text>{formatChange(viewsChange)}</Text>
+              </View>
+            </View>
+
+            <View className="metric-card">
+              <Text className="label">新增粉丝</Text>
+              <Text className="value">{stats.newFollowers.toLocaleString()}</Text>
+              <View className={`change ${followersChange >= 0 ? 'up' : 'down'}`}>
+                <Text>{formatChange(followersChange)}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* 直播场次 */}
+        <View className="section-card">
+          <View className="stream-count">
+            <Calendar size={24} />
+            <View>
+              <Text className="count">{stats.streamCount}</Text>
+              <Text className="label">直播场次</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 流量数据 */}
+        <View className="section-card">
+          <Text className="section-title">流量数据</Text>
+          <View className="data-grid">
+            <View className="data-item">
+              <Eye size={18} />
+              <View>
+                <Text className="value">{stats.totalViews.toLocaleString()}</Text>
+                <Text className="label">观看人数</Text>
+              </View>
+            </View>
+            <View className="data-item">
+              <Users size={18} />
+              <View>
+                <Text className="value">{stats.peakOnline.toLocaleString()}</Text>
+                <Text className="label">最高在线</Text>
+              </View>
+            </View>
+            <View className="data-item">
+              <Users size={18} />
+              <View>
+                <Text className="value">{stats.avgOnline.toLocaleString()}</Text>
+                <Text className="label">平均在线</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* 互动数据 */}
+        <View className="section-card">
+          <Text className="section-title">互动数据</Text>
+          <View className="data-grid">
+            <View className="data-item">
+              <Heart size={18} />
+              <View>
+                <Text className="value">{stats.totalLikes.toLocaleString()}</Text>
+                <Text className="label">点赞数</Text>
+              </View>
+            </View>
+            <View className="data-item">
+              <TrendingUp size={18} />
+              <View>
+                <Text className="value">{stats.totalComments.toLocaleString()}</Text>
+                <Text className="label">评论数</Text>
+              </View>
+            </View>
+            <View className="data-item">
+              <Users size={18} />
+              <View>
+                <Text className="value">{stats.newFollowers.toLocaleString()}</Text>
+                <Text className="label">新增粉丝</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* 转化数据 */}
+        <View className="section-card">
+          <Text className="section-title">转化数据</Text>
+          <View className="conversion-list">
+            <View className="conversion-item">
+              <Text className="label">观看转化率</Text>
+              <View className="progress-bar">
+                <View className="progress" style={{ width: `${Math.min(stats.conversionRate * 10, 100)}%` }} />
+              </View>
+              <Text className="value">{stats.conversionRate.toFixed(2)}%</Text>
+            </View>
+            <View className="conversion-item">
+              <Text className="label">互动率</Text>
+              <View className="progress-bar">
+                <View className="progress" style={{ width: `${Math.min(stats.interactionRate * 10, 100)}%` }} />
+              </View>
+              <Text className="value">{stats.interactionRate.toFixed(2)}%</Text>
+            </View>
+            <View className="conversion-item">
+              <Text className="label">粉丝转化率</Text>
+              <View className="progress-bar">
+                <View className="progress" style={{ width: `${Math.min(stats.followerConversionRate * 100, 100)}%` }} />
+              </View>
+              <Text className="value">{stats.followerConversionRate.toFixed(2)}%</Text>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+
+export default LiveDashboardPage;
