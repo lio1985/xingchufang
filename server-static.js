@@ -33,29 +33,44 @@ const server = http.createServer((req, res) => {
 
   // API 请求代理到后端
   if (req.url.startsWith('/api/')) {
-    const options = {
-      hostname: 'localhost',
-      port: API_PORT,
-      path: req.url,
-      method: req.method,
-      headers: {
-        ...req.headers,
-        host: `localhost:${API_PORT}`,
-      },
-    };
-
-    const proxyReq = http.request(options, (proxyRes) => {
-      res.writeHead(proxyRes.statusCode, proxyRes.headers);
-      proxyRes.pipe(res);
+    console.log(`[Proxy] ${req.method} ${req.url}`);
+    
+    // 收集请求体
+    let body = [];
+    req.on('data', (chunk) => {
+      body.push(chunk);
     });
+    
+    req.on('end', () => {
+      body = Buffer.concat(body);
+      
+      const options = {
+        hostname: 'localhost',
+        port: API_PORT,
+        path: req.url,
+        method: req.method,
+        headers: {
+          'Content-Type': req.headers['content-type'] || 'application/json',
+          'Content-Length': body.length,
+        },
+      };
 
-    proxyReq.on('error', (err) => {
-      console.error('Proxy error:', err.message);
-      res.writeHead(502);
-      res.end(JSON.stringify({ error: 'Backend service unavailable' }));
+      const proxyReq = http.request(options, (proxyRes) => {
+        console.log(`[Proxy] Response: ${proxyRes.statusCode}`);
+        res.writeHead(proxyRes.statusCode, proxyRes.headers);
+        proxyRes.pipe(res);
+      });
+
+      proxyReq.on('error', (err) => {
+        console.error('[Proxy] Error:', err.message);
+        res.writeHead(502, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Backend service unavailable', message: err.message }));
+      });
+
+      proxyReq.write(body);
+      proxyReq.end();
     });
-
-    req.pipe(proxyReq);
+    
     return;
   }
 
