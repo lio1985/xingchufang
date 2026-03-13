@@ -1970,6 +1970,127 @@ export class HotTopicsService {
         site: '国际',
         category: '国际',
         site_name: '国际'
+      },
+      // 新增：美食、厨房、烹饪相关
+      {
+        id: 'search-19',
+        title: '智能厨房设备：让烹饪变得简单高效',
+        url: '#',
+        hot: 756789,
+        time: timeStr,
+        site: '生活',
+        category: '生活',
+        site_name: '生活'
+      },
+      {
+        id: 'search-20',
+        title: '网红厨房装修风格走红，年轻人追捧',
+        url: '#',
+        hot: 682345,
+        time: timeStr,
+        site: '家居',
+        category: '生活',
+        site_name: '家居'
+      },
+      {
+        id: 'search-21',
+        title: '中式厨房改造指南：打造理想烹饪空间',
+        url: '#',
+        hot: 723456,
+        time: timeStr,
+        site: '家居',
+        category: '生活',
+        site_name: '家居'
+      },
+      {
+        id: 'search-22',
+        title: '十大网红美食探店，好吃到爆',
+        url: '#',
+        hot: 856789,
+        time: timeStr,
+        site: '美食',
+        category: '美食',
+        site_name: '美食'
+      },
+      {
+        id: 'search-23',
+        title: '家常菜大全：简单易学的烹饪技巧',
+        url: '#',
+        hot: 734567,
+        time: timeStr,
+        site: '美食',
+        category: '美食',
+        site_name: '美食'
+      },
+      {
+        id: 'search-24',
+        title: '厨师分享：在家也能做出餐厅级美食',
+        url: '#',
+        hot: 678934,
+        time: timeStr,
+        site: '美食',
+        category: '美食',
+        site_name: '美食'
+      },
+      {
+        id: 'search-25',
+        title: '厨房神器推荐：提升烹饪效率的秘密武器',
+        url: '#',
+        hot: 712345,
+        time: timeStr,
+        site: '美食',
+        category: '美食',
+        site_name: '美食'
+      },
+      {
+        id: 'search-26',
+        title: '全国美食地图：各地特色小吃盘点',
+        url: '#',
+        hot: 923456,
+        time: timeStr,
+        site: '美食',
+        category: '美食',
+        site_name: '美食'
+      },
+      {
+        id: 'search-27',
+        title: '米其林餐厅指南发布，多家中餐厅入选',
+        url: '#',
+        hot: 845678,
+        time: timeStr,
+        site: '美食',
+        category: '美食',
+        site_name: '美食'
+      },
+      {
+        id: 'search-28',
+        title: '预制菜引发争议：方便与健康的博弈',
+        url: '#',
+        hot: 762345,
+        time: timeStr,
+        site: '美食',
+        category: '美食',
+        site_name: '美食'
+      },
+      {
+        id: 'search-29',
+        title: '厨房收纳技巧：小空间也能井井有条',
+        url: '#',
+        hot: 692345,
+        time: timeStr,
+        site: '家居',
+        category: '生活',
+        site_name: '家居'
+      },
+      {
+        id: 'search-30',
+        title: '餐厅设计趋势：打造沉浸式用餐体验',
+        url: '#',
+        hot: 734567,
+        time: timeStr,
+        site: '餐饮',
+        category: '美食',
+        site_name: '餐饮'
       }
     ].map((item, index) => ({
       id: `search-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
@@ -2013,13 +2134,11 @@ export class HotTopicsService {
 
     this.logger.log(`找到 ${results.length} 个匹配结果`);
 
-    // 如果没有找到结果，返回一些推荐内容
+    // 如果没有找到结果，返回空数组
+    // 不再返回推荐内容，避免显示不相关的新闻
     if (results.length === 0) {
-      this.logger.log('未找到匹配结果，返回推荐内容');
-      // 返回前 5 个最热门的话题
-      return database
-        .sort((a, b) => b.hotness - a.hotness)
-        .slice(0, 5);
+      this.logger.log('未找到匹配结果，返回空数组');
+      return [];
     }
 
     return results;
