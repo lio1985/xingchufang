@@ -146,12 +146,12 @@ start_service() {
 
         # 启动前端（使用 serve 静态服务）
         cd "${COZE_WORKSPACE_PATH}/dist-web"
-        npx serve -s . -l 8080 -p 8080 &
+        npx serve -s . -l ${DEPLOY_RUN_PORT} -p ${DEPLOY_RUN_PORT} &
         local frontend_pid=$!
 
         echo "${frontend_pid}" > "${PID_FILE}"
         echo "📝 Backend server started with PID: ${server_pid} on port 3000"
-        echo "📝 Frontend server started with PID: ${frontend_pid} on port 8080 (saved to ${PID_FILE})"
+        echo "📝 Frontend server started with PID: ${frontend_pid} on port ${DEPLOY_RUN_PORT} (saved to ${PID_FILE})"
 
         # 前台等待任一进程
         wait -n || true
