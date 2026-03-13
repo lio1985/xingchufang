@@ -380,7 +380,7 @@ const IndexPage = () => {
 
       {/* 功能介绍区 */}
       <View className="px-4 mb-20">
-        {/* 选题生成系统 */}
+        {/* 选题策划 */}
         <View
           className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-blue-500/20"
           onClick={() => handleNavigateTo('/pages/systems/index', true)}
@@ -390,13 +390,13 @@ const IndexPage = () => {
               <Sparkles size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">选题生成</Text>
+              <Text className="block text-xl font-bold text-white mb-1">选题策划</Text>
               <Text className="block text-sm text-white/80">快速发现优质选题</Text>
             </View>
           </View>
         </View>
 
-        {/* 内容生成系统 */}
+        {/* 内容创作 */}
         <View
           className="bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
           onClick={() => handleNavigateTo('/pages/systems/index', true)}
@@ -406,7 +406,7 @@ const IndexPage = () => {
               <PenTool size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">内容生成</Text>
+              <Text className="block text-xl font-bold text-white mb-1">内容创作</Text>
               <Text className="block text-sm text-white/80">高效创作优质内容</Text>
             </View>
           </View>

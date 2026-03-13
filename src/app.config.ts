@@ -61,7 +61,7 @@ export default defineAppConfig({
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#0f172a',
-    navigationBarTitleText: '星厨房创作助手',
+    navigationBarTitleText: '星厨房',
     navigationBarTextStyle: 'white',
     backgroundColor: '#0f172a'
   },
@@ -96,7 +96,7 @@ export default defineAppConfig({
       },
       {
         pagePath: 'pages/ai-chat/index',
-        text: '助手',
+        text: '工作室',
         iconPath: './assets/tabbar/message-square.png',
         selectedIconPath: './assets/tabbar/message-square-active.png',
       }
