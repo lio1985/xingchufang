@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query } from '@nestjs/common';
 import { HotTopicsService } from './hot-topics.service';
 
 @Controller('hot-topics')
@@ -24,6 +24,34 @@ export class HotTopicsController {
     return {
       code: 200,
       msg: 'success',
+      data: {
+        topics,
+        source: 'TopHub (今日热榜)',
+        locationMode,
+        city: city || '全国',
+        updateTime: new Date().toISOString()
+      }
+    };
+  }
+
+  /**
+   * 刷新热点数据（清除缓存并重新获取）
+   */
+  @Post('refresh')
+  async refreshHotTopics(@Query() query: { locationMode?: 'national' | 'local'; city?: string }): Promise<any> {
+    const { locationMode = 'national', city } = query;
+
+    console.log('=== 刷新 TopHub 热点 ===');
+
+    // 清除缓存
+    this.hotTopicsService.clearCache();
+
+    // 重新获取数据
+    const topics = await this.hotTopicsService.getHotTopics('all', locationMode, city);
+
+    return {
+      code: 200,
+      msg: '刷新成功',
       data: {
         topics,
         source: 'TopHub (今日热榜)',

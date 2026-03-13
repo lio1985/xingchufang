@@ -5,17 +5,17 @@ import { join } from 'path';
 import { HttpStatusInterceptor } from '@/interceptors/http-status.interceptor';
 
 function parsePort(): number {
-  // 优先使用环境变量 PORT
-  if (process.env.PORT) {
-    const port = parseInt(process.env.PORT, 10);
+  // 优先使用 SERVER_PORT（项目配置）
+  if (process.env.SERVER_PORT) {
+    const port = parseInt(process.env.SERVER_PORT, 10);
     if (!isNaN(port) && port > 0 && port < 65536) {
       return port;
     }
   }
 
-  // 其次使用 DEPLOY_RUN_PORT（Coze FaaS 环境）
-  if (process.env.DEPLOY_RUN_PORT) {
-    const port = parseInt(process.env.DEPLOY_RUN_PORT, 10);
+  // 其次使用环境变量 PORT
+  if (process.env.PORT) {
+    const port = parseInt(process.env.PORT, 10);
     if (!isNaN(port) && port > 0 && port < 65536) {
       return port;
     }

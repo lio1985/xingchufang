@@ -1642,13 +1642,16 @@ export class HotTopicsService {
    * 获取 Mock 热点数据（当所有 API 源均失败时使用）
    */
   private getMockHotTopics(): HotTopic[] {
+    const now = new Date();
+    const timeStr = now.toISOString();
+
     const mockData = [
       {
         id: 'mock-1',
         title: 'AI 技术突破：新一代大语言模型性能提升 300%',
         url: '#',
         hot: 956782,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '科技圈',
         category: '科技',
         site_name: '科技圈'
@@ -1658,7 +1661,7 @@ export class HotTopicsService {
         title: '新能源汽车销量创新高，市场渗透率突破 40%',
         url: '#',
         hot: 892345,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '财经',
         category: '财经',
         site_name: '财经'
@@ -1668,7 +1671,7 @@ export class HotTopicsService {
         title: '全国多地启动全民健身计划，体育设施免费开放',
         url: '#',
         hot: 745612,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '社会',
         category: '社会',
         site_name: '社会'
@@ -1678,7 +1681,7 @@ export class HotTopicsService {
         title: '知名导演新作定档，首日票房破亿',
         url: '#',
         hot: 678923,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '娱乐',
         category: '娱乐',
         site_name: '娱乐'
@@ -1688,7 +1691,7 @@ export class HotTopicsService {
         title: '国际体育赛事开幕，中国队参赛阵容公布',
         url: '#',
         hot: 612456,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '体育',
         category: '体育',
         site_name: '体育'
@@ -1698,7 +1701,7 @@ export class HotTopicsService {
         title: '教育部发布最新政策，推进教育数字化转型',
         url: '#',
         hot: 567834,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '教育',
         category: '教育',
         site_name: '教育'
@@ -1708,7 +1711,7 @@ export class HotTopicsService {
         title: '热门综艺新一季开播，收视率创新高',
         url: '#',
         hot: 523478,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '娱乐',
         category: '娱乐',
         site_name: '娱乐'
@@ -1718,7 +1721,7 @@ export class HotTopicsService {
         title: '科学家发现新型材料，有望解决能源存储难题',
         url: '#',
         hot: 489567,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '科技',
         category: '科技',
         site_name: '科技'
@@ -1728,7 +1731,7 @@ export class HotTopicsService {
         title: '多城市发布房地产新政，购房门槛进一步降低',
         url: '#',
         hot: 456789,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '财经',
         category: '财经',
         site_name: '财经'
@@ -1738,25 +1741,28 @@ export class HotTopicsService {
         title: '国际重要会议召开，多国领导人出席',
         url: '#',
         hot: 423456,
-        time: new Date().toISOString(),
+        time: timeStr,
         site: '国际',
         category: '国际',
         site_name: '国际'
       }
     ];
 
-    return mockData.map((item, index) => ({
-      id: item.id,
+    // 打乱数组顺序，让每次刷新看到不同排列
+    const shuffledData = [...mockData].sort(() => Math.random() - 0.5);
+
+    return shuffledData.map((item, index) => ({
+      id: `${item.id}-${Date.now()}-${index}`, // 添加时间戳和索引确保唯一性
       source: this.mapSiteToSource(item.site_name),
       title: item.title,
-      hotness: item.hot,
+      hotness: item.hot + Math.floor(Math.random() * 50000), // 添加随机热度变化
       trend: Math.random() > 0.3 ? 'up' : Math.random() > 0.5 ? 'stable' : 'down',
       trendChange: Math.floor(Math.random() * 30) + 5,
-      isBursting: index < 3,
+      isBursting: Math.random() > 0.6, // 随机是否爆发
       url: item.url,
       category: item.category,
       siteName: item.site_name,
-      publishTime: item.time,
+      publishTime: new Date(now.getTime() - Math.random() * 3600000).toISOString(), // 随机发布时间
       summary: this.generateSummary(item.title, item.category),
       keywords: this.extractKeywords(item.title, item.category),
       sentiment: this.analyzeSentiment(item.title, item.category)
