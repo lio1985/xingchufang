@@ -1,7 +1,7 @@
 import { View, Text, Swiper, SwiperItem, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { Lightbulb, PenTool, Sparkles, TrendingUp, LogOut, Settings, Shield, User, BookOpen, Users, ShieldAlert, UsersRound } from 'lucide-react-taro';
+import { Lightbulb, PenTool, Sparkles, TrendingUp, LogOut, Settings, Shield, User, BookOpen, Users, ShieldAlert, UsersRound, Bell } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface WelcomeMessage {
@@ -21,6 +21,7 @@ const IndexPage = () => {
   const [pendingUsersCount, setPendingUsersCount] = useState(0);
   const [churnWarningCount, setChurnWarningCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const handleNavigateTo = (url: string, requireLogin: boolean = true) => {
     console.log('跳转到:', url);
@@ -208,6 +209,32 @@ const IndexPage = () => {
     loadUserInfo();
   }, []);
 
+  // 获取未读消息数量
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (!isLoggedIn) return;
+      
+      try {
+        const response = await Network.request({
+          url: '/api/notifications/unread-count',
+          method: 'GET',
+        });
+
+        if (response.data?.success) {
+          setUnreadCount(response.data.data.count);
+        }
+      } catch (error) {
+        console.error('获取未读消息失败:', error);
+      }
+    };
+
+    fetchUnreadCount();
+    
+    // 每30秒刷新一次未读数量
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
+
   return (
     <View className="h-screen bg-slate-900 flex flex-col overflow-hidden">
       {/* 标题区 */}
@@ -225,6 +252,25 @@ const IndexPage = () => {
           {/* 已登录状态 */}
           {isLoggedIn ? (
             <>
+              {/* 消息中心入口 */}
+              <View
+                className="relative"
+                onClick={() => handleNavigateTo('/pages/notification/index')}
+              >
+                <View
+                  className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-3 transition-all active:scale-95"
+                >
+                  <Bell size={22} color="white" strokeWidth={2} />
+                </View>
+                {/* 未读消息徽标 */}
+                {unreadCount > 0 && (
+                  <View className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/30">
+                    <Text className="block text-white text-xs font-bold">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
               {/* 管理员入口 */}
               {isAdmin && (
                 <View
