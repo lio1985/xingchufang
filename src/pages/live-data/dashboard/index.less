@@ -74,33 +74,88 @@
   .dashboard-container {
     padding: 16px;
 
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+    .quick-actions {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      margin-bottom: 20px;
 
-      .action-btn {
-        flex: 1;
+      .section-header {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
         gap: 8px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 16px;
-        padding: 16px 8px;
+        margin-bottom: 20px;
 
-        &.secondary {
-          background: #fff;
+        .icon-wrapper {
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
-        .btn-text {
-          font-size: 15px;
-          color: #fff;
-          font-weight: 600;
+        .header-title {
+          font-size: 18px;
+          font-weight: 700;
+          color: #333;
+        }
+      }
+
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+
+        .action-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          padding: 20px 8px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 16px;
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 
           &.secondary {
-            color: #667eea;
+            background: #f8f9fa;
+            box-shadow: none;
+            border: 2px solid #e8e8e8;
+          }
+
+          .action-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &.secondary {
+              background: #fff;
+              border: 2px solid #667eea;
+            }
+          }
+
+          .action-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+
+            &.secondary {
+              color: #333;
+            }
+          }
+
+          .action-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+
+            &.secondary {
+              color: #999;
+            }
           }
         }
       }
@@ -108,26 +163,29 @@
 
     .section-card {
       background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
+      border-radius: 20px;
+      padding: 24px 20px;
+      margin-bottom: 20px;
 
       .section-title {
         font-size: 20px;
-        font-weight: 600;
+        font-weight: 700;
         color: #333;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .metrics-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: 16px;
 
         .metric-card {
           background: #f8f9fa;
-          border-radius: 12px;
-          padding: 20px;
+          border-radius: 16px;
+          padding: 24px 16px;
 
           &.highlight {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -137,14 +195,14 @@
           .label {
             font-size: 14px;
             color: #999;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: block;
           }
 
           .value {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: block;
           }
 
@@ -164,18 +222,18 @@
         display: flex;
         align-items: center;
         gap: 16px;
-        padding: 12px;
+        padding: 16px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 16px;
         color: #fff;
 
         .count {
-          font-size: 28px;
+          font-size: 32px;
           font-weight: bold;
         }
 
         .label {
-          font-size: 14px;
+          font-size: 16px;
           opacity: 0.9;
         }
       }
@@ -187,10 +245,13 @@
 
         .data-item {
           text-align: center;
+          padding: 16px 8px;
+          background: #f8f9fa;
+          border-radius: 12px;
 
           .value {
-            font-size: 20px;
-            font-weight: 600;
+            font-size: 22px;
+            font-weight: 700;
             color: #333;
             display: block;
             margin: 8px 0;
@@ -208,7 +269,7 @@
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 12px 0;
+          padding: 16px 0;
           border-bottom: 1px solid #f0f0f0;
 
           &:last-child {
@@ -218,20 +279,20 @@
           .label {
             font-size: 16px;
             color: #666;
-            width: 80px;
+            width: 100px;
           }
 
           .progress-bar {
             flex: 1;
-            height: 8px;
+            height: 10px;
             background: #f0f0f0;
-            border-radius: 4px;
+            border-radius: 5px;
             overflow: hidden;
 
             .progress {
               height: 100%;
               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-              border-radius: 4px;
+              border-radius: 5px;
               transition: width 0.3s ease;
             }
           }
@@ -240,7 +301,7 @@
             font-size: 16px;
             color: #333;
             font-weight: 600;
-            width: 60px;
+            width: 70px;
             text-align: right;
           }
         }

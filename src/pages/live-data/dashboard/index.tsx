@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateTo } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { Calendar, TrendingUp, Eye, Users, Heart, TrendingDown, Plus, List, Star } from 'lucide-react-taro';
+import { Calendar, TrendingUp, Eye, Users, Heart, TrendingDown, Plus, List, Star, Zap } from 'lucide-react-taro';
 import './index.less';
 
 type TimeRange = 'day' | 'week' | 'month' | 'year';
@@ -143,19 +143,36 @@ const LiveDashboardPage = () => {
       </View>
 
       <ScrollView className="dashboard-container" scrollY>
-        {/* 功能入口 */}
-        <View className="action-buttons">
-          <View className="action-btn" onClick={() => navigateTo({ url: '/pages/live-data/import/index' })}>
-            <Plus size={20} color="#fff" />
-            <Text className="btn-text">导入数据</Text>
+        {/* 快捷入口 */}
+        <View className="quick-actions">
+          <View className="section-header">
+            <View className="icon-wrapper">
+              <Zap size={18} color="#fff" />
+            </View>
+            <Text className="header-title">快捷功能</Text>
           </View>
-          <View className="action-btn secondary" onClick={() => navigateTo({ url: '/pages/live-data/list/index' })}>
-            <List size={20} color="#667eea" />
-            <Text className="btn-text secondary">直播记录</Text>
-          </View>
-          <View className="action-btn secondary" onClick={() => navigateTo({ url: '/pages/live-data/analysis/index' })}>
-            <Star size={20} color="#667eea" />
-            <Text className="btn-text secondary">复盘</Text>
+          <View className="actions-grid">
+            <View className="action-item" onClick={() => navigateTo({ url: '/pages/live-data/import/index' })}>
+              <View className="action-icon">
+                <Plus size={24} color="#fff" />
+              </View>
+              <Text className="action-label">导入数据</Text>
+              <Text className="action-desc">添加直播</Text>
+            </View>
+            <View className="action-item secondary" onClick={() => navigateTo({ url: '/pages/live-data/list/index' })}>
+              <View className="action-icon secondary">
+                <List size={24} color="#667eea" />
+              </View>
+              <Text className="action-label secondary">直播记录</Text>
+              <Text className="action-desc secondary">查看历史</Text>
+            </View>
+            <View className="action-item secondary" onClick={() => navigateTo({ url: '/pages/live-data/analysis/index' })}>
+              <View className="action-icon secondary">
+                <Star size={24} color="#667eea" />
+              </View>
+              <Text className="action-label secondary">复盘</Text>
+              <Text className="action-desc secondary">智能分析</Text>
+            </View>
           </View>
         </View>
 
