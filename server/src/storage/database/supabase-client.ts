@@ -73,6 +73,12 @@ function getSupabaseCredentials(): SupabaseCredentials {
   const url = process.env.COZE_SUPABASE_URL;
   const anonKey = process.env.COZE_SUPABASE_ANON_KEY;
 
+  console.log('[SupabaseClient] Environment check:', {
+    hasUrl: !!url,
+    hasKey: !!anonKey,
+    urlPrefix: url ? url.substring(0, 30) + '...' : 'missing',
+  });
+
   if (!url || !anonKey) {
     console.warn('⚠️  Supabase credentials not configured. Using fallback configuration.');
     // 返回一个默认配置，避免应用启动失败
