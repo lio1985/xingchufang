@@ -522,6 +522,20 @@ export class LiveDataService {
     const totalProductClicks = stats.reduce((sum: number, item: any) => sum + (item.product_clicks || 0), 0);
     const totalProductExposures = stats.reduce((sum: number, item: any) => sum + (item.product_exposures || 0), 0);
 
+    // 用户重点关注的新指标
+    const exposureCount = totalProductExposures;  // 曝光人数
+    const enterRoomCount = totalViews;            // 进入直播间人数
+    const avgOnline = stats.length > 0
+      ? Math.round(stats.reduce((sum: number, item: any) => sum + (item.avg_online || 0), 0) / stats.length)
+      : 0;  // 平均在线人数
+    const onlinePeak = stats.length > 0
+      ? Math.max(...stats.map((s: any) => s.peak_online || 0))
+      : 0;  // 在线峰值
+    const newFollowers = stats.reduce((sum: number, item: any) => sum + (item.new_followers || 0), 0);  // 新增粉丝数
+    const interactionCount = totalComments + totalLikes;  // 互动人数（评论+点赞）
+    const privateMessageCount = stats.reduce((sum: number, item: any) => sum + (item.share_count || 0), 0);  // 私信人数（暂用分享数）
+    const enterRoomRate = exposureCount > 0 ? (enterRoomCount / exposureCount) * 100 : 0;  // 进房率
+
     return {
       success: true,
       data: {
@@ -534,6 +548,15 @@ export class LiveDataService {
         avgWatchDuration: totalViews > 0 ? Math.round((totalDuration / totalViews) * 60) : 0,
         conversionRate: totalProductExposures > 0 ? (totalProductClicks / totalProductExposures) * 100 : 0,
         interactionRate: totalViews > 0 ? ((totalComments + totalLikes) / totalViews) * 100 : 0,
+        // 用户重点关注的新指标
+        exposureCount,
+        enterRoomCount,
+        onlinePeak,
+        avgOnline,
+        newFollowers,
+        interactionCount,
+        privateMessageCount,
+        enterRoomRate,
       },
     };
   }

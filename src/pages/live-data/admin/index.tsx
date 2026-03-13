@@ -38,6 +38,15 @@ interface AdminStats {
   avgWatchDuration: number;
   conversionRate: number;
   interactionRate: number;
+  // 用户重点关注的新指标
+  exposureCount: number;        // 曝光人数
+  enterRoomCount: number;       // 进入直播间人数
+  onlinePeak: number;           // 在线峰值
+  avgOnline: number;            // 平均在线人数
+  newFollowers: number;         // 新增粉丝数
+  interactionCount: number;     // 互动人数
+  privateMessageCount: number;  // 私信人数
+  enterRoomRate: number;        // 进房率
 }
 
 interface UserOption {
@@ -71,6 +80,14 @@ const LiveDataAdminPage = () => {
     avgWatchDuration: 0,
     conversionRate: 0,
     interactionRate: 0,
+    exposureCount: 0,
+    enterRoomCount: 0,
+    onlinePeak: 0,
+    avgOnline: 0,
+    newFollowers: 0,
+    interactionCount: 0,
+    privateMessageCount: 0,
+    enterRoomRate: 0,
   });
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, hasMore: true });
 
@@ -375,6 +392,7 @@ const LiveDataAdminPage = () => {
       {/* 统计卡片 */}
       <ScrollView className="stats-scroll" scrollX>
         <View className="stats-row">
+          {/* 流量数据板块 */}
           <View className="stat-card primary">
             <View className="stat-icon">
               <TrendingUp size={20} color="#fff" />
@@ -383,12 +401,72 @@ const LiveDataAdminPage = () => {
             <Text className="label">直播场次</Text>
           </View>
           <View className="stat-card">
+            <View className="stat-icon purple">
+              <Eye size={20} color="#722ed1" />
+            </View>
+            <Text className="value">{(stats.exposureCount / 10000).toFixed(2)}万</Text>
+            <Text className="label">曝光人数</Text>
+          </View>
+          <View className="stat-card">
             <View className="stat-icon blue">
               <Users size={20} color="#1890ff" />
             </View>
-            <Text className="value">{stats.totalUsers}</Text>
-            <Text className="label">主播数</Text>
+            <Text className="value">{(stats.enterRoomCount / 10000).toFixed(2)}万</Text>
+            <Text className="label">进入直播间</Text>
           </View>
+          <View className="stat-card">
+            <View className="stat-icon cyan">
+              <TrendingUp size={20} color="#13c2c2" />
+            </View>
+            <Text className="value">{stats.enterRoomRate.toFixed(1)}%</Text>
+            <Text className="label">进房率</Text>
+          </View>
+          <View className="stat-card">
+            <View className="stat-icon orange">
+              <TrendingUp size={20} color="#fa8c16" />
+            </View>
+            <Text className="value">{stats.onlinePeak}</Text>
+            <Text className="label">在线峰值</Text>
+          </View>
+          <View className="stat-card">
+            <View className="stat-icon pink">
+              <Users size={20} color="#eb2f96" />
+            </View>
+            <Text className="value">{stats.avgOnline}</Text>
+            <Text className="label">平均在线</Text>
+          </View>
+
+          {/* 互动数据板块 */}
+          <View className="stat-card">
+            <View className="stat-icon blue">
+              <Heart size={20} color="#1890ff" />
+            </View>
+            <Text className="value">{stats.interactionCount.toLocaleString()}</Text>
+            <Text className="label">互动人数</Text>
+          </View>
+          <View className="stat-card">
+            <View className="stat-icon cyan">
+              <TrendingUp size={20} color="#13c2c2" />
+            </View>
+            <Text className="value">{stats.privateMessageCount.toLocaleString()}</Text>
+            <Text className="label">私信人数</Text>
+          </View>
+          <View className="stat-card">
+            <View className="stat-icon red">
+              <Heart size={20} color="#f5222d" />
+            </View>
+            <Text className="value">{stats.newFollowers.toLocaleString()}</Text>
+            <Text className="label">新增粉丝</Text>
+          </View>
+          <View className="stat-card">
+            <View className="stat-icon pink">
+              <Heart size={20} color="#eb2f96" />
+            </View>
+            <Text className="value">{stats.interactionRate.toFixed(1)}%</Text>
+            <Text className="label">互动率</Text>
+          </View>
+
+          {/* 转化数据板块 */}
           <View className="stat-card">
             <View className="stat-icon green">
               <TrendingUp size={20} color="#52c41a" />
@@ -404,13 +482,6 @@ const LiveDataAdminPage = () => {
             <Text className="label">订单数</Text>
           </View>
           <View className="stat-card">
-            <View className="stat-icon purple">
-              <Eye size={20} color="#722ed1" />
-            </View>
-            <Text className="value">{(stats.totalViews / 10000).toFixed(2)}万</Text>
-            <Text className="label">总观看</Text>
-          </View>
-          <View className="stat-card">
             <View className="stat-icon cyan">
               <Clock size={20} color="#13c2c2" />
             </View>
@@ -418,18 +489,18 @@ const LiveDataAdminPage = () => {
             <Text className="label">人均观看</Text>
           </View>
           <View className="stat-card">
-            <View className="stat-icon pink">
-              <Heart size={20} color="#eb2f96" />
-            </View>
-            <Text className="value">{stats.interactionRate.toFixed(1)}%</Text>
-            <Text className="label">互动率</Text>
-          </View>
-          <View className="stat-card">
             <View className="stat-icon red">
               <TrendingUp size={20} color="#f5222d" />
             </View>
             <Text className="value">{stats.conversionRate.toFixed(1)}%</Text>
             <Text className="label">转化率</Text>
+          </View>
+          <View className="stat-card">
+            <View className="stat-icon purple">
+              <Users size={20} color="#722ed1" />
+            </View>
+            <Text className="value">{stats.totalUsers}</Text>
+            <Text className="label">主播数</Text>
           </View>
         </View>
       </ScrollView>
@@ -480,81 +551,140 @@ const LiveDataAdminPage = () => {
           <Search size={18} color="#999" />
           <Input
             className="search-input"
-            placeholder="搜索直播标题或主播名称..."
+            placeholder="搜索直播标题或主播..."
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
         </View>
       </View>
 
-      {/* 表头 */}
-      <View className="table-header">
-        <View className="th th-title" onClick={() => handleSort('startTime')}>
-          <Text>直播信息</Text>
-          {sortField === 'startTime' && (
-            <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
-          )}
-        </View>
-        <View className="th th-number" onClick={() => handleSort('gmv')}>
-          <Text>GMV</Text>
-          {sortField === 'gmv' && (
-            <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
-          )}
-        </View>
-        <View className="th th-number" onClick={() => handleSort('totalViews')}>
-          <Text>观看</Text>
-          {sortField === 'totalViews' && (
-            <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
-          )}
-        </View>
-        <View className="th th-number" onClick={() => handleSort('ordersCount')}>
-          <Text>订单</Text>
-          {sortField === 'ordersCount' && (
-            <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
-          )}
+      {/* 排序栏 */}
+      <View className="sort-bar">
+        <Text className="sort-label">排序:</Text>
+        <View className="sort-options">
+          <View
+            className={`sort-option ${sortField === 'startTime' ? 'active' : ''}`}
+            onClick={() => handleSort('startTime')}
+          >
+            <Text>时间</Text>
+            {sortField === 'startTime' && (
+              <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
+            )}
+          </View>
+          <View
+            className={`sort-option ${sortField === 'gmv' ? 'active' : ''}`}
+            onClick={() => handleSort('gmv')}
+          >
+            <Text>GMV</Text>
+            {sortField === 'gmv' && (
+              <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
+            )}
+          </View>
+          <View
+            className={`sort-option ${sortField === 'totalViews' ? 'active' : ''}`}
+            onClick={() => handleSort('totalViews')}
+          >
+            <Text>观看</Text>
+            {sortField === 'totalViews' && (
+              <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
+            )}
+          </View>
+          <View
+            className={`sort-option ${sortField === 'ordersCount' ? 'active' : ''}`}
+            onClick={() => handleSort('ordersCount')}
+          >
+            <Text>订单</Text>
+            {sortField === 'ordersCount' && (
+              <Text className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</Text>
+            )}
+          </View>
         </View>
       </View>
 
-      {/* 数据列表 */}
+      {/* 数据列表 - 手机端卡片式 */}
       <ScrollView className="list-container" scrollY onScrollToLower={handleLoadMore}>
         {sortedList.length === 0 ? (
           <View className="empty-state">
             <FileSpreadsheet size={48} color="#ddd" />
             <Text className="empty-text">暂无数据</Text>
-            <Text className="empty-tips">尝试调整筛选条件或时间范围</Text>
+            <Text className="empty-tips">尝试调整筛选条件</Text>
           </View>
         ) : (
           <>
             {sortedList.map((item) => (
               <View key={item.id} className="data-card">
-                <View className="card-main">
-                  <View className="live-info">
-                    <Text className="live-title">{item.title}</Text>
-                    <View className="live-meta">
-                      <Text className="user-name">{item.nickname}</Text>
-                      <Text className="live-date">{formatDate(item.startTime)}</Text>
-                    </View>
+                {/* 卡片头部：标题和时间 */}
+                <View className="card-header">
+                  <Text className="live-title">{item.title}</Text>
+                  <Text className="live-time">{formatDate(item.startTime)}</Text>
+                </View>
+
+                {/* 主播信息 */}
+                <View className="card-user">
+                  <View className="user-avatar">
+                    <Users size={14} color="#10b981" />
                   </View>
-                  <View className="metric gmv">
-                    <Text className="metric-value highlight">¥{item.gmv.toLocaleString()}</Text>
-                    <Text className="metric-label">GMV</Text>
+                  <Text className="user-name">{item.nickname || '未知主播'}</Text>
+                </View>
+
+                {/* 核心数据 - 大数字展示 */}
+                <View className="card-metrics">
+                  <View className="metric-item primary">
+                    <Text className="metric-value">¥{item.gmv >= 10000 ? (item.gmv / 10000).toFixed(2) + '万' : item.gmv.toLocaleString()}</Text>
+                    <Text className="metric-label">成交额</Text>
                   </View>
-                  <View className="metric">
-                    <Text className="metric-value">{item.totalViews.toLocaleString()}</Text>
+                  <View className="metric-item">
+                    <Text className="metric-value">{item.totalViews >= 10000 ? (item.totalViews / 10000).toFixed(2) + '万' : item.totalViews.toLocaleString()}</Text>
                     <Text className="metric-label">观看</Text>
                   </View>
-                  <View className="metric">
+                  <View className="metric-item">
                     <Text className="metric-value">{item.ordersCount}</Text>
                     <Text className="metric-label">订单</Text>
                   </View>
                 </View>
-                <View className="card-extra">
-                  <Text className="extra-item">时长: {formatDuration(item.durationSeconds)}</Text>
-                  <Text className="extra-item">最高在线: {item.peakOnline}</Text>
-                  <Text className="extra-item">平均在线: {item.avgOnline}</Text>
-                  <Text className="extra-item">新增粉丝: {item.newFollowers}</Text>
-                  <Text className="extra-item">点赞: {item.totalLikes}</Text>
-                  <Text className="extra-item">评论: {item.totalComments}</Text>
+
+                {/* 详细数据网格 */}
+                <View className="card-details">
+                  <View className="detail-row">
+                    <View className="detail-item">
+                      <Text className="detail-label">直播时长</Text>
+                      <Text className="detail-value">{formatDuration(item.durationSeconds)}</Text>
+                    </View>
+                    <View className="detail-item">
+                      <Text className="detail-label">最高在线</Text>
+                      <Text className="detail-value">{item.peakOnline}人</Text>
+                    </View>
+                  </View>
+                  <View className="detail-row">
+                    <View className="detail-item">
+                      <Text className="detail-label">平均在线</Text>
+                      <Text className="detail-value">{item.avgOnline}人</Text>
+                    </View>
+                    <View className="detail-item">
+                      <Text className="detail-label">新增粉丝</Text>
+                      <Text className="detail-value">+{item.newFollowers}</Text>
+                    </View>
+                  </View>
+                  <View className="detail-row">
+                    <View className="detail-item">
+                      <Text className="detail-label">点赞</Text>
+                      <Text className="detail-value">{item.totalLikes.toLocaleString()}</Text>
+                    </View>
+                    <View className="detail-item">
+                      <Text className="detail-label">评论</Text>
+                      <Text className="detail-value">{item.totalComments.toLocaleString()}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* 转化率标签 */}
+                <View className="card-tags">
+                  <View className="tag">
+                    <Text className="tag-text">转化率 {item.productExposures > 0 ? ((item.productClicks / item.productExposures) * 100).toFixed(1) : 0}%</Text>
+                  </View>
+                  <View className="tag blue">
+                    <Text className="tag-text">互动率 {item.totalViews > 0 ? (((item.totalComments + item.totalLikes) / item.totalViews) * 100).toFixed(1) : 0}%</Text>
+                  </View>
                 </View>
               </View>
             ))}
@@ -570,7 +700,7 @@ const LiveDataAdminPage = () => {
       {/* 底部统计栏 */}
       <View className="bottom-bar">
         <Text className="bottom-text">
-          共 {pagination.total} 条记录 | 人均GMV: ¥{stats.totalUsers > 0 ? (stats.totalGMV / stats.totalUsers).toFixed(2) : '0.00'}
+          共{pagination.total}条 | 人均¥{stats.totalUsers > 0 ? (stats.totalGMV / stats.totalUsers).toFixed(0) : '0'}
         </Text>
       </View>
     </View>
