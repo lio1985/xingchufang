@@ -188,13 +188,17 @@ const HotspotPage = () => {
           publishTime: item.publishTime,
           category: item.category,
           siteName: item.siteName,
-          trend: item.trend
+          trend: item.trend,
+          trendChange: item.trendChange,
+          isBursting: item.isBursting,
+          keywords: item.keywords
         }));
 
         console.log('生成的前3个热点关键词:', keywords.slice(0, 3).map(k => ({ keyword: k.keyword, hotness: k.hotness })));
 
-        // 只更新 allKeywords，让筛选器自动更新 hotKeywords
+        // 同时更新 allKeywords 和 hotKeywords，确保立即看到刷新效果
         setAllKeywords(keywords);
+        setHotKeywords(keywords); // 直接更新显示数据，不依赖筛选
         setLastUpdateTime(new Date().toISOString());
 
         Taro.showToast({
