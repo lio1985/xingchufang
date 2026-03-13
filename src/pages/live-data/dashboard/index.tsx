@@ -109,16 +109,25 @@ const LiveDashboardPage = () => {
 
   useEffect(() => {
     // 初始化默认日期范围
-    if (!customDateRange.startDate) {
-      setCustomDateRange(getDefaultDateRange());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setCustomDateRange(getDefaultDateRange());
   }, []);
 
   useEffect(() => {
-    fetchStats();
+    // 非自定义模式下直接获取数据
+    if (timeRange !== 'custom') {
+      fetchStats();
+    }
+    // 自定义模式下需要手动确认日期后才获取数据
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRange, customDateRange.startDate, customDateRange.endDate]);
+  }, [timeRange]);
+
+  // 自定义日期变化时单独处理
+  useEffect(() => {
+    if (timeRange === 'custom' && customDateRange.startDate && customDateRange.endDate) {
+      fetchStats();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customDateRange.startDate, customDateRange.endDate]);
 
   const handleTimeRangeChange = (value: TimeRange) => {
     setTimeRange(value);

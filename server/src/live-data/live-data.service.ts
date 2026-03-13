@@ -458,6 +458,59 @@ export class LiveDataService {
   }
 
   /**
+   * 管理员：获取直播数据统计
+   */
+  async getAdminStats(userId?: string, startDate?: string, endDate?: string) {
+    let query = this.supabase
+      .from('live_streams')
+      .select('*, users!inner(nickname, email)', { count: 'exact' })
+      .eq('status', 'active');
+
+    if (userId) {
+      query = query.eq('user_id', userId);
+    }
+    if (startDate) {
+      query = query.gte('start_time', startDate);
+    }
+    if (endDate) {
+      query = query.lte('start_time', endDate);
+    }
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      this.logger.error('获取统计数据失败:', error);
+      throw new Error('获取统计失败');
+    }
+
+    const stats = data || [];
+    const uniqueUsers = new Set(stats.map((item: any) => item.user_id));
+    const totalGMV = stats.reduce((sum: number, item: any) => sum + (item.gmv || 0), 0);
+    const totalViews = stats.reduce((sum: number, item: any) => sum + (item.total_views || 0), 0);
+    const totalOrders = stats.reduce((sum: number, item: any) => sum + (item.orders_count || 0), 0);
+    const totalDuration = stats.reduce((sum: number, item: any) => sum + (item.duration_seconds || 0), 0);
+    const totalComments = stats.reduce((sum: number, item: any) => sum + (item.total_comments || 0), 0);
+    const totalLikes = stats.reduce((sum: number, item: any) => sum + (item.total_likes || 0), 0);
+    const totalProductClicks = stats.reduce((sum: number, item: any) => sum + (item.product_clicks || 0), 0);
+    const totalProductExposures = stats.reduce((sum: number, item: any) => sum + (item.product_exposures || 0), 0);
+
+    return {
+      success: true,
+      data: {
+        totalStreams: stats.length,
+        totalUsers: uniqueUsers.size,
+        totalGMV,
+        totalOrders,
+        totalViews,
+        avgGMVPerStream: stats.length > 0 ? totalGMV / stats.length : 0,
+        avgWatchDuration: totalViews > 0 ? Math.round((totalDuration / totalViews) * 60) : 0,
+        conversionRate: totalProductExposures > 0 ? (totalProductClicks / totalProductExposures) * 100 : 0,
+        interactionRate: totalViews > 0 ? ((totalComments + totalLikes) / totalViews) * 100 : 0,
+      },
+    };
+  }
+
+  /**
    * 管理员：导出直播数据
    */
   async exportLiveDataForAdmin(format: 'csv' | 'json', userId?: string, startDate?: string, endDate?: string) {
@@ -507,9 +560,18 @@ export class LiveDataService {
       创建时间: item.created_at,
     }));
 
+    const timestamp = new Date().toISOString().split('T')[0];
+    const filename = `live-data-${timestamp}.${format}`;
+
     if (format === 'csv') {
-      // 生成 CSV
-      const headers = Object.keys(exportData[0] || {});
+      // 定义固定的CSV表头（解决空数据时没有表头的问题）
+      const headers = [
+        'id', '直播标题', '主播昵称', '主播邮箱', '开始时间', '结束时间',
+        '直播时长_秒', '总观看人数', '最高在线', '平均在线', '新增粉丝',
+        '分享次数', '评论数', '点赞数', '礼物数', '商品点击', '商品曝光',
+        '订单数', 'GMV', '创建时间'
+      ];
+
       const csvRows = [
         '\uFEFF' + headers.join(','), // BOM + headers
         ...exportData.map(row =>
@@ -519,14 +581,27 @@ export class LiveDataService {
             if (typeof value === 'string' && (value.includes(',') || value.includes('\n') || value.includes('"'))) {
               return `"${value.replace(/"/g, '""')}"`;
             }
-            return value;
+            return value ?? '';
           }).join(',')
         ),
       ];
-      return csvRows.join('\n');
+
+      return {
+        data: csvRows.join('\n'),
+        filename,
+        contentType: 'text/csv; charset=utf-8',
+      };
     }
 
-    return exportData;
+    return {
+      data: JSON.stringify({
+        exportTime: new Date().toISOString(),
+        recordCount: exportData.length,
+        data: exportData,
+      }, null, 2),
+      filename,
+      contentType: 'application/json',
+    };
   }
 
   /**

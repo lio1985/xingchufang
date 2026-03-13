@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { showToast, showLoading, hideLoading, navigateTo } from '@tarojs/taro';
+import { showToast, showLoading, hideLoading } from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Picker } from '@tarojs/components';
 import { Network } from '@/network';
 import {
@@ -112,6 +112,29 @@ const LiveDataAdminPage = () => {
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const dateRange = calculateDateRange();
+      const params: any = {
+        ...(dateRange.startDate && { startDate: dateRange.startDate }),
+        ...(dateRange.endDate && { endDate: dateRange.endDate }),
+        ...(selectedUser !== 'all' && { userId: selectedUser }),
+      };
+
+      const response = await Network.request({
+        url: '/api/live-data/admin/stats',
+        method: 'GET',
+        data: params,
+      });
+
+      if (response.data?.success) {
+        setStats(response.data.data);
+      }
+    } catch (error) {
+      console.error('Fetch stats error:', error);
+    }
+  };
+
   const fetchAllData = async (page = 1, isLoadMore = false) => {
     if (loading) return;
     setLoading(true);
@@ -160,9 +183,6 @@ const LiveDataAdminPage = () => {
           hasMore: page * pagination.limit < total,
         });
 
-        // 计算统计数据
-        calculateStats(processedData, isLoadMore ? liveList : []);
-
         // 提取用户列表
         if (!isLoadMore) {
           extractUserOptions(data);
@@ -177,34 +197,6 @@ const LiveDataAdminPage = () => {
         hideLoading();
       }
     }
-  };
-
-  const calculateStats = (currentData: LiveStreamAdmin[], existingData: LiveStreamAdmin[]) => {
-    const allData = existingData.length > 0 && currentData !== existingData
-      ? [...existingData, ...currentData]
-      : currentData;
-
-    const uniqueUsers = new Set(allData.map(item => item.userId));
-    const totalGMV = allData.reduce((sum, item) => sum + (item.gmv || 0), 0);
-    const totalViews = allData.reduce((sum, item) => sum + (item.totalViews || 0), 0);
-    const totalOrders = allData.reduce((sum, item) => sum + (item.ordersCount || 0), 0);
-    const totalDuration = allData.reduce((sum, item) => sum + (item.durationSeconds || 0), 0);
-    const totalComments = allData.reduce((sum, item) => sum + (item.totalComments || 0), 0);
-    const totalLikes = allData.reduce((sum, item) => sum + (item.totalLikes || 0), 0);
-    const totalProductClicks = allData.reduce((sum, item) => sum + (item.productClicks || 0), 0);
-    const totalProductExposures = allData.reduce((sum, item) => sum + (item.productExposures || 0), 0);
-
-    setStats({
-      totalStreams: allData.length,
-      totalUsers: uniqueUsers.size,
-      totalGMV,
-      totalOrders,
-      totalViews,
-      avgGMVPerStream: allData.length > 0 ? totalGMV / allData.length : 0,
-      avgWatchDuration: totalViews > 0 ? Math.round((totalDuration / totalViews) * 60) : 0, // 秒
-      conversionRate: totalProductExposures > 0 ? (totalProductClicks / totalProductExposures) * 100 : 0,
-      interactionRate: totalViews > 0 ? ((totalComments + totalLikes) / totalViews) * 100 : 0,
-    });
   };
 
   const extractUserOptions = (data: any[]) => {
@@ -227,12 +219,14 @@ const LiveDataAdminPage = () => {
   }, []);
 
   useEffect(() => {
+    fetchStats();
     fetchAllData(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRange, selectedUser]);
 
   const handleRefresh = () => {
     setPagination(prev => ({ ...prev, page: 1, hasMore: true }));
+    fetchStats();
     fetchAllData(1);
   };
 
@@ -262,11 +256,20 @@ const LiveDataAdminPage = () => {
       });
 
       if (response.data?.success) {
+        const { content, filename, contentType } = response.data.data;
+
+        // 创建下载链接
+        const blob = new Blob([content], { type: contentType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
         showToast({ title: '导出成功', icon: 'success' });
-        // 如果有下载链接，可以打开
-        if (response.data.data?.downloadUrl) {
-          navigateTo({ url: response.data.data.downloadUrl });
-        }
       } else {
         showToast({ title: response.data?.message || '导出失败', icon: 'none' });
       }
