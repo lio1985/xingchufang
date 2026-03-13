@@ -406,6 +406,23 @@ export default function AdminDashboardPage() {
                 </View>
               </View>
 
+              {/* 发送通知 */}
+              <View
+                onClick={() => Taro.navigateTo({ url: '/pages/admin/send-notification/index' })}
+                className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl p-4 border border-slate-600 relative overflow-hidden active:scale-95 transition-transform"
+              >
+                <View className="absolute top-0 right-0 w-20 h-20 bg-pink-500 opacity-5 rounded-full -mr-10 -mt-10"></View>
+                <View className="relative z-10">
+                  <View className="flex items-center gap-2 mb-2">
+                    <View className="p-2 bg-pink-500/20 rounded-lg">
+                      <MessageSquare size={18} className="text-pink-400" />
+                    </View>
+                    <Text className="text-white text-sm font-semibold">发送通知</Text>
+                  </View>
+                  <Text className="text-slate-400 text-xs">给用户发消息</Text>
+                </View>
+              </View>
+
               {/* 客户信息管理 */}
               <View
                 onClick={() => Taro.navigateTo({ url: '/pages/admin/customer-management/index' })}
