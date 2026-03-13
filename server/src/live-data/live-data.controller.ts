@@ -10,6 +10,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { LiveDataService, ImportLiveDataDto } from './live-data.service';
+import { ActiveUserGuard } from '../guards/active-user.guard';
 import { AdminGuard } from '../guards/admin.guard';
 
 // 导入数据DTO
@@ -34,6 +35,7 @@ class ImportDto {
 }
 
 @Controller('live-data')
+@UseGuards(ActiveUserGuard)
 export class LiveDataController {
   constructor(private readonly liveDataService: LiveDataService) {}
 
