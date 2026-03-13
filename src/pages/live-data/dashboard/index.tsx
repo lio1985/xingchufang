@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { showToast, showLoading, hideLoading } from '@tarojs/taro';
+import { showToast, showLoading, hideLoading, navigateTo } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { Calendar, TrendingUp, Eye, Users, Heart, TrendingDown } from 'lucide-react-taro';
+import { Calendar, TrendingUp, Eye, Users, Heart, TrendingDown, Plus, List, Star } from 'lucide-react-taro';
 import './index.less';
 
 type TimeRange = 'day' | 'week' | 'month' | 'year';
@@ -104,6 +104,22 @@ const LiveDashboardPage = () => {
       </View>
 
       <ScrollView className="dashboard-container" scrollY>
+        {/* 功能入口 */}
+        <View className="action-buttons">
+          <View className="action-btn" onClick={() => navigateTo({ url: '/pages/live-data/import/index' })}>
+            <Plus size={20} color="#fff" />
+            <Text className="btn-text">导入数据</Text>
+          </View>
+          <View className="action-btn secondary" onClick={() => navigateTo({ url: '/pages/live-data/list/index' })}>
+            <List size={20} color="#667eea" />
+            <Text className="btn-text secondary">直播记录</Text>
+          </View>
+          <View className="action-btn secondary" onClick={() => navigateTo({ url: '/pages/live-data/analysis/index' })}>
+            <Star size={20} color="#667eea" />
+            <Text className="btn-text secondary">复盘</Text>
+          </View>
+        </View>
+
         {/* 核心指标 */}
         <View className="section-card">
           <Text className="section-title">核心指标</Text>
