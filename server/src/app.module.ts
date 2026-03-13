@@ -42,6 +42,9 @@ import { LiveDataModule } from './live-data/live-data.module';
     ServeStaticModule.forRoot({
       rootPath: '/workspace/projects/dist-web',
       exclude: ['/api/(.*)'],
+      serveStaticOptions: {
+        fallthrough: true,
+      },
     }),
     UserModule,
     AdminModule,
