@@ -29,7 +29,37 @@ export class HotTopicsService {
   }
 
   /**
-   * 获取所有热点话题（集成TopHub）
+   * API 源配置（按优先级排序）
+   */
+  private readonly API_SOURCES = [
+    {
+      name: 'TopHub',
+      url: 'https://api.tophub.today/all',
+      priority: 1,
+      enabled: true
+    },
+    {
+      name: '微博热搜',
+      url: 'https://weibo.com/ajax/side/hotSearch',
+      priority: 2,
+      enabled: false // 需要认证
+    },
+    {
+      name: '知乎热榜',
+      url: 'https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total',
+      priority: 3,
+      enabled: false // 需要认证
+    },
+    {
+      name: '百度热搜',
+      url: 'https://top.baidu.com/api/board?platform=wise&tab=realtime',
+      priority: 4,
+      enabled: true
+    }
+  ];
+
+  /**
+   * 获取所有热点话题（集成多个API源）
    */
   async getHotTopics(
     source: HotTopicSource = 'all',
@@ -38,196 +68,156 @@ export class HotTopicsService {
   ): Promise<HotTopic[]> {
     // 检查缓存
     if (this.cache && Date.now() - this.cache.timestamp < this.CACHE_TTL) {
+      this.logger.log(`=== 使用缓存数据，剩余有效期: ${Math.ceil((this.CACHE_TTL - (Date.now() - this.cache.timestamp)) / 1000)}秒`);
       return this.cache.topics;
     }
 
-    try {
-      this.logger.log('=== 调用 TopHub API ===');
-      this.logger.log(`位置模式: ${locationMode}, 城市: ${city || '全国'}`);
+    this.logger.log('=== 开始获取热点数据 ===');
+    this.logger.log(`位置模式: ${locationMode}, 城市: ${city || '全国'}`);
 
-      // 调用TopHub API获取全站热点
-      const response = await this.httpService.axiosRef.get('https://api.tophub.today/all', {
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; HotspotBot/1.0)'
-        }
-      });
-
-      this.logger.log(`=== TopHub 响应状态: ${response.status} ===`);
-
-      // 解析TopHub数据
-      const data = response.data;
-      const topics: HotTopic[] = [];
-
-      // TopHub返回的数据格式：Array of { id, title, url, hot, time, site, etc. }
-      if (Array.isArray(data.data)) {
-        data.data.forEach((item: any, index: number) => {
-          if (item && item.title) {
-            const trendInfo = this.calculateTrendWithChange(item);
-            const topic: HotTopic = {
-              id: `tophub-${Date.now()}-${index}`,
-              source: this.mapSiteToSource(item.site_name || item.site),
-              title: item.title,
-              hotness: item.hot || this.calculateHotness(item),
-              trend: trendInfo.trend,
-              trendChange: trendInfo.change,
-              isBursting: this.checkIfBursting(item),
-              url: item.url,
-              category: item.category || '热门',
-              siteName: item.site_name || item.site,
-              publishTime: item.time || item.updated_at,
-              summary: this.generateSummary(item.title, item.category),
-              keywords: this.extractKeywords(item.title, item.category),
-              sentiment: this.analyzeSentiment(item.title, item.category),
-            };
-            topics.push(topic);
-          }
-        });
+    // 尝试按优先级调用各个 API 源
+    for (const apiSource of this.API_SOURCES) {
+      if (!apiSource.enabled) {
+        this.logger.log(`跳过 ${apiSource.name}（未启用）`);
+        continue;
       }
 
-      this.logger.log(`=== 成功获取 ${topics.length} 个热点 ===`);
+      try {
+        this.logger.log(`尝试 ${apiSource.name} (优先级: ${apiSource.priority})`);
 
-      // 更新缓存
-      this.cache = {
-        topics,
-        timestamp: Date.now(),
-      };
+        const topics = await this.fetchFromSource(apiSource);
 
-      return topics;
-    } catch (error) {
-      this.logger.error('调用TopHub API失败:', error);
-      // 如果TopHub失败，返回mock数据
-      this.logger.warn('=== 使用 Mock 数据作为 fallback ===');
-      const now = new Date();
-      const mockTopics = this.getMockHotTopics();
-      this.logger.log(`=== Mock 数据：${mockTopics.length} 个热点，今日数据轮换标识：${now.toISOString().split('T')[0]} ===`);
-      return mockTopics;
+        if (topics && topics.length > 0) {
+          this.logger.log(`✅ ${apiSource.name} 成功获取 ${topics.length} 个热点`);
+
+          // 更新缓存
+          this.cache = {
+            topics,
+            timestamp: Date.now(),
+          };
+
+          return topics;
+        }
+      } catch (error) {
+        this.logger.warn(`❌ ${apiSource.name} 调用失败: ${error.message}`);
+        continue;
+      }
+    }
+
+    // 所有 API 源都失败，使用 Mock 数据
+    this.logger.warn('=== 所有 API 源均失败，使用 Mock 数据 ===');
+    const mockTopics = this.getMockHotTopics();
+    this.logger.log(`=== Mock 数据：${mockTopics.length} 个热点 ===`);
+
+    // 更新缓存
+    this.cache = {
+      topics: mockTopics,
+      timestamp: Date.now(),
+    };
+
+    return mockTopics;
+  }
+
+  /**
+   * 从指定 API 源获取热点数据
+   */
+  private async fetchFromSource(apiSource: { name: string; url: string }): Promise<HotTopic[]> {
+    // 强制使用 IPv4，避免 IPv6 连接失败
+    const response = await this.httpService.axiosRef.get(apiSource.url, {
+      timeout: 10000,
+      family: 4, // 强制 IPv4
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; HotspotBot/1.0)',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+      },
+    });
+
+    this.logger.log(`${apiSource.name} 响应状态: ${response.status}`);
+
+    // 根据不同的 API 源解析数据
+    if (apiSource.name === 'TopHub') {
+      return this.parseTopHubData(response.data);
+    } else if (apiSource.name === '百度热搜') {
+      return this.parseBaiduData(response.data);
+    } else {
+      return this.parseTopHubData(response.data);
     }
   }
 
   /**
-   * 获取Mock热点数据（当TopHub不可用时使用）
+   * 解析 TopHub 数据
    */
-  private getMockHotTopics(): HotTopic[] {
-    const now = new Date();
-    const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
-    const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+  private parseTopHubData(data: any): HotTopic[] {
+    const topics: HotTopic[] = [];
 
-    // 随机热度值生成（让数据看起来更动态）
-    const generateHotness = (base: number) => base + Math.floor(Math.random() * 100000);
-
-    // 动态新闻标题池（按日期和天数循环选择，每天都有不同内容）
-    const newsPool = [
-      // 科技类
-      { title: '2025年科技创新突破：AI赋能千行百业', category: '科技', site: '微博' },
-      { title: '国产芯片迎来新突破，性能提升50%', category: '科技', site: '知乎' },
-      { title: '5G网络全面覆盖，智慧城市建设提速', category: '科技', site: '百度' },
-      { title: '量子计算取得重大进展，商业应用指日可待', category: '科技', site: '科技日报' },
-      { title: '新能源汽车销量创新高，智能化成主流', category: '科技', site: '今日头条' },
-      { title: '大模型应用落地，AI助手走进千家万户', category: '科技', site: '掘金' },
-      { title: '工业互联网加速发展，制造业数字化转型', category: '科技', site: 'GitHub' },
-      { title: '区块链技术在金融领域应用前景广阔', category: '科技', site: '知乎' },
-      { title: '元宇宙概念遇冷？AR眼镜或成新风口', category: '科技', site: 'B站' },
-      { title: '卫星互联网建设提速，全球互联新选择', category: '科技', site: '微博' },
-
-      // 生活类
-      { title: '如何提高工作效率？这些方法帮你事半功倍', category: '生活', site: '知乎' },
-      { title: '健康生活指南：科学饮食与运动', category: '健康', site: '百度' },
-      { title: '春季养生须知：这5件事一定要做', category: '生活', site: '今日头条' },
-      { title: '职场新人必看：如何快速融入团队', category: '生活', site: '知乎' },
-      { title: '家居收纳小技巧，让空间大一倍', category: '生活', site: '抖音' },
-      { title: '周末去哪里玩？这些地方风景绝美', category: '生活', site: '小红书' },
-      { title: '如何平衡工作与生活？专家给出建议', category: '生活', site: '知乎' },
-      { title: '城市骑行热兴起，绿色出行成时尚', category: '生活', site: '微博' },
-      { title: '租房注意事项，避开这些坑', category: '生活', site: '知乎' },
-      { title: '疫情后旅游复苏，这些线路最受欢迎', category: '生活', site: '今日头条' },
-
-      // 娱乐类
-      { title: '年度电影票房排行榜揭晓', category: '娱乐', site: '微博' },
-      { title: '热播剧口碑爆棚，观众评价两极分化', category: '娱乐', site: '豆瓣' },
-      { title: '明星演唱会门票秒罄，粉丝热情高涨', category: '娱乐', site: '微博' },
-      { title: '综艺节目创新模式引发讨论', category: '娱乐', site: '知乎' },
-      { title: '短视频平台发力长视频，内容生态升级', category: '娱乐', site: '抖音' },
-      { title: '游戏行业年度报告发布，市场规模创新高', category: '娱乐', site: 'B站' },
-      { title: '网红经济持续火热，品牌合作新模式', category: '娱乐', site: '小红书' },
-      { title: '音乐节票房创新高，线下演出全面复苏', category: '娱乐', site: '微博' },
-      { title: '影视IP跨界开发，产业链价值最大化', category: '娱乐', site: '今日头条' },
-      { title: '虚拟偶像出道，元宇宙娱乐新尝试', category: '娱乐', site: 'B站' },
-
-      // 财经类
-      { title: '经济热点分析：新质生产力加速发展', category: '财经', site: '今日头条' },
-      { title: '股市震荡，投资者如何应对？', category: '财经', site: '知乎' },
-      { title: '房地产政策调整，市场迎来新变化', category: '财经', site: '百度' },
-      { title: '数字人民币试点扩大，支付新选择', category: '财经', site: '今日头条' },
-      { title: '跨境电商蓬勃发展，外贸新业态', category: '财经', site: '知乎' },
-      { title: '人民币汇率波动，进出口企业关注', category: '财经', site: '财经网' },
-      { title: '消费升级趋势明显，新消费品牌崛起', category: '财经', site: '今日头条' },
-      { title: '央行降准，释放哪些信号？', category: '财经', site: '知乎' },
-      { title: '绿色金融助力碳中和，投资新方向', category: '财经', site: '百度' },
-      { title: '独角兽企业名单发布，这些公司值得关注', category: '财经', site: '今日头条' },
-
-      // 体育类
-      { title: '体育赛事精彩回顾：冠军诞生', category: '体育', site: '微博' },
-      { title: '世界杯预选赛激战正酣，出线形势扑朔迷离', category: '体育', site: '知乎' },
-      { title: 'NBA季后赛前瞻：谁能问鼎总冠军？', category: '体育', site: '百度' },
-      { title: '马拉松赛事掀起热潮，全民健身意识提升', category: '体育', site: '微博' },
-      { title: '电竞入选亚运会，行业迎来新机遇', category: '体育', site: 'B站' },
-      { title: '本土球员崛起，中超联赛竞争更激烈', category: '体育', site: '知乎' },
-      { title: '花样滑冰世锦赛落幕，中国选手创造历史', category: '体育', site: '微博' },
-      { title: '网球公开赛开赛，明星阵容豪华', category: '体育', site: '百度' },
-      { title: '健身成为新时尚，运动消费大幅增长', category: '体育', site: '今日头条' },
-      { title: '体育产业发展迅速，带动就业增长', category: '体育', site: '知乎' },
-
-      // 国际类
-      { title: '国际形势分析：世界格局变化', category: '国际', site: '知乎' },
-      { title: '全球气候变化应对：各国行动盘点', category: '国际', site: '百度' },
-      { title: '国际贸易新规则：跨境电商机遇与挑战', category: '国际', site: '今日头条' },
-      { title: '科技竞争加剧：大国博弈新焦点', category: '国际', site: '知乎' },
-      { title: '文化交流互鉴：中国故事走向世界', category: '国际', site: '微博' },
-      { title: '全球经济复苏进程：各国表现不一', category: '国际', site: '财经网' },
-      { title: '国际难民问题：人道主义危机持续', category: '国际', site: '知乎' },
-      { title: '区域合作深化：一带一路新进展', category: '国际', site: '百度' },
-      { title: '太空探索新突破：火星任务持续进行', category: '国际', site: '今日头条' },
-      { title: '数字治理新规则：国际合作亟待加强', category: '国际', site: '知乎' },
-    ];
-
-    // 根据日期随机选择10条新闻（每天的组合不同）
-    const selectedNews: { title: string; category: string; site: string }[] = [];
-    const startIndex = (dayOfYear * 7) % newsPool.length; // 使用天数作为起始偏移
-
-    for (let i = 0; i < 10 && i < newsPool.length; i++) {
-      const newsIndex = (startIndex + i) % newsPool.length;
-      selectedNews.push(newsPool[newsIndex]);
+    if (Array.isArray(data.data)) {
+      data.data.forEach((item: any, index: number) => {
+        if (item && item.title) {
+          const trendInfo = this.calculateTrendWithChange(item);
+          const topic: HotTopic = {
+            id: `tophub-${Date.now()}-${index}`,
+            source: this.mapSiteToSource(item.site_name || item.site),
+            title: item.title,
+            hotness: item.hot || this.calculateHotness(item),
+            trend: trendInfo.trend,
+            trendChange: trendInfo.change,
+            isBursting: this.checkIfBursting(item),
+            url: item.url,
+            category: item.category || '热门',
+            siteName: item.site_name || item.site,
+            publishTime: item.time || item.updated_at,
+            summary: this.generateSummary(item.title, item.category),
+            keywords: this.extractKeywords(item.title, item.category),
+            sentiment: this.analyzeSentiment(item.title, item.category),
+          };
+          topics.push(topic);
+        }
+      });
     }
 
-    // 生成 mock 数据
-    const mockData = selectedNews.map((news, index) => {
-      const hotness = generateHotness(1000000 - index * 100000);
-      const trendOptions = ['up', 'down', 'stable'] as const;
-      const trend = trendOptions[Math.floor(Math.random() * trendOptions.length)];
+    return topics;
+  }
 
-      return {
-        id: `mock-${dateStr}-${index}`,
-        source: this.mapSiteToSource(news.site) as HotTopicSource,
-        title: news.title,
-        hotness: hotness,
-        trend: trend,
-        url: '#',
-        category: news.category,
-        siteName: news.site,
-        publishTime: new Date(now.getTime() - index * 30 * 60000).toISOString(),
-      };
-    });
+  /**
+   * 解析百度热搜数据
+   */
+  private parseBaiduData(data: any): HotTopic[] {
+    const topics: HotTopic[] = [];
 
-    // 为每个mock数据添加增强信息
-    return mockData.map(item => ({
-      ...item,
-      trendChange: Math.floor(Math.random() * 30) + 2,
-      isBursting: item.hotness > 800000 && Math.random() > 0.7,
-      summary: this.generateSummary(item.title, item.category),
-      keywords: this.extractKeywords(item.title, item.category),
-      sentiment: this.analyzeSentiment(item.title, item.category),
-    }));
+    try {
+      if (data && data.data && Array.isArray(data.data.cards)) {
+        data.data.cards.forEach((card: any, cardIndex: number) => {
+          if (card && Array.isArray(card.content)) {
+            card.content.forEach((item: any, index: number) => {
+              if (item && item.word) {
+                const topic: HotTopic = {
+                  id: `baidu-${Date.now()}-${cardIndex}-${index}`,
+                  source: 'baidu',
+                  title: item.word,
+                  hotness: item.hotScore || Math.floor(Math.random() * 1000000),
+                  trend: 'up',
+                  trendChange: Math.floor(Math.random() * 50) + 5,
+                  isBursting: (item.hotScore || 0) > 800000,
+                  url: item.link || '#',
+                  category: '热门',
+                  siteName: '百度',
+                  publishTime: new Date().toISOString(),
+                  summary: this.generateSummary(item.word, ''),
+                  keywords: this.extractKeywords(item.word, ''),
+                  sentiment: this.analyzeSentiment(item.word, ''),
+                };
+                topics.push(topic);
+              }
+            });
+          }
+        });
+      }
+    } catch (error) {
+      this.logger.error('解析百度数据失败:', error);
+    }
+
+    return topics;
   }
 
   /**
@@ -1646,6 +1636,131 @@ export class HotTopicsService {
     // 3. 去重并返回前5个
     const uniqueRelated = Array.from(new Map(related.map(t => [t.id, t])).values());
     return uniqueRelated.slice(0, 5);
+  }
+
+  /**
+   * 获取 Mock 热点数据（当所有 API 源均失败时使用）
+   */
+  private getMockHotTopics(): HotTopic[] {
+    const mockData = [
+      {
+        id: 'mock-1',
+        title: 'AI 技术突破：新一代大语言模型性能提升 300%',
+        url: '#',
+        hot: 956782,
+        time: new Date().toISOString(),
+        site: '科技圈',
+        category: '科技',
+        site_name: '科技圈'
+      },
+      {
+        id: 'mock-2',
+        title: '新能源汽车销量创新高，市场渗透率突破 40%',
+        url: '#',
+        hot: 892345,
+        time: new Date().toISOString(),
+        site: '财经',
+        category: '财经',
+        site_name: '财经'
+      },
+      {
+        id: 'mock-3',
+        title: '全国多地启动全民健身计划，体育设施免费开放',
+        url: '#',
+        hot: 745612,
+        time: new Date().toISOString(),
+        site: '社会',
+        category: '社会',
+        site_name: '社会'
+      },
+      {
+        id: 'mock-4',
+        title: '知名导演新作定档，首日票房破亿',
+        url: '#',
+        hot: 678923,
+        time: new Date().toISOString(),
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐'
+      },
+      {
+        id: 'mock-5',
+        title: '国际体育赛事开幕，中国队参赛阵容公布',
+        url: '#',
+        hot: 612456,
+        time: new Date().toISOString(),
+        site: '体育',
+        category: '体育',
+        site_name: '体育'
+      },
+      {
+        id: 'mock-6',
+        title: '教育部发布最新政策，推进教育数字化转型',
+        url: '#',
+        hot: 567834,
+        time: new Date().toISOString(),
+        site: '教育',
+        category: '教育',
+        site_name: '教育'
+      },
+      {
+        id: 'mock-7',
+        title: '热门综艺新一季开播，收视率创新高',
+        url: '#',
+        hot: 523478,
+        time: new Date().toISOString(),
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐'
+      },
+      {
+        id: 'mock-8',
+        title: '科学家发现新型材料，有望解决能源存储难题',
+        url: '#',
+        hot: 489567,
+        time: new Date().toISOString(),
+        site: '科技',
+        category: '科技',
+        site_name: '科技'
+      },
+      {
+        id: 'mock-9',
+        title: '多城市发布房地产新政，购房门槛进一步降低',
+        url: '#',
+        hot: 456789,
+        time: new Date().toISOString(),
+        site: '财经',
+        category: '财经',
+        site_name: '财经'
+      },
+      {
+        id: 'mock-10',
+        title: '国际重要会议召开，多国领导人出席',
+        url: '#',
+        hot: 423456,
+        time: new Date().toISOString(),
+        site: '国际',
+        category: '国际',
+        site_name: '国际'
+      }
+    ];
+
+    return mockData.map((item, index) => ({
+      id: item.id,
+      source: this.mapSiteToSource(item.site_name),
+      title: item.title,
+      hotness: item.hot,
+      trend: Math.random() > 0.3 ? 'up' : Math.random() > 0.5 ? 'stable' : 'down',
+      trendChange: Math.floor(Math.random() * 30) + 5,
+      isBursting: index < 3,
+      url: item.url,
+      category: item.category,
+      siteName: item.site_name,
+      publishTime: item.time,
+      summary: this.generateSummary(item.title, item.category),
+      keywords: this.extractKeywords(item.title, item.category),
+      sentiment: this.analyzeSentiment(item.title, item.category)
+    }));
   }
 
   /**
