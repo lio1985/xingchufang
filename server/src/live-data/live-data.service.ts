@@ -458,6 +458,78 @@ export class LiveDataService {
   }
 
   /**
+   * 管理员：导出直播数据
+   */
+  async exportLiveDataForAdmin(format: 'csv' | 'json', userId?: string, startDate?: string, endDate?: string) {
+    let query = this.supabase
+      .from('live_streams')
+      .select('*, users!inner(nickname, email, role)')
+      .eq('status', 'active')
+      .order('start_time', { ascending: false });
+
+    if (userId) {
+      query = query.eq('user_id', userId);
+    }
+    if (startDate) {
+      query = query.gte('start_time', startDate);
+    }
+    if (endDate) {
+      query = query.lte('start_time', endDate);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      this.logger.error('导出直播数据失败:', error);
+      throw new Error('导出失败');
+    }
+
+    const exportData = (data || []).map((item: any) => ({
+      id: item.id,
+      直播标题: item.title,
+      主播昵称: item.users?.nickname || '',
+      主播邮箱: item.users?.email || '',
+      开始时间: item.start_time,
+      结束时间: item.end_time,
+      直播时长_秒: item.duration_seconds,
+      总观看人数: item.total_views,
+      最高在线: item.peak_online,
+      平均在线: item.avg_online,
+      新增粉丝: item.new_followers,
+      分享次数: item.share_count,
+      评论数: item.total_comments,
+      点赞数: item.total_likes,
+      礼物数: item.total_gifts,
+      商品点击: item.product_clicks,
+      商品曝光: item.product_exposures,
+      订单数: item.orders_count,
+      GMV: item.gmv,
+      创建时间: item.created_at,
+    }));
+
+    if (format === 'csv') {
+      // 生成 CSV
+      const headers = Object.keys(exportData[0] || {});
+      const csvRows = [
+        '\uFEFF' + headers.join(','), // BOM + headers
+        ...exportData.map(row =>
+          headers.map(header => {
+            const value = (row as any)[header];
+            // 处理包含逗号或换行符的值
+            if (typeof value === 'string' && (value.includes(',') || value.includes('\n') || value.includes('"'))) {
+              return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value;
+          }).join(',')
+        ),
+      ];
+      return csvRows.join('\n');
+    }
+
+    return exportData;
+  }
+
+  /**
    * 更新每日统计数据
    */
   private async updateDailyStats(userId: string, dateStr: string) {

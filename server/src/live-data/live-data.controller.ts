@@ -8,7 +8,9 @@ import {
   Delete,
   UseGuards,
   Request,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { LiveDataService, ImportLiveDataDto } from './live-data.service';
 import { ActiveUserGuard } from '../guards/active-user.guard';
 import { AdminGuard } from '../guards/admin.guard';
@@ -141,5 +143,34 @@ export class LiveDataController {
     const pageNum = parseInt(page || '1', 10);
     const limitNum = parseInt(limit || '20', 10);
     return this.liveDataService.getAllLiveStreamsForAdmin(pageNum, limitNum, userId, startDate, endDate);
+  }
+
+  /**
+   * 管理员：导出直播数据
+   * POST /api/live-data/admin/export
+   */
+  @Post('admin/export')
+  @UseGuards(AdminGuard)
+  async exportLiveData(
+    @Body() body: { format?: 'csv' | 'json'; userId?: string; startDate?: string; endDate?: string },
+    @Res() res: Response,
+  ) {
+    const { format = 'csv', userId, startDate, endDate } = body;
+
+    const data = await this.liveDataService.exportLiveDataForAdmin(format, userId, startDate, endDate);
+
+    if (format === 'csv') {
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="live-data-${Date.now()}.csv"`);
+      res.send(data);
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="live-data-${Date.now()}.json"`);
+      res.json({
+        success: true,
+        exportTime: new Date().toISOString(),
+        data,
+      });
+    }
   }
 }
