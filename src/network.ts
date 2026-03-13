@@ -18,16 +18,11 @@ const createUrl = (url: string): string => {
     const isCozeDev = typeof window !== 'undefined' && 
                       window.location.hostname.includes('dev.coze.site');
     
-    // 如果在 Coze 在线预览环境，使用相对路径，让 Coze 的代理处理
-    if (isCozeDev) {
-        return url;
-    }
-
     // 更可靠的 H5 环境检测
     const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
     
-    // H5 环境：直接访问后端 API 端口 3000
-    if (isH5) {
+    // H5/Coze 在线预览环境：直接访问后端 API 端口 3000
+    if (isH5 || isCozeDev) {
         return `http://localhost:3000${url}`
     }
 
