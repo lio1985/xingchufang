@@ -84,6 +84,7 @@ const HotspotPage = () => {
 
   // 搜索相关
   const [searching, setSearching] = useState(false);
+  const [searchMode, setSearchMode] = useState(false); // 标记是否在搜索模式
 
   // 更新时间
   const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
@@ -379,6 +380,11 @@ const HotspotPage = () => {
 
   // 搜索和筛选逻辑
   useEffect(() => {
+    // 如果在搜索模式，直接使用后端返回的搜索结果，不进行前端筛选
+    if (searchMode) {
+      return;
+    }
+
     let filtered = [...allKeywords];
 
     // 只看收藏
@@ -450,7 +456,7 @@ const HotspotPage = () => {
     });
 
     setHotKeywords(filtered);
-  }, [searchKeyword, sortBy, allKeywords, selectedPlatforms, selectedCategory, selectedTimeRange, showOnlyFavorites, favoriteIds]);
+  }, [searchKeyword, sortBy, allKeywords, selectedPlatforms, selectedCategory, selectedTimeRange, showOnlyFavorites, favoriteIds, searchMode]);
 
   // 获取用户地理位置
   const handleGetLocation = () => {
@@ -504,6 +510,7 @@ const HotspotPage = () => {
   // 清空搜索
   const handleClearSearch = () => {
     setSearchKeyword('');
+    setSearchMode(false);
     // 清空搜索时恢复显示所有数据
     loadHotKeywords();
   };
@@ -519,6 +526,7 @@ const HotspotPage = () => {
     }
 
     setSearching(true);
+    setSearchMode(true); // 进入搜索模式
     try {
       const response = await Network.request({
         url: `/api/hot-topics/search`,
