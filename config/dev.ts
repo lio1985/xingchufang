@@ -6,7 +6,7 @@ export default {
   },
   h5: {
     devServer: {
-      port: 8080,
+      port: 5000,
     }
   }
 } satisfies UserConfigExport<'vite'>
