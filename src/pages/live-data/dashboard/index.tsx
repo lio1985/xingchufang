@@ -58,6 +58,23 @@ const LiveDashboardPage = () => {
       }
     } catch (error) {
       showToast({ title: '加载失败', icon: 'none' });
+      // 设置默认空数据，避免页面一直显示加载中
+      setStats({
+        totalViews: 0,
+        peakOnline: 0,
+        avgOnline: 0,
+        newFollowers: 0,
+        totalComments: 0,
+        totalLikes: 0,
+        ordersCount: 0,
+        gmv: 0,
+        avgWatchDuration: 0,
+        conversionRate: 0,
+        interactionRate: 0,
+        followerConversionRate: 0,
+        streamCount: 0,
+        prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0 },
+      });
     } finally {
       setLoading(false);
       hideLoading();
@@ -79,7 +96,29 @@ const LiveDashboardPage = () => {
     return `${sign}${change.toFixed(1)}%`;
   };
 
-  if (!stats) return null;
+  if (!stats) {
+    return (
+      <View className="live-dashboard-page">
+        <View className="header">
+          <Text className="title">数据看板</Text>
+          <View className="time-tabs">
+            {timeRangeOptions.map((option) => (
+              <View
+                key={option.value}
+                className={`tab ${timeRange === option.value ? 'active' : ''}`}
+                onClick={() => setTimeRange(option.value)}
+              >
+                <Text>{option.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+        <View className="loading-container">
+          <Text className="loading-text">加载中...</Text>
+        </View>
+      </View>
+    );
+  }
 
   const gmvChange = calculateChange(stats.gmv, stats.prevPeriod?.gmv || 0);
   const ordersChange = calculateChange(stats.ordersCount, stats.prevPeriod?.ordersCount || 0);
@@ -119,6 +158,15 @@ const LiveDashboardPage = () => {
             <Text className="btn-text secondary">复盘</Text>
           </View>
         </View>
+
+        {/* 空数据提示 */}
+        {stats.streamCount === 0 && (
+          <View className="empty-state">
+            <Calendar size={48} color="#ccc" />
+            <Text className="empty-title">暂无直播数据</Text>
+            <Text className="empty-desc">点击上方「导入数据」按钮添加您的第一场直播</Text>
+          </View>
+        )}
 
         {/* 核心指标 */}
         <View className="section-card">
