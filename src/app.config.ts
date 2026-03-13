@@ -48,7 +48,9 @@ export default defineAppConfig({
     'pages/admin/team-management/index',
     'pages/admin/team-detail/index',
     'pages/admin/team-create/index',
+    'pages/admin/send-notification/index',
     'pages/team/index',
+    'pages/notification/index',
   ],
   window: {
     backgroundTextStyle: 'light',

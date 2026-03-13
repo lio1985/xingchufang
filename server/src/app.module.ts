@@ -33,6 +33,7 @@ import { KnowledgeShareModule } from './knowledge-share/knowledge-share.module';
 import { CustomerManagementModule } from './customer-management/customer-management.module';
 import { RecycleManagementModule } from './recycle-management/recycle-management.module';
 import { TeamModule } from './team/team.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { TeamModule } from './team/team.module';
     CustomerManagementModule,
     RecycleManagementModule,
     TeamModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
