@@ -47,32 +47,37 @@ const LiveDashboardPage = () => {
     showLoading({ title: '加载中...' });
 
     try {
+      console.log('Fetching dashboard data, range:', timeRange);
       const response = await Network.request({
         url: '/api/live-data/dashboard',
         method: 'GET',
         data: { range: timeRange },
       });
 
+      console.log('Dashboard response:', response);
+
       if (response.data?.success) {
         setStats(response.data.data);
+      } else {
+        console.warn('API returned no success:', response.data);
+        // 设置空数据避免一直加载
+        setStats({
+          totalViews: 0, peakOnline: 0, avgOnline: 0, newFollowers: 0,
+          totalComments: 0, totalLikes: 0, ordersCount: 0, gmv: 0,
+          avgWatchDuration: 0, conversionRate: 0, interactionRate: 0,
+          followerConversionRate: 0, streamCount: 0,
+          prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0 },
+        });
       }
-    } catch (error) {
-      showToast({ title: '加载失败', icon: 'none' });
-      // 设置默认空数据，避免页面一直显示加载中
+    } catch (error: any) {
+      console.error('Fetch stats error:', error);
+      showToast({ title: '数据加载失败', icon: 'none' });
+      // 设置空数据避免一直加载
       setStats({
-        totalViews: 0,
-        peakOnline: 0,
-        avgOnline: 0,
-        newFollowers: 0,
-        totalComments: 0,
-        totalLikes: 0,
-        ordersCount: 0,
-        gmv: 0,
-        avgWatchDuration: 0,
-        conversionRate: 0,
-        interactionRate: 0,
-        followerConversionRate: 0,
-        streamCount: 0,
+        totalViews: 0, peakOnline: 0, avgOnline: 0, newFollowers: 0,
+        totalComments: 0, totalLikes: 0, ordersCount: 0, gmv: 0,
+        avgWatchDuration: 0, conversionRate: 0, interactionRate: 0,
+        followerConversionRate: 0, streamCount: 0,
         prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0 },
       });
     } finally {
