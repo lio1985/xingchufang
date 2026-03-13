@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateTo } from '@tarojs/taro';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
 import { Calendar, TrendingUp, Eye, Users, Heart, TrendingDown, Plus, List, Star, Zap } from 'lucide-react-taro';
 import './index.less';
 
-type TimeRange = 'day' | 'week' | 'month' | 'year';
+type TimeRange = 'day' | 'week' | 'month' | 'year' | 'custom';
 
 interface DashboardStats {
   totalViews: number;
@@ -31,6 +31,11 @@ interface DashboardStats {
 
 const LiveDashboardPage = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('week');
+  const [customDateRange, setCustomDateRange] = useState({
+    startDate: '',
+    endDate: '',
+  });
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +44,18 @@ const LiveDashboardPage = () => {
     { value: 'week', label: '本周' },
     { value: 'month', label: '本月' },
     { value: 'year', label: '本年' },
+    { value: 'custom', label: '自定义' },
   ];
+
+  // 获取默认日期范围
+  const getDefaultDateRange = () => {
+    const today = new Date();
+    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    return {
+      startDate: weekAgo.toISOString().split('T')[0],
+      endDate: today.toISOString().split('T')[0],
+    };
+  };
 
   const fetchStats = async () => {
     if (loading) return;
@@ -48,10 +64,17 @@ const LiveDashboardPage = () => {
 
     try {
       console.log('Fetching dashboard data, range:', timeRange);
+      
+      const params: any = { range: timeRange };
+      if (timeRange === 'custom') {
+        params.startDate = customDateRange.startDate;
+        params.endDate = customDateRange.endDate;
+      }
+      
       const response = await Network.request({
         url: '/api/live-data/dashboard',
         method: 'GET',
-        data: { range: timeRange },
+        data: params,
       });
 
       console.log('Dashboard response:', response);
@@ -60,7 +83,6 @@ const LiveDashboardPage = () => {
         setStats(response.data.data);
       } else {
         console.warn('API returned no success:', response.data);
-        // 设置空数据避免一直加载
         setStats({
           totalViews: 0, peakOnline: 0, avgOnline: 0, newFollowers: 0,
           totalComments: 0, totalLikes: 0, ordersCount: 0, gmv: 0,
@@ -72,7 +94,6 @@ const LiveDashboardPage = () => {
     } catch (error: any) {
       console.error('Fetch stats error:', error);
       showToast({ title: '数据加载失败', icon: 'none' });
-      // 设置空数据避免一直加载
       setStats({
         totalViews: 0, peakOnline: 0, avgOnline: 0, newFollowers: 0,
         totalComments: 0, totalLikes: 0, ordersCount: 0, gmv: 0,
@@ -87,9 +108,26 @@ const LiveDashboardPage = () => {
   };
 
   useEffect(() => {
+    // 初始化默认日期范围
+    if (!customDateRange.startDate) {
+      setCustomDateRange(getDefaultDateRange());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     fetchStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRange]);
+  }, [timeRange, customDateRange.startDate, customDateRange.endDate]);
+
+  const handleTimeRangeChange = (value: TimeRange) => {
+    setTimeRange(value);
+    if (value === 'custom') {
+      setShowDatePicker(true);
+    } else {
+      setShowDatePicker(false);
+    }
+  };
 
   const calculateChange = (current: number, prev: number) => {
     if (!prev) return 0;
@@ -99,6 +137,11 @@ const LiveDashboardPage = () => {
   const formatChange = (change: number) => {
     const sign = change >= 0 ? '+' : '';
     return `${sign}${change.toFixed(1)}%`;
+  };
+
+  const formatDateRange = () => {
+    if (timeRange !== 'custom') return timeRangeOptions.find(o => o.value === timeRange)?.label;
+    return `${customDateRange.startDate} 至 ${customDateRange.endDate}`;
   };
 
   if (!stats) {
@@ -111,7 +154,7 @@ const LiveDashboardPage = () => {
               <View
                 key={option.value}
                 className={`tab ${timeRange === option.value ? 'active' : ''}`}
-                onClick={() => setTimeRange(option.value)}
+                onClick={() => handleTimeRangeChange(option.value)}
               >
                 <Text>{option.label}</Text>
               </View>
@@ -139,12 +182,43 @@ const LiveDashboardPage = () => {
             <View
               key={option.value}
               className={`tab ${timeRange === option.value ? 'active' : ''}`}
-              onClick={() => setTimeRange(option.value)}
+              onClick={() => handleTimeRangeChange(option.value)}
             >
               <Text>{option.label}</Text>
             </View>
           ))}
         </View>
+
+        {/* 自定义日期选择器 */}
+        {showDatePicker && (
+          <View className="date-picker-container">
+            <View className="date-picker-row">
+              <View className="date-input-wrapper">
+                <Text className="date-label">开始日期</Text>
+                <Input
+                  className="date-input"
+                  type={'date' as any}
+                  value={customDateRange.startDate}
+                  onInput={(e) => setCustomDateRange(prev => ({ ...prev, startDate: e.detail.value }))}
+                />
+              </View>
+              <Text className="date-separator">至</Text>
+              <View className="date-input-wrapper">
+                <Text className="date-label">结束日期</Text>
+                <Input
+                  className="date-input"
+                  type={'date' as any}
+                  value={customDateRange.endDate}
+                  onInput={(e) => setCustomDateRange(prev => ({ ...prev, endDate: e.detail.value }))}
+                />
+              </View>
+            </View>
+            <View className="selected-range">
+              <Calendar size={14} color="#fff" />
+              <Text className="range-text">{formatDateRange()}</Text>
+            </View>
+          </View>
+        )}
       </View>
 
       <ScrollView className="dashboard-container" scrollY>
@@ -196,7 +270,7 @@ const LiveDashboardPage = () => {
           <View className="metrics-grid">
             <View className="metric-card highlight">
               <Text className="label">成交金额</Text>
-              <Text className="value">¥{stats.gmv.toFixed(2)}</Text>
+              <Text className="value">¥{(stats.gmv || 0).toFixed(2)}</Text>
               <View className={`change ${gmvChange >= 0 ? 'up' : 'down'}`}>
                 {gmvChange >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                 <Text>{formatChange(gmvChange)}</Text>
@@ -205,7 +279,7 @@ const LiveDashboardPage = () => {
 
             <View className="metric-card">
               <Text className="label">订单数</Text>
-              <Text className="value">{stats.ordersCount.toLocaleString()}</Text>
+              <Text className="value">{(stats.ordersCount || 0).toLocaleString()}</Text>
               <View className={`change ${ordersChange >= 0 ? 'up' : 'down'}`}>
                 <Text>{formatChange(ordersChange)}</Text>
               </View>
@@ -213,7 +287,7 @@ const LiveDashboardPage = () => {
 
             <View className="metric-card">
               <Text className="label">观看人数</Text>
-              <Text className="value">{stats.totalViews.toLocaleString()}</Text>
+              <Text className="value">{(stats.totalViews || 0).toLocaleString()}</Text>
               <View className={`change ${viewsChange >= 0 ? 'up' : 'down'}`}>
                 <Text>{formatChange(viewsChange)}</Text>
               </View>
@@ -221,7 +295,7 @@ const LiveDashboardPage = () => {
 
             <View className="metric-card">
               <Text className="label">新增粉丝</Text>
-              <Text className="value">{stats.newFollowers.toLocaleString()}</Text>
+              <Text className="value">{(stats.newFollowers || 0).toLocaleString()}</Text>
               <View className={`change ${followersChange >= 0 ? 'up' : 'down'}`}>
                 <Text>{formatChange(followersChange)}</Text>
               </View>
@@ -234,7 +308,7 @@ const LiveDashboardPage = () => {
           <View className="stream-count">
             <Calendar size={24} />
             <View>
-              <Text className="count">{stats.streamCount}</Text>
+              <Text className="count">{stats.streamCount || 0}</Text>
               <Text className="label">直播场次</Text>
             </View>
           </View>
@@ -247,21 +321,21 @@ const LiveDashboardPage = () => {
             <View className="data-item">
               <Eye size={18} />
               <View>
-                <Text className="value">{stats.totalViews.toLocaleString()}</Text>
+                <Text className="value">{(stats.totalViews || 0).toLocaleString()}</Text>
                 <Text className="label">观看人数</Text>
               </View>
             </View>
             <View className="data-item">
               <Users size={18} />
               <View>
-                <Text className="value">{stats.peakOnline.toLocaleString()}</Text>
+                <Text className="value">{(stats.peakOnline || 0).toLocaleString()}</Text>
                 <Text className="label">最高在线</Text>
               </View>
             </View>
             <View className="data-item">
               <Users size={18} />
               <View>
-                <Text className="value">{stats.avgOnline.toLocaleString()}</Text>
+                <Text className="value">{(stats.avgOnline || 0).toLocaleString()}</Text>
                 <Text className="label">平均在线</Text>
               </View>
             </View>
@@ -275,21 +349,21 @@ const LiveDashboardPage = () => {
             <View className="data-item">
               <Heart size={18} />
               <View>
-                <Text className="value">{stats.totalLikes.toLocaleString()}</Text>
+                <Text className="value">{(stats.totalLikes || 0).toLocaleString()}</Text>
                 <Text className="label">点赞数</Text>
               </View>
             </View>
             <View className="data-item">
               <TrendingUp size={18} />
               <View>
-                <Text className="value">{stats.totalComments.toLocaleString()}</Text>
+                <Text className="value">{(stats.totalComments || 0).toLocaleString()}</Text>
                 <Text className="label">评论数</Text>
               </View>
             </View>
             <View className="data-item">
               <Users size={18} />
               <View>
-                <Text className="value">{stats.newFollowers.toLocaleString()}</Text>
+                <Text className="value">{(stats.newFollowers || 0).toLocaleString()}</Text>
                 <Text className="label">新增粉丝</Text>
               </View>
             </View>
@@ -303,23 +377,23 @@ const LiveDashboardPage = () => {
             <View className="conversion-item">
               <Text className="label">观看转化率</Text>
               <View className="progress-bar">
-                <View className="progress" style={{ width: `${Math.min(stats.conversionRate * 10, 100)}%` }} />
+                <View className="progress" style={{ width: `${Math.min((stats.conversionRate || 0) * 10, 100)}%` }} />
               </View>
-              <Text className="value">{stats.conversionRate.toFixed(2)}%</Text>
+              <Text className="value">{(stats.conversionRate || 0).toFixed(2)}%</Text>
             </View>
             <View className="conversion-item">
               <Text className="label">互动率</Text>
               <View className="progress-bar">
-                <View className="progress" style={{ width: `${Math.min(stats.interactionRate * 10, 100)}%` }} />
+                <View className="progress" style={{ width: `${Math.min((stats.interactionRate || 0) * 10, 100)}%` }} />
               </View>
-              <Text className="value">{stats.interactionRate.toFixed(2)}%</Text>
+              <Text className="value">{(stats.interactionRate || 0).toFixed(2)}%</Text>
             </View>
             <View className="conversion-item">
               <Text className="label">粉丝转化率</Text>
               <View className="progress-bar">
-                <View className="progress" style={{ width: `${Math.min(stats.followerConversionRate * 100, 100)}%` }} />
+                <View className="progress" style={{ width: `${Math.min((stats.followerConversionRate || 0) * 100, 100)}%` }} />
               </View>
-              <Text className="value">{stats.followerConversionRate.toFixed(2)}%</Text>
+              <Text className="value">{(stats.followerConversionRate || 0).toFixed(2)}%</Text>
             </View>
           </View>
         </View>

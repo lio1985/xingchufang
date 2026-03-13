@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { showToast, showLoading, hideLoading, chooseImage, navigateBack } from '@tarojs/taro';
 import { View, Text, Input, ScrollView, Image } from '@tarojs/components';
 import { Network } from '@/network';
 import { 
-  Keyboard, Upload, Camera, ChevronDown, ChevronUp, 
+  Keyboard, Camera, ChevronDown, ChevronUp, 
   FileSpreadsheet, ScanLine, Save, X, Check
 } from 'lucide-react-taro';
 import './index.less';
@@ -53,7 +53,6 @@ const LiveDataImportPage = () => {
   const [expanded, setExpanded] = useState<AccordionKey>('basic');
   const [screenshotUrl, setScreenshotUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [excelFile, setExcelFile] = useState<{ name: string; url: string } | null>(null);
 
   const toggleAccordion = (key: AccordionKey) => {
     setExpanded(expanded === key ? null : key);
@@ -87,7 +86,7 @@ const LiveDataImportPage = () => {
           name: 'file',
         });
 
-        const imageUrl = uploadRes.data?.data?.url || uploadRes.data?.url;
+        const imageUrl = (uploadRes as any).data?.data?.url || (uploadRes as any).data?.url;
         if (!imageUrl) {
           throw new Error('图片上传失败');
         }
