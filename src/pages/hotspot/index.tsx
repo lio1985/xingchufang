@@ -67,6 +67,7 @@ const HotspotPage = () => {
   const [userCity, setUserCity] = useState('');
   const [loadingHotTopics, setLoadingHotTopics] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [isDataRefreshed, setIsDataRefreshed] = useState(false); // 添加刷新标志
 
   // 搜索和筛选
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -153,6 +154,7 @@ const HotspotPage = () => {
   // 刷新热力图数据
   const refreshHotKeywords = async () => {
     setRefreshing(true);
+    setIsDataRefreshed(true); // 设置刷新标志
     try {
       // 构建查询参数
       const params: any = {
@@ -196,9 +198,9 @@ const HotspotPage = () => {
 
         console.log('生成的前3个热点关键词:', keywords.slice(0, 3).map(k => ({ keyword: k.keyword, hotness: k.hotness })));
 
-        // 同时更新 allKeywords 和 hotKeywords，确保立即看到刷新效果
+        // 更新数据
         setAllKeywords(keywords);
-        setHotKeywords(keywords); // 直接更新显示数据，不依赖筛选
+        setHotKeywords(keywords); // 直接设置，不依赖 useEffect 筛选
         setLastUpdateTime(new Date().toISOString());
 
         Taro.showToast({
@@ -214,6 +216,7 @@ const HotspotPage = () => {
       });
     } finally {
       setRefreshing(false);
+      setIsDataRefreshed(false); // 重置刷新标志
     }
   };
 
@@ -365,6 +368,11 @@ const HotspotPage = () => {
 
   // 搜索和筛选逻辑
   useEffect(() => {
+    // 如果正在刷新，不应用筛选，直接使用 allKeywords
+    if (isDataRefreshed) {
+      return;
+    }
+
     let filtered = [...allKeywords];
 
     // 只看收藏
@@ -436,7 +444,7 @@ const HotspotPage = () => {
     });
 
     setHotKeywords(filtered);
-  }, [searchKeyword, sortBy, allKeywords, selectedPlatforms, selectedCategory, selectedTimeRange, showOnlyFavorites, favoriteIds]);
+  }, [searchKeyword, sortBy, allKeywords, selectedPlatforms, selectedCategory, selectedTimeRange, showOnlyFavorites, favoriteIds, isDataRefreshed]);
 
   // 获取用户地理位置
   const handleGetLocation = () => {
