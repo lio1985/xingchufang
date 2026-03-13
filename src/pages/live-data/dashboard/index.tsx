@@ -21,11 +21,19 @@ interface DashboardStats {
   interactionRate: number;
   followerConversionRate: number;
   streamCount: number;
+  // 用户重点关注的新指标
+  exposureCount: number;        // 曝光人数
+  enterRoomCount: number;       // 进入直播间人数
+  onlinePeak: number;           // 在线峰值
+  interactionCount: number;     // 互动人数
+  privateMessageCount: number;  // 私信人数
+  enterRoomRate: number;        // 进房率
   prevPeriod: {
     gmv: number;
     ordersCount: number;
     totalViews: number;
     newFollowers: number;
+    exposureCount: number;
   };
 }
 
@@ -88,7 +96,9 @@ const LiveDashboardPage = () => {
           totalComments: 0, totalLikes: 0, ordersCount: 0, gmv: 0,
           avgWatchDuration: 0, conversionRate: 0, interactionRate: 0,
           followerConversionRate: 0, streamCount: 0,
-          prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0 },
+          exposureCount: 0, enterRoomCount: 0, onlinePeak: 0,
+          interactionCount: 0, privateMessageCount: 0, enterRoomRate: 0,
+          prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0, exposureCount: 0 },
         });
       }
     } catch (error: any) {
@@ -99,7 +109,9 @@ const LiveDashboardPage = () => {
         totalComments: 0, totalLikes: 0, ordersCount: 0, gmv: 0,
         avgWatchDuration: 0, conversionRate: 0, interactionRate: 0,
         followerConversionRate: 0, streamCount: 0,
-        prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0 },
+        exposureCount: 0, enterRoomCount: 0, onlinePeak: 0,
+        interactionCount: 0, privateMessageCount: 0, enterRoomRate: 0,
+        prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0, exposureCount: 0 },
       });
     } finally {
       setLoading(false);
@@ -330,15 +342,29 @@ const LiveDashboardPage = () => {
             <View className="data-item">
               <Eye size={18} />
               <View>
-                <Text className="value">{(stats.totalViews || 0).toLocaleString()}</Text>
-                <Text className="label">观看人数</Text>
+                <Text className="value">{(stats.exposureCount || 0).toLocaleString()}</Text>
+                <Text className="label">曝光人数</Text>
               </View>
             </View>
             <View className="data-item">
               <Users size={18} />
               <View>
-                <Text className="value">{(stats.peakOnline || 0).toLocaleString()}</Text>
-                <Text className="label">最高在线</Text>
+                <Text className="value">{(stats.enterRoomCount || 0).toLocaleString()}</Text>
+                <Text className="label">进入直播间</Text>
+              </View>
+            </View>
+            <View className="data-item">
+              <TrendingUp size={18} />
+              <View>
+                <Text className="value">{(stats.enterRoomRate || 0).toFixed(1)}%</Text>
+                <Text className="label">进房率</Text>
+              </View>
+            </View>
+            <View className="data-item">
+              <Users size={18} />
+              <View>
+                <Text className="value">{(stats.onlinePeak || 0).toLocaleString()}</Text>
+                <Text className="label">在线峰值</Text>
               </View>
             </View>
             <View className="data-item">
@@ -348,6 +374,13 @@ const LiveDashboardPage = () => {
                 <Text className="label">平均在线</Text>
               </View>
             </View>
+            <View className="data-item">
+              <Eye size={18} />
+              <View>
+                <Text className="value">{(stats.totalViews || 0).toLocaleString()}</Text>
+                <Text className="label">观看人数</Text>
+              </View>
+            </View>
           </View>
         </View>
 
@@ -355,6 +388,20 @@ const LiveDashboardPage = () => {
         <View className="section-card">
           <Text className="section-title">互动数据</Text>
           <View className="data-grid">
+            <View className="data-item">
+              <Heart size={18} />
+              <View>
+                <Text className="value">{(stats.interactionCount || 0).toLocaleString()}</Text>
+                <Text className="label">互动人数</Text>
+              </View>
+            </View>
+            <View className="data-item">
+              <TrendingUp size={18} />
+              <View>
+                <Text className="value">{(stats.privateMessageCount || 0).toLocaleString()}</Text>
+                <Text className="label">私信人数</Text>
+              </View>
+            </View>
             <View className="data-item">
               <Heart size={18} />
               <View>
@@ -383,6 +430,13 @@ const LiveDashboardPage = () => {
         <View className="section-card">
           <Text className="section-title">转化数据</Text>
           <View className="conversion-list">
+            <View className="conversion-item">
+              <Text className="label">进房率</Text>
+              <View className="progress-bar">
+                <View className="progress" style={{ width: `${Math.min(stats.enterRoomRate || 0, 100)}%` }} />
+              </View>
+              <Text className="value">{(stats.enterRoomRate || 0).toFixed(1)}%</Text>
+            </View>
             <View className="conversion-item">
               <Text className="label">观看转化率</Text>
               <View className="progress-bar">

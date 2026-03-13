@@ -319,6 +319,20 @@ export class LiveDataService {
       const newFollowers = stats.reduce((sum, s) => sum + (s.new_followers || 0), 0);
       const followerConversionRate = totalViews > 0 ? (newFollowers / totalViews) * 100 : 0;
 
+      // 用户重点关注的新指标
+      const exposureCount = stats.reduce((sum, s) => sum + (s.product_exposures || 0), 0); // 曝光人数
+      const enterRoomCount = totalViews; // 进入直播间人数
+      const avgOnline = stats.length > 0 
+        ? Math.round(stats.reduce((sum, s) => sum + (s.avg_online || 0), 0) / stats.length)
+        : 0; // 平均在线人数
+      const peakOnline = stats.length > 0 ? Math.max(...stats.map(s => s.peak_online || 0)) : 0; // 在线峰值
+      // 互动人数 = 评论人数 + 点赞人数（用评论数和点赞数估算）
+      const interactionCount = totalComments + totalLikes; 
+      // 私信人数（暂无数据，用分享数估算或返回0）
+      const privateMessageCount = stats.reduce((sum, s) => sum + (s.share_count || 0), 0);
+      // 进房率 = 进入直播间人数 / 曝光人数
+      const enterRoomRate = exposureCount > 0 ? (enterRoomCount / exposureCount) * 100 : 0;
+
       // 当前周期汇总
       const gmv = stats.reduce((sum, s) => sum + parseFloat(s.gmv || 0), 0);
       const ordersCount = stats.reduce((sum, s) => sum + (s.orders_count || 0), 0);
@@ -328,16 +342,15 @@ export class LiveDataService {
       const prevOrdersCount = prevStats.reduce((sum, s) => sum + (s.orders_count || 0), 0);
       const prevTotalViews = prevStats.reduce((sum, s) => sum + (s.total_views || 0), 0);
       const prevNewFollowers = prevStats.reduce((sum, s) => sum + (s.new_followers || 0), 0);
+      const prevExposureCount = prevStats.reduce((sum, s) => sum + (s.product_exposures || 0), 0);
 
       return {
         success: true,
         data: {
-          // 核心指标 - 匹配前端期望的字段名
+          // 原有指标
           totalViews,
-          peakOnline: stats.length > 0 ? Math.max(...stats.map(s => s.peak_online || 0)) : 0,
-          avgOnline: stats.length > 0 
-            ? Math.round(stats.reduce((sum, s) => sum + (s.avg_online || 0), 0) / stats.length)
-            : 0,
+          peakOnline,
+          avgOnline,
           newFollowers,
           totalComments,
           totalLikes,
@@ -348,12 +361,20 @@ export class LiveDataService {
           interactionRate,
           followerConversionRate,
           streamCount: stats.length,
+          // 用户重点关注的新指标
+          exposureCount,           // 曝光人数
+          enterRoomCount,          // 进入直播间人数
+          onlinePeak: peakOnline,  // 在线峰值（别名）
+          interactionCount,        // 互动人数
+          privateMessageCount,     // 私信人数
+          enterRoomRate,           // 进房率 (%)
           // 上期对比数据
           prevPeriod: {
             gmv: prevGMV,
             ordersCount: prevOrdersCount,
             totalViews: prevTotalViews,
             newFollowers: prevNewFollowers,
+            exposureCount: prevExposureCount,
           },
           // 趋势数据
           trend: stats.map(s => ({
@@ -383,7 +404,14 @@ export class LiveDataService {
           interactionRate: 0,
           followerConversionRate: 0,
           streamCount: 0,
-          prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0 },
+          // 用户重点关注的新指标（默认值）
+          exposureCount: 0,
+          enterRoomCount: 0,
+          onlinePeak: 0,
+          interactionCount: 0,
+          privateMessageCount: 0,
+          enterRoomRate: 0,
+          prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0, exposureCount: 0 },
           trend: [],
         },
       };
