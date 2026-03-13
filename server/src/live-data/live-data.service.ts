@@ -250,26 +250,32 @@ export class LiveDataService {
    */
   async getDashboardStats(userId: string, period: 'day' | 'week' | 'month' | 'year') {
     let startDate: string;
+    let prevStartDate: string;
     const now = new Date();
 
     switch (period) {
       case 'day':
         startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+        prevStartDate = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
         break;
       case 'week':
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        prevStartDate = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
         break;
       case 'month':
         startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        prevStartDate = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
         break;
       case 'year':
         startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString();
+        prevStartDate = new Date(now.getTime() - 730 * 24 * 60 * 60 * 1000).toISOString();
         break;
     }
 
     this.logger.log(`Querying live_streams for userId=${userId}, startDate=${startDate}`);
 
     try {
+      // 当前周期数据
       const { data, error } = await this.supabase
         .from('live_streams')
         .select('*')
@@ -282,30 +288,74 @@ export class LiveDataService {
         throw new Error(`查询统计数据失败: ${error.message}`);
       }
 
+      // 上一周期数据（用于对比）
+      const { data: prevData } = await this.supabase
+        .from('live_streams')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .gte('start_time', prevStartDate)
+        .lt('start_time', startDate);
+
       const stats = data || [];
-      
-      // 计算汇总数据
-      const summary = {
-        liveCount: stats.length,
-        totalDuration: stats.reduce((sum, s) => sum + (s.duration_seconds || 0), 0),
-        totalViews: stats.reduce((sum, s) => sum + (s.total_views || 0), 0),
-        totalLikes: stats.reduce((sum, s) => sum + (s.total_likes || 0), 0),
-        totalComments: stats.reduce((sum, s) => sum + (s.total_comments || 0), 0),
-        totalGMV: stats.reduce((sum, s) => sum + parseFloat(s.gmv || 0), 0),
-        totalOrders: stats.reduce((sum, s) => sum + (s.orders_count || 0), 0),
-        avgOnline: stats.length > 0 
-          ? Math.round(stats.reduce((sum, s) => sum + (s.avg_online || 0), 0) / stats.length)
-          : 0,
-        peakOnline: stats.length > 0
-          ? Math.max(...stats.map(s => s.peak_online || 0))
-          : 0,
-        newFollowers: stats.reduce((sum, s) => sum + (s.new_followers || 0), 0),
-      };
+      const prevStats = prevData || [];
+
+      // 计算总观看时长（分钟）
+      const totalDurationMinutes = stats.reduce((sum, s) => sum + (s.duration_seconds || 0), 0) / 60;
+      const totalViews = stats.reduce((sum, s) => sum + (s.total_views || 0), 0);
+      const avgWatchDuration = totalViews > 0 ? Math.round((totalDurationMinutes / totalViews) * 60) : 0; // 秒
+
+      // 计算转化率
+      const totalProductClicks = stats.reduce((sum, s) => sum + (s.product_clicks || 0), 0);
+      const totalProductExposures = stats.reduce((sum, s) => sum + (s.product_exposures || 0), 0);
+      const conversionRate = totalProductExposures > 0 ? (totalProductClicks / totalProductExposures) * 100 : 0;
+
+      // 计算互动率
+      const totalLikes = stats.reduce((sum, s) => sum + (s.total_likes || 0), 0);
+      const totalComments = stats.reduce((sum, s) => sum + (s.total_comments || 0), 0);
+      const interactionRate = totalViews > 0 ? ((totalLikes + totalComments) / totalViews) * 100 : 0;
+
+      // 计算粉丝转化率
+      const newFollowers = stats.reduce((sum, s) => sum + (s.new_followers || 0), 0);
+      const followerConversionRate = totalViews > 0 ? (newFollowers / totalViews) * 100 : 0;
+
+      // 当前周期汇总
+      const gmv = stats.reduce((sum, s) => sum + parseFloat(s.gmv || 0), 0);
+      const ordersCount = stats.reduce((sum, s) => sum + (s.orders_count || 0), 0);
+
+      // 上一周期汇总
+      const prevGMV = prevStats.reduce((sum, s) => sum + parseFloat(s.gmv || 0), 0);
+      const prevOrdersCount = prevStats.reduce((sum, s) => sum + (s.orders_count || 0), 0);
+      const prevTotalViews = prevStats.reduce((sum, s) => sum + (s.total_views || 0), 0);
+      const prevNewFollowers = prevStats.reduce((sum, s) => sum + (s.new_followers || 0), 0);
 
       return {
         success: true,
         data: {
-          summary,
+          // 核心指标 - 匹配前端期望的字段名
+          totalViews,
+          peakOnline: stats.length > 0 ? Math.max(...stats.map(s => s.peak_online || 0)) : 0,
+          avgOnline: stats.length > 0 
+            ? Math.round(stats.reduce((sum, s) => sum + (s.avg_online || 0), 0) / stats.length)
+            : 0,
+          newFollowers,
+          totalComments,
+          totalLikes,
+          ordersCount,
+          gmv,
+          avgWatchDuration,
+          conversionRate,
+          interactionRate,
+          followerConversionRate,
+          streamCount: stats.length,
+          // 上期对比数据
+          prevPeriod: {
+            gmv: prevGMV,
+            ordersCount: prevOrdersCount,
+            totalViews: prevTotalViews,
+            newFollowers: prevNewFollowers,
+          },
+          // 趋势数据
           trend: stats.map(s => ({
             date: s.start_time,
             views: s.total_views,
@@ -320,18 +370,20 @@ export class LiveDataService {
       return {
         success: true,
         data: {
-          summary: {
-            liveCount: 0,
-            totalDuration: 0,
-            totalViews: 0,
-            totalLikes: 0,
-            totalComments: 0,
-            totalGMV: 0,
-            totalOrders: 0,
-            avgOnline: 0,
-            peakOnline: 0,
-            newFollowers: 0,
-          },
+          totalViews: 0,
+          peakOnline: 0,
+          avgOnline: 0,
+          newFollowers: 0,
+          totalComments: 0,
+          totalLikes: 0,
+          ordersCount: 0,
+          gmv: 0,
+          avgWatchDuration: 0,
+          conversionRate: 0,
+          interactionRate: 0,
+          followerConversionRate: 0,
+          streamCount: 0,
+          prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0 },
           trend: [],
         },
       };

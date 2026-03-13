@@ -56,37 +56,12 @@ async function bootstrap() {
 
   // 2. 解析端口 - 使用 Coze 环境变量
   const primaryPort = parsePort();
-  const secondaryPort = primaryPort === 3000 ? 5000 : 3000;
   
   try {
     // 启动主端口
     await app.listen(primaryPort);
     console.log(`Server running on http://localhost:${primaryPort}`);
     console.log(`Application is running on: http://localhost:${primaryPort}`);
-    
-    // 同时启动第二个端口（3000 和 5000 都监听）
-    try {
-      const httpAdapter = app.getHttpAdapter();
-      const httpServer = httpAdapter.getHttpServer();
-      
-      // 创建第二个服务器实例
-      const secondaryApp = await NestFactory.create(AppModule);
-      secondaryApp.enableCors({ origin: true, credentials: true });
-      secondaryApp.setGlobalPrefix('api');
-      secondaryApp.use(express.json({ limit: '50mb' }));
-      secondaryApp.use(express.urlencoded({ limit: '50mb', extended: true }));
-      secondaryApp.useGlobalInterceptors(new HttpStatusInterceptor());
-      secondaryApp.enableShutdownHooks();
-      
-      await secondaryApp.listen(secondaryPort);
-      console.log(`Server also running on http://localhost:${secondaryPort}`);
-    } catch (secondaryErr) {
-      if (secondaryErr.code === 'EADDRINUSE') {
-        console.log(`Port ${secondaryPort} already in use, skipping secondary port`);
-      } else {
-        console.log(`Could not start secondary port: ${secondaryErr.message}`);
-      }
-    }
   } catch (err) {
     if (err.code === 'EADDRINUSE') {
       console.error(`❌ 端口 ${primaryPort} 被占用! 请运行 'npx kill-port ${primaryPort}' 然后重试。`);
