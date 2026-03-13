@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
-import { Users, MessageSquare, FileText, Award, RefreshCw, FileSpreadsheet, Activity, Share2, Globe, Download, Bell, Database, BookOpen, FileCheck, ClipboardList, TrendingUp, User, Store, UsersRound } from 'lucide-react-taro';
+import { Users, MessageSquare, FileText, Award, RefreshCw, FileSpreadsheet, Activity, Share2, Globe, Download, Bell, Database, BookOpen, FileCheck, ClipboardList, TrendingUp, User, Store, UsersRound, Video } from 'lucide-react-taro';
 
 interface GlobalStatistics {
   totalUsers: number;
@@ -488,6 +488,23 @@ export default function AdminDashboardPage() {
                     <Text className="text-white text-sm font-semibold">团队管理</Text>
                   </View>
                   <Text className="text-slate-400 text-xs">管理团队和成员</Text>
+                </View>
+              </View>
+
+              {/* 直播数据管理 */}
+              <View
+                onClick={() => Taro.navigateTo({ url: '/pages/live-data/admin/index' })}
+                className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl p-4 border border-slate-600 relative overflow-hidden active:scale-95 transition-transform"
+              >
+                <View className="absolute top-0 right-0 w-20 h-20 bg-rose-500 opacity-5 rounded-full -mr-10 -mt-10"></View>
+                <View className="relative z-10">
+                  <View className="flex items-center gap-2 mb-2">
+                    <View className="p-2 bg-rose-500/20 rounded-lg">
+                      <Video size={18} className="text-rose-400" />
+                    </View>
+                    <Text className="text-white text-sm font-semibold">直播数据</Text>
+                  </View>
+                  <Text className="text-slate-400 text-xs">查看直播统计</Text>
                 </View>
               </View>
             </View>
