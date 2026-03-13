@@ -467,7 +467,7 @@ export default function LexiconSystemPage() {
             <Text className="block text-base font-bold text-white">执行机制</Text>
           </View>
           <Text className="block text-sm text-slate-300 leading-relaxed mb-3">
-            所有生成脚本必须经过语料替换与人工优化，确保自然表达与专业统一。
+            所有输出脚本必须经过语料替换与人工优化，确保自然表达与专业统一。
           </Text>
           <View className="space-y-2">
             <View className="flex items-start gap-2">

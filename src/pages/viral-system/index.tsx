@@ -282,7 +282,7 @@ export default function ViralSystemPage() {
                   </Text>
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
                     {progress >= 80 && <Check size={12} color="#34d399" />}
-                    {progress >= 80 ? '✓ 生成爆款框架' : '正在生成爆款框架...'}
+                    {progress >= 80 ? '✓ 输出爆款框架' : '正在输出爆款框架...'}
                   </Text>
                 </View>
               </View>

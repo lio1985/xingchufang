@@ -36,7 +36,7 @@ const SystemsPage = () => {
     if (type === 'topic') {
       loadInputSources();
 
-      // 检查是否有生成的选题
+      // 检查是否有策划的选题
       if (router.params.hasGenerated) {
         try {
           const generatedTopics = Taro.getStorageSync('generatedTopics');
@@ -46,7 +46,7 @@ const SystemsPage = () => {
             loadTopicQuestions();
           }
         } catch (error) {
-          console.error('读取生成的选题失败', error);
+          console.error('读取策划的选题失败', error);
           loadTopicQuestions();
         }
       } else {
@@ -107,7 +107,7 @@ const SystemsPage = () => {
   const handleClearTopics = () => {
     Taro.showModal({
       title: '确认清空',
-      content: '确定要清空所有生成的选题吗？',
+      content: '确定要清空所有策划的选题吗？',
       success: (res) => {
         if (res.confirm) {
           setTopicQuestions([]);
@@ -275,11 +275,11 @@ const SystemsPage = () => {
         )}
       </View>
 
-      {/* 生成的选题列表 */}
+      {/* 策划的选题列表 */}
       {topicQuestions.length > 0 && (
         <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
           <View className="flex items-center justify-between mb-3">
-            <Text className="block text-lg font-semibold text-white">生成的选题</Text>
+            <Text className="block text-lg font-semibold text-white">策划的选题</Text>
             <View className="flex items-center gap-3">
               <Text
                 className="block text-xs text-blue-400"
@@ -351,7 +351,7 @@ const SystemsPage = () => {
             onClick={handleGenerateContent}
           >
             <Sparkles size={18} />
-            <Text className="block">已选择 {selectedTopics.length} 个选题，生成内容</Text>
+            <Text className="block">已选择 {selectedTopics.length} 个选题，创作内容</Text>
           </View>
         </View>
       )}
@@ -361,10 +361,10 @@ const SystemsPage = () => {
         <View className="bg-slate-800 rounded-xl border border-slate-700 p-6 text-center">
           <Lightbulb size={48} color="#475569" />
           <Text className="block text-slate-500 text-base mt-4 mb-2">
-            暂无生成的选题
+            暂无策划的选题
           </Text>
           <Text className="block text-slate-600 text-sm mb-4">
-            请在上方选择创作素材来源并生成本次选题库
+            请在上方选择创作素材来源并创建本次选题库
           </Text>
         </View>
       )}
@@ -373,11 +373,11 @@ const SystemsPage = () => {
 
   const renderContentSystem = () => (
     <View className="flex flex-col gap-4">
-      {/* 脚本初稿生成 */}
+      {/* 脚本初稿制作 */}
       <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
         <Text className="block text-lg font-semibold text-white mb-3 flex items-center gap-2">
           <PenTool size={20} color="#60a5fa" />
-          脚本初稿生成
+          脚本初稿制作
         </Text>
         <View className="flex items-center gap-2 py-3 bg-slate-700/50 rounded-lg px-3">
           <Text className="block text-sm text-slate-400">结构化提示词输入</Text>
@@ -477,7 +477,7 @@ const SystemsPage = () => {
       <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
         <Text className="block text-lg font-semibold text-white mb-3">执行机制</Text>
         <Text className="block text-sm text-slate-300 leading-relaxed">
-          生成脚本必须经过语料替换与人工优化
+          输出脚本必须经过语料替换与人工优化
         </Text>
       </View>
     </View>
@@ -510,7 +510,7 @@ const SystemsPage = () => {
           </View>
           <View className="flex items-start gap-2 py-2 border-b border-slate-700">
             <Text className="block text-red-400 mt-1">•</Text>
-            <Text className="block text-sm text-slate-300">模板生成</Text>
+            <Text className="block text-sm text-slate-300">模板制作</Text>
           </View>
           <View className="flex items-start gap-2 py-2">
             <Text className="block text-red-400 mt-1">•</Text>
@@ -559,14 +559,14 @@ const SystemsPage = () => {
           }}
         >
           <Lightbulb size={16} color={activeType === 'topic' ? '#60a5fa' : '#94a3b8'} style={{ marginRight: '4px' }} />
-          <Text className="block text-sm">选题生成</Text>
+          <Text className="block text-sm">选题策划</Text>
         </View>
         <View
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
           onClick={() => Taro.navigateTo({ url: '/pages/content-system/index' })}
         >
           <PenTool size={16} color="#94a3b8" style={{ marginRight: '4px' }} />
-          <Text className="block text-sm">内容生成</Text>
+          <Text className="block text-sm">内容创作</Text>
         </View>
         <View
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"

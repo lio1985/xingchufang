@@ -240,7 +240,7 @@ const InputSourcesPage = () => {
     }
   };
 
-  // 生成本次选题库
+  // 创建本次选题库
   const generateTopics = async () => {
     if (selectedNotes.length === 0 && selectedQuestions.length === 0 && selectedHotTopics.length === 0) {
       Taro.showToast({ title: '请先选择素材来源', icon: 'none' });
@@ -402,7 +402,7 @@ const InputSourcesPage = () => {
           className="flex-1 bg-blue-500 text-white text-center py-3 rounded-xl font-medium active:opacity-80"
           onClick={generateTopics}
         >
-          生成本次选题库
+          创建本次选题库
         </View>
       </View>
 

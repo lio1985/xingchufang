@@ -232,7 +232,7 @@ const ContentSystemPage = () => {
         <View className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
           <PenTool size={16} color="#60a5fa" />
         </View>
-        <Text className="block text-base font-semibold text-white">内容生成</Text>
+        <Text className="block text-base font-semibold text-white">内容创作</Text>
       </View>
 
       {/* Tab 切换 */}
@@ -426,7 +426,7 @@ const ContentSystemPage = () => {
                     暂无生成的内容
                   </Text>
                   <Text className="block text-slate-600 text-sm">
-                    请在选题生成页面选择选题并确认
+                    请在选题策划页面选择选题并确认
                   </Text>
                 </View>
               )}
@@ -451,7 +451,7 @@ const ContentSystemPage = () => {
                   onClick={() => Taro.navigateBack()}
                 >
                   <ChevronRight size={18} className="rotate-180" />
-                  <Text className="block">返回选题生成</Text>
+                  <Text className="block">返回选题策划</Text>
                 </View>
               </View>
             </View>
