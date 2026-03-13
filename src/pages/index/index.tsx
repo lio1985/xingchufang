@@ -471,7 +471,7 @@ const IndexPage = () => {
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">直播数据统计</Text>
-              <Text className="block text-sm text-white/80">抖音直播数据分析与AI复盘</Text>
+              <Text className="block text-sm text-white/80">抖音直播数据分析与复盘</Text>
             </View>
           </View>
         </View>

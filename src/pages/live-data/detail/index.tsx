@@ -154,12 +154,12 @@ const LiveDataDetailPage = () => {
           </View>
         )}
 
-        {/* AI 复盘分析 */}
+        {/* 复盘分析 */}
         {detail.analysis && (
           <View className="analysis-card">
             <View className="analysis-header">
               <Star size={20} color="#FFB800" />
-              <Text className="title">AI 直播复盘</Text>
+              <Text className="title">直播复盘</Text>
               <View className="score-badge">
                 <Text>{detail.analysis.overallScore}分</Text>
               </View>

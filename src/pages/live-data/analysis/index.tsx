@@ -47,7 +47,7 @@ const LiveAnalysisPage = () => {
 
   const generateAnalysis = async (liveId: string) => {
     setGenerating(liveId);
-    showLoading({ title: 'AI分析中...' });
+    showLoading({ title: '分析中...' });
 
     try {
       // 调用后端生成分析接口
@@ -81,7 +81,7 @@ const LiveAnalysisPage = () => {
     <View className="live-analysis-page">
       <View className="header">
         <Sparkles size={32} color="#FFB800" />
-        <Text className="title">AI 直播复盘</Text>
+        <Text className="title">直播复盘</Text>
         <Text className="subtitle">智能分析直播数据，生成专业复盘报告</Text>
       </View>
 
@@ -137,9 +137,9 @@ const LiveAnalysisPage = () => {
         )}
       </ScrollView>
 
-      {/* AI 能力说明 */}
+      {/* 复盘能力说明 */}
       <View className="features-section">
-        <Text className="features-title">AI 复盘能力</Text>
+        <Text className="features-title">复盘能力</Text>
         <View className="feature-list">
           <View className="feature-item">
             <Star size={20} color="#52c41a" />
