@@ -367,7 +367,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/quick-note/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <Lightbulb size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -386,7 +386,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/systems/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <Sparkles size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -402,7 +402,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/systems/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <PenTool size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -418,7 +418,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <TrendingUp size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -434,7 +434,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/viral-system/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <Sparkles size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -450,7 +450,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/knowledge-share/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <BookOpen size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -466,7 +466,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <Video size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -482,7 +482,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/customer/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <Users size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -498,7 +498,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/recycle/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <BookOpen size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -514,7 +514,7 @@ const IndexPage = () => {
           onClick={() => handleNavigateTo('/pages/team/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
               <UsersRound size={32} color="white" strokeWidth={2.5} />
             </View>
             <View className="flex-1">
@@ -535,7 +535,7 @@ const IndexPage = () => {
               <Text className="block text-red-500 text-sm font-bold">{churnWarningCount > 99 ? '99+' : churnWarningCount}</Text>
             </View>
             <View className="flex items-center gap-4">
-              <View className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
+              <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
                 <ShieldAlert size={32} color="white" strokeWidth={2.5} />
               </View>
               <View className="flex-1">
