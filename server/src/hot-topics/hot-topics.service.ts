@@ -1645,6 +1645,9 @@ export class HotTopicsService {
     const now = new Date();
     const timeStr = now.toISOString();
 
+    // 生成随机热度系数，让每次刷新的热度有明显差异
+    const hotnessFactor = 0.7 + Math.random() * 0.6; // 0.7 ~ 1.3
+
     const mockData = [
       {
         id: 'mock-1',
@@ -1751,22 +1754,30 @@ export class HotTopicsService {
     // 打乱数组顺序，让每次刷新看到不同排列
     const shuffledData = [...mockData].sort(() => Math.random() - 0.5);
 
-    return shuffledData.map((item, index) => ({
-      id: `${item.id}-${Date.now()}-${index}`, // 添加时间戳和索引确保唯一性
-      source: this.mapSiteToSource(item.site_name),
-      title: item.title,
-      hotness: item.hot + Math.floor(Math.random() * 50000), // 添加随机热度变化
-      trend: Math.random() > 0.3 ? 'up' : Math.random() > 0.5 ? 'stable' : 'down',
-      trendChange: Math.floor(Math.random() * 30) + 5,
-      isBursting: Math.random() > 0.6, // 随机是否爆发
-      url: item.url,
-      category: item.category,
-      siteName: item.site_name,
-      publishTime: new Date(now.getTime() - Math.random() * 3600000).toISOString(), // 随机发布时间
-      summary: this.generateSummary(item.title, item.category),
-      keywords: this.extractKeywords(item.title, item.category),
-      sentiment: this.analyzeSentiment(item.title, item.category)
-    }));
+    // 生成随机时间偏移，让发布时间更加随机
+    const timeOffset = Math.floor(Math.random() * 7200000); // 0 ~ 2小时
+
+    return shuffledData.map((item, index) => {
+      // 每个条目单独生成随机热度变化
+      const itemHotnessFactor = 0.8 + Math.random() * 0.4; // 0.8 ~ 1.2
+
+      return {
+        id: `mock-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`, // 包含时间戳、索引和随机字符串，确保完全唯一
+        source: this.mapSiteToSource(item.site_name),
+        title: item.title,
+        hotness: Math.floor(item.hot * hotnessFactor * itemHotnessFactor), // 双重随机系数
+        trend: Math.random() > 0.3 ? 'up' : Math.random() > 0.5 ? 'stable' : 'down',
+        trendChange: Math.floor(Math.random() * 50) + 5, // 增加变化范围
+        isBursting: Math.random() > 0.6,
+        url: item.url,
+        category: item.category,
+        siteName: item.site_name,
+        publishTime: new Date(now.getTime() - timeOffset - Math.random() * 3600000).toISOString(),
+        summary: this.generateSummary(item.title, item.category),
+        keywords: this.extractKeywords(item.title, item.category),
+        sentiment: this.analyzeSentiment(item.title, item.category)
+      };
+    });
   }
 
   /**

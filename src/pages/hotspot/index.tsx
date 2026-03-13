@@ -67,7 +67,6 @@ const HotspotPage = () => {
   const [userCity, setUserCity] = useState('');
   const [loadingHotTopics, setLoadingHotTopics] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [isDataRefreshed, setIsDataRefreshed] = useState(false); // 添加刷新标志
 
   // 搜索和筛选
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -154,8 +153,11 @@ const HotspotPage = () => {
   // 刷新热力图数据
   const refreshHotKeywords = async () => {
     setRefreshing(true);
-    setIsDataRefreshed(true); // 设置刷新标志
     try {
+      // 先清空显示数据，给用户明确的刷新反馈
+      setHotKeywords([]);
+      setAllKeywords([]);
+
       // 构建查询参数
       const params: any = {
         locationMode,
@@ -164,6 +166,9 @@ const HotspotPage = () => {
       if (locationMode === 'local' && userCity) {
         params.city = userCity;
       }
+
+      console.log('=== 开始刷新 ===');
+      console.log('请求参数:', params);
 
       const response = await Network.request({
         url: `/api/hot-topics/refresh`,
@@ -178,10 +183,10 @@ const HotspotPage = () => {
       if (response.statusCode === 200 && response.data && response.data.data && response.data.data.topics) {
         const results = Array.isArray(response.data.data.topics) ? response.data.data.topics : [];
         console.log('解析后的话题数量:', results.length);
-        console.log('第一个话题热度:', results[0]?.hotness);
+        console.log('第一个话题:', results[0]);
 
         const keywords: HotKeyword[] = results.map((item: any, index: number) => ({
-          id: `${item.id || Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`, // 添加随机后缀确保唯一
+          id: `${item.id || Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
           keyword: item.title || '',
           hotness: item.hotness || 0,
           platform: item.siteName || item.source || 'TopHub',
@@ -196,17 +201,21 @@ const HotspotPage = () => {
           keywords: item.keywords
         }));
 
-        console.log('生成的前3个热点关键词:', keywords.slice(0, 3).map(k => ({ keyword: k.keyword, hotness: k.hotness })));
+        console.log('生成的热点关键词:', keywords.map(k => ({ id: k.id, keyword: k.keyword, hotness: k.hotness })));
 
-        // 更新数据
+        // 先设置数据
         setAllKeywords(keywords);
-        setHotKeywords(keywords); // 直接设置，不依赖 useEffect 筛选
+        // 按热度排序
+        const sortedKeywords = [...keywords].sort((a, b) => b.hotness - a.hotness);
+        setHotKeywords(sortedKeywords);
         setLastUpdateTime(new Date().toISOString());
 
         Taro.showToast({
           title: '刷新成功',
           icon: 'success'
         });
+      } else {
+        throw new Error('响应数据格式错误');
       }
     } catch (error) {
       console.error('刷新热力图数据失败:', error);
@@ -216,7 +225,6 @@ const HotspotPage = () => {
       });
     } finally {
       setRefreshing(false);
-      setIsDataRefreshed(false); // 重置刷新标志
     }
   };
 
@@ -368,11 +376,6 @@ const HotspotPage = () => {
 
   // 搜索和筛选逻辑
   useEffect(() => {
-    // 如果正在刷新，不应用筛选，直接使用 allKeywords
-    if (isDataRefreshed) {
-      return;
-    }
-
     let filtered = [...allKeywords];
 
     // 只看收藏
@@ -444,7 +447,7 @@ const HotspotPage = () => {
     });
 
     setHotKeywords(filtered);
-  }, [searchKeyword, sortBy, allKeywords, selectedPlatforms, selectedCategory, selectedTimeRange, showOnlyFavorites, favoriteIds, isDataRefreshed]);
+  }, [searchKeyword, sortBy, allKeywords, selectedPlatforms, selectedCategory, selectedTimeRange, showOnlyFavorites, favoriteIds]);
 
   // 获取用户地理位置
   const handleGetLocation = () => {
