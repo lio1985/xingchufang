@@ -3,6 +3,24 @@ import { AppModule } from '@/app.module';
 import * as express from 'express';
 import { join } from 'path';
 import { HttpStatusInterceptor } from '@/interceptors/http-status.interceptor';
+import * as dotenv from 'dotenv';
+import { existsSync } from 'fs';
+
+// 加载环境变量
+const envPaths = [
+  join(process.cwd(), '.env.local'),
+  join(process.cwd(), '.env'),
+  join(process.cwd(), '..', '.env.local'),
+  join(process.cwd(), '..', '.env'),
+];
+
+for (const envPath of envPaths) {
+  if (existsSync(envPath)) {
+    console.log(`Loading environment from: ${envPath}`);
+    dotenv.config({ path: envPath });
+    break;
+  }
+}
 
 function parsePort(): number {
   // 优先使用 SERVER_PORT（项目配置）
