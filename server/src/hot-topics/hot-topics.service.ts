@@ -1641,6 +1641,9 @@ export class HotTopicsService {
   /**
    * 获取 Mock 热点数据（当所有 API 源均失败时使用）
    */
+  /**
+   * 获取 Mock 热点数据（当所有 API 源均失败时使用）
+   */
   private getMockHotTopics(): HotTopic[] {
     const now = new Date();
     const timeStr = now.toISOString();
@@ -1778,6 +1781,248 @@ export class HotTopicsService {
         sentiment: this.analyzeSentiment(item.title, item.category)
       };
     });
+  }
+
+  /**
+   * 获取扩展的 Mock 数据库（用于搜索）
+   */
+  private getExtendedMockDatabase(): HotTopic[] {
+    const now = new Date();
+    const timeStr = now.toISOString();
+
+    return [
+      {
+        id: 'search-1',
+        title: '人工智能技术在医疗领域的最新应用与突破',
+        url: '#',
+        hot: 856782,
+        time: timeStr,
+        site: '科技圈',
+        category: '科技',
+        site_name: '科技圈'
+      },
+      {
+        id: 'search-2',
+        title: 'OpenAI 发布 GPT-5，性能大幅提升',
+        url: '#',
+        hot: 992345,
+        time: timeStr,
+        site: '科技圈',
+        category: '科技',
+        site_name: '科技圈'
+      },
+      {
+        id: 'search-3',
+        title: '马斯克宣布星舰最新发射计划',
+        url: '#',
+        hot: 745612,
+        time: timeStr,
+        site: '科技圈',
+        category: '科技',
+        site_name: '科技圈'
+      },
+      {
+        id: 'search-4',
+        title: '苹果公司发布新一代 iPhone SE',
+        url: '#',
+        hot: 678923,
+        time: timeStr,
+        site: '科技圈',
+        category: '科技',
+        site_name: '科技圈'
+      },
+      {
+        id: 'search-5',
+        title: '华为鸿蒙系统用户突破 5 亿',
+        url: '#',
+        hot: 612456,
+        time: timeStr,
+        site: '科技圈',
+        category: '科技',
+        site_name: '科技圈'
+      },
+      {
+        id: 'search-6',
+        title: '特斯拉 Model Y 销量创历史新高',
+        url: '#',
+        hot: 892345,
+        time: timeStr,
+        site: '财经',
+        category: '财经',
+        site_name: '财经'
+      },
+      {
+        id: 'search-7',
+        title: '中国新能源汽车出口量全球第一',
+        url: '#',
+        hot: 956782,
+        time: timeStr,
+        site: '财经',
+        category: '财经',
+        site_name: '财经'
+      },
+      {
+        id: 'search-8',
+        title: '比特币价格突破 10 万美元',
+        url: '#',
+        hot: 823456,
+        time: timeStr,
+        site: '财经',
+        category: '财经',
+        site_name: '财经'
+      },
+      {
+        id: 'search-9',
+        title: '央行降息释放流动性',
+        url: '#',
+        hot: 723456,
+        time: timeStr,
+        site: '财经',
+        category: '财经',
+        site_name: '财经'
+      },
+      {
+        id: 'search-10',
+        title: '明星杨幂宣布结婚喜讯',
+        url: '#',
+        hot: 678923,
+        time: timeStr,
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐'
+      },
+      {
+        id: 'search-11',
+        title: '《流浪地球 3》定档春节',
+        url: '#',
+        hot: 723456,
+        time: timeStr,
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐'
+      },
+      {
+        id: 'search-12',
+        title: '电视剧《狂飙 2》即将开播',
+        url: '#',
+        hot: 656789,
+        time: timeStr,
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐'
+      },
+      {
+        id: 'search-13',
+        title: '世界杯足球赛决赛即将开打',
+        url: '#',
+        hot: 912456,
+        time: timeStr,
+        site: '体育',
+        category: '体育',
+        site_name: '体育'
+      },
+      {
+        id: 'search-14',
+        title: 'NBA 勇士队夺得总冠军',
+        url: '#',
+        hot: 845678,
+        time: timeStr,
+        site: '体育',
+        category: '体育',
+        site_name: '体育'
+      },
+      {
+        id: 'search-15',
+        title: '全国高考成绩公布，分数线出炉',
+        url: '#',
+        hot: 945678,
+        time: timeStr,
+        site: '社会',
+        category: '社会',
+        site_name: '社会'
+      },
+      {
+        id: 'search-16',
+        title: '多地出台房地产调控新政',
+        url: '#',
+        hot: 823456,
+        time: timeStr,
+        site: '社会',
+        category: '社会',
+        site_name: '社会'
+      },
+      {
+        id: 'search-17',
+        title: '中美元首举行会谈',
+        url: '#',
+        hot: 923456,
+        time: timeStr,
+        site: '国际',
+        category: '国际',
+        site_name: '国际'
+      },
+      {
+        id: 'search-18',
+        title: '欧盟通过新的气候政策',
+        url: '#',
+        hot: 762345,
+        time: timeStr,
+        site: '国际',
+        category: '国际',
+        site_name: '国际'
+      }
+    ].map((item, index) => ({
+      id: `search-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
+      source: this.mapSiteToSource(item.site_name),
+      title: item.title,
+      hotness: item.hot + Math.floor(Math.random() * 100000),
+      trend: Math.random() > 0.3 ? 'up' : Math.random() > 0.5 ? 'stable' : 'down',
+      trendChange: Math.floor(Math.random() * 50) + 5,
+      isBursting: Math.random() > 0.6,
+      url: item.url,
+      category: item.category,
+      siteName: item.site_name,
+      publishTime: new Date(now.getTime() - Math.random() * 3600000).toISOString(),
+      summary: this.generateSummary(item.title, item.category),
+      keywords: this.extractKeywords(item.title, item.category),
+      sentiment: this.analyzeSentiment(item.title, item.category)
+    }));
+  }
+
+  /**
+   * 搜索热点话题
+   */
+  async searchHotTopics(keyword: string): Promise<HotTopic[]> {
+    if (!keyword || keyword.trim().length === 0) {
+      return [];
+    }
+
+    this.logger.log(`=== 搜索热点：${keyword} ===`);
+
+    // 从扩展的 Mock 数据库中搜索
+    const database = this.getExtendedMockDatabase();
+
+    // 模糊搜索匹配
+    const keywordLower = keyword.toLowerCase().trim();
+    const results = database.filter(item =>
+      item.title.toLowerCase().includes(keywordLower) ||
+      (item.category && item.category.toLowerCase().includes(keywordLower)) ||
+      (item.siteName && item.siteName.toLowerCase().includes(keywordLower)) ||
+      (item.summary && item.summary.toLowerCase().includes(keywordLower))
+    );
+
+    this.logger.log(`找到 ${results.length} 个匹配结果`);
+
+    // 如果没有找到结果，返回一些推荐内容
+    if (results.length === 0) {
+      this.logger.log('未找到匹配结果，返回推荐内容');
+      // 返回前 5 个最热门的话题
+      return database
+        .sort((a, b) => b.hotness - a.hotness)
+        .slice(0, 5);
+    }
+
+    return results;
   }
 
   /**

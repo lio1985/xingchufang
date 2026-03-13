@@ -82,6 +82,9 @@ const HotspotPage = () => {
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
+  // 搜索相关
+  const [searching, setSearching] = useState(false);
+
   // 更新时间
   const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
 
@@ -501,6 +504,80 @@ const HotspotPage = () => {
   // 清空搜索
   const handleClearSearch = () => {
     setSearchKeyword('');
+    // 清空搜索时恢复显示所有数据
+    loadHotKeywords();
+  };
+
+  // 执行搜索
+  const handleSearch = async () => {
+    if (!searchKeyword.trim()) {
+      Taro.showToast({
+        title: '请输入搜索关键词',
+        icon: 'none'
+      });
+      return;
+    }
+
+    setSearching(true);
+    try {
+      const response = await Network.request({
+        url: `/api/hot-topics/search`,
+        method: 'POST',
+        data: { keyword: searchKeyword.trim() }
+      });
+
+      console.log('=== 搜索响应 ===');
+      console.log('关键词:', searchKeyword);
+      console.log('响应数据:', response.data);
+
+      if (response.statusCode === 200 && response.data && response.data.data && response.data.data.topics) {
+        const results = Array.isArray(response.data.data.topics) ? response.data.data.topics : [];
+        console.log('搜索结果数量:', results.length);
+
+        const keywords: HotKeyword[] = results.map((item: any, index: number) => ({
+          id: `${item.id || Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
+          keyword: item.title || '',
+          hotness: item.hotness || 0,
+          platform: item.siteName || item.source || '全网',
+          url: item.url,
+          summary: item.summary,
+          publishTime: item.publishTime,
+          category: item.category,
+          siteName: item.siteName,
+          trend: item.trend,
+          trendChange: item.trendChange,
+          isBursting: item.isBursting,
+          keywords: item.keywords
+        }));
+
+        // 按热度排序
+        keywords.sort((a, b) => b.hotness - a.hotness);
+
+        setAllKeywords(keywords);
+        setHotKeywords(keywords);
+        setLastUpdateTime(new Date().toISOString());
+
+        if (results.length === 0) {
+          Taro.showToast({
+            title: '未找到相关结果',
+            icon: 'none'
+          });
+        } else {
+          Taro.showToast({
+            title: `找到 ${results.length} 条结果`,
+            icon: 'success'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('搜索失败:', error);
+      Taro.showToast({
+        title: '搜索失败，请重试',
+        icon: 'none'
+      });
+    } finally {
+      setSearching(false);
+    }
   };
 
   return (
@@ -523,15 +600,19 @@ const HotspotPage = () => {
         <View className="space-y-3">
           {/* 搜索框 */}
           <View className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700/80 p-3">
-            <View className="flex items-center gap-2">
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
               <Search size={18} color="#94a3b8" strokeWidth={2} />
-              <Input
-                className="flex-1 text-sm text-white"
-                placeholder="搜索热点关键词、分类..."
-                value={searchKeyword}
-                onInput={(e) => setSearchKeyword(e.detail.value)}
-                placeholderClass="text-slate-400"
-              />
+              <View style={{ flex: 1 }}>
+                <Input
+                  className="w-full text-sm text-white"
+                  placeholder="搜索热点关键词、分类..."
+                  value={searchKeyword}
+                  onInput={(e) => setSearchKeyword(e.detail.value)}
+                  onConfirm={handleSearch}
+                  placeholderClass="text-slate-400"
+                  confirmType="search"
+                />
+              </View>
               {searchKeyword && (
                 <Button
                   size="mini"
@@ -541,6 +622,15 @@ const HotspotPage = () => {
                   清空
                 </Button>
               )}
+              <Button
+                size="mini"
+                type="primary"
+                className="bg-blue-500 text-white border-none"
+                onClick={handleSearch}
+                loading={searching}
+              >
+                {searching ? '搜索中' : '搜索'}
+              </Button>
             </View>
           </View>
 

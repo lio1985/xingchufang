@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body } from '@nestjs/common';
 import { HotTopicsService } from './hot-topics.service';
 
 @Controller('hot-topics')
@@ -38,8 +38,8 @@ export class HotTopicsController {
    * 刷新热点数据（清除缓存并重新获取）
    */
   @Post('refresh')
-  async refreshHotTopics(@Query() query: { locationMode?: 'national' | 'local'; city?: string }): Promise<any> {
-    const { locationMode = 'national', city } = query;
+  async refreshHotTopics(@Body() body: { locationMode?: 'national' | 'local'; city?: string }): Promise<any> {
+    const { locationMode = 'national', city } = body;
 
     console.log('=== 刷新 TopHub 热点 ===');
 
@@ -61,4 +61,37 @@ export class HotTopicsController {
       }
     };
   }
+
+  /**
+   * 搜索热点话题
+   */
+  @Post('search')
+  async searchHotTopics(@Body() body: { keyword: string }): Promise<any> {
+    const { keyword } = body;
+
+    if (!keyword || keyword.trim().length === 0) {
+      return {
+        code: 400,
+        msg: '请输入搜索关键词',
+        data: { topics: [] }
+      };
+    }
+
+    console.log('=== 搜索热点 ===');
+    console.log('搜索关键词:', keyword);
+
+    const topics = await this.hotTopicsService.searchHotTopics(keyword);
+
+    return {
+      code: 200,
+      msg: 'success',
+      data: {
+        topics,
+        keyword,
+        count: topics.length,
+        updateTime: new Date().toISOString()
+      }
+    };
+  }
 }
+// End of controller
