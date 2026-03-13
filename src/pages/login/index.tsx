@@ -1,18 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { Network } from '@/network'
-import { User } from 'lucide-react-taro'
+import { User, Loader } from 'lucide-react-taro'
 import logoImage from '../../static/logo-xinchufang-new.png'
 
 const LoginPage = () => {
   const [isLogging, setIsLogging] = useState(false)
+  const hasAttemptedLoginRef = useRef(false)
 
   /**
    * 检查或创建用户
    * 调用后端 /api/user/check-user 接口
    */
-  const checkOrCreateUser = async (openid: string, nickname: string) => {
+  const checkOrCreateUser = useCallback(async (openid: string, nickname: string) => {
     console.log('调用 check-user 接口:', { openid, nickname })
 
     const response = await Network.request({
@@ -31,11 +32,13 @@ const LoginPage = () => {
     } else {
       throw new Error(response.data?.msg || '检查/创建用户失败')
     }
-  }
+  }, [])
 
-  const handleWechatLogin = async () => {
-    if (isLogging) return
+  const handleWechatLogin = useCallback(async () => {
+    // 使用 ref 防止重复触发
+    if (hasAttemptedLoginRef.current || isLogging) return
 
+    hasAttemptedLoginRef.current = true
     setIsLogging(true)
 
     try {
@@ -152,7 +155,18 @@ const LoginPage = () => {
     } finally {
       setIsLogging(false)
     }
-  }
+  }, [isLogging, checkOrCreateUser])
+
+  // 页面加载时自动触发登录
+  useEffect(() => {
+    // 延迟一小段时间，确保页面渲染完成
+    const timer = setTimeout(() => {
+      handleWechatLogin()
+    }, 500)
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <View className="min-h-screen bg-slate-900 flex flex-col px-6 py-12 relative overflow-hidden">
@@ -184,27 +198,28 @@ const LoginPage = () => {
           CONTENT CREATION ASSISTANT
         </Text>
 
-        {/* 微信登录按钮 */}
+        {/* 自动登录状态 */}
         <View className="w-full">
-          <View
-            className={`w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl py-5 flex items-center justify-center mb-6 transition-all active:scale-[0.97] shadow-2xl shadow-purple-500/40 ${isLogging ? 'opacity-60' : ''}`}
-            onClick={handleWechatLogin}
-          >
+          <View className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl py-5 flex items-center justify-center shadow-2xl shadow-purple-500/40">
             <View className="flex items-center gap-4">
               <View className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                <User size={28} color="white" strokeWidth={2.5} />
+                {isLogging ? (
+                  <Loader size={28} color="white" strokeWidth={2.5} className="animate-spin" />
+                ) : (
+                  <User size={28} color="white" strokeWidth={2.5} />
+                )}
               </View>
               <Text className="block text-white font-bold text-xl tracking-wide">
-                {isLogging ? '登录中...' : '微信一键登录'}
+                {isLogging ? '正在登录...' : '自动登录中'}
               </Text>
             </View>
           </View>
-
-          {/* 提示信息 */}
-          <Text className="block text-sm text-slate-500 text-center leading-relaxed">
-            点击登录即表示同意《用户协议》和《隐私政策》
-          </Text>
         </View>
+
+        {/* 提示文字 */}
+        <Text className="block text-slate-400 text-sm text-center mt-8">
+          正在跳转微信授权登录...
+        </Text>
       </View>
     </View>
   )
