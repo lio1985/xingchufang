@@ -4,23 +4,12 @@
   "description": "基于Taro的高效内容创作工具",
   "appid": "wx073136fc152cedd9",
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": true,
     "enhance": true,
-    "compileHotReLoad": false,
+    "compileHotReLoad": true,
     "postcss": true,
-    "minified": false,
-    "babelSetting": {
-      "ignore": [],
-      "disablePlugins": [],
-      "outputPath": ""
-    }
+    "minified": true
   },
-  "compileType": "miniprogram",
-  "libVersion": "2.32.0",
-  "packOptions": {
-    "ignore": [],
-    "include": []
-  },
-  "condition": {}
+  "compileType": "miniprogram"
 }
