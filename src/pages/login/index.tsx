@@ -191,11 +191,8 @@ const LoginPage = () => {
         </View>
 
         {/* 标题 */}
-        <Text className="block text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 via-pink-400 to-red-400 mb-3 tracking-tight">
+        <Text className="block text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 via-pink-400 to-red-400 mb-20 tracking-tight">
           星厨房助手
-        </Text>
-        <Text className="block text-sm text-slate-400 tracking-widest font-semibold uppercase mb-20">
-          KITCHEN ASSISTANT
         </Text>
 
         {/* 自动登录状态 */}
