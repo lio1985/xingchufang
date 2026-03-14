@@ -182,7 +182,7 @@ const SendNotificationPage = () => {
                     className="radio-icon system"
                     style={{ backgroundColor: item.bgColor }}
                   >
-                    <Icon size={18} color={item.iconColor} />
+                    <Icon size={24} color={item.iconColor} />
                   </View>
                   <View className="radio-content">
                     <Text className="radio-title">{item.label}</Text>
@@ -212,7 +212,7 @@ const SendNotificationPage = () => {
                     className="radio-icon all"
                     style={{ backgroundColor: item.bgColor }}
                   >
-                    <Icon size={18} color={item.iconColor} />
+                    <Icon size={24} color={item.iconColor} />
                   </View>
                   <View className="radio-content">
                     <Text className="radio-title">{item.label}</Text>
@@ -249,7 +249,7 @@ const SendNotificationPage = () => {
           className={`send-btn ${sending ? 'disabled' : ''}`}
           onClick={!sending ? handleSend : undefined}
         >
-          <Send size={22} color="#fff" />
+          <Send size={26} color="#fff" />
           <Text className="send-text">{sending ? '发送中...' : '发送通知'}</Text>
         </View>
       </View>
@@ -257,7 +257,7 @@ const SendNotificationPage = () => {
       {/* 使用说明 */}
       <View className="tips-section">
         <View className="tips-header">
-          <Info size={18} color="#047857" />
+          <Info size={22} color="#047857" />
           <Text className="tips-title">使用说明</Text>
         </View>
         <View className="tips-list">
