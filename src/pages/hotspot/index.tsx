@@ -39,7 +39,11 @@ const PLATFORM_ICONS: { [key: string]: { icon: string; color: string; emoji: str
   '豆瓣': { icon: 'd', color: '#00b51d', emoji: '🎬' },
   '小红书': { icon: 'x', color: '#ff2442', emoji: '📸' },
   '快手': { icon: 'k', color: '#ff5000', emoji: '🎥' },
-  '视频号': { icon: 'v', color: '#07c160', emoji: '🎬' }
+  '视频号': { icon: 'v', color: '#07c160', emoji: '🎬' },
+  'GitHub': { icon: 'g', color: '#24292e', emoji: '💻' },
+  '掘金': { icon: 'j', color: '#1e80ff', emoji: '⚡' },
+  '综合': { icon: 'a', color: '#64748b', emoji: '🌐' },
+  '其他': { icon: 'o', color: '#64748b', emoji: '📰' }
 };
 
 const HotspotPage = () => {

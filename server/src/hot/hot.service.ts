@@ -50,15 +50,30 @@ export class HotService {
         throw new Error('获取热点数据失败');
       }
 
+      // 平台名称映射（英文 -> 中文）
+      const platformNameMap: Record<string, string> = {
+        'weibo': '微博',
+        'zhihu': '知乎',
+        'douyin': '抖音',
+        'bilibili': '哔哩哔哩',
+        'baidu': '百度',
+        'toutiao': '今日头条',
+        'github': 'GitHub',
+        'juejin': '掘金',
+        'all': '综合'
+      };
+
       // 按平台分组
       const platformMap = new Map<string, any[]>();
 
       result.list.forEach((item: any) => {
-        const platform = item.platform || '综合';
-        if (!platformMap.has(platform)) {
-          platformMap.set(platform, []);
+        // 将英文平台名映射为中文平台名
+        const platformName = platformNameMap[item.platform] || item.platform || '综合';
+
+        if (!platformMap.has(platformName)) {
+          platformMap.set(platformName, []);
         }
-        platformMap.get(platform)?.push({
+        platformMap.get(platformName)?.push({
           rank: item.rank,
           title: item.title,
           hot: this.formatHotness(item.hotness),
@@ -78,8 +93,9 @@ export class HotService {
         { name: '微博', icon: 'weibo' },
         { name: '知乎', icon: 'zhihu' },
         { name: '抖音', icon: 'douyin' },
-        { name: 'B站', icon: 'bilibili' },
+        { name: '哔哩哔哩', icon: 'bilibili' },
         { name: '百度', icon: 'baidu' },
+        { name: '今日头条', icon: 'toutiao' },
         { name: '综合', icon: 'all' }
       ];
 

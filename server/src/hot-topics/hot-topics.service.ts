@@ -9,7 +9,7 @@ export class HotTopicsService {
   private readonly logger = new Logger(HotTopicsService.name);
   private httpService: HttpService;
   private cache: Map<string, { topics: HotTopic[]; timestamp: number }> = new Map();
-  private readonly CACHE_TTL = 30 * 60 * 1000; // 30分钟缓存
+  private readonly CACHE_TTL = 2 * 60 * 1000; // 2分钟缓存
   private searchClient: SearchClient;
 
   constructor(private readonly httpServiceRef: HttpService) {
@@ -182,86 +182,96 @@ export class HotTopicsService {
   ): Promise<HotTopic[]> {
     const topics: HotTopic[] = [];
 
-    // 根据位置模式构建搜索查询
-    let searchQuery = '今日热点新闻 热搜排行榜';
-    if (locationMode === 'local' && city) {
-      searchQuery = `${city} 今日热点新闻 本地热搜`;
-    }
+    // 定义搜索平台配置
+    const platformQueries = [
+      { query: '微博热搜', platform: '微博', limit: 8 },
+      { query: '知乎热榜', platform: '知乎', limit: 8 },
+      { query: '抖音热点', platform: '抖音', limit: 8 },
+      { query: '哔哩哔哩热点', platform: '哔哩哔哩', limit: 8 },
+      { query: '百度热搜', platform: '百度', limit: 8 },
+      { query: '今日头条热点', platform: '今日头条', limit: 8 }
+    ];
 
-    this.logger.log(`Web Search 查询: ${searchQuery}`);
+    // 首先搜索各个平台的热点
+    for (const { query, platform, limit } of platformQueries) {
+      try {
+        this.logger.log(`Web Search 查询: ${query}`);
+        const response = await this.searchClient.webSearch(query, limit, false);
 
-    try {
-      // 使用 Web Search 搜索热点
-      const response = await this.searchClient.webSearch(searchQuery, 20, true);
+        if (response.web_items && response.web_items.length > 0) {
+          this.logger.log(`${query} 返回 ${response.web_items.length} 条结果`);
 
-      if (response.web_items && response.web_items.length > 0) {
-        this.logger.log(`Web Search 返回 ${response.web_items.length} 条结果`);
+          response.web_items.forEach((item, idx) => {
+            if (item.title && !topics.some(t => t.title === item.title)) {
+              const category = this.categorizeTopic(item.title);
+              const siteName = item.site_name || platform;
 
-        response.web_items.forEach((item, index) => {
-          if (item.title) {
-            // 根据标题生成分类
-            const category = this.categorizeTopic(item.title);
-
-            const topic: HotTopic = {
-              id: `websearch-${Date.now()}-${index}`,
-              source: this.mapSiteToSource(item.site_name || ''),
-              title: item.title,
-              hotness: this.calculateHotnessFromRank(index),
-              trend: index < 5 ? 'up' : index < 10 ? 'stable' : 'down',
-              trendChange: Math.floor(Math.random() * 50) + 5,
-              isBursting: index < 3,
-              url: item.url || '#',
-              category: category,
-              siteName: item.site_name || '热点新闻',
-              publishTime: item.publish_time || new Date().toISOString(),
-              summary: item.snippet || this.generateSummary(item.title, category),
-              keywords: this.extractKeywords(item.title, category),
-              sentiment: this.analyzeSentiment(item.title, category),
-            };
-            topics.push(topic);
-          }
-        });
-      }
-
-      // 如果结果太少，补充更多搜索
-      if (topics.length < 10) {
-        const additionalQueries = ['微博热搜', '知乎热榜', '今日头条热点'];
-        for (const query of additionalQueries) {
-          if (topics.length >= 20) break;
-
-          try {
-            const additionalResponse = await this.searchClient.webSearch(query, 10, false);
-            if (additionalResponse.web_items) {
-              additionalResponse.web_items.forEach((item, idx) => {
-                if (item.title && !topics.some(t => t.title === item.title)) {
-                  const category = this.categorizeTopic(item.title);
-                  topics.push({
-                    id: `websearch-${Date.now()}-${query}-${idx}`,
-                    source: this.mapSiteToSource(item.site_name || ''),
-                    title: item.title,
-                    hotness: this.calculateHotnessFromRank(topics.length),
-                    trend: topics.length < 10 ? 'up' : 'stable',
-                    trendChange: Math.floor(Math.random() * 30) + 5,
-                    isBursting: topics.length < 5,
-                    url: item.url || '#',
-                    category: category,
-                    siteName: item.site_name || '热点新闻',
-                    publishTime: item.publish_time || new Date().toISOString(),
-                    summary: item.snippet || this.generateSummary(item.title, category),
-                    keywords: this.extractKeywords(item.title, category),
-                    sentiment: this.analyzeSentiment(item.title, category),
-                  });
-                }
+              topics.push({
+                id: `websearch-${Date.now()}-${query}-${idx}`,
+                source: this.mapSiteToSource(platform),
+                title: item.title,
+                hotness: this.calculateHotnessFromRank(topics.length),
+                trend: topics.length < 10 ? 'up' : 'stable',
+                trendChange: Math.floor(Math.random() * 30) + 5,
+                isBursting: topics.length < 5,
+                url: item.url || '#',
+                category: category,
+                siteName: siteName,
+                publishTime: item.publish_time || new Date().toISOString(),
+                summary: item.snippet || this.generateSummary(item.title, category),
+                keywords: this.extractKeywords(item.title, category),
+                sentiment: this.analyzeSentiment(item.title, category),
               });
             }
-          } catch (e) {
-            this.logger.warn(`补充搜索 ${query} 失败:`, e.message);
-          }
+          });
         }
+      } catch (e) {
+        this.logger.warn(`搜索 ${query} 失败:`, e.message);
       }
-    } catch (error) {
-      this.logger.error('Web Search 调用失败:', error);
-      throw error;
+    }
+
+    // 如果还需要更多数据，补充通用热点搜索
+    if (topics.length < 20) {
+      let searchQuery = '今日热点新闻 热搜排行榜';
+      if (locationMode === 'local' && city) {
+        searchQuery = `${city} 今日热点新闻 本地热搜`;
+      }
+
+      this.logger.log(`补充 Web Search 查询: ${searchQuery}`);
+
+      try {
+        const response = await this.searchClient.webSearch(searchQuery, 20 - topics.length, true);
+
+        if (response.web_items && response.web_items.length > 0) {
+          this.logger.log(`补充搜索返回 ${response.web_items.length} 条结果`);
+
+          response.web_items.forEach((item, index) => {
+            if (item.title && !topics.some(t => t.title === item.title)) {
+              const category = this.categorizeTopic(item.title);
+              const siteName = item.site_name || '热点新闻';
+
+              topics.push({
+                id: `websearch-${Date.now()}-general-${index}`,
+                source: this.mapSiteToSource(siteName),
+                title: item.title,
+                hotness: this.calculateHotnessFromRank(topics.length),
+                trend: topics.length < 10 ? 'up' : 'stable',
+                trendChange: Math.floor(Math.random() * 50) + 5,
+                isBursting: topics.length < 5,
+                url: item.url || '#',
+                category: category,
+                siteName: siteName,
+                publishTime: item.publish_time || new Date().toISOString(),
+                summary: item.snippet || this.generateSummary(item.title, category),
+                keywords: this.extractKeywords(item.title, category),
+                sentiment: this.analyzeSentiment(item.title, category),
+              });
+            }
+          });
+        }
+      } catch (error) {
+        this.logger.error('补充搜索失败:', error);
+      }
     }
 
     return topics;
@@ -1510,7 +1520,10 @@ export class HotTopicsService {
    * 将站点名称映射到我们的数据源
    */
   private mapSiteToSource(siteName: string): HotTopicSource {
-    if (!siteName) return 'baidu';
+    if (!siteName) {
+      this.logger.debug(`mapSiteToSource: input is empty, returning 'baidu'`);
+      return 'baidu';
+    }
 
     const siteMap: Record<string, HotTopicSource> = {
       '知乎': 'zhihu',
@@ -1528,7 +1541,12 @@ export class HotTopicsService {
       '36氪': 'toutiao',
     };
 
-    return siteMap[siteName] || 'baidu';
+    const result = siteMap[siteName] || 'baidu';
+
+    // 调试日志
+    this.logger.debug(`mapSiteToSource: input="${siteName}", output="${result}"`);
+
+    return result;
   }
 
   /**
