@@ -275,12 +275,8 @@ export default function ViralSystemPage() {
                 </View>
                 <View className="mt-3 flex flex-col gap-1.5">
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
-                    {progress >= 20 && <Check size={12} color="#34d399" />}
-                    {progress >= 20 ? '✓ 提取文案内容' : '正在提取文案内容...'}
-                  </Text>
-                  <Text className="text-xs text-slate-400 flex items-center gap-1.5">
-                    {progress >= 50 && <Check size={12} color="#34d399" />}
-                    {progress >= 50 ? '✓ 分析文案结构' : '正在分析文案结构...'}
+                    {progress >= 40 && <Check size={12} color="#34d399" />}
+                    {progress >= 40 ? '✓ 分析文案结构' : '正在分析文案结构...'}
                   </Text>
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
                     {progress >= 80 && <Check size={12} color="#34d399" />}
