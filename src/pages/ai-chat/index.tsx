@@ -78,9 +78,8 @@ const AiChatPage = () => {
   // 加载对话列表
   const loadConversations = useCallback(async () => {
     try {
-      const userId = getUserId();
       const response = await Network.request({
-        url: `/api/conversation/list/${userId}`,
+        url: '/api/conversation/list',
         method: 'GET',
       });
 
@@ -498,7 +497,8 @@ const AiChatPage = () => {
       attachments: attachments.length > 0 ? [...attachments] : undefined,
     };
 
-    setMessages([...messages, userMessage]);
+    // 使用函数式更新确保状态正确
+    setMessages(prevMessages => [...prevMessages, userMessage]);
     setInputText('');
     setAttachments([]);
     setLoading(true);
@@ -534,7 +534,8 @@ const AiChatPage = () => {
           userId: getUserId(),
           conversationId: currentConversationId,
           model
-        }
+        },
+        timeout: 60000 // 60秒超时，防止长时间无响应
       });
 
       console.log('=== 前端响应数据 ===');
