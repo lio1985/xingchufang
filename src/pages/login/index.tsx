@@ -155,12 +155,21 @@ const LoginPage = () => {
             </View>
           </View>
 
-          {/* 提示信息 - 默认账号已隐藏 */}
-          {/* <View className="mt-8 p-4 bg-white/5 rounded-xl border border-white/10">
-            <Text className="text-white/80 text-sm font-medium mb-2">默认账号：</Text>
-            <Text className="text-white/60 text-xs mb-1">管理员账号：admin / 密码：admin123</Text>
-            <Text className="text-white/60 text-xs">普通用户：user / 密码：user123</Text>
-          </View> */}
+          {/* 审核测试账号提示 */}
+          <View className="mt-8 p-5 bg-emerald-500/15 rounded-2xl border border-emerald-500/30">
+            <Text className="text-emerald-400 text-base font-bold mb-3">微信审核专用测试账号</Text>
+            <View className="space-y-2">
+              <View className="flex items-center gap-3">
+                <View className="w-2 h-2 bg-emerald-400 rounded-full" />
+                <Text className="text-white/80 text-base">账号：lio1985</Text>
+              </View>
+              <View className="flex items-center gap-3">
+                <View className="w-2 h-2 bg-emerald-400 rounded-full" />
+                <Text className="text-white/80 text-base">密码：123456</Text>
+              </View>
+            </View>
+            <Text className="text-white/50 text-sm mt-4">使用此账号可体验全部功能</Text>
+          </View>
         </View>
       </View>
 
