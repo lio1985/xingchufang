@@ -144,12 +144,12 @@ const LoginPage = () => {
             </Text>
           </View>
 
-          {/* 提示信息 */}
-          <View className="mt-8 p-4 bg-white/5 rounded-xl border border-white/10">
+          {/* 提示信息 - 默认账号已隐藏 */}
+          {/* <View className="mt-8 p-4 bg-white/5 rounded-xl border border-white/10">
             <Text className="text-white/80 text-sm font-medium mb-2">默认账号：</Text>
             <Text className="text-white/60 text-xs mb-1">管理员账号：admin / 密码：admin123</Text>
             <Text className="text-white/60 text-xs">普通用户：user / 密码：user123</Text>
-          </View>
+          </View> */}
         </View>
       </View>
 
