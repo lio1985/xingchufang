@@ -3,45 +3,49 @@ import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { Network } from '@/network';
 
+// 平台检测
+const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
+const iconPath = '/static/icons';
+
 // 图标组件封装 - 使用本地 PNG
 const IconBell = () => (
-  <Image src="/static/icons/bell.png" style={{ width: '22px', height: '22px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/bell.png`} style={{ width: '22px', height: '22px' }} mode="aspectFit" />
 );
 const IconShield = () => (
-  <Image src="/static/icons/shield.png" style={{ width: '22px', height: '22px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/shield.png`} style={{ width: '22px', height: '22px' }} mode="aspectFit" />
 );
 const IconSettings = () => (
-  <Image src="/static/icons/settings.png" style={{ width: '22px', height: '22px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/settings.png`} style={{ width: '22px', height: '22px' }} mode="aspectFit" />
 );
 const IconLogOut = () => (
-  <Image src="/static/icons/logout.png" style={{ width: '22px', height: '22px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/logout.png`} style={{ width: '22px', height: '22px' }} mode="aspectFit" />
 );
 const IconUser = () => (
-  <Image src="/static/icons/user.png" style={{ width: '22px', height: '22px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/user.png`} style={{ width: '22px', height: '22px' }} mode="aspectFit" />
 );
 const IconLightbulb = () => (
-  <Image src="/static/icons/lightbulb.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/lightbulb.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 const IconSparkles = () => (
-  <Image src="/static/icons/sparkles.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/sparkles.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 const IconPenTool = () => (
-  <Image src="/static/icons/pentool.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/pentool.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 const IconTrendingUp = () => (
-  <Image src="/static/icons/trending.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/trending.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 const IconBookOpen = () => (
-  <Image src="/static/icons/book.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/book.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 const IconVideo = () => (
-  <Image src="/static/icons/video.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/video.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 const IconUsers = () => (
-  <Image src="/static/icons/users.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/users.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 const IconRecycle = () => (
-  <Image src="/static/icons/recycle.png" style={{ width: '28px', height: '28px' }} mode="aspectFit" />
+  <Image src={`${iconPath}/recycle.png`} style={{ width: '28px', height: '28px' }} mode="aspectFit" />
 );
 
 // 账号管理图标 - 暂时隐藏
