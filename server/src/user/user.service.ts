@@ -826,30 +826,14 @@ export class UserService {
   }
 
   /**
-   * 账号密码登录
-   * 固定账号：admin/admin123（管理员），user/user123（普通用户）
+   * 账号密码登录（支持注册用户）
    */
   async loginWithPassword(username: string, password: string): Promise<{ user: any; token: string }> {
     this.logger.log(`账号密码登录: ${username}`);
 
-    // 固定账号验证
-    const validAccounts: Record<string, { password: string; role: 'admin' | 'user'; nickname: string }> = {
-      'admin': { password: 'admin123', role: 'admin', nickname: '管理员' },
-      'user': { password: 'user123', role: 'user', nickname: '普通用户' },
-    };
-
-    const account = validAccounts[username];
-    if (!account) {
-      throw new HttpException('账号不存在', HttpStatus.UNAUTHORIZED);
-    }
-
-    if (account.password !== password) {
-      throw new HttpException('密码错误', HttpStatus.UNAUTHORIZED);
-    }
-
-    // 查找或创建用户
+    // 查找用户
     const openid = `pwd_${username}`;
-    let { data: existingUsers, error: findError } = await this.client
+    const { data: users, error: findError } = await this.client
       .from('users')
       .select('*')
       .eq('openid', openid)
@@ -860,38 +844,79 @@ export class UserService {
       throw new HttpException('数据库查询失败', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    let user: any;
-
-    if (!existingUsers || existingUsers.length === 0) {
-      // 创建新用户
-      const employeeId = await this.generateUniqueEmployeeId();
-      const now = new Date().toISOString();
-      const newUser = {
-        openid,
-        employee_id: employeeId,
-        nickname: account.nickname,
-        role: account.role,
-        status: 'active',
-        created_at: now,
-        updated_at: now,
+    // 检查用户是否存在
+    if (!users || users.length === 0) {
+      // 兼容旧固定账号
+      const validAccounts: Record<string, { password: string; role: 'admin' | 'user'; nickname: string }> = {
+        'admin': { password: 'admin123', role: 'admin', nickname: '管理员' },
+        'user': { password: 'user123', role: 'user', nickname: '普通用户' },
       };
-
-      const { data: createdUsers, error: createError } = await this.client
-        .from('users')
-        .insert(newUser)
-        .select()
-        .single();
-
-      if (createError) {
-        this.logger.error('创建用户失败:', createError);
-        throw new HttpException('创建用户失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      const account = validAccounts[username];
+      if (account && account.password === password) {
+        // 创建旧账号用户
+        const employeeId = await this.generateUniqueEmployeeId();
+        const now = new Date().toISOString();
+        const newUser = {
+          openid,
+          employee_id: employeeId,
+          nickname: account.nickname,
+          role: account.role,
+          status: 'active',
+          password,
+          created_at: now,
+          updated_at: now,
+        };
+        const { data: createdUser, error: createError } = await this.client
+          .from('users')
+          .insert(newUser)
+          .select()
+          .single();
+        if (createError) {
+          this.logger.error('创建用户失败:', createError);
+          throw new HttpException('登录失败', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        // 生成 JWT token
+        const tokenPayload: Omit<TokenPayload, 'sub'> = {
+          userId: createdUser.id,
+          openid: createdUser.openid,
+          role: createdUser.role,
+          status: createdUser.status,
+        };
+        const token = JwtUtil.generateToken(tokenPayload);
+        return {
+          user: {
+            id: createdUser.id,
+            openid: createdUser.openid,
+            employeeId: createdUser.employee_id,
+            nickname: createdUser.nickname,
+            avatarUrl: createdUser.avatar_url,
+            role: createdUser.role,
+            status: createdUser.status,
+          },
+          token,
+        };
       }
+      throw new HttpException('账号不存在', HttpStatus.UNAUTHORIZED);
+    }
 
-      user = createdUsers;
-      this.logger.log(`新账号用户创建成功: ${user.id}`);
-    } else {
-      user = existingUsers[0];
-      this.logger.log(`账号用户登录: ${user.id}`);
+    const user = users[0];
+
+    // 验证密码
+    if (user.password !== password) {
+      throw new HttpException('密码错误', HttpStatus.UNAUTHORIZED);
+    }
+
+    // 检查用户状态
+    if (user.status === 'pending') {
+      throw new HttpException('账号正在等待管理员审核，请耐心等待', HttpStatus.FORBIDDEN);
+    }
+
+    if (user.status === 'disabled') {
+      throw new HttpException('账号已被禁用，请联系管理员', HttpStatus.FORBIDDEN);
+    }
+
+    if (user.status === 'deleted') {
+      throw new HttpException('账号已注销', HttpStatus.FORBIDDEN);
     }
 
     // 更新最后登录时间
@@ -921,5 +946,146 @@ export class UserService {
       },
       token,
     };
+  }
+
+  /**
+   * 用户注册
+   */
+  async register(username: string, password: string, nickname?: string): Promise<{ user: any }> {
+    this.logger.log(`用户注册: ${username}`);
+
+    // 验证账号和密码
+    if (!username || username.length < 3) {
+      throw new HttpException('账号长度至少3位', HttpStatus.BAD_REQUEST);
+    }
+    if (!password || password.length < 6) {
+      throw new HttpException('密码长度至少6位', HttpStatus.BAD_REQUEST);
+    }
+
+    // 检查账号是否已存在
+    const openid = `pwd_${username}`;
+    const { data: existingUsers, error: findError } = await this.client
+      .from('users')
+      .select('*')
+      .eq('openid', openid)
+      .limit(1);
+
+    if (findError) {
+      this.logger.error('查询用户失败:', findError);
+      throw new HttpException('数据库查询失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    if (existingUsers && existingUsers.length > 0) {
+      throw new HttpException('账号已被注册', HttpStatus.CONFLICT);
+    }
+
+    // 创建新用户，状态为 pending（等待审核）
+    const employeeId = await this.generateUniqueEmployeeId();
+    const now = new Date().toISOString();
+    const newUser = {
+      openid,
+      employee_id: employeeId,
+      nickname: nickname || username,
+      role: 'user',
+      status: 'pending', // 新注册用户需要审核
+      password, // 明文存储密码（生产环境应加密）
+      created_at: now,
+      updated_at: now,
+    };
+
+    const { data: createdUser, error: createError } = await this.client
+      .from('users')
+      .insert(newUser)
+      .select()
+      .single();
+
+    if (createError) {
+      this.logger.error('创建用户失败:', createError);
+      throw new HttpException('注册失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    this.logger.log(`新用户注册成功: ${createdUser.id}`);
+
+    return {
+      user: {
+        id: createdUser.id,
+        employeeId: createdUser.employee_id,
+        nickname: createdUser.nickname,
+        role: createdUser.role,
+        status: createdUser.status,
+      },
+    };
+  }
+
+  /**
+   * 修改密码
+   */
+  async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void> {
+    this.logger.log(`修改密码: ${userId}`);
+
+    // 验证新密码
+    if (!newPassword || newPassword.length < 6) {
+      throw new HttpException('新密码长度至少6位', HttpStatus.BAD_REQUEST);
+    }
+
+    // 查询用户
+    const { data: user, error: findError } = await this.client
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (findError || !user) {
+      throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
+    }
+
+    // 验证旧密码
+    if (user.password !== oldPassword) {
+      throw new HttpException('原密码错误', HttpStatus.UNAUTHORIZED);
+    }
+
+    // 更新密码
+    const { error: updateError } = await this.client
+      .from('users')
+      .update({ password: newPassword, updated_at: new Date().toISOString() })
+      .eq('id', userId);
+
+    if (updateError) {
+      this.logger.error('修改密码失败:', updateError);
+      throw new HttpException('修改密码失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    this.logger.log(`密码修改成功: ${userId}`);
+  }
+
+  /**
+   * 管理员审核用户
+   */
+  async auditUser(userId: string, status: 'active' | 'disabled', operatorId: string): Promise<void> {
+    this.logger.log(`审核用户: ${userId}, 状态: ${status}, 操作员: ${operatorId}`);
+
+    // 检查操作员是否为管理员
+    const { data: operator, error: operatorError } = await this.client
+      .from('users')
+      .select('role')
+      .eq('id', operatorId)
+      .single();
+
+    if (operatorError || !operator || operator.role !== 'admin') {
+      throw new HttpException('无权限操作', HttpStatus.FORBIDDEN);
+    }
+
+    // 更新用户状态
+    const { error: updateError } = await this.client
+      .from('users')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', userId);
+
+    if (updateError) {
+      this.logger.error('审核用户失败:', updateError);
+      throw new HttpException('审核失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    this.logger.log(`用户审核完成: ${userId} -> ${status}`);
   }
 }

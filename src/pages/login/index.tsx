@@ -144,6 +144,17 @@ const LoginPage = () => {
             </Text>
           </View>
 
+          {/* 注册入口 */}
+          <View className="flex flex-row items-center justify-center mt-6 gap-4">
+            <View onClick={() => Taro.navigateTo({ url: '/pages/register/index' })}>
+              <Text className="text-blue-400 text-sm">注册账号</Text>
+            </View>
+            <Text className="text-white/30">|</Text>
+            <View onClick={() => Taro.navigateTo({ url: '/pages/change-password/index' })}>
+              <Text className="text-blue-400 text-sm">修改密码</Text>
+            </View>
+          </View>
+
           {/* 提示信息 - 默认账号已隐藏 */}
           {/* <View className="mt-8 p-4 bg-white/5 rounded-xl border border-white/10">
             <Text className="text-white/80 text-sm font-medium mb-2">默认账号：</Text>

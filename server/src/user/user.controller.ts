@@ -118,6 +118,99 @@ export class UserController {
   }
 
   /**
+   * 用户注册
+   */
+  @Post('register')
+  async register(@Body() body: { username: string; password: string; nickname?: string }) {
+    console.log('收到注册请求:', { username: body.username });
+
+    if (!body.username || !body.password) {
+      return {
+        success: false,
+        code: 400,
+        msg: '账号和密码不能为空',
+        data: null
+      };
+    }
+
+    try {
+      const result = await this.userService.register(body.username, body.password, body.nickname);
+
+      return {
+        success: true,
+        code: 200,
+        msg: '注册成功，请等待管理员审核',
+        data: result
+      };
+    } catch (error) {
+      console.error('注册失败:', error);
+      return {
+        success: false,
+        code: error.status || 500,
+        msg: error.message || '注册失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 修改密码
+   */
+  @Post('change-password')
+  async changePassword(@Request() req, @Body() body: { oldPassword: string; newPassword: string }) {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        success: false,
+        code: 401,
+        msg: '未授权',
+        data: null
+      };
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await this.userService.validateToken(token);
+
+    if (!payload) {
+      return {
+        success: false,
+        code: 401,
+        msg: 'Token 无效或已过期',
+        data: null
+      };
+    }
+
+    if (!body.oldPassword || !body.newPassword) {
+      return {
+        success: false,
+        code: 400,
+        msg: '原密码和新密码不能为空',
+        data: null
+      };
+    }
+
+    try {
+      await this.userService.changePassword(payload.sub, body.oldPassword, body.newPassword);
+
+      return {
+        success: true,
+        code: 200,
+        msg: '密码修改成功',
+        data: null
+      };
+    } catch (error) {
+      console.error('修改密码失败:', error);
+      return {
+        success: false,
+        code: error.status || 500,
+        msg: error.message || '修改密码失败',
+        data: null
+      };
+    }
+  }
+
+  /**
    * 获取当前用户信息
    */
   @Get('profile')
@@ -304,6 +397,84 @@ export class UserController {
       return {
         code: 500,
         msg: '获取部门列表失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 审核用户（管理员功能）
+   */
+  @Post('audit')
+  async auditUser(
+    @Request() req,
+    @Body() body: { userId: string; status: 'active' | 'disabled' }
+  ) {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        success: false,
+        code: 401,
+        msg: '未授权',
+        data: null
+      };
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await this.userService.validateToken(token);
+
+    if (!payload) {
+      return {
+        success: false,
+        code: 401,
+        msg: 'Token 无效或已过期',
+        data: null
+      };
+    }
+
+    if (payload.role !== 'admin') {
+      return {
+        success: false,
+        code: 403,
+        msg: '权限不足，仅管理员可审核用户',
+        data: null
+      };
+    }
+
+    if (!body.userId || !body.status) {
+      return {
+        success: false,
+        code: 400,
+        msg: '用户ID和状态不能为空',
+        data: null
+      };
+    }
+
+    if (body.status !== 'active' && body.status !== 'disabled') {
+      return {
+        success: false,
+        code: 400,
+        msg: '状态只能是 active 或 disabled',
+        data: null
+      };
+    }
+
+    try {
+      await this.userService.auditUser(body.userId, body.status, payload.sub);
+
+      return {
+        success: true,
+        code: 200,
+        msg: body.status === 'active' ? '审核通过' : '已禁用该用户',
+        data: null
+      };
+    } catch (error) {
+      console.error('审核用户失败:', error);
+      return {
+        success: false,
+        code: error.status || 500,
+        msg: error.message || '审核失败',
         data: null
       };
     }

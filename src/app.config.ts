@@ -2,6 +2,8 @@ export default defineAppConfig({
   pages: [
     'pages/index/index',
     'pages/login/index',
+    'pages/register/index',
+    'pages/change-password/index',
     'pages/quick-note/index',
     'pages/knowledge-share/index',
     'pages/knowledge-share/create',
