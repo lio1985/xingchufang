@@ -8,11 +8,31 @@ import {
 } from 'lucide-react-taro';
 
 // 图标组件封装 - 使用 lucide-react-taro
-const IconBell = () => <Bell size={22} color="white" />;
-const IconShield = () => <Shield size={22} color="white" />;
-const IconSettings = () => <Settings size={22} color="white" />;
-const IconLogOut = () => <LogOut size={22} color="#94a3b8" />;
-const IconUser = () => <User size={22} color="white" />;
+const IconBell = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Bell size={22} color="white" />
+  </View>
+);
+const IconShield = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Shield size={22} color="white" />
+  </View>
+);
+const IconSettings = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Settings size={22} color="white" />
+  </View>
+);
+const IconLogOut = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <LogOut size={22} color="#94a3b8" />
+  </View>
+);
+const IconUser = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <User size={22} color="white" />
+  </View>
+);
 const IconLightbulb = () => (
   <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     <Lightbulb size={28} color="white" />
