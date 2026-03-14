@@ -8,11 +8,12 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!username || !password) {
       Taro.showToast({
-        title: '请输入用户名和密码',
+        title: '请输入账号和密码',
         icon: 'none'
       });
       return;
@@ -133,39 +134,46 @@ const LoginPage = () => {
   return (
     <View className="login-page">
       <View className="login-container">
-        {/* Logo */}
+        {/* Logo 区域 */}
         <View className="logo-section">
-          <View className="logo-wrapper">
-            <Text className="block logo-text">星厨房</Text>
+          <View className="logo-box">
+            <View className="logo-content">
+              <View className="logo-icon">👨‍🍳</View>
+              <View className="logo-text-wrapper">
+                <Text className="block logo-title">星厨房</Text>
+                <Text className="block logo-subtitle">Star Kitchen</Text>
+              </View>
+            </View>
           </View>
-          <Text className="block subtitle">创作助手</Text>
         </View>
 
         {/* 登录表单 */}
         <View className="form-section">
           <View className="input-group">
-            <View className="input-wrapper">
-              <Input
-                className="input"
-                placeholder="请输入用户名"
-                value={username}
-                onInput={(e) => setUsername(e.detail.value)}
-                placeholderClass="input-placeholder"
-              />
-            </View>
+            <Input
+              className="input"
+              placeholder="请输入账号"
+              value={username}
+              onInput={(e) => setUsername(e.detail.value)}
+              placeholderClass="input-placeholder"
+            />
           </View>
 
-          <View className="input-group">
-            <View className="input-wrapper">
-              <Input
-                className="input"
-                password
-                placeholder="请输入密码"
-                value={password}
-                onInput={(e) => setPassword(e.detail.value)}
-                placeholderClass="input-placeholder"
-              />
-            </View>
+          <View className="input-group password-group">
+            <Input
+              className="input"
+              password={!showPassword}
+              placeholder="请输入密码"
+              value={password}
+              onInput={(e) => setPassword(e.detail.value)}
+              placeholderClass="input-placeholder"
+            />
+            <Text
+              className="show-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? '隐藏密码' : '显示密码'}
+            </Text>
           </View>
 
           <Button
@@ -177,11 +185,18 @@ const LoginPage = () => {
           </Button>
 
           <View className="footer-links">
-            <Text className="block footer-text">
-              还没有账号？
-              <Text className="link" onClick={() => Taro.navigateTo({ url: '/pages/register/index' })}>
-                立即注册
-              </Text>
+            <Text
+              className="block footer-link"
+              onClick={() => Taro.navigateTo({ url: '/pages/register/index' })}
+            >
+              注册账号
+            </Text>
+            <Text className="block footer-divider">|</Text>
+            <Text
+              className="block footer-link"
+              onClick={() => Taro.navigateTo({ url: '/pages/change-password/index' })}
+            >
+              修改密码
             </Text>
           </View>
         </View>
