@@ -39,9 +39,13 @@ export class ViralController {
   }
 
   @Post('analyze')
-  async analyzeContent(@Body() body: { transcript: string; platform: string }): Promise<{ code: number; msg: string; data: any }> {
-    console.log('🔍 [controller] 收到分析请求:', { transcriptLength: body.transcript.length, platform: body.platform });
-    const result = await this.viralService.analyzeContent(body.transcript, body.platform);
+  async analyzeContent(@Body() body: { transcript?: string; content?: string; platform?: string }): Promise<{ code: number; msg: string; data: any }> {
+    const text = body.transcript || body.content || '';
+    console.log('🔍 [controller] 收到分析请求:', { transcriptLength: text.length, platform: body.platform });
+    if (!text) {
+      return { code: 400, msg: '分析内容不能为空', data: null };
+    }
+    const result = await this.viralService.analyzeContent(text, body.platform || '通用');
     return { code: 200, msg: 'success', data: result };
   }
 

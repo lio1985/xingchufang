@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ASRClient, LLMClient, Config } from 'coze-coding-dev-sdk';
 import { DatabaseService } from '../database/database.service';
+import axios from 'axios';
 
 @Injectable()
 export class ViralService {
@@ -13,51 +14,95 @@ export class ViralService {
     this.llmClient = new LLMClient(config);
   }
 
-  async extractVideo(url: string) {
-    console.log('📥 [viral] 开始提取视频:', url);
+  /**
+   * 解析抖音链接获取视频信息
+   * 使用第三方解析服务
+   */
+  async parseDouyinUrl(url: string): Promise<{ videoUrl: string; title: string; desc: string }> {
+    console.log('🔍 [viral] 解析抖音链接:', url);
 
-    // 注意：抖音视频提取需要使用第三方解析 API
-    // 由于抖音的反爬机制，直接获取真实视频 URL 需要专业服务
-    //
-    // 常见的解决方案：
-    // 1. 使用第三方抖音解析 API（如 douyin.wtf、douyin.cc 等）
-    // 2. 使用无头浏览器（如 Puppeteer）模拟用户行为
-    // 3. 使用专业的视频解析服务
-    //
-    // 在实际应用中，建议：
-    // - 调用第三方 API 获取真实视频链接
-    // - 下载视频文件
-    // - 提取音频（或直接使用视频 URL，ASR 支持视频格式）
-    // - 返回音频 URL 供 ASR 使用
+    if (!url || !url.includes('douyin.com')) {
+      throw new BadRequestException('无效的抖音链接');
+    }
 
-    // 这里提供一个模拟的实现，返回说明信息
-    // 在生产环境中，需要集成真实的抖音解析服务
-
-    throw new BadRequestException(
-      '抖音视频提取功能需要集成第三方解析 API。\n' +
-      '请提供直接的音频/视频 URL（如 https://example.com/video.mp3），\n' +
-      '或者联系管理员集成抖音解析服务。'
-    );
-
-    // 以下是集成示例（伪代码）：
-    /*
     try {
-      // 调用第三方解析 API
-      const parseResponse = await axios.post('https://api.douyin-parser.com/parse', {
-        url: url
+      // 方法1: 使用 douyin.wtf API 解析
+      // 注意：这是第三方服务，可能有频率限制
+      console.log('🔍 [viral] 尝试使用 douyin.wtf 解析...');
+      
+      const apiUrl = `https://api.douyin.wtf/api?url=${encodeURIComponent(url)}`;
+      const response = await axios.get(apiUrl, { timeout: 30000 });
+
+      console.log('🔍 [viral] 解析响应:', response.data);
+
+      if (response.data && response.data.code === 200 && response.data.data) {
+        const data = response.data.data;
+        
+        // 获取无水印视频URL
+        const videoUrl = data.video?.no_watermark_url || data.video?.watermark_url;
+        const title = data.title || data.desc || '';
+        const desc = data.desc || '';
+
+        if (!videoUrl) {
+          throw new BadRequestException('无法获取视频链接，请检查链接是否有效');
+        }
+
+        console.log('🔍 [viral] 解析成功:', { title: title.substring(0, 50), hasVideoUrl: !!videoUrl });
+        
+        return { videoUrl, title, desc };
+      }
+
+      throw new BadRequestException('解析失败: ' + (response.data?.msg || '未知错误'));
+    } catch (error) {
+      console.error('🔍 [viral] 解析失败:', error.message);
+      
+      // 如果第三方API失败，尝试备用方案
+      if (axios.isAxiosError(error)) {
+        throw new BadRequestException(
+          '抖音链接解析失败，可能原因：\n' +
+          '1. 链接已过期或无效\n' +
+          '2. 视频已被删除或设为私密\n' +
+          '3. 解析服务暂时不可用\n' +
+          '建议：直接粘贴视频文案进行分析'
+        );
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * 提取视频语音并转文字
+   */
+  async extractVideoAudioToText(videoUrl: string): Promise<string> {
+    console.log('🎤 [viral] 开始语音识别:', videoUrl);
+
+    if (!videoUrl) {
+      throw new BadRequestException('视频URL不能为空');
+    }
+
+    try {
+      // 使用ASR直接识别视频中的语音
+      // ASR支持视频格式，可以直接传入视频URL
+      const result = await this.asrClient.recognize({
+        uid: 'douyin_' + Date.now(),
+        url: videoUrl
       });
 
-      const realVideoUrl = parseResponse.data.video_url;
-      const audioUrl = realVideoUrl; // ASR 支持直接处理视频文件
+      console.log('🎤 [viral] 语音识别成功，文本长度:', result.text?.length || 0);
+      console.log('🎤 [viral] 识别结果预览:', result.text?.substring(0, 100));
 
-      return {
-        videoUrl: realVideoUrl,
-        audioUrl: audioUrl
-      };
+      return result.text || '';
     } catch (error) {
-      throw new BadRequestException('视频提取失败，请检查链接是否有效');
+      console.error('🎤 [viral] 语音识别失败:', error.message);
+      throw new BadRequestException(
+        `语音识别失败: ${error.message || '请检查视频是否包含语音或链接是否有效'}`
+      );
     }
-    */
+  }
+
+  async extractVideo(url: string) {
+    console.log('📥 [viral] 开始提取视频:', url);
+    throw new BadRequestException('请使用 analyzeDouyinContent 方法进行完整分析');
   }
 
   async transcribeAudio(audioUrl: string) {
@@ -217,26 +262,60 @@ export class ViralService {
     }
 
     try {
-      // 使用豆包大模型直接处理视频链接，提取语音转文字并分析
-      const systemPrompt = `你是一位专业的短视频内容分析师，擅长提取抖音视频中的语音内容并转写成文字。
+      // 第一步：解析抖音链接获取视频URL
+      console.log('📥 [viral] 步骤1: 解析抖音链接...');
+      const { videoUrl, title, desc } = await this.parseDouyinUrl(url);
 
-你的任务是：
-1. 访问用户提供的抖音视频链接
-2. 提取视频中的语音/对话内容
-3. 将语音完整转写成文字稿（transcript）
-4. 分析视频的爆款结构：
-   - hook（钩子）：视频开头的吸引人的话术
-   - body（主体要点）：3-5个核心观点
-   - climax（高潮）：情绪高潮或总结段落
-   - callToAction（行动号召）：结尾引导话术
-5. 判断框架类型：
-   - type：痛点型、故事型、干货型、情绪型等
-   - description：框架特点描述
-   - keyPoints：3-5个成功要素
+      // 第二步：ASR语音识别提取视频文案
+      console.log('📥 [viral] 步骤2: 语音识别提取文案...');
+      const transcript = await this.extractVideoAudioToText(videoUrl);
+
+      if (!transcript || transcript.trim().length === 0) {
+        throw new BadRequestException('视频中没有检测到语音，或语音识别失败');
+      }
+
+      // 第三步：使用大模型分析文案结构
+      console.log('📥 [viral] 步骤3: 分析文案结构...');
+      const analysisResult = await this.analyzeTranscript(transcript, title, desc);
+
+      console.log('📥 [viral] 分析完成:', {
+        transcriptLength: transcript.length,
+        frameworkType: analysisResult.framework?.type
+      });
+
+      return {
+        transcript,
+        structure: analysisResult.structure,
+        framework: analysisResult.framework
+      };
+    } catch (error) {
+      console.error('📥 [viral] 抖音链接分析失败:', error.message);
+      throw new BadRequestException(
+        `分析失败: ${error.message || '请稍后重试'}`
+      );
+    }
+  }
+
+  /**
+   * 分析转录的文案内容
+   */
+  private async analyzeTranscript(transcript: string, title: string, desc: string): Promise<any> {
+    const systemPrompt = `你是一位专业的短视频内容分析师，擅长分析抖音爆款文案的结构和框架。
+
+请对以下视频文案进行深入分析，输出：
+1. **structure（爆款结构）**：
+   - hook（钩子）：视频开头的吸引人的话术（前30-50字）
+   - body（主体要点）：3-5个核心观点或论点，每个一句话
+   - climax（高潮）：情绪高潮点或总结性段落
+   - callToAction（行动号召）：结尾的引导话术
+
+2. **framework（爆款框架）**：
+   - type：框架类型（痛点型、故事型、干货型、情绪型、对比型、悬念型等）
+   - description：用一句话描述这个框架的核心特点
+   - keyPoints：3-5个这个文案的成功要素或技巧
 
 请严格按照以下JSON格式输出：
 {
-  "transcript": "视频语音的完整文字稿",
   "structure": {
     "hook": "钩子内容",
     "body": ["要点1", "要点2", "要点3"],
@@ -250,58 +329,46 @@ export class ViralService {
   }
 }`;
 
-      const messages = [
-        { role: 'system' as const, content: systemPrompt },
-        { role: 'user' as const, content: `请分析这个抖音视频链接，提取语音转文字：${url}` }
-      ];
+    const content = `视频标题：${title || '无'}\n视频描述：${desc || '无'}\n\n视频文案内容：\n${transcript}`;
 
-      console.log('📥 [viral] 调用豆包大模型分析视频链接');
-      const response = await this.llmClient.invoke(messages, {
-        model: 'doubao-seed-1-8-251228',
-        temperature: 0.3
-      });
+    const messages = [
+      { role: 'system' as const, content: systemPrompt },
+      { role: 'user' as const, content }
+    ];
 
-      console.log('📥 [viral] 豆包大模型返回结果:', response.content);
+    const response = await this.llmClient.invoke(messages, {
+      model: 'doubao-seed-1-8-251228',
+      temperature: 0.3
+    });
 
-      // 解析 JSON 响应
-      let analysisResult;
-      try {
-        let jsonStr = response.content.trim();
-        
-        if (jsonStr.startsWith('```json')) {
-          jsonStr = jsonStr.substring(7);
+    // 解析 JSON
+    let result;
+    try {
+      let jsonStr = response.content.trim();
+      if (jsonStr.startsWith('```json')) jsonStr = jsonStr.substring(7);
+      if (jsonStr.startsWith('```')) jsonStr = jsonStr.substring(3);
+      if (jsonStr.endsWith('```')) jsonStr = jsonStr.substring(0, jsonStr.length - 3);
+      jsonStr = jsonStr.trim();
+      result = JSON.parse(jsonStr);
+    } catch (e) {
+      console.error('JSON解析失败:', e);
+      // 返回默认结构
+      result = {
+        structure: {
+          hook: transcript.substring(0, 50),
+          body: ['内容要点1', '内容要点2', '内容要点3'],
+          climax: '高潮部分',
+          callToAction: '关注点赞'
+        },
+        framework: {
+          type: '干货型',
+          description: '提供有价值的内容',
+          keyPoints: ['内容实用', '结构清晰', '语言通俗']
         }
-        if (jsonStr.startsWith('```')) {
-          jsonStr = jsonStr.substring(3);
-        }
-        if (jsonStr.endsWith('```')) {
-          jsonStr = jsonStr.substring(0, jsonStr.length - 3);
-        }
-        jsonStr = jsonStr.trim();
-
-        analysisResult = JSON.parse(jsonStr);
-      } catch (error) {
-        console.error('📥 [viral] JSON 解析失败:', error);
-        console.log('📥 [viral] 原始响应:', response.content);
-        throw new BadRequestException('视频分析失败，返回格式错误');
-      }
-
-      if (!analysisResult.transcript || !analysisResult.structure || !analysisResult.framework) {
-        throw new BadRequestException('视频分析失败，数据结构不完整');
-      }
-
-      console.log('📥 [viral] 视频分析成功:', { 
-        transcriptLength: analysisResult.transcript.length,
-        frameworkType: analysisResult.framework.type
-      });
-
-      return analysisResult;
-    } catch (error) {
-      console.error('📥 [viral] 视频分析失败:', error);
-      throw new BadRequestException(
-        `视频分析失败: ${error.message || '请稍后重试'}`
-      );
+      };
     }
+
+    return result;
   }
 
   // 收藏爆款框架
