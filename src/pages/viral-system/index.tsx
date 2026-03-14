@@ -2,9 +2,10 @@ import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
-import { TrendingUp, Link2, Copy, RefreshCw, Heart, Plus, Check, FileText, BookOpen, Sparkles, Loader } from 'lucide-react-taro'
+import { TrendingUp, Link2, Copy, RefreshCw, Heart, Plus, Check, FileText, BookOpen, Sparkles, Loader, Type } from 'lucide-react-taro'
 
 type Step = 'input' | 'analyzing' | 'completed'
+type InputMode = 'link' | 'text'
 
 interface ViralAnalysis {
   transcript: string
@@ -23,7 +24,9 @@ interface ViralAnalysis {
 
 export default function ViralSystemPage() {
   const [step, setStep] = useState<Step>('input')
+  const [inputMode, setInputMode] = useState<InputMode>('text')
   const [douyinUrl, setDouyinUrl] = useState('')
+  const [directText, setDirectText] = useState('')
   const [currentAnalysis, setCurrentAnalysis] = useState<ViralAnalysis | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [isFavorited, setIsFavorited] = useState(false)
@@ -44,16 +47,30 @@ export default function ViralSystemPage() {
     }
   })
 
-  // 处理抖音链接分析
-  const handleAnalyzeDouyin = async () => {
-    if (!douyinUrl.trim()) {
-      showToast({ title: '请输入抖音链接', icon: 'none' })
-      return
-    }
+  // 处理分析（支持链接和直接文本）
+  const handleAnalyze = async () => {
+    if (inputMode === 'link') {
+      // 链接模式
+      if (!douyinUrl.trim()) {
+        showToast({ title: '请输入抖音链接', icon: 'none' })
+        return
+      }
 
-    if (!douyinUrl.includes('douyin.com') && !douyinUrl.includes('v.douyin.com')) {
-      showToast({ title: '请输入有效的抖音链接', icon: 'none' })
-      return
+      if (!douyinUrl.includes('douyin.com') && !douyinUrl.includes('v.douyin.com')) {
+        showToast({ title: '请输入有效的抖音链接（以https://v.douyin.com开头）', icon: 'none' })
+        return
+      }
+    } else {
+      // 文案模式
+      if (!directText.trim()) {
+        showToast({ title: '请输入文案内容', icon: 'none' })
+        return
+      }
+
+      if (directText.trim().length < 10) {
+        showToast({ title: '文案内容太短，至少需要10个字符', icon: 'none' })
+        return
+      }
     }
 
     setIsProcessing(true)
@@ -61,7 +78,8 @@ export default function ViralSystemPage() {
     setProgress(0)
 
     try {
-      console.log('🎬 开始分析抖音视频:', { url: douyinUrl })
+      console.log(inputMode === 'link' ? '🎬 开始分析抖音视频:' : '📝 开始分析文案:', 
+        inputMode === 'link' ? { url: douyinUrl } : { textLength: directText.length })
 
       // 模拟进度更新
       const progressInterval = setInterval(() => {
@@ -74,23 +92,37 @@ export default function ViralSystemPage() {
         })
       }, 500)
 
-      const analyzeRes = await Network.request({
-        url: '/api/viral/analyze-douyin',
-        method: 'POST',
-        data: { url: douyinUrl }
-      })
+      let analyzeRes
+      if (inputMode === 'link') {
+        // 链接模式 - 调用抖音分析接口
+        analyzeRes = await Network.request({
+          url: '/api/viral/analyze-douyin',
+          method: 'POST',
+          data: { url: douyinUrl }
+        })
+      } else {
+        // 文案模式 - 直接分析文案内容
+        analyzeRes = await Network.request({
+          url: '/api/viral/analyze',
+          method: 'POST',
+          data: { 
+            transcript: directText,
+            platform: 'douyin'
+          }
+        })
+      }
 
       clearInterval(progressInterval)
       setProgress(100)
 
-      console.log('🎬 抖音视频分析响应:', analyzeRes.data)
+      console.log(inputMode === 'link' ? '🎬 抖音视频分析响应:' : '📝 文案分析响应:', analyzeRes.data)
 
       if (analyzeRes.data?.code !== 200) {
         throw new Error(analyzeRes.data?.msg || '分析失败')
       }
 
       const analysis = {
-        transcript: analyzeRes.data.data.transcript,
+        transcript: analyzeRes.data.data.transcript || directText,
         structure: analyzeRes.data.data.structure,
         framework: analyzeRes.data.data.framework
       }
@@ -174,6 +206,7 @@ export default function ViralSystemPage() {
   // 重置
   const handleReset = () => {
     setDouyinUrl('')
+    setDirectText('')
     setCurrentAnalysis(null)
     setIsFavorited(false)
     setStep('input')
@@ -293,35 +326,86 @@ export default function ViralSystemPage() {
         {/* 输入区域 */}
         {step === 'input' && (
           <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
-            <View className="flex items-center gap-2 mb-4">
-              <View className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
-                <Link2 size={18} color="#f87171" strokeWidth={2.5} />
+            {/* 模式切换 */}
+            <View className="flex items-center gap-2 mb-5 bg-slate-700/50 rounded-xl p-1">
+              <View
+                className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-2 transition-all ${
+                  inputMode === 'text'
+                    ? 'bg-gradient-to-r from-red-500 to-orange-500'
+                    : 'bg-transparent'
+                }`}
+                onClick={() => setInputMode('text')}
+              >
+                <Type size={16} color={inputMode === 'text' ? '#fff' : '#94a3b8'} />
+                <Text className={`text-sm font-medium ${inputMode === 'text' ? 'text-white' : 'text-slate-400'}`}>
+                  粘贴文案
+                </Text>
               </View>
-              <Text className="block text-lg font-bold text-white">输入抖音分享链接</Text>
+              <View
+                className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-2 transition-all ${
+                  inputMode === 'link'
+                    ? 'bg-gradient-to-r from-red-500 to-orange-500'
+                    : 'bg-transparent'
+                }`}
+                onClick={() => setInputMode('link')}
+              >
+                <Link2 size={16} color={inputMode === 'link' ? '#fff' : '#94a3b8'} />
+                <Text className={`text-sm font-medium ${inputMode === 'link' ? 'text-white' : 'text-slate-400'}`}>
+                  抖音链接
+                </Text>
+              </View>
             </View>
 
+            {/* 标题 */}
+            <View className="flex items-center gap-2 mb-4">
+              <View className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
+                {inputMode === 'link' ? (
+                  <Link2 size={18} color="#f87171" strokeWidth={2.5} />
+                ) : (
+                  <Type size={18} color="#f87171" strokeWidth={2.5} />
+                )}
+              </View>
+              <Text className="block text-lg font-bold text-white">
+                {inputMode === 'link' ? '输入抖音分享链接' : '粘贴抖音文案'}
+              </Text>
+            </View>
+
+            {/* 输入框 */}
             <View className="bg-slate-700/60 rounded-2xl p-4 mb-4">
-              <Textarea
-                className="w-full bg-transparent text-slate-200 text-base leading-relaxed"
-                placeholder="请输入抖音视频分享链接..."
-                value={douyinUrl}
-                onInput={(e) => setDouyinUrl(e.detail.value)}
-                maxlength={500}
-                style={{ minHeight: '100px' }}
-              />
+              {inputMode === 'link' ? (
+                <Textarea
+                  className="w-full bg-transparent text-slate-200 text-base leading-relaxed"
+                  placeholder="请输入抖音视频分享链接，如：https://v.douyin.com/xxxxx"
+                  value={douyinUrl}
+                  onInput={(e) => setDouyinUrl(e.detail.value)}
+                  maxlength={500}
+                  style={{ minHeight: '100px' }}
+                />
+              ) : (
+                <Textarea
+                  className="w-full bg-transparent text-slate-200 text-base leading-relaxed"
+                  placeholder="请粘贴抖音视频的文案内容...&#10;例如：8.74 这样的窗帘文案，一定有流量 AI合拍也太好玩了吧 #AI窗帘店的财富祝福"
+                  value={directText}
+                  onInput={(e) => setDirectText(e.detail.value)}
+                  maxlength={2000}
+                  style={{ minHeight: '150px' }}
+                />
+              )}
             </View>
 
             <Text className="block text-xs text-slate-400 mb-4">
-              💡 系统将自动提取视频文字内容并进行爆款分析
+              {inputMode === 'link' 
+                ? '💡 系统将自动提取视频文字内容并进行爆款分析（暂仅支持文案模式）'
+                : '💡 系统将对您粘贴的文案进行爆款结构分析'}
             </Text>
 
             <View
               className={`py-4 rounded-xl text-center transition-all ${
-                isProcessing || !douyinUrl.trim()
+                isProcessing || (inputMode === 'link' ? !douyinUrl.trim() : !directText.trim())
                   ? 'bg-slate-700 text-slate-400'
                   : 'bg-gradient-to-r from-red-500 to-orange-500 text-white active:scale-[0.98]'
               }`}
-              onClick={!isProcessing ? handleAnalyzeDouyin : undefined}
+              onClick={!isProcessing ? handleAnalyze : undefined}
             >
               {isProcessing ? (
                 <View className="flex items-center justify-center gap-2">
