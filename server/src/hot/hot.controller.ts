@@ -6,13 +6,59 @@ export class HotController {
   constructor(private readonly hotService: HotService) {}
 
   /**
+   * 获取所有平台热点（统一接口）
+   * GET /api/hot/all
+   *
+   * 返回格式：
+   * {
+   *   "success": true,
+   *   "message": "ok",
+   *   "data": {
+   *     "updateTime": "2026-03-14 21:00:00",
+   *     "platforms": [
+   *       {
+   *         "platform": "微博",
+   *         "icon": "weibo",
+   *         "list": [...]
+   *       }
+   *     ]
+   *   }
+   * }
+   */
+  @Get('all')
+  async getAllHot() {
+    console.log('[HotController] 获取所有平台热点');
+
+    try {
+      const result = await this.hotService.getAllHot();
+
+      return {
+        success: true,
+        message: 'ok',
+        data: result
+      };
+    } catch (error: any) {
+      console.error('[HotController] 获取所有平台热点失败:', error);
+
+      return {
+        success: false,
+        message: error.message || '热点获取失败',
+        data: {
+          updateTime: new Date().toISOString(),
+          platforms: []
+        }
+      };
+    }
+  }
+
+  /**
    * 获取热点列表（统一接口）
    * GET /api/hot/list
-   * 
+   *
    * 参数：
    * - scope: national | city (默认 national)
    * - platform: all | weibo | zhihu | douyin | bilibili (默认 all)
-   * 
+   *
    * 返回格式：
    * {
    *   "success": true,
