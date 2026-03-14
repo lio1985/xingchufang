@@ -85,11 +85,6 @@ const LoginPage = () => {
           </View>
         </View>
 
-        {/* 标题 */}
-        <Text className="block text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-12 tracking-tight">
-          星厨房
-        </Text>
-
         {/* 登录表单 */}
         <View className="w-full space-y-4">
           {/* 账号输入 */}
@@ -158,10 +153,9 @@ const LoginPage = () => {
       </View>
 
       {/* 底部区域 */}
-      <View className="relative z-10 pb-6 flex flex-col items-center gap-2">
+      <View className="relative z-10 pb-6 flex flex-col items-center">
         {/* 体验账号 */}
         <Text className="text-white/40 text-xs">体验账号：demo / 密码：123456</Text>
-        <Text className="text-white/30 text-xs">星厨房创作工作室</Text>
       </View>
     </View>
   )
