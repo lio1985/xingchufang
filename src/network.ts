@@ -32,8 +32,8 @@ const createUrl = (url: string): string => {
     }
 
     // 小程序线上环境：使用部署的服务器
-    // 注意：需要在微信小程序后台配置服务器域名 http://14.103.111.91
-    return `http://14.103.111.91${url}`
+    // 注意：需要在微信小程序后台配置服务器域名 https://api.xingchufang.cn
+    return `https://api.xingchufang.cn${url}`
 }
 
 export const request: typeof Taro.request = option => {
