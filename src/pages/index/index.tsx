@@ -3,8 +3,7 @@ import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { Network } from '@/network';
 
-// 平台检测
-const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
+// 图标路径配置
 const iconPath = '/static/icons';
 
 // 图标组件封装 - 使用本地 PNG

@@ -21,37 +21,40 @@ const LoginPage = () => {
     setLoading(true);
 
     const formData = {
-      username,
-      password
+      username: username.trim(),
+      password: password.trim()
     };
 
-    console.log('[登录] 开始登录流程', {
-      formData,
-      url: '/api/user/login'
-    });
+    const loginUrl = '/api/user/login-with-password';
+
+    console.log('登录表单数据=', formData);
+    console.log('最终登录接口地址=', loginUrl);
 
     try {
-      console.log('[登录] 发送请求到:', '/api/user/login');
-      const response = await Network.request({
-        url: '/api/user/login',
+      console.log('[登录] 发送请求到:', loginUrl);
+      const res = await Network.request({
+        url: loginUrl,
         method: 'POST',
         data: formData
       });
 
-      console.log('[登录] 收到完整响应对象:', response);
-      console.log('[登录] 响应状态码:', response.statusCode);
-      console.log('[登录] 响应体 (response.data):', response.data);
+      console.log('登录接口返回=', res);
 
-      // 检查响应结构
-      if (!response.data) {
+      // 检查响应状态码
+      if (res.statusCode !== 200) {
+        throw new Error(`请求失败，状态码: ${res.statusCode}`);
+      }
+
+      // 检查响应体
+      const responseData = res.data;
+      if (!responseData) {
         throw new Error('服务器未返回响应数据');
       }
 
-      const responseData = response.data;
-      console.log('[登录] 解析响应数据:', responseData);
+      console.log('[登录] 响应数据:', responseData);
 
-      // 检查 success 字段
-      if (!responseData.success) {
+      // 统一成功判断：检查 success 和 code 字段
+      if (!responseData.success || responseData.code !== 200) {
         throw new Error(responseData.msg || responseData.message || '登录失败');
       }
 
@@ -61,35 +64,35 @@ const LoginPage = () => {
       }
 
       const { user, token } = responseData.data;
-      console.log('[登录] 提取到的用户信息:', user);
-      console.log('[登录] 提取到的 token:', token);
+      console.log('接口返回token=', token);
 
       if (!token) {
         throw new Error('登录成功但未返回 token');
       }
 
-      // 存储 token
+      // 2）取出 token
       console.log('[登录] 开始存储 token 到缓存');
+
+      // 3）写入本地缓存（统一使用 Taro.setStorageSync）
       Taro.setStorageSync('token', token);
       console.log('[登录] Token 已存储到缓存');
 
       // 验证 token 是否成功存储
-      const storedToken = Taro.getStorageSync('token');
-      console.log('[登录] 验证缓存中的 token:', storedToken);
+      const savedToken = Taro.getStorageSync('token');
+      console.log('本地缓存token=', savedToken);
 
-      if (!storedToken) {
+      if (!savedToken) {
         throw new Error('Token 存储失败');
       }
 
       // 存储用户信息
       console.log('[登录] 存储用户信息到缓存');
-      Taro.setStorageSync('userInfo', user);
+      Taro.setStorageSync('user', user);
       console.log('[登录] 用户信息已存储');
 
       // 打印所有缓存
       const allStorage = Taro.getStorageInfoSync();
       console.log('[登录] 当前所有缓存键:', allStorage.keys);
-      console.log('[登录] 缓存大小:', allStorage.currentSize, 'KB');
 
       // 显示成功提示
       console.log('[登录] 登录成功，准备跳转');
@@ -99,21 +102,22 @@ const LoginPage = () => {
         duration: 2000
       });
 
-      // 延迟跳转，确保缓存写入完成
+      // 4）延迟跳转，确保缓存写入完成
       setTimeout(() => {
         console.log('[登录] 执行跳转到首页');
+        // 5）再执行页面跳转
         Taro.switchTab({ url: '/pages/index/index' });
       }, 500);
 
     } catch (error: any) {
-      console.error('[登录] 登录失败:', error);
+      console.error('登录接口异常=', error);
       console.error('[登录] 错误类型:', typeof error);
       console.error('[登录] 错误信息:', error.message);
       console.error('[登录] 错误堆栈:', error.stack);
 
       // 检查当前缓存
       const currentToken = Taro.getStorageSync('token');
-      console.log('[登录] 失败时的当前 token:', currentToken);
+      console.log('失败时的当前 token:', currentToken);
 
       Taro.showToast({
         title: error.message || '登录失败，请重试',
