@@ -1135,6 +1135,7 @@ const AiChatPage = () => {
                     padding: '16px',
                     backgroundColor: '#334155',
                     borderRadius: '12px',
+                    flexShrink: 0,
                   }}
                   onClick={handleSelectImage}
                 >
@@ -1149,6 +1150,7 @@ const AiChatPage = () => {
                     padding: '16px',
                     backgroundColor: '#334155',
                     borderRadius: '12px',
+                    flexShrink: 0,
                   }}
                   onClick={handleSelectVideo}
                 >
@@ -1163,6 +1165,7 @@ const AiChatPage = () => {
                     padding: '16px',
                     backgroundColor: '#334155',
                     borderRadius: '12px',
+                    flexShrink: 0,
                   }}
                   onClick={handleSelectDocument}
                 >
