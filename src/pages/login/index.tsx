@@ -1,17 +1,14 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text, Image, Button } from '@tarojs/components'
 import { Network } from '@/network'
-import { User, Loader } from 'lucide-react-taro'
 import logoImage from '../../static/logo-xinchufang-new.png'
 
 const LoginPage = () => {
   const [isLogging, setIsLogging] = useState(false)
-  const hasAttemptedLoginRef = useRef(false)
 
   /**
    * 检查或创建用户
-   * 调用后端 /api/user/check-user 接口
    */
   const checkOrCreateUser = useCallback(async (openid: string, nickname: string) => {
     console.log('调用 check-user 接口:', { openid, nickname })
@@ -19,10 +16,7 @@ const LoginPage = () => {
     const response = await Network.request({
       url: '/api/user/check-user',
       method: 'POST',
-      data: {
-        openid,
-        nickname
-      }
+      data: { openid, nickname }
     })
 
     console.log('check-user 响应:', response.data)
@@ -34,122 +28,75 @@ const LoginPage = () => {
     }
   }, [])
 
-  const handleWechatLogin = useCallback(async () => {
-    // 使用 ref 防止重复触发
-    if (hasAttemptedLoginRef.current || isLogging) return
-
-    hasAttemptedLoginRef.current = true
+  /**
+   * 处理微信登录
+   * 获取用户信息后调用
+   */
+  const handleWechatLogin = useCallback(async (userProfile?: any) => {
+    if (isLogging) return
     setIsLogging(true)
 
     try {
-      let code: string
-      let openid = ''
-      let nickname: string
+      // 获取微信登录 code
+      const loginRes = await Taro.login()
+      console.log('微信登录 code:', loginRes.code)
 
-      // 判断环境：小程序环境使用 Taro.login()，H5 环境使用模拟登录
-      if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
-        // 小程序环境：调用微信登录获取 code
-        const loginRes = await Taro.login()
-        console.log('微信登录 code:', loginRes.code)
-
-        if (!loginRes.code) {
-          showToast({ title: '获取微信登录码失败', icon: 'none' })
-          setIsLogging(false)
-          return
-        }
-
-        code = loginRes.code
-
-        // 获取用户信息（微信头像和昵称）
-        try {
-          const userProfile = await Taro.getUserProfile({
-            desc: '用于完善用户资料'
-          })
-          nickname = userProfile.userInfo?.nickName || '微信用户'
-          console.log('获取到用户信息:', { nickname })
-        } catch (e) {
-          console.log('用户拒绝授权用户信息，使用默认昵称')
-          nickname = '微信用户'
-        }
-      } else {
-        // H5 环境：使用模拟登录
-        code = 'mock_code_' + Date.now()
-        openid = `mock_openid_${code}`
-        nickname = '管理员'
-        console.log('H5 环境模拟登录:', { openid, nickname })
-        showToast({ title: 'H5 环境模拟登录', icon: 'none' })
+      if (!loginRes.code) {
+        showToast({ title: '获取微信登录码失败', icon: 'none' })
+        setIsLogging(false)
+        return
       }
 
-      // 小程序环境：需要调用微信 API 获取 openid
-      // H5 环境：已直接使用 mock openid
-      if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
-        // 调用后端登录接口获取 openid（复用现有的 wechatLogin）
-        const loginResponse = await Network.request({
-          url: '/api/user/login',
-          method: 'POST',
-          data: { code }
-        })
+      // 调用后端登录接口获取 openid
+      const loginResponse = await Network.request({
+        url: '/api/user/login',
+        method: 'POST',
+        data: { code: loginRes.code }
+      })
 
-        if (loginResponse.data?.code === 200 && loginResponse.data?.data?.user) {
-          openid = loginResponse.data.data.user.openid
-        } else {
-          throw new Error('获取 openid 失败')
-        }
+      if (loginResponse.data?.code !== 200 || !loginResponse.data?.data?.user) {
+        throw new Error('获取 openid 失败')
       }
 
-      // 调用 check-user 接口检查/创建用户
+      const openid = loginResponse.data.data.user.openid
+      // 使用微信用户信息或默认昵称
+      const nickname = userProfile?.nickName || userProfile?.nickname || '微信用户'
+
+      console.log('登录信息:', { openid, nickname })
+
+      // 调用 check-user 接口
       const checkResult = await checkOrCreateUser(openid, nickname)
-      const { user, token, type } = checkResult
+      const { user, token } = checkResult
 
-      console.log(`用户${type === 'existing' ? '已存在' : '新创建'}:`, user)
-
-      // 根据用户状态显示不同提示
+      // 处理用户状态
       if (user.status === 'pending') {
-        // 存储用户信息
         Taro.setStorageSync('token', token)
         Taro.setStorageSync('user', user)
 
-        showToast({
-          title: '等待管理员审核',
-          icon: 'none',
-          duration: 3000
-        })
-
-        // 显示等待审核的提示
         Taro.showModal({
           title: '等待审核',
           content: '您的账号已提交，请等待管理员审核。审核通过后即可使用。',
           showCancel: false,
           success: () => {
-            // 跳转到首页（但功能受限）
-            setTimeout(() => {
-              Taro.reLaunch({ url: '/pages/index/index' })
-            }, 500)
+            Taro.reLaunch({ url: '/pages/index/index' })
           }
         })
       } else if (user.status === 'disabled' || user.status === 'deleted') {
-        showToast({
-          title: '账号已被禁用',
-          icon: 'none'
-        })
         Taro.showModal({
           title: '账号状态异常',
           content: '您的账号已被禁用，请联系管理员。',
           showCancel: false
         })
       } else if (user.status === 'active') {
-        // 正常登录，存储 token 和用户信息
         Taro.setStorageSync('token', token)
         Taro.setStorageSync('user', user)
 
         showToast({ title: '登录成功', icon: 'success' })
-
-        // 跳转到首页
         setTimeout(() => {
           Taro.reLaunch({ url: '/pages/index/index' })
-        }, 1500)
+        }, 1000)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('登录失败:', error)
       showToast({ title: error.message || '登录失败，请重试', icon: 'none' })
     } finally {
@@ -157,19 +104,28 @@ const LoginPage = () => {
     }
   }, [isLogging, checkOrCreateUser])
 
-  // 页面加载时自动触发登录
-  useEffect(() => {
-    // 延迟一小段时间，确保页面渲染完成
-    const timer = setTimeout(() => {
-      handleWechatLogin()
-    }, 500)
-
-    return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  /**
+   * 获取用户信息并登录
+   * 需要通过按钮触发
+   */
+  const getUserProfileAndLogin = useCallback(async () => {
+    try {
+      // 获取用户信息
+      const res = await Taro.getUserProfile({
+        desc: '用于完善用户资料'
+      })
+      console.log('获取用户信息成功:', res.userInfo)
+      // 获取信息后执行登录
+      await handleWechatLogin(res.userInfo)
+    } catch (e) {
+      console.log('用户拒绝授权或获取失败:', e)
+      // 用户拒绝授权，使用默认昵称继续登录
+      await handleWechatLogin({ nickname: '微信用户' })
+    }
+  }, [handleWechatLogin])
 
   return (
-    <View className="min-h-screen bg-slate-900 flex flex-col px-6 py-12 relative overflow-hidden">
+    <View className="min-h-screen bg-slate-900 flex flex-col relative overflow-hidden">
       {/* 背景装饰 */}
       <View className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <View className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-br from-blue-500/30 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl" />
@@ -178,44 +134,57 @@ const LoginPage = () => {
       </View>
 
       {/* 内容区域 */}
-      <View className="flex-1 flex flex-col items-center justify-center relative z-10 w-full max-w-md">
+      <View className="flex-1 flex flex-col items-center justify-center relative z-10 px-6 py-12">
         {/* Logo */}
         <View className="flex items-center justify-center mb-10">
-          <View className="w-40 h-40 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl shadow-white/5 border border-white/10">
+          <View className="w-32 h-32 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl shadow-white/5 border border-white/10">
             <Image
               src={logoImage}
-              className="w-28 h-28 object-contain"
+              className="w-24 h-24 object-contain"
               mode="aspectFit"
             />
           </View>
         </View>
 
         {/* 标题 */}
-        <Text className="block text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 via-pink-400 to-red-400 mb-20 tracking-tight">
-          星厨房助手
+        <Text className="block text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-4 tracking-tight">
+          星厨房
+        </Text>
+        <Text className="block text-base text-slate-400 mb-16">
+          创作工具平台
         </Text>
 
-        {/* 自动登录状态 */}
-        <View className="w-full">
-          <View className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl py-5 flex items-center justify-center shadow-2xl shadow-purple-500/40">
-            <View className="flex items-center gap-4">
-              <View className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                {isLogging ? (
-                  <Loader size={28} color="white" strokeWidth={2.5} className="animate-spin" />
-                ) : (
-                  <User size={28} color="white" strokeWidth={2.5} />
-                )}
-              </View>
-              <Text className="block text-white font-bold text-xl tracking-wide">
-                {isLogging ? '正在登录...' : '自动登录中'}
-              </Text>
-            </View>
+        {/* 登录按钮区域 */}
+        <View className="w-full max-w-sm space-y-4">
+          {/* 微信授权登录按钮 */}
+          <Button
+            className="w-full !bg-green-500 !text-white !rounded-full !py-4 !flex !items-center !justify-center !gap-3 !shadow-lg"
+            onClick={getUserProfileAndLogin}
+            disabled={isLogging}
+          >
+            {isLogging ? (
+              <Text className="text-white font-semibold">登录中...</Text>
+            ) : (
+              <>
+                <Text className="text-xl mr-2">微信</Text>
+                <Text className="text-white font-semibold">微信一键登录</Text>
+              </>
+            )}
+          </Button>
+
+          {/* 说明文字 */}
+          <View className="text-center mt-6">
+            <Text className="text-xs text-slate-500">
+              登录即表示您同意《用户协议》和《隐私政策》
+            </Text>
           </View>
         </View>
+      </View>
 
-        {/* 提示文字 */}
-        <Text className="block text-slate-400 text-sm text-center mt-8">
-          正在跳转微信授权登录...
+      {/* 底部信息 */}
+      <View className="relative z-10 pb-8 text-center">
+        <Text className="text-xs text-slate-600">
+          星厨房创作工作室
         </Text>
       </View>
     </View>

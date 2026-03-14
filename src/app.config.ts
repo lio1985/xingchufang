@@ -82,26 +82,26 @@ export default defineAppConfig({
       {
         pagePath: 'pages/index/index',
         text: '首页',
-        iconPath: './assets/tabbar/home.png',
-        selectedIconPath: './assets/tabbar/home-active.png',
+        iconPath: 'assets/tabbar/home.png',
+        selectedIconPath: 'assets/tabbar/home-active.png',
       },
       {
         pagePath: 'pages/systems/index',
         text: '工具箱',
-        iconPath: './assets/tabbar/layers.png',
-        selectedIconPath: './assets/tabbar/layers-active.png',
+        iconPath: 'assets/tabbar/layers.png',
+        selectedIconPath: 'assets/tabbar/layers-active.png',
       },
       {
         pagePath: 'pages/hotspot/index',
         text: '热力图',
-        iconPath: './assets/tabbar/flame.png',
-        selectedIconPath: './assets/tabbar/flame-active.png',
+        iconPath: 'assets/tabbar/flame.png',
+        selectedIconPath: 'assets/tabbar/flame-active.png',
       },
       {
         pagePath: 'pages/ai-chat/index',
         text: '工作室',
-        iconPath: './assets/tabbar/message-square.png',
-        selectedIconPath: './assets/tabbar/message-square-active.png',
+        iconPath: 'assets/tabbar/message-square.png',
+        selectedIconPath: 'assets/tabbar/message-square-active.png',
       }
     ]
   }
