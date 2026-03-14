@@ -49,15 +49,32 @@ export const request: typeof Taro.request = option => {
         url: createUrl(option.url),
         method: option.method || 'GET',
         hasToken: !!token,
+        token: token ? `${token.substring(0, 20)}...` : 'none',
         header,
         data: option.data
     });
 
-    return Taro.request({
+    const task = Taro.request({
         ...option,
         url: createUrl(option.url),
         header,
-    })
+    });
+
+    // 监听响应完成，打印日志
+    task.then(response => {
+        console.log('Network Response:', {
+            url: createUrl(option.url),
+            statusCode: response.statusCode,
+            data: response.data
+        });
+    }).catch(error => {
+        console.error('Network Error:', {
+            url: createUrl(option.url),
+            error: error.errMsg || error.message || error
+        });
+    });
+
+    return task;
 }
 
 export const uploadFile: typeof Taro.uploadFile = option => {

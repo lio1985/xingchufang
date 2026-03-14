@@ -2,88 +2,7 @@ import { View, Text, Swiper, SwiperItem, Image, ScrollView } from '@tarojs/compo
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { Network } from '@/network';
-import { 
-  Lightbulb, Sparkles, PenTool, TrendingUp, BookOpen, Video, Users, Recycle,
-  Bell, Shield, Settings, LogOut, User
-} from 'lucide-react-taro';
-
-// 图标组件封装 - 使用 lucide-react-taro
-const IconBell = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Bell size={22} color="white" />
-  </View>
-);
-const IconShield = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Shield size={22} color="white" />
-  </View>
-);
-const IconSettings = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Settings size={22} color="white" />
-  </View>
-);
-const IconLogOut = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <LogOut size={22} color="#94a3b8" />
-  </View>
-);
-const IconUser = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <User size={22} color="white" />
-  </View>
-);
-const IconLightbulb = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Lightbulb size={28} color="white" />
-  </View>
-);
-const IconSparkles = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Sparkles size={28} color="white" />
-  </View>
-);
-const IconPenTool = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <PenTool size={28} color="white" />
-  </View>
-);
-const IconTrendingUp = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <TrendingUp size={28} color="white" />
-  </View>
-);
-const IconBookOpen = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <BookOpen size={28} color="white" />
-  </View>
-);
-const IconVideo = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Video size={28} color="white" />
-  </View>
-);
-const IconUsers = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Users size={28} color="white" />
-  </View>
-);
-const IconRecycle = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <Recycle size={28} color="white" />
-  </View>
-);
-
-// 账号管理图标 - 暂时隐藏
-// const IconUserCircle = () => (
-//   <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-//     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-//       <circle cx="12" cy="12" r="10" />
-//       <circle cx="12" cy="10" r="3" />
-//       <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
-//     </svg>
-//   </View>
-// );
+import './icons.css';
 
 interface WelcomeMessage {
   id: string;
@@ -101,492 +20,491 @@ const IndexPage = () => {
   const [userStatus, setUserStatus] = useState<'active' | 'pending' | 'disabled' | 'deleted'>('active');
   const [pendingUsersCount, setPendingUsersCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [showDevBadge, setShowDevBadge] = useState(false);
 
-  const handleNavigateTo = (url: string, requireLogin: boolean = true) => {
-    console.log('跳转到:', url);
-
-    // 热力图和新闻页面不需要登录
-    if (url === '/pages/heatmap/index' || url === '/pages/news/index') {
-      Taro.navigateTo({ url });
-      return;
-    }
-
-    // 如果需要登录但未登录，提示登录
-    if (requireLogin && !isLoggedIn) {
-      Taro.showModal({
-        title: '请先登录',
-        content: '使用该功能需要登录账号，是否立即登录？',
-        success: (res) => {
-          if (res.confirm) {
-            Taro.reLaunch({ url: '/pages/login/index' });
-          }
-        }
-      });
-      return;
-    }
-
-    // 检查用户状态
-    if (userStatus === 'pending') {
-      Taro.showModal({
-        title: '等待审核',
-        content: '您的账号正在等待管理员审核，审核通过后即可使用功能。',
-        showCancel: false
-      });
-      return;
-    }
-
-    if (userStatus === 'disabled' || userStatus === 'deleted') {
-      Taro.showModal({
-        title: '账号状态异常',
-        content: '您的账号已被禁用，请联系管理员。',
-        showCancel: false
-      });
-      return;
-    }
-
-    Taro.navigateTo({ url });
-  };
-
-  const handleLogout = () => {
-    Taro.showModal({
-      title: '确认退出',
-      content: '确定要退出登录吗？',
-      success: (res) => {
-        if (res.confirm) {
-          // 清除本地存储
-          Taro.removeStorageSync('token');
-          Taro.removeStorageSync('user');
-          setIsLoggedIn(false);
-          setIsAdmin(false);
-          setUserStatus('active');
-
-          Taro.showToast({
-            title: '已退出登录',
-            icon: 'success'
+  // 获取用户信息
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = Taro.getStorageSync('token');
+      if (token) {
+        setIsLoggedIn(true);
+        try {
+          const res = await Network.request({
+            url: '/api/user/info',
+            method: 'GET'
           });
+          console.log('[首页] 获取用户信息响应:', res.data);
+
+          if (res.data && res.data.success && res.data.data) {
+            const userData = res.data.data;
+            setUserInfo(userData);
+            setIsAdmin(userData.role === 'admin');
+            setUserStatus(userData.status);
+            setShowDevBadge(userData.role === 'admin');
+
+            // 如果用户状态不是 active，跳转到等待审核页
+            if (userData.status === 'pending') {
+              Taro.redirectTo({
+                url: '/pages/pending/index'
+              });
+            } else if (userData.status === 'disabled' || userData.status === 'deleted') {
+              Taro.showModal({
+                title: '账号异常',
+                content: '您的账号已被禁用或删除，请联系管理员',
+                showCancel: false,
+                success: () => {
+                  Taro.clearStorageSync();
+                  Taro.redirectTo({ url: '/pages/login/index' });
+                }
+              });
+            }
+          }
+        } catch (error) {
+          console.error('[首页] 获取用户信息失败:', error);
         }
+      } else {
+        setIsLoggedIn(false);
+        setUserInfo(null);
       }
-    });
-  };
+    };
 
-  const handleLogin = () => {
-    Taro.reLaunch({ url: '/pages/login/index' });
-  };
+    fetchUserInfo();
+  }, []);
 
+  // 获取欢迎消息
+  useEffect(() => {
+    const fetchWelcomeMessages = async () => {
+      try {
+        const res = await Network.request({
+          url: '/api/welcome/list',
+          method: 'GET'
+        });
+        console.log('[首页] 获取欢迎消息响应:', res.data);
+
+        if (res.data && res.data.success && res.data.data) {
+          setWelcomeMessages(res.data.data);
+        }
+      } catch (error) {
+        console.error('[首页] 获取欢迎消息失败:', error);
+      }
+    };
+
+    fetchWelcomeMessages();
+  }, []);
+
+  // 获取待审核用户数量（管理员）
+  useEffect(() => {
+    const fetchPendingUsers = async () => {
+      const token = Taro.getStorageSync('token');
+      if (!token || !isAdmin) return;
+
+      try {
+        const res = await Network.request({
+          url: '/api/user/pending',
+          method: 'GET'
+        });
+        console.log('[首页] 获取待审核用户响应:', res.data);
+
+        if (res.data && res.data.success && res.data.data) {
+          setPendingUsersCount(res.data.data.length);
+        }
+      } catch (error) {
+        console.error('[首页] 获取待审核用户失败:', error);
+      }
+    };
+
+    fetchPendingUsers();
+  }, [isAdmin]);
+
+  // 开发模式开关
+  useEffect(() => {
+    const enableDevMode = () => {
+      setDevModeEnabled(true);
+      setShowDevBadge(true);
+      Taro.showToast({
+        title: '开发模式已开启',
+        icon: 'success'
+      });
+    };
+
+    Taro.eventCenter.on('enableDevMode', enableDevMode);
+
+    return () => {
+      Taro.eventCenter.off('enableDevMode', enableDevMode);
+    };
+  }, []);
+
+  // 标题点击处理
   const handleTitleClick = () => {
     const newCount = titleClickCount + 1;
     setTitleClickCount(newCount);
 
-    // 连续点击 3 次后显示开发者工具入口
-    if (newCount >= 3) {
-      setDevModeEnabled(true);
-      setTitleClickCount(0);
+    if (newCount >= 5) {
+      setDevModeEnabled(!devModeEnabled);
+      setShowDevBadge(!showDevBadge);
       Taro.showToast({
-        title: '开发者工具已启用',
+        title: devModeEnabled ? '开发模式已关闭' : '开发模式已开启',
+        icon: 'success'
+      });
+      setTitleClickCount(0);
+    }
+  };
+
+  // 通知点击
+  const handleNotificationClick = () => {
+    if (devModeEnabled) {
+      Taro.showModal({
+        title: '系统通知',
+        content: '暂无新通知',
+        showCancel: false
+      });
+    } else {
+      Taro.showToast({
+        title: '通知功能开发中',
         icon: 'none'
       });
     }
   };
 
-  // 加载欢迎数据
-  useEffect(() => {
-    const loadWelcomeMessages = async () => {
-      try {
-        const response = await Network.request({
-          url: '/api/welcome',
-          method: 'GET',
-        });
+  // 管理员点击
+  const handleAdminClick = () => {
+    if (!isAdmin) return;
 
-        if (response.statusCode === 200 && response.data) {
-          setWelcomeMessages(response.data);
-        }
-      } catch (error) {
-        console.error('加载欢迎数据失败:', error);
-      }
-    };
+    Taro.navigateTo({
+      url: '/pages/admin/index'
+    });
+  };
 
-    loadWelcomeMessages();
-  }, []);
-
-  // 加载待审核用户数量（仅管理员）
-  useEffect(() => {
-    if (isAdmin && isLoggedIn) {
-      const loadPendingUsersCount = async () => {
-        try {
-          const response = await Network.request({
-            url: '/api/admin/pending-users/count',
-            method: 'GET',
-          });
-
-          if (response.statusCode === 200 && response.data?.data) {
-            setPendingUsersCount(response.data.data.count || 0);
-          }
-        } catch (error) {
-          console.error('加载待审核用户数量失败:', error);
-        }
-      };
-
-      loadPendingUsersCount();
+  // 设置点击
+  const handleSettingsClick = () => {
+    if (!isLoggedIn) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      });
+      return;
     }
-  }, [isAdmin, isLoggedIn]);
 
-  // 加载用户信息
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        // 先从本地存储读取
-        const storedUser = Taro.getStorageSync('user');
-        const token = Taro.getStorageSync('token');
+    Taro.navigateTo({
+      url: '/pages/settings/index'
+    });
+  };
 
-        if (storedUser && token) {
-          setIsLoggedIn(true);
-          setIsAdmin(storedUser?.role === 'admin');
-          setUserStatus(storedUser?.status || 'active');
+  // 退出登录
+  const handleLogoutClick = async () => {
+    if (!isLoggedIn) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      });
+      return;
+    }
 
-          // 尝试从服务器获取最新的用户信息
-          try {
-            const response = await Network.request({
-              url: '/api/user/profile',
-              method: 'GET',
-            });
+    const confirmed = await Taro.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+    });
 
-            if (response.statusCode === 200 && response.data?.data) {
-              const latestUser = response.data.data;
-              Taro.setStorageSync('user', latestUser);
-              setIsAdmin(latestUser.role === 'admin');
-              setUserStatus(latestUser.status || 'active');
-            }
-          } catch (error) {
-            console.error('获取最新用户信息失败:', error);
-          }
-        } else {
-          setIsLoggedIn(false);
-        }
-      } catch (error) {
-        console.error('加载用户信息失败:', error);
-        setIsLoggedIn(false);
-      }
-    };
+    if (confirmed.confirm) {
+      Taro.clearStorageSync();
+      setUserInfo(null);
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+      setShowDevBadge(false);
+      Taro.reLaunch({
+        url: '/pages/login/index'
+      });
+    }
+  };
 
-    loadUserInfo();
-  }, []);
+  // 菜单项点击
+  const handleMenuClick = (path: string) => {
+    if (!isLoggedIn) {
+      Taro.navigateTo({
+        url: '/pages/login/index'
+      });
+      return;
+    }
 
-  // 获取未读消息数量
-  useEffect(() => {
-    const fetchUnreadCount = async () => {
-      if (!isLoggedIn) return;
-      
-      try {
-        const response = await Network.request({
-          url: '/api/notifications/unread-count',
-          method: 'GET',
-        });
+    if (userStatus !== 'active') {
+      Taro.showToast({
+        title: '账号状态异常',
+        icon: 'none'
+      });
+      return;
+    }
 
-        if (response.data?.success) {
-          setUnreadCount(response.data.data.count);
-        }
-      } catch (error) {
-        console.error('获取未读消息失败:', error);
-      }
-    };
+    Taro.navigateTo({
+      url: path
+    });
+  };
 
-    fetchUnreadCount();
-    
-    // 每30秒刷新一次未读数量
-    const interval = setInterval(fetchUnreadCount, 30000);
-    return () => clearInterval(interval);
-  }, [isLoggedIn]);
+  // 渲染轮播图
+  const renderSwiper = () => {
+    if (welcomeMessages.length === 0) return null;
+
+    return (
+      <View className="relative w-full h-[280px] mt-[88px]">
+        <Swiper
+          className="w-full h-full"
+          indicatorDots
+          autoplay
+          circular
+          interval={3000}
+          indicatorColor="rgba(255,255,255,0.3)"
+          indicatorActiveColor="#ffffff"
+        >
+          {welcomeMessages.map((msg) => (
+            <SwiperItem key={msg.id}>
+              <View
+                className="w-full h-full relative"
+                style={{
+                  backgroundImage: msg.image_url ? `url(${msg.image_url})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              >
+                <View className="absolute inset-0 bg-black bg-opacity-20" />
+                <View className="relative z-10 p-6 flex flex-col justify-center h-full">
+                  <Text className="block text-white text-2xl font-bold mb-2">{msg.title}</Text>
+                  <Text className="block text-white text-sm opacity-90">{msg.content}</Text>
+                </View>
+              </View>
+            </SwiperItem>
+          ))}
+        </Swiper>
+      </View>
+    );
+  };
 
   return (
-    <View className="h-screen bg-slate-900 flex flex-col overflow-hidden">
-      {/* 标题区 */}
-      <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-12 pb-8 flex justify-between items-center">
-        <View className="flex flex-col justify-center gap-2">
-          <Text
-            className="block text-3xl font-bold text-white tracking-tight leading-tight"
-            onClick={handleTitleClick}
-          >
-            星厨房
-          </Text>
-          <Text className="block text-sm text-blue-400 font-medium tracking-widest uppercase opacity-90">Star Kitchen</Text>
-        </View>
-        <View className="flex items-center gap-3 flex-shrink-0">
-          {/* 已登录状态 */}
-          {isLoggedIn ? (
-            <>
-              {/* 消息中心入口 */}
-              <View
-                className="relative"
-                onClick={() => handleNavigateTo('/pages/notification/index')}
-              >
-                <View
-                  className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-3 transition-all active:scale-95"
-                >
-                  <IconBell />
-                </View>
-                {/* 未读消息徽标 */}
-                {unreadCount > 0 && (
-                  <View className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/30">
-                    <Text className="block text-white text-xs font-bold">
-                      {unreadCount > 99 ? '99+' : unreadCount}
-                    </Text>
-                  </View>
-                )}
-              </View>
-              {/* 管理员入口 */}
-              {isAdmin && (
-                <View
-                  className="relative"
-                  onClick={() => handleNavigateTo('/pages/admin/dashboard/index')}
-                >
-                  <View
-                    className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-3 transition-all active:scale-95"
-                  >
-                    <IconShield />
-                  </View>
-                  {/* 待审核徽标 */}
-                  {pendingUsersCount > 0 && (
-                    <View className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/30">
-                      <Text className="block text-white text-xs font-bold">
-                        {pendingUsersCount > 99 ? '99+' : pendingUsersCount}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              )}
-              {/* 开发者工具入口 */}
-              {devModeEnabled && (
-                <View
-                  className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-3 transition-all active:scale-95"
-                  onClick={() => handleNavigateTo('/pages/dev-tools/index')}
-                >
-                  <IconSettings />
-                </View>
-              )}
-              {/* 退出登录 */}
-              <View
-                className="bg-slate-700/80 hover:bg-slate-600/80 rounded-2xl p-3 transition-all active:scale-95"
-                onClick={handleLogout}
-              >
-                <IconLogOut />
-              </View>
-            </>
-          ) : (
-            /* 未登录状态 */
-            <View
-              className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-3 transition-all active:scale-95 shadow-lg shadow-blue-500/30"
-              onClick={handleLogin}
+    <View className="min-h-screen bg-gray-50">
+      {/* 顶部渐变背景 */}
+      <View
+        className="fixed top-0 left-0 right-0 h-[380px] z-0"
+        style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        }}
+      />
+
+      {/* 顶部导航栏 */}
+      <View className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
+        <View className="flex items-center justify-between">
+          <View className="flex items-center gap-2">
+            <Text
+              className="block text-white text-xl font-bold"
+              onClick={handleTitleClick}
             >
-              <IconUser />
+              星厨房
+              {showDevBadge && (
+                <Text className="text-xs ml-1 bg-yellow-400 text-black px-2 py-0.5 rounded-full">
+                  {devModeEnabled ? 'DEV' : 'ADMIN'}
+                </Text>
+              )}
+            </Text>
+          </View>
+          <View className="flex items-center gap-4">
+            <View onClick={handleNotificationClick}>
+              <View className="nav-icon-box">
+                <Image src="/static/icons/bell.png" className="nav-icon" mode="aspectFit" />
+              </View>
             </View>
-          )}
-        </View>
-      </View>
-
-      {/* 可滚动内容区 */}
-      <ScrollView
-        className="flex-1"
-        scrollY
-        style={{ height: 'calc(100vh - 120px)' }}
-        scrollWithAnimation
-        enableBackToTop
-      >
-        {/* 欢迎数据轮播 */}
-      {welcomeMessages.length > 0 && (
-        <View className="px-4 mt-4">
-          <Swiper
-            className="h-40 rounded-2xl overflow-hidden"
-            indicatorDots
-            autoplay
-            interval={5000}
-            circular
-            indicatorColor="rgba(148, 163, 184, 0.3)"
-            indicatorActiveColor="#60a5fa"
-          >
-            {welcomeMessages.map((msg) => (
-              <SwiperItem key={msg.id}>
-                <View className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl p-5 border border-blue-500/30 flex flex-col justify-center">
-                  {msg.image_url && (
-                    <Image
-                      src={msg.image_url}
-                      className="w-16 h-16 rounded-xl mb-3 object-cover"
-                      mode="aspectFill"
-                    />
-                  )}
-                  <Text className="block text-lg font-bold text-white mb-2">{msg.title}</Text>
-                  <Text className="block text-sm text-slate-300 leading-relaxed">{msg.content}</Text>
+            {isAdmin && (
+              <View onClick={handleAdminClick}>
+                <View className="nav-icon-box">
+                  <Image src="/static/icons/shield.png" className="nav-icon" mode="aspectFit" />
                 </View>
-              </SwiperItem>
-            ))}
-          </Swiper>
-        </View>
-      )}
-
-      {/* 灵感速记快捷入口 */}
-      <View className="px-4 mt-6 mb-6">
-        <View
-          className="bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500 rounded-3xl p-5 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-orange-500/20"
-          onClick={() => handleNavigateTo('/pages/quick-note/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconLightbulb />
+              </View>
+            )}
+            <View onClick={handleSettingsClick}>
+              <View className="nav-icon-box">
+                <Image src="/static/icons/settings.png" className="nav-icon" mode="aspectFit" />
+              </View>
             </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">灵感速记</Text>
-              <Text className="block text-sm text-white/80">快速记录创作灵感</Text>
+            <View onClick={handleLogoutClick}>
+              <View className="nav-icon-box">
+                <Image src="/static/icons/logout.png" className="nav-icon" mode="aspectFit" />
+              </View>
             </View>
           </View>
         </View>
       </View>
 
-      {/* 功能介绍区 */}
-      <View className="px-4 mb-20">
-        {/* 选题策划 */}
-        <View
-          className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-blue-500/20"
-          onClick={() => handleNavigateTo('/pages/systems/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconSparkles />
+      {/* 轮播图 */}
+      {renderSwiper()}
+
+      {/* 主要内容区域 */}
+      <ScrollView
+        className="relative z-10 px-4 pb-24"
+        scrollY
+        style={{ marginTop: welcomeMessages.length > 0 ? '-20px' : '100px' }}
+      >
+        {/* 用户信息卡片 */}
+        {isLoggedIn && userInfo && (
+          <View className="bg-white rounded-2xl shadow-sm p-4 mb-4">
+            <View className="flex items-center gap-3">
+              <View className="nav-icon-box bg-purple-100">
+                <Image src="/static/icons/user.png" className="nav-icon" mode="aspectFit" />
+              </View>
+              <View className="flex-1">
+                <Text className="block text-lg font-semibold">{userInfo.username}</Text>
+                <Text className="block text-xs text-gray-500">
+                  {userInfo.role === 'admin' ? '管理员' : '创作者'}
+                  {isAdmin && pendingUsersCount > 0 && (
+                    <Text className="text-red-500 ml-2">
+                      ({pendingUsersCount} 人待审核)
+                    </Text>
+                  )}
+                </Text>
+              </View>
             </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">选题策划</Text>
-              <Text className="block text-sm text-white/80">快速发现优质选题</Text>
+          </View>
+        )}
+
+        {/* 功能菜单 */}
+        <View className="grid grid-cols-2 gap-3">
+          {/* 灵感速记 */}
+          <View
+            className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/inspiration/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/lightbulb.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">灵感速记</Text>
+              <Text className="block text-white text-xs opacity-80">快速记录创作想法</Text>
+            </View>
+          </View>
+
+          {/* 选题策划 */}
+          <View
+            className="bg-gradient-to-br from-purple-400 to-purple-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/idea-planning/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/sparkles.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">选题策划</Text>
+              <Text className="block text-white text-xs opacity-80">管理选题与内容</Text>
+            </View>
+          </View>
+
+          {/* 内容创作 */}
+          <View
+            className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/content-creation/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/pentool.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">内容创作</Text>
+              <Text className="block text-white text-xs opacity-80">脚本撰写与生成</Text>
+            </View>
+          </View>
+
+          {/* 语料优化 */}
+          <View
+            className="bg-gradient-to-br from-cyan-400 to-cyan-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/material-optimization/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/trending.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">语料优化</Text>
+              <Text className="block text-white text-xs opacity-80">语料库智能优化</Text>
+            </View>
+          </View>
+
+          {/* 知识分享 */}
+          <View
+            className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/knowledge-sharing/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/book.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">知识分享</Text>
+              <Text className="block text-white text-xs opacity-80">分享创作经验</Text>
+            </View>
+          </View>
+
+          {/* 直播数据 */}
+          <View
+            className="bg-gradient-to-br from-rose-400 to-rose-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/live-data/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/video.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">直播数据</Text>
+              <Text className="block text-white text-xs opacity-80">直播数据统计</Text>
+            </View>
+          </View>
+
+          {/* 客资管理 */}
+          <View
+            className="bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/customer-management/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/users.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">客资管理</Text>
+              <Text className="block text-white text-xs opacity-80">管理客户资源</Text>
+            </View>
+          </View>
+
+          {/* 厨具回收 */}
+          <View
+            className="bg-gradient-to-br from-indigo-400 to-indigo-500 rounded-2xl shadow-md p-4"
+            style={{
+              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            }}
+            onClick={() => handleMenuClick('/pages/kitchen-recycle/index')}
+          >
+            <View className="flex flex-col items-center gap-2">
+              <View className="menu-icon-lg-box">
+                <Image src="/static/icons/recycle.png" className="menu-icon-lg" mode="aspectFit" />
+              </View>
+              <Text className="block text-white font-semibold">厨具回收</Text>
+              <Text className="block text-white text-xs opacity-80">厨具回收管理</Text>
             </View>
           </View>
         </View>
 
-        {/* 内容创作 */}
-        <View
-          className="bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/systems/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconPenTool />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">内容创作</Text>
-              <Text className="block text-sm text-white/80">高效创作优质内容</Text>
-            </View>
-          </View>
+        {/* 底部提示 */}
+        <View className="mt-6 text-center">
+          <Text className="block text-xs text-gray-400">
+            星厨房创作助手 v1.0
+          </Text>
         </View>
-
-        {/* 语料优化系统 */}
-        <View
-          className="bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-emerald-500/20"
-          onClick={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconTrendingUp />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">语料优化</Text>
-              <Text className="block text-sm text-white/80">管理优化语料库</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 爆款复刻系统 */}
-        <View
-          className="bg-gradient-to-br from-pink-500 via-rose-600 to-red-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-pink-500/20"
-          onClick={() => handleNavigateTo('/pages/viral-system/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconSparkles />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">爆款复刻</Text>
-              <Text className="block text-sm text-white/80">解析爆款内容</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 知识分享 */}
-        <View
-          className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/knowledge-share/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconBookOpen />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">知识分享</Text>
-              <Text className="block text-sm text-white/80">分享创作经验和技巧</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 直播数据统计 */}
-        <View
-          className="bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-rose-500/20"
-          onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconVideo />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">直播数据统计</Text>
-              <Text className="block text-sm text-white/80">抖音直播数据分析与复盘</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 客资管理 */}
-        <View
-          className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
-          onClick={() => handleNavigateTo('/pages/customer/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconUsers />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">客资管理</Text>
-              <Text className="block text-sm text-white/80">客户资料管理与跟进</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 厨具回收 */}
-        <View
-          className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
-          onClick={() => handleNavigateTo('/pages/recycle/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconRecycle />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">厨具回收</Text>
-              <Text className="block text-sm text-white/80">厨具设备回收管理</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 账号管理入口 - 暂时隐藏 */}
-        {/* <View
-          className="bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-slate-500/20 border border-slate-500/30"
-          onClick={() => handleNavigateTo('/pages/admin/users/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconUserCircle />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">账号管理</Text>
-              <Text className="block text-sm text-slate-300">管理用户账号与权限</Text>
-            </View>
-          </View>
-        </View> */}
-      </View>
       </ScrollView>
     </View>
   );

@@ -1,0 +1,51 @@
+/* 
+ * 首页图标样式 - 本地 PNG 图标
+ * 图标位置: /static/icons/
+ */
+
+.icon-box {
+  width: 90rpx;
+  height: 90rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+/* 顶部导航栏图标 (44x44) */
+.nav-icon-box {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+/* 功能菜单大图标 (128x128) */
+.menu-icon-lg-box {
+  width: 128rpx;
+  height: 128rpx;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.menu-icon-lg {
+  width: 120rpx;
+  height: 120rpx;
+}
