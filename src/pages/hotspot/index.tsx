@@ -3,7 +3,6 @@ import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
 import { MapPin, Flame, Search, SlidersHorizontal, ChevronDown, X, RefreshCw, Heart, Star, TrendingUp, TrendingDown, Minus, Copy, Share2, Flame as FlameIcon } from 'lucide-react-taro';
 import { Network } from '@/network';
-import { logger } from '@/utils/logger';
 
 interface HotKeyword {
   id: string;
@@ -111,10 +110,15 @@ const HotspotPage = () => {
         url += `&city=${encodeURIComponent(userCity)}`;
       }
 
+      console.log('=== 加载热点数据 ===');
+      console.log('请求URL:', url);
+
       const response = await Network.request({
         url,
         method: 'GET'
       });
+
+      console.log('热点数据响应:', response.statusCode, response.data);
 
       if (response.statusCode === 200 && response.data && response.data.data && response.data.data.topics) {
         const results = Array.isArray(response.data.data.topics) ? response.data.data.topics : [];
@@ -135,13 +139,26 @@ const HotspotPage = () => {
         }));
         setAllKeywords(keywords);
         setHotKeywords(keywords);
+        setLastUpdateTime(new Date().toISOString());
+      } else {
+        console.warn('热点数据响应格式不正确:', response.data);
       }
-    } catch (error) {
-      logger.error('加载热力图数据失败:', error);
+    } catch (error: any) {
+      console.error('加载热力图数据失败:', error);
+      let errorMsg = '热点数据加载失败';
+      if (error.errMsg?.includes('request:fail') || error.message?.includes('Network')) {
+        errorMsg = '网络连接失败';
+      } else if (error.statusCode === 404) {
+        errorMsg = '服务接口不存在';
+      }
+      // 只在首次加载失败时显示提示
+      if (allKeywords.length === 0) {
+        Taro.showToast({ title: errorMsg, icon: 'none', duration: 2000 });
+      }
     } finally {
       setLoadingHotTopics(false);
     }
-  }, [locationMode, userCity]);
+  }, [locationMode, userCity, allKeywords.length]);
 
   // 刷新热力图数据
   const refreshHotKeywords = async () => {
@@ -178,6 +195,16 @@ const HotspotPage = () => {
         console.log('解析后的话题数量:', results.length);
         console.log('第一个话题:', results[0]);
 
+        // 处理空数据情况
+        if (results.length === 0) {
+          Taro.showToast({
+            title: '暂无热点数据',
+            icon: 'none',
+            duration: 2000
+          });
+          return;
+        }
+
         const keywords: HotKeyword[] = results.map((item: any, index: number) => ({
           id: `${item.id || Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
           keyword: item.title || '',
@@ -210,11 +237,21 @@ const HotspotPage = () => {
       } else {
         throw new Error('响应数据格式错误');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('刷新热力图数据失败:', error);
+      // 更详细的错误提示
+      let errorMsg = '刷新失败，请重试';
+      if (error.errMsg?.includes('request:fail') || error.message?.includes('Network')) {
+        errorMsg = '网络连接失败，请检查网络';
+      } else if (error.statusCode === 404) {
+        errorMsg = '服务接口不存在';
+      } else if (error.statusCode === 500) {
+        errorMsg = '服务器内部错误';
+      }
       Taro.showToast({
-        title: '刷新失败，请重试',
-        icon: 'none'
+        title: errorMsg,
+        icon: 'none',
+        duration: 3000
       });
     } finally {
       setRefreshing(false);

@@ -88,31 +88,37 @@ const LoginPage = () => {
         {/* 登录表单 */}
         <View className="w-full space-y-4">
           {/* 账号输入 */}
-          <View className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+          <View className="bg-slate-800 rounded-2xl border border-slate-600 overflow-hidden">
             <Input
-              className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+              className="w-full h-14 px-5 text-white text-base bg-slate-800"
+              style="color: #ffffff;"
               type="text"
               placeholder="请输入账号"
+              placeholderStyle="color: #94a3b8;"
               value={username}
               onInput={(e) => setUsername(e.detail.value)}
             />
           </View>
 
           {/* 密码输入 */}
-          <View className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+          <View className="bg-slate-800 rounded-2xl border border-slate-600 overflow-hidden">
             {showPassword ? (
               <Input
-                className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+                className="w-full h-14 px-5 text-white text-base bg-slate-800"
+                style="color: #ffffff;"
                 type={'text' as any}
                 placeholder="请输入密码"
+                placeholderStyle="color: #94a3b8;"
                 value={password}
                 onInput={(e) => setPassword(e.detail.value)}
               />
             ) : (
               <Input
-                className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+                className="w-full h-14 px-5 text-white text-base bg-slate-800"
+                style="color: #ffffff;"
                 type={'password' as any}
                 placeholder="请输入密码"
+                placeholderStyle="color: #94a3b8;"
                 value={password}
                 onInput={(e) => setPassword(e.detail.value)}
               />
