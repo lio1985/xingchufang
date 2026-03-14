@@ -214,7 +214,7 @@ const AiChatPage = () => {
     }
   }, []);
 
-  // 初始化
+  // 初始化 - 只在组件挂载时运行
   useEffect(() => {
     // 检查登录状态
     const token = Taro.getStorageSync('token');
@@ -257,7 +257,8 @@ const AiChatPage = () => {
         }
       });
     }
-  }, [loadConversations, handleRecordingComplete]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 滚动到底部
   useEffect(() => {

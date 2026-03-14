@@ -3,6 +3,7 @@ import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
 import { MapPin, Flame, Search, SlidersHorizontal, ChevronDown, X, RefreshCw, Heart, Star, TrendingUp, TrendingDown, Minus, Copy, Share2, Flame as FlameIcon } from 'lucide-react-taro';
 import { Network } from '@/network';
+import { logger } from '@/utils/logger';
 
 interface HotKeyword {
   id: string;
@@ -115,18 +116,10 @@ const HotspotPage = () => {
         method: 'GET'
       });
 
-      console.log('=== 热力图响应数据 ===');
-      console.log('位置模式:', locationMode);
-      console.log('城市:', userCity || '全国');
-      console.log('响应状态码:', response.statusCode);
-      console.log('完整响应数据:', response.data);
-
       if (response.statusCode === 200 && response.data && response.data.data && response.data.data.topics) {
         const results = Array.isArray(response.data.data.topics) ? response.data.data.topics : [];
-        console.log('解析后的结果数组:', results);
-        console.log('结果数量:', results.length);
         const keywords: HotKeyword[] = results.map((item: any, index: number) => ({
-          id: `${item.id || Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`, // 添加随机后缀确保唯一
+          id: `${item.id || Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
           keyword: item.title || '',
           hotness: item.hotness || 0,
           platform: item.siteName || item.source || 'TopHub',
@@ -140,12 +133,11 @@ const HotspotPage = () => {
           isBursting: item.isBursting,
           keywords: item.keywords
         }));
-        console.log('生成的热点关键词:', keywords);
         setAllKeywords(keywords);
         setHotKeywords(keywords);
       }
     } catch (error) {
-      console.error('加载热力图数据失败:', error);
+      logger.error('加载热力图数据失败:', error);
     } finally {
       setLoadingHotTopics(false);
     }

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, UnauthorizedException, HttpException, Ht
 import { getSupabaseClient } from '../storage/database/supabase-client';
 import { JwtUtil, TokenPayload } from '../utils/jwt.util';
 import { Logger } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 export interface User {
   id: string;
@@ -853,16 +854,17 @@ export class UserService {
       };
       const account = validAccounts[username];
       if (account && account.password === password) {
-        // 创建旧账号用户
+        // 创建旧账号用户（密码加密存储）
         const employeeId = await this.generateUniqueEmployeeId();
         const now = new Date().toISOString();
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = {
           openid,
           employee_id: employeeId,
           nickname: account.nickname,
           role: account.role,
           status: 'active',
-          password,
+          password: hashedPassword,
           created_at: now,
           updated_at: now,
         };
@@ -901,8 +903,17 @@ export class UserService {
 
     const user = users[0];
 
-    // 验证密码
-    if (user.password !== password) {
+    // 验证密码（兼容旧明文密码和新的加密密码）
+    let isPasswordValid = false;
+    if (user.password.startsWith('$2')) {
+      // 新格式：bcrypt 加密密码
+      isPasswordValid = await bcrypt.compare(password, user.password);
+    } else {
+      // 旧格式：明文密码（兼容已有账号）
+      isPasswordValid = user.password === password;
+    }
+    
+    if (!isPasswordValid) {
       throw new HttpException('密码错误', HttpStatus.UNAUTHORIZED);
     }
 
@@ -982,13 +993,17 @@ export class UserService {
     // 创建新用户，状态为 pending（等待审核）
     const employeeId = await this.generateUniqueEmployeeId();
     const now = new Date().toISOString();
+    
+    // 使用 bcrypt 加密密码
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
     const newUser = {
       openid,
       employee_id: employeeId,
       nickname: nickname || username,
       role: 'user',
       status: 'pending', // 新注册用户需要审核
-      password, // 明文存储密码（生产环境应加密）
+      password: hashedPassword, // 加密存储密码
       created_at: now,
       updated_at: now,
     };
@@ -1039,15 +1054,25 @@ export class UserService {
       throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
     }
 
-    // 验证旧密码
-    if (user.password !== oldPassword) {
+    // 验证旧密码（兼容旧明文密码）
+    let isOldPasswordValid = false;
+    if (user.password.startsWith('$2')) {
+      isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    } else {
+      isOldPasswordValid = user.password === oldPassword;
+    }
+    
+    if (!isOldPasswordValid) {
       throw new HttpException('原密码错误', HttpStatus.UNAUTHORIZED);
     }
+
+    // 使用 bcrypt 加密新密码
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
     // 更新密码
     const { error: updateError } = await this.client
       .from('users')
-      .update({ password: newPassword, updated_at: new Date().toISOString() })
+      .update({ password: hashedNewPassword, updated_at: new Date().toISOString() })
       .eq('id', userId);
 
     if (updateError) {
@@ -1081,10 +1106,13 @@ export class UserService {
       throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
     }
 
+    // 使用 bcrypt 加密新密码
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
     // 更新密码
     const { error: updateError } = await this.client
       .from('users')
-      .update({ password: newPassword, updated_at: new Date().toISOString() })
+      .update({ password: hashedNewPassword, updated_at: new Date().toISOString() })
       .eq('id', userId);
 
     if (updateError) {
