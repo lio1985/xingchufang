@@ -134,21 +134,14 @@ const LoginPage = () => {
   return (
     <View className="login-page">
       <View className="login-container">
-        {/* Logo 区域 */}
-        <View className="logo-section">
-          <View className="logo-box">
-            <View className="logo-content">
-              <View className="logo-icon">👨‍🍳</View>
-              <View className="logo-text-wrapper">
-                <Text className="block logo-title">星厨房</Text>
-                <Text className="block logo-subtitle">Star Kitchen</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
         {/* 登录表单 */}
         <View className="form-section">
+          {/* 标题 */}
+          <View className="form-title">
+            <Text className="block title-text">星厨房</Text>
+            <Text className="block title-subtitle">Star Kitchen</Text>
+          </View>
+
           <View className="input-group">
             <Input
               className="input"
