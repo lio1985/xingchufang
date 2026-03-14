@@ -827,32 +827,14 @@ export class UserService {
 
   /**
    * 账号密码登录
-   * 固定账号配置：1个管理员 + 15个员工
+   * 固定账号：admin/admin123（管理员），user/user123（普通用户）
    */
   async loginWithPassword(username: string, password: string): Promise<{ user: any; token: string }> {
     this.logger.log(`账号密码登录: ${username}`);
 
-    // 固定账号验证 - 1个管理员 + 15个员工
+    // 固定账号验证
     const validAccounts: Record<string, { password: string; role: 'admin' | 'user'; nickname: string }> = {
-      // 管理员账号
-      'admin': { password: 'admin123', role: 'admin', nickname: '系统管理员' },
-      // 15个员工账号
-      'emp001': { password: 'emp001pwd', role: 'user', nickname: '员工-张三' },
-      'emp002': { password: 'emp002pwd', role: 'user', nickname: '员工-李四' },
-      'emp003': { password: 'emp003pwd', role: 'user', nickname: '员工-王五' },
-      'emp004': { password: 'emp004pwd', role: 'user', nickname: '员工-赵六' },
-      'emp005': { password: 'emp005pwd', role: 'user', nickname: '员工-孙七' },
-      'emp006': { password: 'emp006pwd', role: 'user', nickname: '员工-周八' },
-      'emp007': { password: 'emp007pwd', role: 'user', nickname: '员工-吴九' },
-      'emp008': { password: 'emp008pwd', role: 'user', nickname: '员工-郑十' },
-      'emp009': { password: 'emp009pwd', role: 'user', nickname: '员工-钱十一' },
-      'emp010': { password: 'emp010pwd', role: 'user', nickname: '员工-冯十二' },
-      'emp011': { password: 'emp011pwd', role: 'user', nickname: '员工-陈十三' },
-      'emp012': { password: 'emp012pwd', role: 'user', nickname: '员工-褚十四' },
-      'emp013': { password: 'emp013pwd', role: 'user', nickname: '员工-卫十五' },
-      'emp014': { password: 'emp014pwd', role: 'user', nickname: '员工-蒋十六' },
-      'emp015': { password: 'emp015pwd', role: 'user', nickname: '员工-沈十七' },
-      // 保留原有账号兼容
+      'admin': { password: 'admin123', role: 'admin', nickname: '管理员' },
       'user': { password: 'user123', role: 'user', nickname: '普通用户' },
     };
 
