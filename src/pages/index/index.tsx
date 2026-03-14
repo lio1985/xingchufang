@@ -601,7 +601,7 @@ const IndexPage = () => {
           </View>
         </View>
 
-        {/* 废品回收 */}
+        {/* 厨具回收 */}
         <View
           className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
           onClick={() => handleNavigateTo('/pages/recycle/index', true)}
@@ -611,8 +611,8 @@ const IndexPage = () => {
               <IconRecycle />
             </View>
             <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">废品回收</Text>
-              <Text className="block text-sm text-white/80">废旧物资回收管理</Text>
+              <Text className="block text-xl font-bold text-white mb-1">厨具回收</Text>
+              <Text className="block text-sm text-white/80">厨具设备回收管理</Text>
             </View>
           </View>
         </View>
