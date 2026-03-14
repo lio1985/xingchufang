@@ -82,7 +82,63 @@ export class ViralService {
   }
 
   /**
-   * 从抖音分享文本中提取文案
+   * 使用豆包大模型从分享文本中提取文案
+   * 智能识别各种分享格式，提取视频文案内容
+   */
+  async extractTextWithLLM(shareText: string): Promise<string> {
+    console.log('🤖 [viral] 使用豆包大模型提取文案:', shareText.substring(0, 100));
+
+    if (!shareText || shareText.trim().length === 0) {
+      return '';
+    }
+
+    try {
+      const systemPrompt = `你是一位专业的文本提取助手，擅长从抖音分享文本中提取视频文案内容。
+
+任务：从用户提供的抖音分享文本中，提取出视频的文案/口播内容。
+
+分享文本通常包含以下元素：
+- 时间戳（如"9.23"）
+- 操作提示（如"复制打开抖音"、"看看"）
+- 作者信息（如"【胡成的作品】"）
+- 视频文案/口播内容（这是需要提取的核心）
+- 话题标签（如"#国学智慧"）
+- 链接（如"https://v.douyin.com/xxxx"）
+- 其他无关信息（如日期、随机字符等）
+
+要求：
+1. 只提取视频的实际文案/口播内容
+2. 移除所有无关元素（时间戳、操作提示、作者信息、话题标签、链接、随机字符）
+3. 保持文案的原意和完整性
+4. 如果文案是口语化的，适当优化使其更通顺
+5. 如果无法确定文案内容，返回空字符串
+
+只返回提取到的文案内容，不要有任何解释或说明。`;
+
+      const messages = [
+        { role: 'system' as const, content: systemPrompt },
+        { role: 'user' as const, content: shareText }
+      ];
+
+      console.log('🤖 [viral] 调用豆包大模型提取文案');
+      const response = await this.llmClient.invoke(messages, {
+        model: 'doubao-seed-1-8-251228',
+        temperature: 0.1
+      });
+
+      const extractedText = response.content.trim();
+      console.log('🤖 [viral] 大模型提取结果:', extractedText.substring(0, 100));
+      
+      return extractedText;
+    } catch (error) {
+      console.error('🤖 [viral] 大模型提取失败:', error.message);
+      // 降级到正则提取
+      return this.extractTextFromShare(shareText);
+    }
+  }
+
+  /**
+   * 从抖音分享文本中提取文案（正则方式，作为降级方案）
    * 支持格式："9.23 复制打开抖音，看看【胡成的作品】苦尽甘来... #话题"
    */
   extractTextFromShare(shareText: string): string {
@@ -347,9 +403,9 @@ export class ViralService {
       }
     }
 
-    // 链接解析失败或没有链接，尝试从分享文本中提取文案
-    console.log('📥 [viral] 从分享文本中提取文案...');
-    const extractedText = this.extractTextFromShare(shareText);
+    // 链接解析失败或没有链接，使用豆包大模型从分享文本中提取文案
+    console.log('📥 [viral] 使用豆包大模型从分享文本中提取文案...');
+    const extractedText = await this.extractTextWithLLM(shareText);
     
     if (!extractedText || extractedText.trim().length === 0) {
       throw new BadRequestException(
@@ -371,7 +427,7 @@ export class ViralService {
       transcript: extractedText,
       structure: analysisResult.structure,
       framework: analysisResult.framework,
-      source: 'text' // 标记来源是文本提取
+      source: 'llm' // 标记来源是LLM提取
     };
   }
 
