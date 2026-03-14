@@ -1,0 +1,301 @@
+.interaction-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #f5f5f5;
+
+      &:active {
+        opacity: 0.7;
+      }
+    }
+
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .title {
+        font-size: 17px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        color: #999;
+        margin-top: 2px;
+      }
+    }
+
+    .placeholder {
+      width: 36px;
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+
+    .loading-text {
+      font-size: 16px;
+      color: #999;
+    }
+  }
+
+  .content {
+    padding: 12px 16px 100px;
+
+    .section-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 16px;
+      }
+
+      // 互动率卡片
+      &.rate-card {
+        background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        color: #fff;
+
+        .rate-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 12px;
+
+          .rate-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .rate-info {
+            .rate-label {
+              font-size: 13px;
+              color: rgba(255,255,255,0.9);
+            }
+
+            .rate-value {
+              font-size: 36px;
+              font-weight: bold;
+              margin-top: 2px;
+            }
+          }
+        }
+
+        .rate-hint {
+          padding-top: 12px;
+          border-top: 1px solid rgba(255,255,255,0.2);
+
+          .hint-text {
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+          }
+        }
+      }
+
+      // 互动网格
+      .interaction-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .interaction-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 16px;
+          background: #f8f9fa;
+          border-radius: 12px;
+
+          &.main {
+            padding: 20px;
+            background: linear-gradient(135deg, #fff7ed 0%, #fff 100%);
+            border: 1px solid #fed7aa;
+          }
+
+          .interaction-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            &.orange {
+              background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            }
+
+            &.pink {
+              background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            }
+          }
+
+          .interaction-info {
+            .interaction-value {
+              font-size: 24px;
+              font-weight: bold;
+              color: #333;
+            }
+
+            .interaction-label {
+              font-size: 13px;
+              color: #999;
+              margin-top: 2px;
+            }
+          }
+        }
+      }
+
+      // 详细列表
+      .detail-list {
+        .detail-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 0;
+          border-bottom: 1px solid #f0f0f0;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .detail-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .detail-icon {
+              width: 40px;
+              height: 40px;
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+
+              &.red {
+                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+              }
+
+              &.blue {
+                background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+              }
+
+              &.purple {
+                background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+              }
+            }
+
+            .detail-info {
+              .detail-label {
+                font-size: 14px;
+                color: #333;
+              }
+
+              .detail-change {
+                display: inline-flex;
+                align-items: center;
+                padding: 2px 6px;
+                border-radius: 8px;
+                font-size: 10px;
+                margin-top: 4px;
+
+                &.up {
+                  background: #dcfce7;
+                  color: #16a34a;
+                }
+
+                &.down {
+                  background: #fee2e2;
+                  color: #dc2626;
+                }
+              }
+            }
+          }
+
+          .detail-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+          }
+        }
+      }
+
+      // 提示卡片
+      &.tips-card {
+        background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+        border: 1px solid #a7f3d0;
+
+        .tips-title {
+          font-size: 15px;
+          font-weight: 600;
+          color: #065f46;
+          margin-bottom: 16px;
+        }
+
+        .tips-list {
+          .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            .tip-number {
+              width: 20px;
+              height: 20px;
+              background: #10b981;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 11px;
+              font-weight: 600;
+              color: #fff;
+              flex-shrink: 0;
+            }
+
+            .tip-text {
+              font-size: 14px;
+              color: #374151;
+              line-height: 1.5;
+              padding-top: 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

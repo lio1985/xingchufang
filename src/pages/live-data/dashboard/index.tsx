@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateTo } from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
-import { Calendar, TrendingUp, Eye, Users, Heart, TrendingDown, Plus, List, Star, Zap } from 'lucide-react-taro';
+import { Calendar, TrendingUp, Eye, TrendingDown, Plus, List, Star, ArrowRight, MousePointer, MessageCircle, Activity } from 'lucide-react-taro';
 import './index.less';
 
 type TimeRange = 'day' | 'week' | 'month' | 'year' | 'custom';
@@ -21,13 +21,12 @@ interface DashboardStats {
   interactionRate: number;
   followerConversionRate: number;
   streamCount: number;
-  // 用户重点关注的新指标
-  exposureCount: number;        // 曝光人数
-  enterRoomCount: number;       // 进入直播间人数
-  onlinePeak: number;           // 在线峰值
-  interactionCount: number;     // 互动人数
-  privateMessageCount: number;  // 私信人数
-  enterRoomRate: number;        // 进房率
+  exposureCount: number;
+  enterRoomCount: number;
+  onlinePeak: number;
+  interactionCount: number;
+  privateMessageCount: number;
+  enterRoomRate: number;
   prevPeriod: {
     gmv: number;
     ordersCount: number;
@@ -55,7 +54,6 @@ const LiveDashboardPage = () => {
     { value: 'custom', label: '自定义' },
   ];
 
-  // 获取默认日期范围
   const getDefaultDateRange = () => {
     const today = new Date();
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -90,7 +88,6 @@ const LiveDashboardPage = () => {
       if (response.data?.success) {
         setStats(response.data.data);
       } else {
-        console.warn('API returned no success:', response.data);
         setStats({
           totalViews: 0, peakOnline: 0, avgOnline: 0, newFollowers: 0,
           totalComments: 0, totalLikes: 0, ordersCount: 0, gmv: 0,
@@ -120,20 +117,16 @@ const LiveDashboardPage = () => {
   };
 
   useEffect(() => {
-    // 初始化默认日期范围
     setCustomDateRange(getDefaultDateRange());
   }, []);
 
   useEffect(() => {
-    // 非自定义模式下直接获取数据
     if (timeRange !== 'custom') {
       fetchStats();
     }
-    // 自定义模式下需要手动确认日期后才获取数据
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRange]);
 
-  // 自定义日期变化时单独处理
   useEffect(() => {
     if (timeRange === 'custom' && customDateRange.startDate && customDateRange.endDate) {
       fetchStats();
@@ -163,6 +156,17 @@ const LiveDashboardPage = () => {
   const formatDateRange = () => {
     if (timeRange !== 'custom') return timeRangeOptions.find(o => o.value === timeRange)?.label;
     return `${customDateRange.startDate} 至 ${customDateRange.endDate}`;
+  };
+
+  const navigateToDetail = (type: 'traffic' | 'interaction' | 'conversion') => {
+    const urls = {
+      traffic: '/pages/live-data/traffic/index',
+      interaction: '/pages/live-data/interaction/index',
+      conversion: '/pages/live-data/conversion/index',
+    };
+    navigateTo({ 
+      url: `${urls[type]}?range=${timeRange}&startDate=${customDateRange.startDate}&endDate=${customDateRange.endDate}` 
+    });
   };
 
   if (!stats) {
@@ -210,7 +214,6 @@ const LiveDashboardPage = () => {
           ))}
         </View>
 
-        {/* 自定义日期选择器 */}
         {showDatePicker && (
           <View className="date-picker-container">
             <View className="date-picker-row">
@@ -245,33 +248,24 @@ const LiveDashboardPage = () => {
       <ScrollView className="dashboard-container" scrollY>
         {/* 快捷入口 */}
         <View className="quick-actions">
-          <View className="section-header">
-            <View className="icon-wrapper">
-              <Zap size={18} color="#fff" />
-            </View>
-            <Text className="header-title">快捷功能</Text>
-          </View>
-          <View className="actions-grid">
+          <View className="actions-row">
             <View className="action-item" onClick={() => navigateTo({ url: '/pages/live-data/import/index' })}>
-              <View className="action-icon">
-                <Plus size={24} color="#fff" />
+              <View className="action-icon primary">
+                <Plus size={20} color="#fff" />
               </View>
               <Text className="action-label">导入数据</Text>
-              <Text className="action-desc">添加直播</Text>
             </View>
-            <View className="action-item secondary" onClick={() => navigateTo({ url: '/pages/live-data/list/index' })}>
+            <View className="action-item" onClick={() => navigateTo({ url: '/pages/live-data/list/index' })}>
               <View className="action-icon secondary">
-                <List size={24} color="#667eea" />
+                <List size={20} color="#667eea" />
               </View>
-              <Text className="action-label secondary">直播记录</Text>
-              <Text className="action-desc secondary">查看历史</Text>
+              <Text className="action-label">直播记录</Text>
             </View>
-            <View className="action-item secondary" onClick={() => navigateTo({ url: '/pages/live-data/analysis/index' })}>
+            <View className="action-item" onClick={() => navigateTo({ url: '/pages/live-data/analysis/index' })}>
               <View className="action-icon secondary">
-                <Star size={24} color="#667eea" />
+                <Star size={20} color="#667eea" />
               </View>
-              <Text className="action-label secondary">复盘</Text>
-              <Text className="action-desc secondary">智能分析</Text>
+              <Text className="action-label">复盘分析</Text>
             </View>
           </View>
         </View>
@@ -285,15 +279,15 @@ const LiveDashboardPage = () => {
           </View>
         )}
 
-        {/* 核心指标 */}
-        <View className="section-card">
+        {/* 核心指标 - 简洁展示 */}
+        <View className="section-card core-metrics">
           <Text className="section-title">核心指标</Text>
-          <View className="metrics-grid">
+          <View className="metrics-grid simple">
             <View className="metric-card highlight">
               <Text className="label">成交金额</Text>
-              <Text className="value">¥{(stats.gmv || 0).toFixed(2)}</Text>
+              <Text className="value">¥{(stats.gmv || 0).toFixed(0)}</Text>
               <View className={`change ${gmvChange >= 0 ? 'up' : 'down'}`}>
-                {gmvChange >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                {gmvChange >= 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
                 <Text>{formatChange(gmvChange)}</Text>
               </View>
             </View>
@@ -324,139 +318,71 @@ const LiveDashboardPage = () => {
           </View>
         </View>
 
-        {/* 直播场次 */}
-        <View className="section-card">
-          <View className="stream-count">
-            <Calendar size={24} />
-            <View>
-              <Text className="count">{stats.streamCount || 0}</Text>
-              <Text className="label">直播场次</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 流量数据 */}
-        <View className="section-card">
-          <Text className="section-title">流量数据</Text>
-          <View className="data-grid">
-            <View className="data-item">
-              <Eye size={18} />
-              <View>
-                <Text className="value">{(stats.exposureCount || 0).toLocaleString()}</Text>
-                <Text className="label">曝光人数</Text>
+        {/* 直播场次概览 */}
+        <View className="section-card stream-overview">
+          <View className="overview-content">
+            <View className="overview-item">
+              <Calendar size={20} color="#667eea" />
+              <View className="overview-info">
+                <Text className="overview-value">{stats.streamCount || 0}</Text>
+                <Text className="overview-label">直播场次</Text>
               </View>
             </View>
-            <View className="data-item">
-              <Users size={18} />
-              <View>
-                <Text className="value">{(stats.enterRoomCount || 0).toLocaleString()}</Text>
-                <Text className="label">进入直播间</Text>
-              </View>
-            </View>
-            <View className="data-item">
-              <TrendingUp size={18} />
-              <View>
-                <Text className="value">{(stats.enterRoomRate || 0).toFixed(1)}%</Text>
-                <Text className="label">进房率</Text>
-              </View>
-            </View>
-            <View className="data-item">
-              <Users size={18} />
-              <View>
-                <Text className="value">{(stats.onlinePeak || 0).toLocaleString()}</Text>
-                <Text className="label">在线峰值</Text>
-              </View>
-            </View>
-            <View className="data-item">
-              <Users size={18} />
-              <View>
-                <Text className="value">{(stats.avgOnline || 0).toLocaleString()}</Text>
-                <Text className="label">平均在线</Text>
-              </View>
-            </View>
-            <View className="data-item">
-              <Eye size={18} />
-              <View>
-                <Text className="value">{(stats.totalViews || 0).toLocaleString()}</Text>
-                <Text className="label">观看人数</Text>
+            <View className="divider" />
+            <View className="overview-item">
+              <Eye size={20} color="#10b981" />
+              <View className="overview-info">
+                <Text className="overview-value">{(stats.avgWatchDuration || 0).toFixed(0)}秒</Text>
+                <Text className="overview-label">平均观看时长</Text>
               </View>
             </View>
           </View>
         </View>
 
-        {/* 互动数据 */}
-        <View className="section-card">
-          <Text className="section-title">互动数据</Text>
-          <View className="data-grid">
-            <View className="data-item">
-              <Heart size={18} />
-              <View>
-                <Text className="value">{(stats.interactionCount || 0).toLocaleString()}</Text>
-                <Text className="label">互动人数</Text>
+        {/* 详细数据入口 */}
+        <View className="section-card detail-entries">
+          <Text className="section-title">详细数据</Text>
+          <View className="entries-list">
+            {/* 流量数据入口 */}
+            <View className="entry-item" onClick={() => navigateToDetail('traffic')}>
+              <View className="entry-left">
+                <View className="entry-icon traffic">
+                  <MousePointer size={20} color="#fff" />
+                </View>
+                <View className="entry-info">
+                  <Text className="entry-title">流量数据</Text>
+                  <Text className="entry-desc">曝光 {stats.exposureCount?.toLocaleString() || 0} · 进房 {(stats.enterRoomRate || 0).toFixed(1)}%</Text>
+                </View>
               </View>
+              <ArrowRight size={18} color="#999" />
             </View>
-            <View className="data-item">
-              <TrendingUp size={18} />
-              <View>
-                <Text className="value">{(stats.privateMessageCount || 0).toLocaleString()}</Text>
-                <Text className="label">私信人数</Text>
-              </View>
-            </View>
-            <View className="data-item">
-              <Heart size={18} />
-              <View>
-                <Text className="value">{(stats.totalLikes || 0).toLocaleString()}</Text>
-                <Text className="label">点赞数</Text>
-              </View>
-            </View>
-            <View className="data-item">
-              <TrendingUp size={18} />
-              <View>
-                <Text className="value">{(stats.totalComments || 0).toLocaleString()}</Text>
-                <Text className="label">评论数</Text>
-              </View>
-            </View>
-            <View className="data-item">
-              <Users size={18} />
-              <View>
-                <Text className="value">{(stats.newFollowers || 0).toLocaleString()}</Text>
-                <Text className="label">新增粉丝</Text>
-              </View>
-            </View>
-          </View>
-        </View>
 
-        {/* 转化数据 */}
-        <View className="section-card">
-          <Text className="section-title">转化数据</Text>
-          <View className="conversion-list">
-            <View className="conversion-item">
-              <Text className="label">进房率</Text>
-              <View className="progress-bar">
-                <View className="progress" style={{ width: `${Math.min(stats.enterRoomRate || 0, 100)}%` }} />
+            {/* 互动数据入口 */}
+            <View className="entry-item" onClick={() => navigateToDetail('interaction')}>
+              <View className="entry-left">
+                <View className="entry-icon interaction">
+                  <MessageCircle size={20} color="#fff" />
+                </View>
+                <View className="entry-info">
+                  <Text className="entry-title">互动数据</Text>
+                  <Text className="entry-desc">互动 {stats.interactionCount?.toLocaleString() || 0} · 点赞 {(stats.totalLikes || 0).toLocaleString()}</Text>
+                </View>
               </View>
-              <Text className="value">{(stats.enterRoomRate || 0).toFixed(1)}%</Text>
+              <ArrowRight size={18} color="#999" />
             </View>
-            <View className="conversion-item">
-              <Text className="label">观看转化率</Text>
-              <View className="progress-bar">
-                <View className="progress" style={{ width: `${Math.min((stats.conversionRate || 0) * 10, 100)}%` }} />
+
+            {/* 转化数据入口 */}
+            <View className="entry-item" onClick={() => navigateToDetail('conversion')}>
+              <View className="entry-left">
+                <View className="entry-icon conversion">
+                  <Activity size={20} color="#fff" />
+                </View>
+                <View className="entry-info">
+                  <Text className="entry-title">转化数据</Text>
+                  <Text className="entry-desc">观看转化 {(stats.conversionRate || 0).toFixed(2)}% · 互动 {(stats.interactionRate || 0).toFixed(2)}%</Text>
+                </View>
               </View>
-              <Text className="value">{(stats.conversionRate || 0).toFixed(2)}%</Text>
-            </View>
-            <View className="conversion-item">
-              <Text className="label">互动率</Text>
-              <View className="progress-bar">
-                <View className="progress" style={{ width: `${Math.min((stats.interactionRate || 0) * 10, 100)}%` }} />
-              </View>
-              <Text className="value">{(stats.interactionRate || 0).toFixed(2)}%</Text>
-            </View>
-            <View className="conversion-item">
-              <Text className="label">粉丝转化率</Text>
-              <View className="progress-bar">
-                <View className="progress" style={{ width: `${Math.min((stats.followerConversionRate || 0) * 100, 100)}%` }} />
-              </View>
-              <Text className="value">{(stats.followerConversionRate || 0).toFixed(2)}%</Text>
+              <ArrowRight size={18} color="#999" />
             </View>
           </View>
         </View>

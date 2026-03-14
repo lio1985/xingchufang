@@ -1,0 +1,318 @@
+.conversion-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #f5f5f5;
+
+      &:active {
+        opacity: 0.7;
+      }
+    }
+
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .title {
+        font-size: 17px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        color: #999;
+        margin-top: 2px;
+      }
+    }
+
+    .placeholder {
+      width: 36px;
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+
+    .loading-text {
+      font-size: 16px;
+      color: #999;
+    }
+  }
+
+  .content {
+    padding: 12px 16px 100px;
+
+    .section-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 16px;
+      }
+
+      // 漏斗卡片
+      &.funnel-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+        border: 1px solid #e5e7eb;
+
+        .funnel-visual {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          .funnel-level {
+            .funnel-bar {
+              border-radius: 12px;
+              padding: 16px;
+
+              &.view {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: #fff;
+              }
+
+              &.order {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: #fff;
+                width: 70%;
+              }
+
+              .funnel-content {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+
+                .funnel-label {
+                  font-size: 14px;
+                  opacity: 0.9;
+                }
+
+                .funnel-value {
+                  font-size: 24px;
+                  font-weight: bold;
+                  margin-left: auto;
+                }
+              }
+            }
+
+            .funnel-arrow {
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              padding: 8px 0 8px 20px;
+
+              .funnel-rate {
+                font-size: 13px;
+                color: #666;
+              }
+            }
+          }
+        }
+      }
+
+      // 主要转化率
+      &.main-conversion {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #fff;
+
+        .conversion-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 16px;
+
+          .conversion-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .conversion-info {
+            flex: 1;
+
+            .conversion-label {
+              font-size: 13px;
+              color: rgba(255,255,255,0.9);
+            }
+
+            .conversion-row {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              margin-top: 4px;
+
+              .conversion-value {
+                font-size: 32px;
+                font-weight: bold;
+              }
+
+              .conversion-change {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+                padding: 4px 8px;
+                background: rgba(255,255,255,0.2);
+                border-radius: 12px;
+                font-size: 12px;
+
+                &.up {
+                  color: #fff;
+                }
+
+                &.down {
+                  color: #fee2e2;
+                }
+              }
+            }
+          }
+        }
+
+        .conversion-level {
+          display: inline-flex;
+          padding: 6px 12px;
+          border-radius: 20px;
+
+          .level-text {
+            font-size: 13px;
+            font-weight: 600;
+          }
+        }
+      }
+
+      // 转化网格
+      .conversion-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .conversion-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 16px;
+          background: #f8f9fa;
+          border-radius: 12px;
+
+          .item-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            &.blue {
+              background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            }
+
+            &.purple {
+              background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            }
+
+            &.cyan {
+              background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            }
+          }
+
+          .item-info {
+            flex: 1;
+
+            .item-value {
+              font-size: 22px;
+              font-weight: bold;
+              color: #333;
+            }
+
+            .item-label {
+              font-size: 12px;
+              color: #999;
+              margin-top: 2px;
+            }
+
+            .item-change-row {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              margin-top: 2px;
+
+              .item-change {
+                padding: 2px 6px;
+                border-radius: 8px;
+                font-size: 10px;
+
+                &.up {
+                  background: #dcfce7;
+                  color: #16a34a;
+                }
+
+                &.down {
+                  background: #fee2e2;
+                  color: #dc2626;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // 公式卡片
+      &.formula-card {
+        background: #f8f9fa;
+
+        .formula-list {
+          .formula-item {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e5e7eb;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .formula-name {
+              font-size: 14px;
+              font-weight: 500;
+              color: #333;
+            }
+
+            .formula-desc {
+              font-size: 12px;
+              color: #999;
+              margin-top: 4px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
