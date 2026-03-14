@@ -1,18 +1,16 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { ASRClient, LLMClient, Config, SearchClient } from 'coze-coding-dev-sdk';
+import { ASRClient, LLMClient, Config } from 'coze-coding-dev-sdk';
 import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class ViralService {
   private asrClient: ASRClient;
   private llmClient: LLMClient;
-  private searchClient: SearchClient;
 
   constructor(private databaseService: DatabaseService) {
     const config = new Config();
     this.asrClient = new ASRClient(config);
     this.llmClient = new LLMClient(config);
-    this.searchClient = new SearchClient(config);
   }
 
   async extractVideo(url: string) {
@@ -219,49 +217,26 @@ export class ViralService {
     }
 
     try {
-      // 第一步：使用 search 获取视频相关信息
-      console.log('📥 [viral] 使用 Search 搜索视频信息');
-      const searchResponse = await this.searchClient.webSearch(
-        `抖音视频 ${url} 文案 内容 文字稿`,
-        5,
-        true
-      );
+      // 使用豆包大模型直接处理视频链接，提取语音转文字并分析
+      const systemPrompt = `你是一位专业的短视频内容分析师，擅长提取抖音视频中的语音内容并转写成文字。
 
-      console.log('📥 [viral] WebSearch 搜索结果:', searchResponse.web_items?.length || 0, '条');
+你的任务是：
+1. 访问用户提供的抖音视频链接
+2. 提取视频中的语音/对话内容
+3. 将语音完整转写成文字稿（transcript）
+4. 分析视频的爆款结构：
+   - hook（钩子）：视频开头的吸引人的话术
+   - body（主体要点）：3-5个核心观点
+   - climax（高潮）：情绪高潮或总结段落
+   - callToAction（行动号召）：结尾引导话术
+5. 判断框架类型：
+   - type：痛点型、故事型、干货型、情绪型等
+   - description：框架特点描述
+   - keyPoints：3-5个成功要素
 
-      // 提取搜索结果中的有用信息
-      const searchContext = searchResponse.web_items
-        ?.map((r, i) => `[${i + 1}] ${r.title}\n${r.snippet}`)
-        .join('\n\n') || '';
-
-      // 第二步：使用豆包大模型分析搜索到的真实信息
-      const systemPrompt = `你是一位专业的短视频内容分析师，擅长分析抖音视频并提取文字内容。
-
-我会提供：
-1. 抖音视频链接
-2. 通过搜索引擎获取的该视频相关信息（包括标题、描述、片段等）
-
-你的任务是基于这些真实信息，提取并整理出：
-
-1. **transcript（文字内容）**：根据搜索结果还原视频的完整文字稿（逐字稿）
-2. **structure（爆款结构）**：分析视频的内容结构，包括：
-   - hook（钩子）：视频开头的吸引人的话术或问题
-   - body（主体要点）：3-5个核心观点或论点
-   - climax（高潮）：情绪高潮或总结性段落
-   - callToAction（行动号召）：结尾的引导性话术或号召
-3. **framework（爆款框架）**：判断内容使用的框架类型：
-   - type（框架类型）：如痛点型、故事型、干货型、情绪型等
-   - description（框架描述）：用一句话描述框架特点
-   - keyPoints（关键要点）：3-5个成功要素或技巧
-
-重要提示：
-- 请基于提供的搜索结果提取真实内容，不要编造
-- 如果搜索结果信息不足，请在transcript中注明"根据搜索结果，该视频主要内容关于..."
-- 确保返回的JSON格式正确
-
-请严格按照以下JSON格式输出（不要输出其他内容）：
+请严格按照以下JSON格式输出：
 {
-  "transcript": "视频讲述的完整文字内容（基于搜索结果）",
+  "transcript": "视频语音的完整文字稿",
   "structure": {
     "hook": "钩子内容",
     "body": ["要点1", "要点2", "要点3"],
@@ -271,19 +246,19 @@ export class ViralService {
   "framework": {
     "type": "框架类型",
     "description": "框架描述",
-    "keyPoints": ["关键要点1", "关键要点2", "关键要点3"]
+    "keyPoints": ["要点1", "要点2", "要点3"]
   }
 }`;
 
       const messages = [
         { role: 'system' as const, content: systemPrompt },
-        { role: 'user' as const, content: `抖音视频链接：${url}\n\n搜索获取的相关信息：\n${searchContext}` }
+        { role: 'user' as const, content: `请分析这个抖音视频链接，提取语音转文字：${url}` }
       ];
 
-      console.log('📥 [viral] 调用豆包大模型分析搜索信息');
+      console.log('📥 [viral] 调用豆包大模型分析视频链接');
       const response = await this.llmClient.invoke(messages, {
         model: 'doubao-seed-1-8-251228',
-        temperature: 0.3  // 降低温度，让输出更基于事实
+        temperature: 0.3
       });
 
       console.log('📥 [viral] 豆包大模型返回结果:', response.content);
@@ -291,10 +266,8 @@ export class ViralService {
       // 解析 JSON 响应
       let analysisResult;
       try {
-        // 提取 JSON 部分（可能包含在代码块中）
         let jsonStr = response.content.trim();
         
-        // 移除可能存在的 markdown 代码块标记
         if (jsonStr.startsWith('```json')) {
           jsonStr = jsonStr.substring(7);
         }
@@ -310,24 +283,23 @@ export class ViralService {
       } catch (error) {
         console.error('📥 [viral] JSON 解析失败:', error);
         console.log('📥 [viral] 原始响应:', response.content);
-        throw new BadRequestException('抖音链接分析失败，AI 返回格式错误');
+        throw new BadRequestException('视频分析失败，返回格式错误');
       }
 
-      // 验证返回的数据结构
       if (!analysisResult.transcript || !analysisResult.structure || !analysisResult.framework) {
-        throw new BadRequestException('抖音链接分析失败，数据结构不完整');
+        throw new BadRequestException('视频分析失败，数据结构不完整');
       }
 
-      console.log('📥 [viral] 抖音链接分析成功:', { 
+      console.log('📥 [viral] 视频分析成功:', { 
         transcriptLength: analysisResult.transcript.length,
         frameworkType: analysisResult.framework.type
       });
 
       return analysisResult;
     } catch (error) {
-      console.error('📥 [viral] 抖音链接分析失败:', error);
+      console.error('📥 [viral] 视频分析失败:', error);
       throw new BadRequestException(
-        `抖音链接分析失败: ${error.message || '请稍后重试'}`
+        `视频分析失败: ${error.message || '请稍后重试'}`
       );
     }
   }
