@@ -78,13 +78,17 @@ export class ViralController {
   }
 
   @Post('analyze-douyin')
-  async analyzeDouyin(@Body() body: { url: string }): Promise<{ code: number; msg: string; data: any }> {
-    console.log('📥 [controller] 收到抖音链接分析请求:', body);
+  async analyzeDouyin(@Body() body: { url?: string; shareText?: string }): Promise<{ code: number; msg: string; data: any }> {
+    const content = body.shareText || body.url || '';
+    console.log('📥 [controller] 收到抖音内容分析请求:', { shareText: content.substring(0, 100) });
+    if (!content) {
+      return { code: 400, msg: '分享内容不能为空', data: null };
+    }
     try {
-      const result = await this.viralService.analyzeDouyinContent(body.url);
+      const result = await this.viralService.analyzeDouyinContent(content);
       return { code: 200, msg: 'success', data: result };
     } catch (error) {
-      console.error('抖音链接分析失败:', error);
+      console.error('抖音内容分析失败:', error);
       return { code: 400, msg: error.message || '分析失败', data: null };
     }
   }

@@ -94,11 +94,11 @@ export default function ViralSystemPage() {
 
       let analyzeRes
       if (inputMode === 'link') {
-        // 链接模式 - 调用抖音分析接口
+        // 链接模式 - 调用抖音分析接口，发送完整的分享文本
         analyzeRes = await Network.request({
           url: '/api/viral/analyze-douyin',
           method: 'POST',
-          data: { url: douyinUrl }
+          data: { shareText: douyinUrl }
         })
       } else {
         // 文案模式 - 直接分析文案内容

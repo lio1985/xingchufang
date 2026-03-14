@@ -16,58 +16,107 @@ export class ViralService {
 
   /**
    * 解析抖音链接获取视频信息
-   * 使用第三方解析服务
+   * 使用多个备用解析服务，如果都失败则返回null让上层处理
    */
-  async parseDouyinUrl(url: string): Promise<{ videoUrl: string; title: string; desc: string }> {
+  async parseDouyinUrl(url: string): Promise<{ videoUrl: string; title: string; desc: string } | null> {
     console.log('🔍 [viral] 解析抖音链接:', url);
 
     if (!url || !url.includes('douyin.com')) {
-      throw new BadRequestException('无效的抖音链接');
+      return null;
     }
 
-    try {
-      // 方法1: 使用 douyin.wtf API 解析
-      // 注意：这是第三方服务，可能有频率限制
-      console.log('🔍 [viral] 尝试使用 douyin.wtf 解析...');
-      
-      const apiUrl = `https://api.douyin.wtf/api?url=${encodeURIComponent(url)}`;
-      const response = await axios.get(apiUrl, { timeout: 30000 });
+    // 尝试多个解析服务
+    const errors: string[] = [];
 
-      console.log('🔍 [viral] 解析响应:', response.data);
+    // 方案1: 尝试直接获取重定向后的链接
+    try {
+      console.log('🔍 [viral] 尝试获取重定向链接...');
+      const redirectRes = await axios.head(url, {
+        maxRedirects: 5,
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15'
+        }
+      });
+      
+      const realUrl = redirectRes.request?.res?.responseUrl || url;
+      console.log('🔍 [viral] 获取到真实链接:', realUrl.substring(0, 100));
+      
+      // 如果能获取到视频URL，直接返回
+      if (realUrl.includes('.mp4')) {
+        return { videoUrl: realUrl, title: '', desc: '' };
+      }
+    } catch (error) {
+      errors.push(`redirect: ${error.message}`);
+    }
+
+    // 方案2: 使用 douyin.wangluo.link API
+    try {
+      console.log('🔍 [viral] 尝试使用 douyin.wangluo.link 解析...');
+      const apiUrl = `https://api.douyin.wangluo.link/api/douyin?url=${encodeURIComponent(url)}`;
+      const response = await axios.get(apiUrl, { 
+        timeout: 30000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
 
       if (response.data && response.data.code === 200 && response.data.data) {
         const data = response.data.data;
-        
-        // 获取无水印视频URL
-        const videoUrl = data.video?.no_watermark_url || data.video?.watermark_url;
+        const videoUrl = data.video?.no_watermark_url || data.video?.watermark_url || data.video_url;
         const title = data.title || data.desc || '';
         const desc = data.desc || '';
 
-        if (!videoUrl) {
-          throw new BadRequestException('无法获取视频链接，请检查链接是否有效');
+        if (videoUrl) {
+          console.log('🔍 [viral] douyin.wangluo.link 解析成功');
+          return { videoUrl, title, desc };
         }
-
-        console.log('🔍 [viral] 解析成功:', { title: title.substring(0, 50), hasVideoUrl: !!videoUrl });
-        
-        return { videoUrl, title, desc };
       }
-
-      throw new BadRequestException('解析失败: ' + (response.data?.msg || '未知错误'));
     } catch (error) {
-      console.error('🔍 [viral] 解析失败:', error.message);
-      
-      // 如果第三方API失败，尝试备用方案
-      if (axios.isAxiosError(error)) {
-        throw new BadRequestException(
-          '抖音链接解析失败，可能原因：\n' +
-          '1. 链接已过期或无效\n' +
-          '2. 视频已被删除或设为私密\n' +
-          '3. 解析服务暂时不可用\n' +
-          '建议：直接粘贴视频文案进行分析'
-        );
-      }
-      throw error;
+      errors.push(`wangluo.link: ${error.message}`);
     }
+
+    // 所有方案都失败，返回null让上层处理
+    console.log('🔍 [viral] 所有解析方案失败:', errors);
+    return null;
+  }
+
+  /**
+   * 从抖音分享文本中提取文案
+   * 支持格式："9.23 复制打开抖音，看看【胡成的作品】苦尽甘来... #话题"
+   */
+  extractTextFromShare(shareText: string): string {
+    console.log('📝 [viral] 尝试从分享文本提取文案:', shareText.substring(0, 100));
+    
+    if (!shareText) return '';
+    
+    // 抖音分享文本格式匹配
+    // 格式1: "9.23 复制打开抖音，看看【用户名】文案内容 #话题"
+    // 格式2: "文案内容 https://v.douyin.com/xxxxx"
+    // 格式3: "https://v.douyin.com/xxxxx 文案内容"
+    
+    let extractedText = '';
+    
+    // 尝试匹配【用户名】后的文案内容
+    const bracketMatch = shareText.match(/】(.+?)(?:#|$)/);
+    if (bracketMatch && bracketMatch[1]) {
+      extractedText = bracketMatch[1].trim();
+    }
+    
+    // 如果没匹配到，尝试移除链接和时间戳
+    if (!extractedText) {
+      extractedText = shareText
+        .replace(/https?:\/\/\S+/g, '') // 移除URL
+        .replace(/\d+\.\d+\s+/g, '') // 移除开头的时间戳如"9.23 "
+        .replace(/复制打开抖音[，,]?\s*/g, '') // 移除"复制打开抖音"
+        .replace(/看看【[^】]+】/g, '') // 移除"看看【用户名】"
+        .replace(/#[^\s#]+/g, '') // 移除话题标签
+        .replace(/\s+/g, ' ') // 规范化空格
+        .trim();
+    }
+    
+    console.log('📝 [viral] 提取的文案:', extractedText.substring(0, 100));
+    return extractedText;
   }
 
   /**
@@ -254,46 +303,76 @@ export class ViralService {
     }
   }
 
-  async analyzeDouyinContent(url: string) {
-    console.log('📥 [viral] 开始分析抖音链接:', url);
+  async analyzeDouyinContent(shareText: string) {
+    console.log('📥 [viral] 开始分析抖音内容:', shareText.substring(0, 100));
 
-    if (!url || url.trim().length === 0) {
-      throw new BadRequestException('抖音链接不能为空');
+    if (!shareText || shareText.trim().length === 0) {
+      throw new BadRequestException('分享内容不能为空');
     }
 
-    try {
-      // 第一步：解析抖音链接获取视频URL
-      console.log('📥 [viral] 步骤1: 解析抖音链接...');
-      const { videoUrl, title, desc } = await this.parseDouyinUrl(url);
+    // 从分享文本中提取抖音链接
+    const urlMatch = shareText.match(/(https?:\/\/v\.douyin\.com\/\w+)/);
+    const url = urlMatch ? urlMatch[1] : '';
 
-      // 第二步：ASR语音识别提取视频文案
-      console.log('📥 [viral] 步骤2: 语音识别提取文案...');
-      const transcript = await this.extractVideoAudioToText(videoUrl);
+    // 尝试解析链接获取视频
+    if (url) {
+      try {
+        console.log('📥 [viral] 尝试解析视频链接:', url);
+        const parseResult = await this.parseDouyinUrl(url);
+        
+        if (parseResult && parseResult.videoUrl) {
+          // 链接解析成功，使用 ASR 识别语音
+          console.log('📥 [viral] 链接解析成功，开始语音识别...');
+          const transcript = await this.extractVideoAudioToText(parseResult.videoUrl);
+          
+          if (transcript && transcript.trim().length > 0) {
+            console.log('📥 [viral] 语音识别成功，开始分析文案结构...');
+            const analysisResult = await this.analyzeTranscript(transcript, parseResult.title, parseResult.desc);
+            
+            console.log('📥 [viral] 视频分析完成:', {
+              transcriptLength: transcript.length,
+              frameworkType: analysisResult.framework?.type
+            });
 
-      if (!transcript || transcript.trim().length === 0) {
-        throw new BadRequestException('视频中没有检测到语音，或语音识别失败');
+            return {
+              transcript,
+              structure: analysisResult.structure,
+              framework: analysisResult.framework,
+              source: 'asr' // 标记来源是ASR语音
+            };
+          }
+        }
+      } catch (error) {
+        console.log('📥 [viral] 视频链接解析失败，降级到文本分析:', error.message);
       }
+    }
 
-      // 第三步：使用大模型分析文案结构
-      console.log('📥 [viral] 步骤3: 分析文案结构...');
-      const analysisResult = await this.analyzeTranscript(transcript, title, desc);
-
-      console.log('📥 [viral] 分析完成:', {
-        transcriptLength: transcript.length,
-        frameworkType: analysisResult.framework?.type
-      });
-
-      return {
-        transcript,
-        structure: analysisResult.structure,
-        framework: analysisResult.framework
-      };
-    } catch (error) {
-      console.error('📥 [viral] 抖音链接分析失败:', error.message);
+    // 链接解析失败或没有链接，尝试从分享文本中提取文案
+    console.log('📥 [viral] 从分享文本中提取文案...');
+    const extractedText = this.extractTextFromShare(shareText);
+    
+    if (!extractedText || extractedText.trim().length === 0) {
       throw new BadRequestException(
-        `分析失败: ${error.message || '请稍后重试'}`
+        '无法从分享内容中提取到文案，请:\n' +
+        '1. 确保分享内容完整（包含文案）\n' +
+        '2. 或直接粘贴视频文案进行分析'
       );
     }
+
+    console.log('📥 [viral] 提取到文案，开始分析...');
+    const analysisResult = await this.analyzeTranscript(extractedText, '', '');
+    
+    console.log('📥 [viral] 文本分析完成:', {
+      transcriptLength: extractedText.length,
+      frameworkType: analysisResult.framework?.type
+    });
+
+    return {
+      transcript: extractedText,
+      structure: analysisResult.structure,
+      framework: analysisResult.framework,
+      source: 'text' // 标记来源是文本提取
+    };
   }
 
   /**
