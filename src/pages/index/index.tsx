@@ -349,7 +349,6 @@ const IndexPage = () => {
                       src={msg.image_url}
                       className="w-16 h-16 rounded-xl mb-3 object-cover"
                       mode="aspectFill"
-                      onError={() => console.log('图片加载失败:', msg.image_url)}
                     />
                   )}
                   <Text className="block text-lg font-bold text-white mb-2">{msg.title}</Text>
