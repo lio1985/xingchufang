@@ -37,15 +37,21 @@ const LoginPage = () => {
     setIsLogging(true)
 
     try {
+      console.log('开始获取微信登录码...')
+      console.log('当前环境:', Taro.getEnv())
+      
       // 获取微信登录 code
       const loginRes = await Taro.login()
-      console.log('微信登录 code:', loginRes.code)
+      console.log('微信登录返回:', loginRes)
 
       if (!loginRes.code) {
+        console.error('获取微信登录码失败，返回:', loginRes)
         showToast({ title: '获取微信登录码失败', icon: 'none' })
         setIsLogging(false)
         return
       }
+
+      console.log('获取到微信登录码:', loginRes.code.substring(0, 10) + '...')
 
       // 调用后端登录接口获取 openid
       const loginResponse = await Network.request({
@@ -159,7 +165,7 @@ const LoginPage = () => {
           {/* 微信授权登录按钮 */}
           <Button
             className="w-full !bg-green-500 !text-white !rounded-full !py-4 !flex !items-center !justify-center !gap-3 !shadow-lg"
-            onClick={getUserProfileAndLogin}
+            onTap={getUserProfileAndLogin}
             disabled={isLogging}
           >
             {isLogging ? (
