@@ -65,8 +65,11 @@ const HotspotPage = () => {
   const [allKeywords, setAllKeywords] = useState<HotKeyword[]>([]);
   const [locationMode, setLocationMode] = useState<'national' | 'local'>('national');
   const [userCity, setUserCity] = useState('');
-  const [loadingHotTopics, setLoadingHotTopics] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  // 新增：详细的状态管理
+  const [loadStatus, setLoadStatus] = useState<'loading' | 'success' | 'empty' | 'error'>('loading');
+  const [errorMessage, setErrorMessage] = useState('');
 
   // 搜索和筛选
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -89,6 +92,10 @@ const HotspotPage = () => {
   // 更新时间
   const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
 
+  // 缓存控制
+  const [isLoading, setIsLoading] = useState(false);
+  const CACHE_TTL = 5 * 60 * 1000; // 5分钟缓存
+
   // 格式化热度值
   const formatHotness = (hotness: number): string => {
     if (hotness >= 10000) {
@@ -101,64 +108,118 @@ const HotspotPage = () => {
   };
 
   // 加载热力图数据
-  const loadHotKeywords = useCallback(async () => {
-    setLoadingHotTopics(true);
+  const loadHotKeywords = useCallback(async (forceRefresh: boolean = false) => {
+    console.log('=== 开始加载热点数据 ===');
+    console.log('locationMode:', locationMode);
+    console.log('userCity:', userCity);
+    console.log('forceRefresh:', forceRefresh);
+
+    // 检查缓存
+    if (!forceRefresh && lastUpdateTime) {
+      const timeSinceLastUpdate = Date.now() - new Date(lastUpdateTime).getTime();
+      if (timeSinceLastUpdate < CACHE_TTL) {
+        console.log(`使用缓存数据，距离上次更新 ${(timeSinceLastUpdate / 1000).toFixed(0)} 秒`);
+        return;
+      }
+    }
+
+    // 防止重复请求
+    if (isLoading) {
+      console.log('正在加载中，跳过重复请求');
+      return;
+    }
+
+    console.log('发送请求...');
+    setLoadStatus('loading');
+    setErrorMessage('');
+    setIsLoading(true);
+
     try {
       // 构建 URL 查询参数
-      let url = `/api/hot-topics?locationMode=${locationMode}`;
-      if (locationMode === 'local' && userCity) {
-        url += `&city=${encodeURIComponent(userCity)}`;
-      }
-
-      console.log('=== 加载热点数据 ===');
+      let url = `/api/hot/list?scope=${locationMode === 'local' ? 'city' : 'national'}`;
       console.log('请求URL:', url);
+      console.log('请求方法:', 'GET');
 
       const response = await Network.request({
         url,
         method: 'GET'
       });
 
-      console.log('热点数据响应:', response.statusCode, response.data);
+      console.log('=== 热点数据响应 ===');
+      console.log('响应状态码:', response.statusCode);
+      console.log('响应数据:', JSON.stringify(response.data, null, 2));
 
-      if (response.statusCode === 200 && response.data && response.data.data && response.data.data.topics) {
-        const results = Array.isArray(response.data.data.topics) ? response.data.data.topics : [];
+      if (response.statusCode === 200 && response.data && response.data.success && response.data.data && response.data.data.list) {
+        const results = Array.isArray(response.data.data.list) ? response.data.data.list : [];
+        console.log('解析后的话题数量:', results.length);
+        console.log('第一个话题:', results[0]);
+
         const keywords: HotKeyword[] = results.map((item: any, index: number) => ({
-          id: `${item.id || Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
+          id: item.id || `hot_${index}_${Date.now()}`,
           keyword: item.title || '',
           hotness: item.hotness || 0,
-          platform: item.siteName || item.source || 'TopHub',
+          platform: item.platform || '综合',
           url: item.url,
           summary: item.summary,
           publishTime: item.publishTime,
           category: item.category,
-          siteName: item.siteName,
+          siteName: item.platform,
           trend: item.trend,
-          trendChange: item.trendChange,
-          isBursting: item.isBursting,
+          trendChange: item.trendChange || 0,
+          isBursting: item.isBursting || false,
           keywords: item.keywords
         }));
+
+        console.log('生成的热点关键词:', keywords.map(k => ({ id: k.id, keyword: k.keyword, hotness: k.hotness })));
+
         setAllKeywords(keywords);
         setHotKeywords(keywords);
         setLastUpdateTime(new Date().toISOString());
+
+        // 更新状态
+        if (keywords.length === 0) {
+          setLoadStatus('empty');
+          console.log('状态更新为: empty');
+        } else {
+          setLoadStatus('success');
+          console.log('状态更新为: success');
+        }
       } else {
         console.warn('热点数据响应格式不正确:', response.data);
+        setLoadStatus('error');
+        setErrorMessage('数据格式错误');
+        console.log('状态更新为: error, 错误信息:', '数据格式错误');
       }
     } catch (error: any) {
-      console.error('加载热力图数据失败:', error);
+      console.error('=== 加载热力图数据失败 ===');
+      console.error('错误对象:', error);
+      console.error('错误消息:', error.message);
+      console.error('错误状态码:', error.statusCode);
+      console.error('错误堆栈:', error.stack);
+
       let errorMsg = '热点数据加载失败';
       if (error.errMsg?.includes('request:fail') || error.message?.includes('Network')) {
         errorMsg = '网络连接失败';
       } else if (error.statusCode === 404) {
         errorMsg = '服务接口不存在';
+      } else if (error.statusCode === 500) {
+        errorMsg = '服务器内部错误';
+      } else if (error.message) {
+        errorMsg = error.message;
       }
+
+      setLoadStatus('error');
+      setErrorMessage(errorMsg);
+      console.log('状态更新为: error, 错误信息:', errorMsg);
+
       // 只在首次加载失败时显示提示
       if (allKeywords.length === 0) {
         Taro.showToast({ title: errorMsg, icon: 'none', duration: 2000 });
       }
     } finally {
-      setLoadingHotTopics(false);
+      setIsLoading(false);
     }
-  }, [locationMode, userCity, allKeywords.length]);
+  }, [locationMode, userCity, allKeywords.length, isLoading, CACHE_TTL, lastUpdateTime]);
 
   // 刷新热力图数据
   const refreshHotKeywords = async () => {
@@ -897,13 +958,48 @@ const HotspotPage = () => {
             </View>
           </View>
 
-          {/* 加载中 */}
-          {loadingHotTopics ? (
-            <View className="flex items-center justify-center py-8">
-              <Text className="block text-sm text-slate-400">加载热点数据中...</Text>
+          {/* 状态显示 */}
+          {loadStatus === 'loading' && (
+            <View className="flex flex-col items-center justify-center py-12">
+              <View className="w-12 h-12 rounded-full border-4 border-blue-500/30 border-t-blue-500 animate-spin mb-4" />
+              <Text className="block text-sm text-slate-400 text-center">正在加载热点数据{'\n'}请稍候...</Text>
             </View>
-          ) : (
-            /* 热点关键词列表 */
+          )}
+
+          {loadStatus === 'error' && (
+            <View className="flex flex-col items-center justify-center py-12 px-4">
+              <View className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
+                <Text className="text-3xl">⚠️</Text>
+              </View>
+              <Text className="block text-base text-white font-medium mb-2 text-center">加载失败</Text>
+              <Text className="block text-sm text-slate-400 text-center mb-6">{errorMessage}</Text>
+              <Button
+                size="mini"
+                type="primary"
+                className="bg-blue-500 text-white border-none px-6"
+                onClick={() => loadHotKeywords()}
+              >
+                重新加载
+              </Button>
+            </View>
+          )}
+
+          {loadStatus === 'empty' && (
+            <View className="flex flex-col items-center justify-center py-12 px-4">
+              <View className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mb-4">
+                <Text className="text-3xl">📭</Text>
+              </View>
+              <Text className="block text-base text-white font-medium mb-2 text-center">
+                {searchKeyword ? '未找到相关热点' : '暂无热点数据'}
+              </Text>
+              <Text className="block text-sm text-slate-400 text-center">
+                {searchKeyword ? '换个关键词试试' : '稍后再来看看吧'}
+              </Text>
+            </View>
+          )}
+
+          {/* 热点关键词列表 */}
+          {loadStatus === 'success' && (
             <View className="space-y-3">
               {hotKeywords.length === 0 ? (
                 <View className="flex items-center justify-center py-8">
