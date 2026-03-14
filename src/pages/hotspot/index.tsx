@@ -191,6 +191,35 @@ const HotspotPage = () => {
     }
   };
 
+  // 生成选题
+  const handleGenerateTopic = (item: HotKeyword) => {
+    // 跳转到选题生成页面
+    Taro.navigateTo({
+      url: `/pages/hot-topic-generation/index?hotId=${encodeURIComponent(item.title)}&platform=${encodeURIComponent(item.platform || '')}&hot=${encodeURIComponent(item.hot)}`
+    });
+  };
+
+  // 生成脚本
+  const handleGenerateScript = (item: HotKeyword) => {
+    // 跳转到脚本生成页面
+    Taro.navigateTo({
+      url: `/pages/hot-script-generation/index?hotId=${encodeURIComponent(item.title)}&platform=${encodeURIComponent(item.platform || '')}&hot=${encodeURIComponent(item.hot)}`
+    });
+  };
+
+  // 复制标题
+  const handleCopyTitle = (title: string) => {
+    Taro.setClipboardData({
+      data: title,
+      success: () => {
+        Taro.showToast({
+          title: '标题已复制',
+          icon: 'success'
+        });
+      }
+    });
+  };
+
   // 渲染趋势图标
   const renderTrendIcon = (item: HotKeyword) => {
     if (item.trend === 'up' || (item.trendChange && item.trendChange > 0)) {
@@ -343,7 +372,7 @@ const HotspotPage = () => {
                             )}
                           </View>
 
-                          <View className="flex items-center gap-2">
+                          <View className="flex items-center gap-2 mb-2">
                             <Text className="block text-xs text-slate-400">
                               热度: {item.hot}
                             </Text>
@@ -370,6 +399,40 @@ const HotspotPage = () => {
                               </Text>
                             </View>
                           )}
+
+                          {/* 操作按钮 */}
+                          <View className="flex items-center gap-2 mt-2">
+                            <Button
+                              size="mini"
+                              className="bg-blue-500/20 text-blue-400 border border-blue-500/40"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleGenerateTopic(item);
+                              }}
+                            >
+                              <Text className="block text-xs">生成选题</Text>
+                            </Button>
+                            <Button
+                              size="mini"
+                              className="bg-purple-500/20 text-purple-400 border border-purple-500/40"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleGenerateScript(item);
+                              }}
+                            >
+                              <Text className="block text-xs">生成脚本</Text>
+                            </Button>
+                            <Button
+                              size="mini"
+                              className="bg-yellow-500/20 text-yellow-400 border border-yellow-500/40"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopyTitle(item.title);
+                              }}
+                            >
+                              <Text className="block text-xs">复制</Text>
+                            </Button>
+                          </View>
                         </View>
 
                         {/* 趋势图标 */}
