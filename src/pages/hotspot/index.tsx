@@ -1,7 +1,7 @@
 import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
-import { MapPin, Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon } from 'lucide-react-taro';
+import { MapPin, Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon, Heart } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface HotKeyword {
@@ -220,6 +220,46 @@ const HotspotPage = () => {
     });
   };
 
+  // 收藏热点
+  const handleFavorite = async (item: HotKeyword) => {
+    try {
+      const res = await Network.request({
+        url: '/api/hot/favorite',
+        method: 'POST',
+        data: {
+          hotTitle: item.title,
+          platform: item.platform || '',
+          hot: item.hot,
+          topicTitle: '',
+          scriptSummary: '',
+          account: '',
+          responsible: '',
+          status: '待拍'
+        }
+      });
+
+      console.log('[Hotspot] 收藏热点响应:', res.data);
+
+      if (res.data?.code === 200) {
+        Taro.showToast({
+          title: '已添加到待拍清单',
+          icon: 'success'
+        });
+      } else {
+        Taro.showToast({
+          title: res.data?.msg || '收藏失败',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
+      console.error('[Hotspot] 收藏热点失败:', error);
+      Taro.showToast({
+        title: '收藏失败',
+        icon: 'none'
+      });
+    }
+  };
+
   // 渲染趋势图标
   const renderTrendIcon = (item: HotKeyword) => {
     if (item.trend === 'up' || (item.trendChange && item.trendChange > 0)) {
@@ -277,14 +317,26 @@ const HotspotPage = () => {
     <View className="min-h-screen bg-slate-900">
       {/* 标题区 */}
       <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
-        <View className="flex items-center gap-3">
-          <View className="w-12 h-12 bg-gradient-to-br from-amber-500/30 to-orange-500/30 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
-            <MapPin size={24} color="#fbbf24" strokeWidth={2.5} />
+        <View className="flex items-center justify-between">
+          <View className="flex items-center gap-3">
+            <View className="w-12 h-12 bg-gradient-to-br from-amber-500/30 to-orange-500/30 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+              <MapPin size={24} color="#fbbf24" strokeWidth={2.5} />
+            </View>
+            <View>
+              <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">全网热点</Text>
+              <Text className="block text-xs text-blue-400 font-medium tracking-wider">ALL HOT TOPICS</Text>
+            </View>
           </View>
-          <View>
-            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">全网热点</Text>
-            <Text className="block text-xs text-blue-400 font-medium tracking-wider">ALL HOT TOPICS</Text>
-          </View>
+          <Button
+            size="mini"
+            className="bg-pink-500/20 text-pink-400 border border-pink-500/40"
+            onClick={() => Taro.navigateTo({ url: '/pages/favorite-list/index' })}
+          >
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
+              <Heart size={14} color="#f472b6" />
+              <Text className="block text-xs">待拍清单</Text>
+            </View>
+          </Button>
         </View>
       </View>
 
@@ -421,6 +473,16 @@ const HotspotPage = () => {
                               }}
                             >
                               <Text className="block text-xs">生成脚本</Text>
+                            </Button>
+                            <Button
+                              size="mini"
+                              className="bg-pink-500/20 text-pink-400 border border-pink-500/40"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleFavorite(item);
+                              }}
+                            >
+                              <Heart size={14} color="#f472b6" />
                             </Button>
                             <Button
                               size="mini"

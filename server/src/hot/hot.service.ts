@@ -440,4 +440,182 @@ export class HotService {
       suggestedHashtags: ['#餐饮创业', '#开店预算', '#商用厨具', '#二手设备', '#餐饮避坑']
     };
   }
+
+  /**
+   * 添加收藏
+   */
+  async addFavorite(data: {
+    hotTitle: string;
+    platform?: string;
+    hot?: string;
+    topicTitle?: string;
+    scriptSummary?: string;
+    account?: string;
+    responsible?: string;
+    status?: string;
+  }) {
+    console.log('[HotService] 添加收藏');
+    console.log('数据:', JSON.stringify(data));
+
+    // 使用内存存储（生产环境应该使用数据库）
+    // 这里使用简单的文件系统存储
+    const fs = require('fs');
+    const path = require('path');
+
+    const favoritesFile = path.join(process.cwd(), 'data', 'favorites.json');
+    const dataDir = path.join(process.cwd(), 'data');
+
+    // 确保目录存在
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    // 读取现有数据
+    let favorites: any[] = [];
+    if (fs.existsSync(favoritesFile)) {
+      try {
+        const content = fs.readFileSync(favoritesFile, 'utf-8');
+        favorites = JSON.parse(content);
+      } catch (error) {
+        console.error('[HotService] 读取收藏文件失败:', error);
+        favorites = [];
+      }
+    }
+
+    // 添加新收藏
+    const newFavorite = {
+      id: Date.now().toString(),
+      ...data,
+      createdAt: new Date().toISOString()
+    };
+
+    favorites.push(newFavorite);
+
+    // 保存数据
+    fs.writeFileSync(favoritesFile, JSON.stringify(favorites, null, 2), 'utf-8');
+
+    this.logger.log(`收藏添加成功: ${newFavorite.id}`);
+
+    return newFavorite;
+  }
+
+  /**
+   * 获取收藏列表
+   */
+  async getFavoriteList() {
+    console.log('[HotService] 获取收藏列表');
+
+    const fs = require('fs');
+    const path = require('path');
+
+    const favoritesFile = path.join(process.cwd(), 'data', 'favorites.json');
+
+    // 读取数据
+    if (!fs.existsSync(favoritesFile)) {
+      return [];
+    }
+
+    try {
+      const content = fs.readFileSync(favoritesFile, 'utf-8');
+      const favorites = JSON.parse(content);
+
+      // 格式化日期
+      return favorites.map((item: any) => ({
+        ...item,
+        createdAt: new Date(item.createdAt).toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }));
+    } catch (error) {
+      console.error('[HotService] 读取收藏文件失败:', error);
+      return [];
+    }
+  }
+
+  /**
+   * 删除收藏
+   */
+  async deleteFavorite(id: string) {
+    console.log('[HotService] 删除收藏');
+    console.log('收藏ID:', id);
+
+    const fs = require('fs');
+    const path = require('path');
+
+    const favoritesFile = path.join(process.cwd(), 'data', 'favorites.json');
+
+    // 读取现有数据
+    let favorites: any[] = [];
+    if (fs.existsSync(favoritesFile)) {
+      try {
+        const content = fs.readFileSync(favoritesFile, 'utf-8');
+        favorites = JSON.parse(content);
+      } catch (error) {
+        console.error('[HotService] 读取收藏文件失败:', error);
+        return;
+      }
+    }
+
+    // 删除指定收藏
+    const originalLength = favorites.length;
+    favorites = favorites.filter((item: any) => item.id !== id);
+
+    if (favorites.length === originalLength) {
+      throw new Error('收藏不存在');
+    }
+
+    // 保存数据
+    fs.writeFileSync(favoritesFile, JSON.stringify(favorites, null, 2), 'utf-8');
+
+    this.logger.log(`收藏删除成功: ${id}`);
+  }
+
+  /**
+   * 更新收藏状态
+   */
+  async updateFavoriteStatus(id: string, status: string) {
+    console.log('[HotService] 更新收藏状态');
+    console.log('收藏ID:', id);
+    console.log('新状态:', status);
+
+    const fs = require('fs');
+    const path = require('path');
+
+    const favoritesFile = path.join(process.cwd(), 'data', 'favorites.json');
+
+    // 读取现有数据
+    let favorites: any[] = [];
+    if (fs.existsSync(favoritesFile)) {
+      try {
+        const content = fs.readFileSync(favoritesFile, 'utf-8');
+        favorites = JSON.parse(content);
+      } catch (error) {
+        console.error('[HotService] 读取收藏文件失败:', error);
+        throw new Error('读取收藏数据失败');
+      }
+    }
+
+    // 更新状态
+    let found = false;
+    favorites = favorites.map((item: any) => {
+      if (item.id === id) {
+        found = true;
+        return { ...item, status };
+      }
+      return item;
+    });
+
+    if (!found) {
+      throw new Error('收藏不存在');
+    }
+
+    // 保存数据
+    fs.writeFileSync(favoritesFile, JSON.stringify(favorites, null, 2), 'utf-8');
+
+    this.logger.log(`收藏状态更新成功: ${id} -> ${status}`);
+  }
 }

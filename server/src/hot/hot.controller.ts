@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Put, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { HotService } from './hot.service';
 
 @Controller('hot')
@@ -211,6 +211,183 @@ export class HotController {
       return {
         success: false,
         message: error.message || '脚本生成失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 添加收藏
+   * POST /api/hot/favorite
+   *
+   * 参数：
+   * - hotTitle: 热点标题
+   * - platform: 平台
+   * - hot: 热度
+   * - topicTitle: 选题标题
+   * - scriptSummary: 脚本摘要
+   * - account: 账号
+   * - responsible: 负责人
+   * - status: 状态（待拍 / 已拍 / 已发布）
+   *
+   * 返回格式：
+   * {
+   *   "code": 200,
+   *   "msg": "收藏成功",
+   *   "data": { "id": "xxx" }
+   * }
+   */
+  @Post('favorite')
+  async addFavorite(@Body() body: {
+    hotTitle: string;
+    platform?: string;
+    hot?: string;
+    topicTitle?: string;
+    scriptSummary?: string;
+    account?: string;
+    responsible?: string;
+    status?: string;
+  }) {
+    console.log('[HotController] 添加收藏');
+    console.log('热点标题:', body.hotTitle);
+
+    try {
+      const result = await this.hotService.addFavorite(body);
+
+      return {
+        code: 200,
+        msg: '收藏成功',
+        data: { id: result.id }
+      };
+    } catch (error: any) {
+      console.error('[HotController] 添加收藏失败:', error);
+
+      return {
+        code: 500,
+        msg: error.message || '收藏失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 获取收藏列表
+   * GET /api/hot/favorite/list
+   *
+   * 返回格式：
+   * {
+   *   "code": 200,
+   *   "msg": "ok",
+   *   "data": [
+   *     {
+   *       "id": "xxx",
+   *       "hotTitle": "热点标题",
+   *       "topicTitle": "选题标题",
+   *       "scriptSummary": "脚本摘要",
+   *       "account": "账号",
+   *       "responsible": "负责人",
+   *       "status": "待拍",
+   *       "createdAt": "2026-03-14 10:00:00"
+   *     }
+   *   ]
+   * }
+   */
+  @Get('favorite/list')
+  async getFavoriteList() {
+    console.log('[HotController] 获取收藏列表');
+
+    try {
+      const result = await this.hotService.getFavoriteList();
+
+      return {
+        code: 200,
+        msg: 'ok',
+        data: result
+      };
+    } catch (error: any) {
+      console.error('[HotController] 获取收藏列表失败:', error);
+
+      return {
+        code: 500,
+        msg: error.message || '获取收藏列表失败',
+        data: []
+      };
+    }
+  }
+
+  /**
+   * 删除收藏
+   * DELETE /api/hot/favorite
+   *
+   * 参数：
+   * - id: 收藏ID
+   *
+   * 返回格式：
+   * {
+   *   "code": 200,
+   *   "msg": "删除成功",
+   *   "data": null
+   * }
+   */
+  @Delete('favorite')
+  async deleteFavorite(@Body() body: { id: string }) {
+    console.log('[HotController] 删除收藏');
+    console.log('收藏ID:', body.id);
+
+    try {
+      await this.hotService.deleteFavorite(body.id);
+
+      return {
+        code: 200,
+        msg: '删除成功',
+        data: null
+      };
+    } catch (error: any) {
+      console.error('[HotController] 删除收藏失败:', error);
+
+      return {
+        code: 500,
+        msg: error.message || '删除失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 更新收藏状态
+   * PUT /api/hot/favorite/status
+   *
+   * 参数：
+   * - id: 收藏ID
+   * - status: 新状态（待拍 / 已拍 / 已发布）
+   *
+   * 返回格式：
+   * {
+   *   "code": 200,
+   *   "msg": "状态已更新",
+   *   "data": null
+   * }
+   */
+  @Put('favorite/status')
+  async updateFavoriteStatus(@Body() body: { id: string; status: string }) {
+    console.log('[HotController] 更新收藏状态');
+    console.log('收藏ID:', body.id);
+    console.log('新状态:', body.status);
+
+    try {
+      await this.hotService.updateFavoriteStatus(body.id, body.status);
+
+      return {
+        code: 200,
+        msg: '状态已更新',
+        data: null
+      };
+    } catch (error: any) {
+      console.error('[HotController] 更新收藏状态失败:', error);
+
+      return {
+        code: 500,
+        msg: error.message || '更新状态失败',
         data: null
       };
     }
