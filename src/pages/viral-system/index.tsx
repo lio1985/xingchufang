@@ -260,7 +260,7 @@ export default function ViralSystemPage() {
                   <View className="flex items-center gap-2">
                     <Loader size={18} color="#60a5fa" className="animate-spin" />
                     <Text className="text-sm font-medium text-white">
-                      正在分析抖音视频，提取文字内容
+                      正在使用豆包大模型分析文案结构
                     </Text>
                   </View>
                   <Text className="text-sm text-blue-400 font-bold">
@@ -276,11 +276,11 @@ export default function ViralSystemPage() {
                 <View className="mt-3 flex flex-col gap-1.5">
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
                     {progress >= 20 && <Check size={12} color="#34d399" />}
-                    {progress >= 20 ? '✓ 获取视频信息' : '正在获取视频信息...'}
+                    {progress >= 20 ? '✓ 提取文案内容' : '正在提取文案内容...'}
                   </Text>
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
                     {progress >= 50 && <Check size={12} color="#34d399" />}
-                    {progress >= 50 ? '✓ 提取视频内容' : '正在提取视频内容...'}
+                    {progress >= 50 ? '✓ 分析文案结构' : '正在分析文案结构...'}
                   </Text>
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
                     {progress >= 80 && <Check size={12} color="#34d399" />}
