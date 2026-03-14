@@ -1,16 +1,18 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { ASRClient, LLMClient, Config } from 'coze-coding-dev-sdk';
+import { ASRClient, LLMClient, Config, SearchClient } from 'coze-coding-dev-sdk';
 import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class ViralService {
   private asrClient: ASRClient;
   private llmClient: LLMClient;
+  private searchClient: SearchClient;
 
   constructor(private databaseService: DatabaseService) {
     const config = new Config();
     this.asrClient = new ASRClient(config);
     this.llmClient = new LLMClient(config);
+    this.searchClient = new SearchClient(config);
   }
 
   async extractVideo(url: string) {
@@ -217,15 +219,31 @@ export class ViralService {
     }
 
     try {
-      // 使用豆包大模型分析抖音链接并提取视频文字内容
-      // 注意：由于 AI 模型无法直接访问互联网，这里采用模拟演示的方式
-      // 在实际应用中，需要集成抖音解析 API + ASR + 大模型分析的完整流程
-      
-      const systemPrompt = `你是一位专业的短视频内容分析师，能够分析抖音视频并提取文字内容。
+      // 第一步：使用 search 获取视频相关信息
+      console.log('📥 [viral] 使用 Search 搜索视频信息');
+      const searchResponse = await this.searchClient.webSearch(
+        `抖音视频 ${url} 文案 内容 文字稿`,
+        5,
+        true
+      );
 
-请根据用户提供的抖音视频链接信息，模拟提取并分析以下内容：
+      console.log('📥 [viral] WebSearch 搜索结果:', searchResponse.web_items?.length || 0, '条');
 
-1. **transcript（文字内容）**：模拟提取视频讲述的完整文字内容（逐字稿）
+      // 提取搜索结果中的有用信息
+      const searchContext = searchResponse.web_items
+        ?.map((r, i) => `[${i + 1}] ${r.title}\n${r.snippet}`)
+        .join('\n\n') || '';
+
+      // 第二步：使用豆包大模型分析搜索到的真实信息
+      const systemPrompt = `你是一位专业的短视频内容分析师，擅长分析抖音视频并提取文字内容。
+
+我会提供：
+1. 抖音视频链接
+2. 通过搜索引擎获取的该视频相关信息（包括标题、描述、片段等）
+
+你的任务是基于这些真实信息，提取并整理出：
+
+1. **transcript（文字内容）**：根据搜索结果还原视频的完整文字稿（逐字稿）
 2. **structure（爆款结构）**：分析视频的内容结构，包括：
    - hook（钩子）：视频开头的吸引人的话术或问题
    - body（主体要点）：3-5个核心观点或论点
@@ -236,9 +254,14 @@ export class ViralService {
    - description（框架描述）：用一句话描述框架特点
    - keyPoints（关键要点）：3-5个成功要素或技巧
 
+重要提示：
+- 请基于提供的搜索结果提取真实内容，不要编造
+- 如果搜索结果信息不足，请在transcript中注明"根据搜索结果，该视频主要内容关于..."
+- 确保返回的JSON格式正确
+
 请严格按照以下JSON格式输出（不要输出其他内容）：
 {
-  "transcript": "视频讲述的完整文字内容（模拟）",
+  "transcript": "视频讲述的完整文字内容（基于搜索结果）",
   "structure": {
     "hook": "钩子内容",
     "body": ["要点1", "要点2", "要点3"],
@@ -254,13 +277,13 @@ export class ViralService {
 
       const messages = [
         { role: 'system' as const, content: systemPrompt },
-        { role: 'user' as const, content: `请模拟分析这个抖音视频链接（这是一个关于职场提升的视频）：${url}` }
+        { role: 'user' as const, content: `抖音视频链接：${url}\n\n搜索获取的相关信息：\n${searchContext}` }
       ];
 
-      console.log('📥 [viral] 调用豆包大模型分析抖音链接');
+      console.log('📥 [viral] 调用豆包大模型分析搜索信息');
       const response = await this.llmClient.invoke(messages, {
         model: 'doubao-seed-1-8-251228',
-        temperature: 0.7
+        temperature: 0.3  // 降低温度，让输出更基于事实
       });
 
       console.log('📥 [viral] 豆包大模型返回结果:', response.content);
