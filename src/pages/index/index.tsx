@@ -120,15 +120,16 @@ const IconRecycle = () => (
   </View>
 );
 
-const IconUserCircle = () => (
-  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="10" r="3" />
-      <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
-    </svg>
-  </View>
-);
+// 账号管理图标 - 暂时隐藏
+// const IconUserCircle = () => (
+//   <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+//     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+//       <circle cx="12" cy="12" r="10" />
+//       <circle cx="12" cy="10" r="3" />
+//       <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+//     </svg>
+//   </View>
+// );
 
 interface WelcomeMessage {
   id: string;
@@ -616,8 +617,8 @@ const IndexPage = () => {
           </View>
         </View>
 
-        {/* 账号管理入口 */}
-        <View
+        {/* 账号管理入口 - 暂时隐藏 */}
+        {/* <View
           className="bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-slate-500/20 border border-slate-500/30"
           onClick={() => handleNavigateTo('/pages/admin/users/index', true)}
         >
@@ -630,7 +631,7 @@ const IndexPage = () => {
               <Text className="block text-sm text-slate-300">管理用户账号与权限</Text>
             </View>
           </View>
-        </View>
+        </View> */}
       </View>
       </ScrollView>
     </View>
