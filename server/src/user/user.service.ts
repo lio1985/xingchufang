@@ -1059,6 +1059,43 @@ export class UserService {
   }
 
   /**
+   * 重置密码（无需验证旧密码，用于登录页修改密码）
+   */
+  async resetPassword(userId: string, newPassword: string): Promise<void> {
+    this.logger.log(`重置密码: ${userId}`);
+
+    // 验证新密码
+    if (!newPassword || newPassword.length < 6) {
+      throw new HttpException('新密码长度至少6位', HttpStatus.BAD_REQUEST);
+    }
+
+    // 检查用户是否存在
+    const { data: user, error: findError } = await this.client
+      .from('users')
+      .select('id')
+      .eq('id', userId)
+      .single();
+
+    if (findError || !user) {
+      this.logger.error('用户不存在:', findError);
+      throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
+    }
+
+    // 更新密码
+    const { error: updateError } = await this.client
+      .from('users')
+      .update({ password: newPassword, updated_at: new Date().toISOString() })
+      .eq('id', userId);
+
+    if (updateError) {
+      this.logger.error('重置密码失败:', updateError);
+      throw new HttpException('重置密码失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    this.logger.log(`密码重置成功: ${userId}`);
+  }
+
+  /**
    * 管理员审核用户
    */
   async auditUser(userId: string, status: 'active' | 'disabled', operatorId: string): Promise<void> {

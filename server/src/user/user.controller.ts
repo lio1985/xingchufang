@@ -211,6 +211,51 @@ export class UserController {
   }
 
   /**
+   * 重置密码（无需登录，用于登录页修改密码）
+   */
+  @Post('reset-password')
+  async resetPassword(@Body() body: { userId: string; newPassword: string }) {
+    console.log('收到重置密码请求:', { userId: body.userId });
+
+    if (!body.userId || !body.newPassword) {
+      return {
+        success: false,
+        code: 400,
+        msg: '用户ID和新密码不能为空',
+        data: null
+      };
+    }
+
+    if (body.newPassword.length < 6) {
+      return {
+        success: false,
+        code: 400,
+        msg: '新密码长度至少6位',
+        data: null
+      };
+    }
+
+    try {
+      await this.userService.resetPassword(body.userId, body.newPassword);
+
+      return {
+        success: true,
+        code: 200,
+        msg: '密码修改成功',
+        data: null
+      };
+    } catch (error) {
+      console.error('重置密码失败:', error);
+      return {
+        success: false,
+        code: error.status || 500,
+        msg: error.message || '重置密码失败',
+        data: null
+      };
+    }
+  }
+
+  /**
    * 获取当前用户信息
    */
   @Get('profile')
