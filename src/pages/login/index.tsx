@@ -154,28 +154,14 @@ const LoginPage = () => {
               <Text className="text-blue-400 text-sm">修改密码</Text>
             </View>
           </View>
-
-          {/* 审核测试账号提示 */}
-          <View className="mt-8 p-5 bg-emerald-500/15 rounded-2xl border border-emerald-500/30">
-            <Text className="text-emerald-400 text-base font-bold mb-3">微信审核专用测试账号</Text>
-            <View className="space-y-2">
-              <View className="flex items-center gap-3">
-                <View className="w-2 h-2 bg-emerald-400 rounded-full" />
-                <Text className="text-white/80 text-base">账号：lio1985</Text>
-              </View>
-              <View className="flex items-center gap-3">
-                <View className="w-2 h-2 bg-emerald-400 rounded-full" />
-                <Text className="text-white/80 text-base">密码：123456</Text>
-              </View>
-            </View>
-            <Text className="text-white/50 text-sm mt-4">使用此账号可体验全部功能</Text>
-          </View>
         </View>
       </View>
 
-      {/* 底部版权 */}
-      <View className="relative z-10 pb-6">
-        <Text className="text-white/40 text-xs text-center">星厨房创作工作室</Text>
+      {/* 底部区域 */}
+      <View className="relative z-10 pb-6 flex flex-col items-center gap-2">
+        {/* 体验账号 */}
+        <Text className="text-white/40 text-xs">体验账号：demo / 密码：123456</Text>
+        <Text className="text-white/30 text-xs">星厨房创作工作室</Text>
       </View>
     </View>
   )
