@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
-import { View, Text, Image, Button } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import { Network } from '@/network'
 import logoImage from '../../static/logo-xinchufang-new.png'
 
@@ -220,10 +220,13 @@ const LoginPage = () => {
         {/* 登录按钮区域 */}
         <View className="w-full max-w-sm space-y-4">
           {/* 登录按钮 - 根据环境显示不同文字 */}
-          <Button
-            className="w-full !bg-green-500 !text-white !rounded-full !py-4 !flex !items-center !justify-center !gap-3 !shadow-lg"
-            onTap={handleLogin}
-            disabled={isLogging}
+          <View
+            className="w-full bg-green-500 rounded-full py-4 flex items-center justify-center gap-3 shadow-lg active:opacity-80"
+            onClick={() => {
+              console.log('登录按钮被点击')
+              handleLogin()
+            }}
+            style={{ opacity: isLogging ? 0.6 : 1 }}
           >
             {isLogging ? (
               <Text className="text-white font-semibold">登录中...</Text>
@@ -239,7 +242,7 @@ const LoginPage = () => {
                 )}
               </>
             )}
-          </Button>
+          </View>
 
           {/* 环境提示 */}
           <View className="text-center mt-4">
