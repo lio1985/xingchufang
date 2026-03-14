@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
-import { TrendingUp, Copy, RefreshCw, Heart, Plus, Check, FileText, BookOpen, Sparkles, Loader, Type } from 'lucide-react-taro'
+import { TrendingUp, RefreshCw, Heart, Plus, Check, BookOpen, Sparkles, Loader, Type } from 'lucide-react-taro'
 
 type Step = 'input' | 'analyzing' | 'completed'
 
@@ -160,16 +160,6 @@ export default function ViralSystemPage() {
     
     Taro.navigateTo({
       url: `/pages/viral-remix/index?analysis=${analysisData}`
-    })
-  }
-
-  // 复制文本
-  const handleCopy = (text: string) => {
-    Taro.setClipboardData({
-      data: text,
-      success: () => {
-        showToast({ title: '复制成功', icon: 'success' })
-      }
     })
   }
 
@@ -342,31 +332,6 @@ export default function ViralSystemPage() {
         {step === 'completed' && currentAnalysis && (
           <>
             {/* 提取的文字 */}
-            <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
-              <View className="flex items-center justify-between mb-4">
-                <View className="flex items-center gap-2">
-                  <View className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <FileText size={18} color="#60a5fa" strokeWidth={2.5} />
-                  </View>
-                  <Text className="block text-lg font-bold text-white">提取内容</Text>
-                </View>
-                <View
-                  className="px-3 py-1.5 bg-slate-700/50 rounded-lg active:scale-95 transition-all"
-                  onClick={() => handleCopy(currentAnalysis.transcript)}
-                >
-                  <View className="flex items-center gap-1">
-                    <Copy size={14} color="#94a3b8" />
-                    <Text className="text-xs text-slate-300">复制</Text>
-                  </View>
-                </View>
-              </View>
-              <View className="bg-slate-700/60 rounded-2xl p-4">
-                <Text className="block text-sm text-slate-200 leading-relaxed">
-                  {currentAnalysis.transcript}
-                </Text>
-              </View>
-            </View>
-
             {/* 爆款框架分析 */}
             <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
               <View className="flex items-center gap-2 mb-4">
