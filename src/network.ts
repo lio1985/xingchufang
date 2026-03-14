@@ -26,13 +26,14 @@ const createUrl = (url: string): string => {
     // 更可靠的 H5 环境检测
     const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
     
-    // 本地 H5 环境：直接访问后端 API 端口 3000
+    // 本地 H5 开发环境：直接访问后端 API 端口 3000
     if (isH5) {
         return `http://localhost:3000${url}`
     }
 
-    // 小程序环境，使用 PROJECT_DOMAIN
-    return `${PROJECT_DOMAIN}${url}`
+    // 小程序线上环境：使用部署的服务器
+    // 注意：需要在微信小程序后台配置服务器域名 http://14.103.111.91
+    return `http://14.103.111.91${url}`
 }
 
 export const request: typeof Taro.request = option => {
