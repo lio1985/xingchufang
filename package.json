@@ -8,6 +8,7 @@
     "build:server": "pnpm --filter server build",
     "build:weapp": "taro build --type weapp",
     "build:web": "taro build --type h5",
+    "postbuild:web": "mkdir -p dist-web/static/icons && cp src/static/icons/*.png dist-web/static/icons/",
     "dev": "pnpm exec concurrently --kill-others --kill-signal SIGKILL -n web,server -c blue,green \"pnpm dev:web\" \"pnpm dev:server\"",
     "dev:server": "pnpm --filter server dev",
     "dev:weapp": "taro build --type weapp --watch",
