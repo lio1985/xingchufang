@@ -1,7 +1,7 @@
 import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
-import { MapPin, Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon, Heart } from 'lucide-react-taro';
+import { Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon, Heart, ChevronDown, ChevronUp, Copy, Sparkles } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface HotKeyword {
@@ -24,13 +24,55 @@ interface PlatformData {
   list: HotKeyword[];
 }
 
+// 平台图标映射
+const PLATFORM_ICONS: { [key: string]: { icon: string; color: string; emoji: string } } = {
+  '微博': { icon: 'w', color: '#e6162d', emoji: '🔴' },
+  '知乎': { icon: 'z', color: '#0084ff', emoji: '💬' },
+  '抖音': { icon: 'd', color: '#000000', emoji: '🎵' },
+  '哔哩哔哩': { icon: 'b', color: '#fb7299', emoji: '📺' },
+  '百度': { icon: 'b', color: '#2932e1', emoji: '🔍' },
+  '今日头条': { icon: 't', color: '#f85959', emoji: '📰' },
+  '腾讯新闻': { icon: 'q', color: '#0052d9', emoji: '📊' },
+  '凤凰网': { icon: 'f', color: '#d81e06', emoji: '🔥' },
+  '36氪': { icon: '3', color: '#0a9dd9', emoji: '💡' },
+  '少数派': { icon: 's', color: '#f04e98', emoji: '💻' },
+  '豆瓣': { icon: 'd', color: '#00b51d', emoji: '🎬' },
+  '小红书': { icon: 'x', color: '#ff2442', emoji: '📸' },
+  '快手': { icon: 'k', color: '#ff5000', emoji: '🎥' },
+  '视频号': { icon: 'v', color: '#07c160', emoji: '🎬' }
+};
+
 const HotspotPage = () => {
   const [allPlatforms, setAllPlatforms] = useState<PlatformData[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loadStatus, setLoadStatus] = useState<'loading' | 'success' | 'empty' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
+  const [collapsedPlatforms, setCollapsedPlatforms] = useState<Set<string>>(new Set());
   const CACHE_TTL = 5 * 60 * 1000; // 5分钟缓存
+
+  // 切换平台折叠状态
+  const togglePlatform = (platformName: string) => {
+    setCollapsedPlatforms(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(platformName)) {
+        newSet.delete(platformName);
+      } else {
+        newSet.add(platformName);
+      }
+      return newSet;
+    });
+  };
+
+  // 展开所有平台
+  const expandAll = () => {
+    setCollapsedPlatforms(new Set());
+  };
+
+  // 折叠所有平台
+  const collapseAll = () => {
+    setCollapsedPlatforms(new Set(allPlatforms.map(p => p.platform)));
+  };
 
   // 加载热力图数据
   const loadHotKeywords = useCallback(async (forceRefresh: boolean = false) => {
@@ -316,91 +358,148 @@ const HotspotPage = () => {
   return (
     <View className="min-h-screen bg-slate-900">
       {/* 标题区 */}
-      <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
-        <View className="flex items-center justify-between">
+      <View className="bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 px-4 pt-8 pb-5 border-b border-slate-700/50">
+        <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-3">
-            <View className="w-12 h-12 bg-gradient-to-br from-amber-500/30 to-orange-500/30 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <MapPin size={24} color="#fbbf24" strokeWidth={2.5} />
+            <View className="w-14 h-14 bg-gradient-to-br from-amber-500/30 to-orange-600/30 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/30 border border-orange-500/30">
+              <Flame size={28} color="#fbbf24" strokeWidth={2.5} />
             </View>
             <View>
-              <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">全网热点</Text>
-              <Text className="block text-xs text-blue-400 font-medium tracking-wider">ALL HOT TOPICS</Text>
+              <Text className="block text-2xl font-bold text-white mb-0.5 tracking-tight">全网热点</Text>
+              <Text className="block text-xs text-amber-400 font-medium tracking-widest opacity-90">REAL-TIME TRENDS</Text>
             </View>
           </View>
           <Button
             size="mini"
-            className="bg-pink-500/20 text-pink-400 border border-pink-500/40"
+            className="bg-pink-500/20 text-pink-300 border border-pink-500/40 backdrop-blur-sm"
             onClick={() => Taro.navigateTo({ url: '/pages/favorite-list/index' })}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
-              <Heart size={14} color="#f472b6" />
+              <Heart size={14} color="#f9a8d4" />
               <Text className="block text-xs">待拍清单</Text>
+            </View>
+          </Button>
+        </View>
+
+        {/* 数据来源和操作栏 */}
+        <View className="flex items-center justify-between gap-3">
+          <View className="flex-1 bg-slate-800/60 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-slate-700/50">
+            <Text className="block text-xs text-slate-300">
+              <Text className="text-amber-400">数据来源：</Text>TopHub 聚合 30+ 平台实时热点
+            </Text>
+            {lastUpdateTime && (
+              <Text className="block text-xs text-slate-500 mt-0.5">
+                更新于 {new Date(lastUpdateTime).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+            )}
+          </View>
+          <Button
+            size="mini"
+            className={`bg-blue-500/20 text-blue-300 border border-blue-500/40 backdrop-blur-sm ${refreshing ? 'opacity-50' : ''}`}
+            onClick={refreshHotKeywords}
+            disabled={refreshing}
+          >
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
+              <RefreshCw size={14} color="#93c5fd" strokeWidth={2} className={refreshing ? 'animate-spin' : ''} />
+              <Text className="block">{refreshing ? '刷新中...' : '刷新'}</Text>
             </View>
           </Button>
         </View>
       </View>
 
-      {/* 热力图区域 */}
-      <View className="px-4 mt-4">
-        <View className="bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-700/80 p-5 shadow-xl shadow-black/20">
-          {/* 标题和刷新按钮 */}
-          <View className="mb-4">
-            <View className="flex items-center justify-between mb-3">
-              <View className="flex items-center gap-2">
-                <Flame size={20} color="#fbbf24" strokeWidth={2} />
-                <Text className="block text-lg font-bold text-white">全网热点</Text>
-              </View>
-              <Button
-                size="mini"
-                className={`bg-blue-500/20 text-blue-400 border border-blue-500/40 ${refreshing ? 'opacity-50' : ''}`}
-                onClick={refreshHotKeywords}
-                disabled={refreshing}
-              >
-                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
-                  <RefreshCw size={14} color="#60a5fa" strokeWidth={2} className={refreshing ? 'animate-spin' : ''} />
-                  <Text className="block">{refreshing ? '刷新中...' : '刷新'}</Text>
-                </View>
-              </Button>
-            </View>
-            <View className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-2 flex items-center justify-between">
-              <Text className="block text-sm text-blue-300">
-                数据来源：TopHub（今日热榜）聚合30+平台
-              </Text>
-              {lastUpdateTime && (
-                <Text className="block text-xs text-blue-400">
-                  更新于: {new Date(lastUpdateTime).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                </Text>
-              )}
-            </View>
+      {/* 平台折叠控制栏 */}
+      <View className="px-4 py-3 bg-slate-800/40 border-b border-slate-700/40">
+        <View className="flex items-center justify-between">
+          <Text className="block text-sm text-slate-400">
+            共 <Text className="text-white font-semibold">{allPlatforms.length}</Text> 个平台，
+            <Text className="text-white font-semibold">{allPlatforms.reduce((sum, p) => sum + p.list.length, 0)}</Text> 条热点
+          </Text>
+          <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+            <Button
+              size="mini"
+              className="bg-slate-700/50 text-slate-300 border border-slate-600/50"
+              onClick={collapseAll}
+            >
+              <Text className="block text-xs">全部折叠</Text>
+            </Button>
+            <Button
+              size="mini"
+              className="bg-slate-700/50 text-slate-300 border border-slate-600/50"
+              onClick={expandAll}
+            >
+              <Text className="block text-xs">全部展开</Text>
+            </Button>
           </View>
+        </View>
+      </View>
 
-          {/* 平台分组列表 */}
-          <View className="space-y-6">
-            {allPlatforms.map((platform, platformIndex) => (
-              <View key={platformIndex} className="bg-slate-900/50 rounded-xl border border-slate-700/80 overflow-hidden">
-                {/* 平台标题 */}
-                <View className="bg-gradient-to-r from-slate-800 to-slate-800/80 px-4 py-3 border-b border-slate-700/80 flex items-center justify-between">
-                  <View className="flex items-center gap-2">
-                    <Text className="block text-sm font-semibold text-white">{platform.platform}</Text>
-                    <Text className="block text-xs text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded-full">
-                      {platform.list.length} 条
-                    </Text>
+      {/* 平台列表区域 */}
+      <View className="px-4 py-4 space-y-3">
+
+        {/* 平台卡片列表 */}
+        {allPlatforms.map((platform, platformIndex) => {
+          const platformInfo = PLATFORM_ICONS[platform.platform] || { icon: '', color: '#64748b', emoji: '📊' };
+          const isCollapsed = collapsedPlatforms.has(platform.platform);
+
+          return (
+            <View key={platformIndex} className="bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg shadow-black/20">
+              {/* 平台标题栏（可点击折叠） */}
+              <View
+                className={`px-4 py-3.5 border-b border-slate-700/40 cursor-pointer transition-colors ${isCollapsed ? 'bg-slate-800/40' : 'bg-gradient-to-r from-slate-800/80 to-transparent'}`}
+                onClick={() => togglePlatform(platform.platform)}
+              >
+                <View className="flex items-center justify-between">
+                  <View className="flex items-center gap-3">
+                    {/* 平台图标 */}
+                    <View
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
+                      style={{ backgroundColor: `${platformInfo.color}20`, border: `1px solid ${platformInfo.color}30` }}
+                    >
+                      <Text className="block text-lg">{platformInfo.emoji}</Text>
+                    </View>
+
+                    {/* 平台名称和计数 */}
+                    <View>
+                      <View className="flex items-center gap-2">
+                        <Text className="block text-base font-semibold text-white">{platform.platform}</Text>
+                        <Text className="block text-xs text-slate-400 bg-slate-700/60 px-2 py-0.5 rounded-full border border-slate-600/50">
+                          {platform.list.length}
+                        </Text>
+                      </View>
+                      {platform.list.length > 0 && (
+                        <Text className="block text-xs text-slate-500 mt-0.5">
+                          TOP: {platform.list[0].title.slice(0, 12)}
+                          {platform.list[0].title.length > 12 ? '...' : ''}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+
+                  {/* 折叠/展开图标 */}
+                  <View className="flex-shrink-0">
+                    {isCollapsed ? (
+                      <ChevronDown size={20} color="#94a3b8" strokeWidth={2} />
+                    ) : (
+                      <ChevronUp size={20} color="#94a3b8" strokeWidth={2} />
+                    )}
                   </View>
                 </View>
+              </View>
 
-                {/* 热点列表 */}
-                <View className="divide-y divide-slate-700/60">
+              {/* 热点列表（可折叠） */}
+              {!isCollapsed && (
+                <View className="divide-y divide-slate-700/30">
                   {platform.list.map((item, index) => (
                     <View
                       key={index}
-                      className="px-4 py-3 hover:bg-slate-700/30 transition-colors cursor-pointer"
+                      className="px-4 py-3.5 hover:bg-slate-700/30 transition-colors cursor-pointer"
                       onClick={() => handleKeywordClick(item)}
                     >
                       <View className="flex items-start gap-3">
                         {/* 排名 */}
                         <View className="flex-shrink-0">
                           <Text
-                            className={`block text-sm font-bold w-6 text-center ${
+                            className={`block text-sm font-bold w-7 text-center ${
                               index === 0 ? 'text-red-500' :
                               index === 1 ? 'text-orange-500' :
                               index === 2 ? 'text-yellow-500' :
@@ -413,22 +512,23 @@ const HotspotPage = () => {
 
                         {/* 内容 */}
                         <View className="flex-1 min-w-0">
-                          <View className="flex items-start gap-2 mb-1">
-                            <Text className="block text-sm text-white font-medium flex-1 leading-tight">
+                          <View className="flex items-start gap-2 mb-1.5">
+                            <Text className="block text-sm text-white font-medium flex-1 leading-snug">
                               {item.title}
                             </Text>
                             {item.isBursting && (
-                              <View className="flex-shrink-0 bg-red-500/20 text-red-400 text-xs px-1.5 py-0.5 rounded">
+                              <View className="flex-shrink-0 bg-red-500/20 text-red-400 text-xs px-1.5 py-0.5 rounded border border-red-500/30">
                                 爆
                               </View>
                             )}
                           </View>
 
-                          <View className="flex items-center gap-2 mb-2">
+                          {/* 热度和趋势 */}
+                          <View className="flex items-center gap-3 mb-2">
                             <Text className="block text-xs text-slate-400">
-                              热度: {item.hot}
+                              🔥 {item.hot}
                             </Text>
-                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '2px' }}>
+                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
                               {renderTrendIcon(item)}
                               {item.trendChange !== undefined && item.trendChange !== 0 && (
                                 <Text className={`block text-xs ${item.trendChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -438,81 +538,84 @@ const HotspotPage = () => {
                             </View>
                           </View>
 
+                          {/* 摘要 */}
                           {item.summary && (
-                            <Text className="block text-xs text-slate-500 mt-1 line-clamp-2">
+                            <Text className="block text-xs text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
                               {item.summary}
                             </Text>
                           )}
 
+                          {/* 分类标签 */}
                           {item.category && (
-                            <View className="mt-1">
-                              <Text className="block text-xs text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded inline-block">
+                            <View className="mt-2">
+                              <Text className="block text-xs text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded inline-block border border-amber-500/20">
                                 {item.category}
                               </Text>
                             </View>
                           )}
 
                           {/* 操作按钮 */}
-                          <View className="flex items-center gap-2 mt-2">
+                          <View className="flex items-center gap-2 mt-3 flex-wrap">
                             <Button
                               size="mini"
-                              className="bg-blue-500/20 text-blue-400 border border-blue-500/40"
+                              className="bg-blue-500/20 text-blue-300 border border-blue-500/40"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleGenerateTopic(item);
                               }}
                             >
-                              <Text className="block text-xs">生成选题</Text>
+                              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
+                                <Sparkles size={12} color="#93c5fd" />
+                                <Text className="block text-xs">选题</Text>
+                              </View>
                             </Button>
                             <Button
                               size="mini"
-                              className="bg-purple-500/20 text-purple-400 border border-purple-500/40"
+                              className="bg-purple-500/20 text-purple-300 border border-purple-500/40"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleGenerateScript(item);
                               }}
                             >
-                              <Text className="block text-xs">生成脚本</Text>
+                              <Text className="block text-xs">脚本</Text>
                             </Button>
                             <Button
                               size="mini"
-                              className="bg-pink-500/20 text-pink-400 border border-pink-500/40"
+                              className="bg-pink-500/20 text-pink-300 border border-pink-500/40"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleFavorite(item);
                               }}
                             >
-                              <Heart size={14} color="#f472b6" />
+                              <Heart size={12} color="#f9a8d4" />
                             </Button>
                             <Button
                               size="mini"
-                              className="bg-yellow-500/20 text-yellow-400 border border-yellow-500/40"
+                              className="bg-amber-500/20 text-amber-300 border border-amber-500/40"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleCopyTitle(item.title);
                               }}
                             >
-                              <Text className="block text-xs">复制</Text>
+                              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
+                                <Copy size={12} color="#fcd34d" />
+                                <Text className="block text-xs">复制</Text>
+                              </View>
                             </Button>
                           </View>
-                        </View>
-
-                        {/* 趋势图标 */}
-                        <View className="flex-shrink-0 flex items-center">
-                          {renderTrendIcon(item)}
                         </View>
                       </View>
                     </View>
                   ))}
                 </View>
-              </View>
-            ))}
-          </View>
-        </View>
+              )}
+            </View>
+          );
+        })}
       </View>
 
       {/* 底部留白 */}
-      <View className="h-20" />
+      <View className="h-24" />
     </View>
   );
 };
