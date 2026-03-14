@@ -362,6 +362,12 @@ const AiChatPage = () => {
   const handleSelectImage = () => {
     setShowActionSheet(false);
 
+    // H5 端不支持 chooseImage，使用 input 替代
+    if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP) {
+      Taro.showToast({ title: 'H5端请使用小程序体验完整功能', icon: 'none' });
+      return;
+    }
+
     Taro.chooseImage({
       count: 9,
       sizeType: ['original', 'compressed'],
@@ -378,17 +384,31 @@ const AiChatPage = () => {
             newAttachments.push(attachment);
           } catch (error) {
             console.error('上传图片失败:', error);
+            Taro.showToast({ title: '上传图片失败', icon: 'none' });
           }
         }
 
-        setAttachments(prev => [...prev, ...newAttachments]);
+        if (newAttachments.length > 0) {
+          setAttachments(prev => [...prev, ...newAttachments]);
+          Taro.showToast({ title: `成功添加 ${newAttachments.length} 个图片`, icon: 'success' });
+        }
       },
+      fail: (err) => {
+        console.error('选择图片失败:', err);
+        Taro.showToast({ title: '选择图片失败', icon: 'none' });
+      }
     });
   };
 
   // 选择视频
   const handleSelectVideo = () => {
     setShowActionSheet(false);
+
+    // H5 端不支持 chooseVideo
+    if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP) {
+      Taro.showToast({ title: 'H5端请使用小程序体验完整功能', icon: 'none' });
+      return;
+    }
 
     Taro.chooseVideo({
       sourceType: ['album', 'camera'],
@@ -400,16 +420,28 @@ const AiChatPage = () => {
         try {
           const attachment = await uploadFile(res.tempFilePath, userId);
           setAttachments(prev => [...prev, attachment]);
+          Taro.showToast({ title: '视频添加成功', icon: 'success' });
         } catch (error) {
           console.error('上传视频失败:', error);
+          Taro.showToast({ title: '上传视频失败', icon: 'none' });
         }
       },
+      fail: (err) => {
+        console.error('选择视频失败:', err);
+        Taro.showToast({ title: '选择视频失败', icon: 'none' });
+      }
     });
   };
 
   // 选择文件（文档）
   const handleSelectDocument = () => {
     setShowActionSheet(false);
+
+    // H5 端不支持 chooseMessageFile
+    if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP) {
+      Taro.showToast({ title: 'H5端请使用小程序体验完整功能', icon: 'none' });
+      return;
+    }
 
     Taro.chooseMessageFile({
       count: 10,
@@ -426,11 +458,19 @@ const AiChatPage = () => {
             newAttachments.push(attachment);
           } catch (error) {
             console.error('上传文件失败:', error);
+            Taro.showToast({ title: `上传文件 ${file.name} 失败`, icon: 'none' });
           }
         }
 
-        setAttachments(prev => [...prev, ...newAttachments]);
+        if (newAttachments.length > 0) {
+          setAttachments(prev => [...prev, ...newAttachments]);
+          Taro.showToast({ title: `成功添加 ${newAttachments.length} 个文件`, icon: 'success' });
+        }
       },
+      fail: (err) => {
+        console.error('选择文件失败:', err);
+        Taro.showToast({ title: '选择文件失败', icon: 'none' });
+      }
     });
   };
 
