@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { AdminGuard } from '../guards/admin.guard';
+import { ActiveUserGuard } from '../guards/active-user.guard';
 
 // 发送通知DTO
 class SendNotificationDto {
@@ -22,6 +23,7 @@ class SendNotificationDto {
 }
 
 @Controller('notifications')
+@UseGuards(ActiveUserGuard)
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 

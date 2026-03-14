@@ -31,28 +31,80 @@ export class NotificationService {
   async sendNotification(dto: CreateNotificationDto) {
     const { title, content, type = 'system', targetType = 'all', targetUsers = [], senderId } = dto;
 
+    // 将 employee_id 或 openid 转换为 user_id (UUID)
+    let resolvedTargetUsers: string[] = [];
+    if (targetType === 'single' && targetUsers && targetUsers.length > 0) {
+      for (const userIdOrEmployeeId of targetUsers) {
+        // 如果已经是 UUID 格式，直接使用
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(userIdOrEmployeeId)) {
+          resolvedTargetUsers.push(userIdOrEmployeeId);
+          continue;
+        }
+
+        // 尝试通过 employee_id 查找用户
+        const { data: usersByEmployeeId } = await this.supabase
+          .from('users')
+          .select('id')
+          .eq('employee_id', userIdOrEmployeeId)
+          .limit(1);
+
+        if (usersByEmployeeId && usersByEmployeeId.length > 0) {
+          resolvedTargetUsers.push(usersByEmployeeId[0].id);
+          continue;
+        }
+
+        // 尝试通过 openid 查找用户 (支持 pwd_ 前缀或纯 openid)
+        const openidToSearch = userIdOrEmployeeId.startsWith('pwd_') 
+          ? userIdOrEmployeeId 
+          : `pwd_${userIdOrEmployeeId}`;
+        
+        const { data: usersByOpenid } = await this.supabase
+          .from('users')
+          .select('id')
+          .eq('openid', openidToSearch)
+          .limit(1);
+
+        if (usersByOpenid && usersByOpenid.length > 0) {
+          resolvedTargetUsers.push(usersByOpenid[0].id);
+          continue;
+        }
+
+        // 如果都找不到，记录警告但继续
+        console.warn(`未找到用户: ${userIdOrEmployeeId}`);
+      }
+    }
+
     // 1. 创建通知记录
+    console.log('准备创建通知:', { title, content, type, targetType, resolvedTargetUsers, senderId });
+    
+    const insertData: any = {
+      title,
+      content,
+      type,
+      target_type: targetType,
+      sender_id: senderId,
+    };
+    
+    // 只有当有目标用户时才添加 target_users 字段
+    if (resolvedTargetUsers.length > 0) {
+      insertData.target_users = resolvedTargetUsers;
+    }
+    
     const { data: notification, error } = await this.supabase
       .from('notifications')
-      .insert({
-        title,
-        content,
-        type,
-        target_type: targetType,
-        target_users: targetUsers,
-        sender_id: senderId,
-      })
+      .insert(insertData)
       .select()
       .single();
 
     if (error) {
       console.error('创建通知失败:', error);
-      throw new Error('创建通知失败');
+      throw new Error(`创建通知失败: ${error.message}`);
     }
 
     // 2. 如果是定向发送，创建用户通知关联记录
-    if (targetType === 'single' && targetUsers && targetUsers.length > 0) {
-      const userNotifications = targetUsers.map(userId => ({
+    if (targetType === 'single' && resolvedTargetUsers.length > 0) {
+      const userNotifications = resolvedTargetUsers.map(userId => ({
         user_id: userId,
         notification_id: notification.id,
         is_read: false,
