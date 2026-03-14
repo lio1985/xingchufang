@@ -1,8 +1,134 @@
 import { View, Text, Swiper, SwiperItem, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { Lightbulb, PenTool, Sparkles, TrendingUp, LogOut, Settings, Shield, User, BookOpen, Users, ShieldAlert, UsersRound, Bell, Video } from 'lucide-react-taro';
 import { Network } from '@/network';
+
+// 内联SVG图标组件 - 解决微信小程序线上环境SVG显示问题
+const IconBell = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+  </svg>
+);
+
+const IconShield = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+  </svg>
+);
+
+const IconSettings = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+const IconLogOut = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
+  </svg>
+);
+
+const IconUser = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+// 内联SVG图标组件 - 解决微信小程序线上环境SVG显示问题
+const IconLightbulb = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+    </svg>
+  </View>
+);
+
+const IconSparkles = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+      <path d="M5 3v4" />
+      <path d="M19 17v4" />
+      <path d="M3 5h4" />
+      <path d="M17 19h4" />
+    </svg>
+  </View>
+);
+
+const IconPenTool = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 19 7-7 3 3-7 7-3-3z" />
+      <path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+      <path d="m2 2 7.586 7.586" />
+      <circle cx="11" cy="11" r="2" />
+    </svg>
+  </View>
+);
+
+const IconTrendingUp = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+      <polyline points="17 6 23 6 23 12" />
+    </svg>
+  </View>
+);
+
+const IconBookOpen = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  </View>
+);
+
+const IconVideo = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m22 8-6 4 6 4V8Z" />
+      <rect width="14" height="12" x="2" y="6" rx="2" ry="2" />
+    </svg>
+  </View>
+);
+
+const IconUsers = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  </View>
+);
+
+const IconRecycle = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+    </svg>
+  </View>
+);
+
+const IconUserCircle = () => (
+  <View style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="10" r="3" />
+      <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+    </svg>
+  </View>
+);
 
 interface WelcomeMessage {
   id: string;
@@ -19,7 +145,6 @@ const IndexPage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [userStatus, setUserStatus] = useState<'active' | 'pending' | 'disabled' | 'deleted'>('active');
   const [pendingUsersCount, setPendingUsersCount] = useState(0);
-  const [churnWarningCount, setChurnWarningCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -147,24 +272,7 @@ const IndexPage = () => {
         }
       };
 
-      // 加载客户流失预警数量
-      const loadChurnWarningCount = async () => {
-        try {
-          const response = await Network.request({
-            url: '/api/customers/churn-warning/statistics',
-            method: 'GET',
-          });
-          if (response.statusCode === 200 && response.data?.data) {
-            const stats = response.data.data;
-            setChurnWarningCount((stats.red || 0) + (stats.orange || 0));
-          }
-        } catch (error) {
-          console.error('加载客户流失预警数量失败:', error);
-        }
-      };
-
       loadPendingUsersCount();
-      loadChurnWarningCount();
     }
   }, [isAdmin, isLoggedIn]);
 
@@ -260,7 +368,7 @@ const IndexPage = () => {
                 <View
                   className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-3 transition-all active:scale-95"
                 >
-                  <Bell size={22} color="white" strokeWidth={2} />
+                  <IconBell />
                 </View>
                 {/* 未读消息徽标 */}
                 {unreadCount > 0 && (
@@ -280,7 +388,7 @@ const IndexPage = () => {
                   <View
                     className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-3 transition-all active:scale-95"
                   >
-                    <Shield size={22} color="white" strokeWidth={2} />
+                    <IconShield />
                   </View>
                   {/* 待审核徽标 */}
                   {pendingUsersCount > 0 && (
@@ -298,7 +406,7 @@ const IndexPage = () => {
                   className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-3 transition-all active:scale-95"
                   onClick={() => handleNavigateTo('/pages/dev-tools/index')}
                 >
-                  <Settings size={22} color="white" strokeWidth={2} />
+                  <IconSettings />
                 </View>
               )}
               {/* 退出登录 */}
@@ -306,7 +414,7 @@ const IndexPage = () => {
                 className="bg-slate-700/80 hover:bg-slate-600/80 rounded-2xl p-3 transition-all active:scale-95"
                 onClick={handleLogout}
               >
-                <LogOut size={22} color="#94a3b8" strokeWidth={2} />
+                <IconLogOut />
               </View>
             </>
           ) : (
@@ -315,7 +423,7 @@ const IndexPage = () => {
               className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-3 transition-all active:scale-95 shadow-lg shadow-blue-500/30"
               onClick={handleLogin}
             >
-              <User size={22} color="white" strokeWidth={2} />
+              <IconUser />
             </View>
           )}
         </View>
@@ -368,7 +476,7 @@ const IndexPage = () => {
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <Lightbulb size={32} color="white" strokeWidth={2.5} />
+              <IconLightbulb />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">灵感速记</Text>
@@ -387,7 +495,7 @@ const IndexPage = () => {
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles size={32} color="white" strokeWidth={2.5} />
+              <IconSparkles />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">选题策划</Text>
@@ -403,7 +511,7 @@ const IndexPage = () => {
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <PenTool size={32} color="white" strokeWidth={2.5} />
+              <IconPenTool />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">内容创作</Text>
@@ -419,7 +527,7 @@ const IndexPage = () => {
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <TrendingUp size={32} color="white" strokeWidth={2.5} />
+              <IconTrendingUp />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">语料优化</Text>
@@ -435,7 +543,7 @@ const IndexPage = () => {
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles size={32} color="white" strokeWidth={2.5} />
+              <IconSparkles />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">爆款复刻</Text>
@@ -451,7 +559,7 @@ const IndexPage = () => {
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <BookOpen size={32} color="white" strokeWidth={2.5} />
+              <IconBookOpen />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">知识分享</Text>
@@ -467,7 +575,7 @@ const IndexPage = () => {
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <Video size={32} color="white" strokeWidth={2.5} />
+              <IconVideo />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">直播数据统计</Text>
@@ -478,84 +586,51 @@ const IndexPage = () => {
 
         {/* 客资管理 */}
         <View
-          className="bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-indigo-500/20"
+          className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
           onClick={() => handleNavigateTo('/pages/customer/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <Users size={32} color="white" strokeWidth={2.5} />
+              <IconUsers />
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">客资管理</Text>
-              <Text className="block text-sm text-white/80">跟进客户进度，统计销售数据</Text>
+              <Text className="block text-sm text-white/80">客户资料管理与跟进</Text>
             </View>
           </View>
         </View>
 
-        {/* 回收管理 */}
+        {/* 废品回收 */}
         <View
-          className="bg-gradient-to-br from-cyan-600 via-teal-600 to-emerald-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
+          className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
           onClick={() => handleNavigateTo('/pages/recycle/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <BookOpen size={32} color="white" strokeWidth={2.5} />
+              <IconRecycle />
             </View>
             <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">回收管理</Text>
-              <Text className="block text-sm text-white/80">管理回收门店，追踪设备回收进度</Text>
+              <Text className="block text-xl font-bold text-white mb-1">废品回收</Text>
+              <Text className="block text-sm text-white/80">废旧物资回收管理</Text>
             </View>
           </View>
         </View>
 
-        {/* 我的团队 */}
+        {/* 账号管理入口 */}
         <View
-          className="bg-gradient-to-br from-emerald-500 via-green-600 to-teal-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-emerald-500/20"
-          onClick={() => handleNavigateTo('/pages/team/index', true)}
+          className="bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-slate-500/20 border border-slate-500/30"
+          onClick={() => handleNavigateTo('/pages/admin/users/index', true)}
         >
           <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <UsersRound size={32} color="white" strokeWidth={2.5} />
+            <View className="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+              <IconUserCircle />
             </View>
             <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">我的团队</Text>
-              <Text className="block text-sm text-white/80">查看团队业绩和成员信息</Text>
+              <Text className="block text-xl font-bold text-white mb-1">账号管理</Text>
+              <Text className="block text-sm text-slate-300">管理用户账号与权限</Text>
             </View>
           </View>
         </View>
-
-        {/* 客户流失预警 */}
-        {isLoggedIn && churnWarningCount > 0 && (
-          <View
-            className="bg-gradient-to-br from-red-500 via-rose-500 to-pink-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-red-500/20 relative overflow-hidden"
-            onClick={() => handleNavigateTo('/pages/customer/churn-warning', true)}
-          >
-            {/* 红点徽标 */}
-            <View className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg">
-              <Text className="block text-red-500 text-sm font-bold">{churnWarningCount > 99 ? '99+' : churnWarningCount}</Text>
-            </View>
-            <View className="flex items-center gap-4">
-              <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-                <ShieldAlert size={32} color="white" strokeWidth={2.5} />
-              </View>
-              <View className="flex-1">
-                <Text className="block text-xl font-bold text-white mb-1">客户流失预警</Text>
-                <Text className="block text-sm text-white/80">
-                  {churnWarningCount}个客户需立即跟进，避免流失
-                </Text>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* 更多功能提示 */}
-        {!isLoggedIn && (
-          <View className="mt-6 text-center pb-4">
-            <Text className="block text-sm text-slate-500">
-              登录后解锁更多功能
-            </Text>
-          </View>
-        )}
       </View>
       </ScrollView>
     </View>

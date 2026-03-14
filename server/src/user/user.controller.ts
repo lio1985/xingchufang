@@ -82,6 +82,42 @@ export class UserController {
   }
 
   /**
+   * 账号密码登录
+   */
+  @Post('login-with-password')
+  async loginWithPassword(@Body() body: { username: string; password: string }) {
+    console.log('收到账号密码登录请求:', { username: body.username });
+
+    if (!body.username || !body.password) {
+      return {
+        success: false,
+        code: 400,
+        msg: '账号和密码不能为空',
+        data: null
+      };
+    }
+
+    try {
+      const result = await this.userService.loginWithPassword(body.username, body.password);
+
+      return {
+        success: true,
+        code: 200,
+        msg: '登录成功',
+        data: result
+      };
+    } catch (error) {
+      console.error('账号密码登录失败:', error);
+      return {
+        success: false,
+        code: 401,
+        msg: error.message || '登录失败',
+        data: null
+      };
+    }
+  }
+
+  /**
    * 获取当前用户信息
    */
   @Get('profile')

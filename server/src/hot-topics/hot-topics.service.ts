@@ -2,16 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { HotTopic, HotTopicSource } from '@/types/input-sources.types';
+import { SearchClient, Config } from 'coze-coding-dev-sdk';
 
 @Injectable()
 export class HotTopicsService {
   private readonly logger = new Logger(HotTopicsService.name);
   private httpService: HttpService;
-  private cache: Map<string, { topics: HotTopic[]; timestamp: number }> = new Map(); // 使用 Map 支持多缓存
-  private readonly CACHE_TTL = 30 * 60 * 1000; // 30分钟缓存（增加到30分钟，减少频繁刷新）
+  private cache: Map<string, { topics: HotTopic[]; timestamp: number }> = new Map();
+  private readonly CACHE_TTL = 30 * 60 * 1000; // 30分钟缓存
+  private searchClient: SearchClient;
 
   constructor(private readonly httpServiceRef: HttpService) {
     this.httpService = httpServiceRef;
+    // 初始化 Web Search 客户端
+    const config = new Config();
+    this.searchClient = new SearchClient(config);
   }
 
   /**
@@ -108,8 +113,27 @@ export class HotTopicsService {
       }
     }
 
-    // 所有 API 源都失败，使用 Mock 数据
-    this.logger.warn('=== 所有 API 源均失败，使用 Mock 数据 ===');
+    // 所有传统 API 源都失败，尝试使用 Web Search
+    this.logger.log('=== 尝试使用 Web Search 获取热点 ===');
+    try {
+      const webSearchTopics = await this.fetchFromWebSearch(locationMode, city);
+      if (webSearchTopics && webSearchTopics.length > 0) {
+        this.logger.log(`✅ Web Search 成功获取 ${webSearchTopics.length} 个热点`);
+
+        // 更新缓存
+        this.cache.set(cacheKey, {
+          topics: webSearchTopics,
+          timestamp: Date.now(),
+        });
+
+        return webSearchTopics;
+      }
+    } catch (error) {
+      this.logger.warn(`❌ Web Search 调用失败: ${error.message}`);
+    }
+
+    // 所有数据源都失败，使用 Mock 数据
+    this.logger.warn('=== 所有数据源均失败，使用 Mock 数据 ===');
     const mockTopics = this.getMockHotTopics(locationMode, city);
     this.logger.log(`=== Mock 数据：${mockTopics.length} 个热点 ===`);
 
@@ -147,6 +171,136 @@ export class HotTopicsService {
     } else {
       return this.parseTopHubData(response.data);
     }
+  }
+
+  /**
+   * 使用 Web Search 获取热点数据
+   */
+  private async fetchFromWebSearch(
+    locationMode: 'national' | 'local' = 'national',
+    city?: string
+  ): Promise<HotTopic[]> {
+    const topics: HotTopic[] = [];
+
+    // 根据位置模式构建搜索查询
+    let searchQuery = '今日热点新闻 热搜排行榜';
+    if (locationMode === 'local' && city) {
+      searchQuery = `${city} 今日热点新闻 本地热搜`;
+    }
+
+    this.logger.log(`Web Search 查询: ${searchQuery}`);
+
+    try {
+      // 使用 Web Search 搜索热点
+      const response = await this.searchClient.webSearch(searchQuery, 20, true);
+
+      if (response.web_items && response.web_items.length > 0) {
+        this.logger.log(`Web Search 返回 ${response.web_items.length} 条结果`);
+
+        response.web_items.forEach((item, index) => {
+          if (item.title) {
+            // 根据标题生成分类
+            const category = this.categorizeTopic(item.title);
+
+            const topic: HotTopic = {
+              id: `websearch-${Date.now()}-${index}`,
+              source: this.mapSiteToSource(item.site_name || ''),
+              title: item.title,
+              hotness: this.calculateHotnessFromRank(index),
+              trend: index < 5 ? 'up' : index < 10 ? 'stable' : 'down',
+              trendChange: Math.floor(Math.random() * 50) + 5,
+              isBursting: index < 3,
+              url: item.url || '#',
+              category: category,
+              siteName: item.site_name || '热点新闻',
+              publishTime: item.publish_time || new Date().toISOString(),
+              summary: item.snippet || this.generateSummary(item.title, category),
+              keywords: this.extractKeywords(item.title, category),
+              sentiment: this.analyzeSentiment(item.title, category),
+            };
+            topics.push(topic);
+          }
+        });
+      }
+
+      // 如果结果太少，补充更多搜索
+      if (topics.length < 10) {
+        const additionalQueries = ['微博热搜', '知乎热榜', '今日头条热点'];
+        for (const query of additionalQueries) {
+          if (topics.length >= 20) break;
+
+          try {
+            const additionalResponse = await this.searchClient.webSearch(query, 10, false);
+            if (additionalResponse.web_items) {
+              additionalResponse.web_items.forEach((item, idx) => {
+                if (item.title && !topics.some(t => t.title === item.title)) {
+                  const category = this.categorizeTopic(item.title);
+                  topics.push({
+                    id: `websearch-${Date.now()}-${query}-${idx}`,
+                    source: this.mapSiteToSource(item.site_name || ''),
+                    title: item.title,
+                    hotness: this.calculateHotnessFromRank(topics.length),
+                    trend: topics.length < 10 ? 'up' : 'stable',
+                    trendChange: Math.floor(Math.random() * 30) + 5,
+                    isBursting: topics.length < 5,
+                    url: item.url || '#',
+                    category: category,
+                    siteName: item.site_name || '热点新闻',
+                    publishTime: item.publish_time || new Date().toISOString(),
+                    summary: item.snippet || this.generateSummary(item.title, category),
+                    keywords: this.extractKeywords(item.title, category),
+                    sentiment: this.analyzeSentiment(item.title, category),
+                  });
+                }
+              });
+            }
+          } catch (e) {
+            this.logger.warn(`补充搜索 ${query} 失败:`, e.message);
+          }
+        }
+      }
+    } catch (error) {
+      this.logger.error('Web Search 调用失败:', error);
+      throw error;
+    }
+
+    return topics;
+  }
+
+  /**
+   * 根据排名计算热度值
+   */
+  private calculateHotnessFromRank(rank: number): number {
+    // 排名越靠前，热度越高
+    const baseHotness = 1000000;
+    const decay = 0.95;
+    return Math.floor(baseHotness * Math.pow(decay, rank));
+  }
+
+  /**
+   * 根据标题内容分类话题
+   */
+  private categorizeTopic(title: string): string {
+    const categoryKeywords: Record<string, string[]> = {
+      '科技': ['AI', '人工智能', '科技', '手机', '芯片', '技术', '互联网', '数字化', '智能', '元宇宙', '区块链', '5G'],
+      '娱乐': ['明星', '电影', '电视剧', '综艺', '娱乐', '八卦', '歌手', '演员', '导演', '票房', '追剧'],
+      '财经': ['股市', '经济', '金融', '投资', '理财', '基金', 'A股', '港股', '美股', '央行', '加息', '通胀'],
+      '体育': ['足球', '篮球', 'NBA', '世界杯', '奥运会', '冠军', '比赛', '决赛', '运动员', '体育', '联赛'],
+      '社会': ['社会', '民生', '事件', '事故', '案件', '纠纷', '冲突', '争议'],
+      '国际': ['国际', '美国', '欧洲', '日本', '韩国', '俄罗斯', '乌克兰', '外交', '贸易'],
+      '健康': ['健康', '医疗', '医院', '疾病', '疫情', '疫苗', '养生', '健身'],
+      '教育': ['教育', '学校', '高考', '考研', '留学', '学生', '教师', '大学'],
+      '汽车': ['汽车', '新能源车', '电动车', '特斯拉', '比亚迪', '自动驾驶'],
+      '房产': ['房价', '楼市', '房地产', '买房', '卖房', '楼盘'],
+    };
+
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+      if (keywords.some(keyword => title.includes(keyword))) {
+        return category;
+      }
+    }
+
+    return '热门';
   }
 
   /**

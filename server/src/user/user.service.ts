@@ -824,4 +824,102 @@ export class UserService {
       token,
     };
   }
+
+  /**
+   * 账号密码登录
+   * 固定账号：admin/admin123（管理员），user/user123（普通用户）
+   */
+  async loginWithPassword(username: string, password: string): Promise<{ user: any; token: string }> {
+    this.logger.log(`账号密码登录: ${username}`);
+
+    // 固定账号验证
+    const validAccounts: Record<string, { password: string; role: 'admin' | 'user'; nickname: string }> = {
+      'admin': { password: 'admin123', role: 'admin', nickname: '管理员' },
+      'user': { password: 'user123', role: 'user', nickname: '普通用户' },
+    };
+
+    const account = validAccounts[username];
+    if (!account) {
+      throw new HttpException('账号不存在', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (account.password !== password) {
+      throw new HttpException('密码错误', HttpStatus.UNAUTHORIZED);
+    }
+
+    // 查找或创建用户
+    const openid = `pwd_${username}`;
+    let { data: existingUsers, error: findError } = await this.client
+      .from('users')
+      .select('*')
+      .eq('openid', openid)
+      .limit(1);
+
+    if (findError) {
+      this.logger.error('查询用户失败:', findError);
+      throw new HttpException('数据库查询失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    let user: any;
+
+    if (!existingUsers || existingUsers.length === 0) {
+      // 创建新用户
+      const employeeId = await this.generateUniqueEmployeeId();
+      const now = new Date().toISOString();
+      const newUser = {
+        openid,
+        employee_id: employeeId,
+        nickname: account.nickname,
+        role: account.role,
+        status: 'active',
+        created_at: now,
+        updated_at: now,
+      };
+
+      const { data: createdUsers, error: createError } = await this.client
+        .from('users')
+        .insert(newUser)
+        .select()
+        .single();
+
+      if (createError) {
+        this.logger.error('创建用户失败:', createError);
+        throw new HttpException('创建用户失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      user = createdUsers;
+      this.logger.log(`新账号用户创建成功: ${user.id}`);
+    } else {
+      user = existingUsers[0];
+      this.logger.log(`账号用户登录: ${user.id}`);
+    }
+
+    // 更新最后登录时间
+    await this.client
+      .from('users')
+      .update({ last_login_at: new Date().toISOString() })
+      .eq('id', user.id);
+
+    // 生成 JWT token
+    const tokenPayload: Omit<TokenPayload, 'sub'> = {
+      userId: user.id,
+      openid: user.openid,
+      role: user.role,
+      status: user.status,
+    };
+    const token = JwtUtil.generateToken(tokenPayload);
+
+    return {
+      user: {
+        id: user.id,
+        openid: user.openid,
+        employeeId: user.employee_id,
+        nickname: user.nickname,
+        avatarUrl: user.avatar_url,
+        role: user.role,
+        status: user.status,
+      },
+      token,
+    };
+  }
 }
