@@ -293,7 +293,7 @@ export default function ViralSystemPage() {
             <View className="bg-slate-700/60 rounded-2xl p-4 mb-4">
               <Textarea
                 className="w-full bg-transparent text-slate-200 text-base leading-relaxed"
-                placeholder="请粘贴抖音视频的文案内容...\n支持直接粘贴分享文本，系统会自动提取文案\n例如：9.23 复制打开抖音，看看【胡成的作品】苦尽甘来，终会上岸，从此一路生花 #国学智慧"
+                placeholder="请粘贴抖音视频的文案内容...\n例如：9.23 复制打开抖音，看看【胡成的作品】苦尽甘来，终会上岸，从此一路生花 #国学智慧"
                 value={directText}
                 onInput={(e) => setDirectText(e.detail.value)}
                 maxlength={2000}
@@ -302,7 +302,7 @@ export default function ViralSystemPage() {
             </View>
 
             <Text className="block text-xs text-slate-400 mb-4">
-              💡 支持直接粘贴抖音分享文本，系统将自动提取文案并进行爆款结构分析
+              💡 系统将对您粘贴的文案进行爆款结构分析
             </Text>
 
             <View
