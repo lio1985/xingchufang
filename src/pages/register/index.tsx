@@ -74,32 +74,25 @@ const RegisterPage = () => {
   return (
     <View className="register-page">
       {/* 背景装饰 */}
-      <View className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <View className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-br from-blue-500/30 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl" />
-        <View className="absolute top-1/3 right-10 w-80 h-80 bg-gradient-to-br from-purple-500/20 via-pink-500/15 to-red-500/15 rounded-full blur-3xl" />
-        <View className="absolute bottom-10 left-1/4 w-96 h-96 bg-gradient-to-br from-emerald-500/20 via-cyan-500/15 to-blue-500/15 rounded-full blur-3xl" />
+      <View className="bg-decoration">
+        <View className="bg-circle bg-circle-1" />
+        <View className="bg-circle bg-circle-2" />
+        <View className="bg-circle bg-circle-3" />
       </View>
 
       {/* 返回按钮 */}
-      <View
-        className="back-button"
-        onClick={() => Taro.navigateBack()}
-      >
-        <Text className="text-white/70 text-sm">← 返回</Text>
+      <View className="back-button" onClick={() => Taro.navigateBack()}>
+        <Text className="back-button-text">← 返回</Text>
       </View>
 
       {/* 内容区域 */}
       <View className="register-container">
         {/* 标题 */}
-        <Text className="block text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-4 tracking-tight">
-          注册账号
-        </Text>
-        <Text className="block text-white/50 text-sm mb-12">
-          注册后需等待管理员审核通过
-        </Text>
+        <Text className="title-text">注册账号</Text>
+        <Text className="subtitle-text">注册后需等待管理员审核通过</Text>
 
         {/* 注册表单 */}
-        <View className="w-full">
+        <View className="form-content">
           {/* 账号输入 */}
           <View className="input-wrapper">
             <Input
@@ -155,30 +148,27 @@ const RegisterPage = () => {
           </View>
 
           {/* 显示密码选项 */}
-          <View
-            className="flex items-center justify-end"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            <Text className="text-white/60 text-sm">
+          <View className="show-password-wrapper" onClick={() => setShowPassword(!showPassword)}>
+            <Text className="show-password-text">
               {showPassword ? '隐藏密码' : '显示密码'}
             </Text>
           </View>
 
           {/* 注册按钮 */}
           <View
-            className={`register-button ${isRegistering ? 'loading' : 'active:scale-[0.98]'}`}
+            className={`register-button ${isRegistering ? 'loading' : ''}`}
             onClick={isRegistering ? undefined : handleRegister}
           >
-            <Text className="text-white text-lg font-semibold">
+            <Text className="register-button-text">
               {isRegistering ? '注册中...' : '注册'}
             </Text>
           </View>
 
           {/* 已有账号入口 */}
           <View className="footer-links">
-            <Text className="text-white/50 text-sm">已有账号？</Text>
+            <Text className="footer-links-text">已有账号？</Text>
             <View onClick={() => Taro.navigateBack()}>
-              <Text className="text-blue-400 text-sm ml-1">立即登录</Text>
+              <Text className="footer-links-action">立即登录</Text>
             </View>
           </View>
         </View>
