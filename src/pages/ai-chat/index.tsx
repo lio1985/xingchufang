@@ -1114,6 +1114,38 @@ const AiChatPage = () => {
                 confirmType="send"
                 onConfirm={() => !loading && handleSend()}
               />
+              {/* H5 回车发送支持 */}
+              {typeof window !== 'undefined' && (
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey && !loading) {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }}
+                  placeholder="输入消息..."
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'transparent',
+                    color: '#fff',
+                    fontSize: '14px',
+                    border: 'none',
+                    outline: 'none',
+                    padding: '12px',
+                    opacity: 0,
+                    zIndex: 1,
+                  }}
+                />
+              )}
             </View>
 
             {/* 文件上传按钮 */}
@@ -1128,9 +1160,11 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 touchAction: 'none',
                 position: 'relative',
-                zIndex: 10
+                zIndex: 10,
+                cursor: 'pointer',
               }}
               onTap={handleSelectFile}
+              onClick={handleSelectFile}
             >
               <Paperclip size={20} color="#94a3b8" />
             </View>
@@ -1149,9 +1183,11 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 touchAction: 'none',
                 position: 'relative',
-                zIndex: 10
+                zIndex: 10,
+                cursor: loading || (!inputText.trim() && attachments.length === 0) ? 'not-allowed' : 'pointer',
               }}
               onTap={() => !loading && handleSend()}
+              onClick={() => !loading && handleSend()}
             >
               <Send size={20} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
             </View>
