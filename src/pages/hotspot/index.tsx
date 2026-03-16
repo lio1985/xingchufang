@@ -24,7 +24,12 @@ const HotspotPage = () => {
   const [loadStatus, setLoadStatus] = useState<'loading' | 'success' | 'empty' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const CACHE_TTL = 5 * 60 * 1000; // 5分钟缓存
+  const MAX_ITEMS = 50; // 最多显示50条
+  const PAGE_SIZE = 20; // 每页显示20条
 
   // 加载热力图数据
   const loadHotKeywords = useCallback(async (forceRefresh: boolean = false) => {
@@ -106,18 +111,34 @@ const HotspotPage = () => {
           return hotB - hotA; // 降序排列
         });
 
-        // 确保至少显示20条（如果不足20条，显示所有）
-        const displayKeywords = mergedKeywords.slice(0, Math.max(20, mergedKeywords.length));
+        // 限制最多50条
+        const limitedKeywords = mergedKeywords.slice(0, MAX_ITEMS);
+
+        // 分页加载：每次加载20条
+        const startIdx = (currentPage - 1) * PAGE_SIZE;
+        const endIdx = Math.min(startIdx + PAGE_SIZE, limitedKeywords.length);
+        const displayKeywords = limitedKeywords.slice(startIdx, endIdx);
 
         console.log('解析后的平台数量:', platforms.length);
         console.log('合并后的热点数量:', mergedKeywords.length);
-        console.log('显示的热点数量:', displayKeywords.length);
+        console.log('限制后的热点数量:', limitedKeywords.length);
+        console.log('当前页:', currentPage);
+        console.log('本次显示的热点数量:', displayKeywords.length);
 
-        setAllHotKeywords(displayKeywords);
+        // 如果是第一页，设置全部数据；否则追加数据
+        if (currentPage === 1) {
+          setAllHotKeywords(displayKeywords);
+        } else {
+          setAllHotKeywords(prev => [...prev, ...displayKeywords]);
+        }
+
         setLastUpdateTime(new Date().toISOString());
 
+        // 判断是否还有更多数据
+        setHasMore(endIdx < limitedKeywords.length);
+
         // 更新状态
-        if (displayKeywords.length === 0) {
+        if (limitedKeywords.length === 0) {
           setLoadStatus('empty');
           console.log('状态更新为: empty');
         } else {
@@ -158,8 +179,9 @@ const HotspotPage = () => {
       }
     } finally {
       setRefreshing(false);
+      setLoadingMore(false);
     }
-  }, [refreshing, lastUpdateTime, allHotKeywords.length, CACHE_TTL]);
+  }, [refreshing, lastUpdateTime, allHotKeywords.length, currentPage, CACHE_TTL]);
 
   // 刷新热力图数据
   const refreshHotKeywords = async () => {
@@ -235,6 +257,12 @@ const HotspotPage = () => {
     } finally {
       setRefreshing(false);
     }
+  };
+
+  // 加载更多
+  const handleLoadMore = () => {
+    if (loadingMore || !hasMore) return;
+    setCurrentPage(prev => prev + 1);
   };
 
   // 初始化时加载热力图数据
@@ -431,6 +459,29 @@ const HotspotPage = () => {
           );
         })}
       </View>
+
+      {/* 加载更多按钮 */}
+      {hasMore && loadStatus === 'success' && (
+        <View className="flex justify-center py-4">
+          <Button
+            size="default"
+            className="bg-slate-700/50 text-slate-300 border border-slate-600/50 px-8"
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+          >
+            {loadingMore ? '加载中...' : '加载更多'}
+          </Button>
+        </View>
+      )}
+
+      {/* 已全部加载提示 */}
+      {!hasMore && allHotKeywords.length > 0 && (
+        <View className="flex justify-center py-4">
+          <Text className="block text-slate-500 text-sm">
+            已加载全部 {allHotKeywords.length} 条热点
+          </Text>
+        </View>
+      )}
 
       {/* 底部留白 */}
       <View className="h-24" />
