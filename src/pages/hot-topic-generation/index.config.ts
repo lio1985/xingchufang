@@ -1,3 +1,3 @@
 export default typeof definePageConfig === 'function'
-  ? definePageConfig({ navigationBarTitleText: '选题生成' })
-  : { navigationBarTitleText: '选题生成' }
+  ? definePageConfig({ navigationBarTitleText: '智能选题' })
+  : { navigationBarTitleText: '智能选题' }

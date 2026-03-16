@@ -156,8 +156,8 @@ export default function HotScriptGenerationPage() {
             <FileText size={24} color="#ec4899" strokeWidth={2.5} />
           </View>
           <View>
-            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">脚本生成</Text>
-            <Text className="block text-xs text-pink-400 font-medium tracking-wider">SCRIPT GENERATION</Text>
+            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">智能脚本</Text>
+            <Text className="block text-xs text-pink-400 font-medium tracking-wider">INTELLIGENT SCRIPT</Text>
           </View>
         </View>
       </View>
@@ -238,6 +238,13 @@ export default function HotScriptGenerationPage() {
 
             {/* 脚本内容 */}
             {renderScriptContent()}
+
+            {/* 提示说明 */}
+            <View className="mt-4 bg-pink-500/10 border border-pink-500/30 rounded-lg px-3 py-2">
+              <Text className="block text-xs text-pink-300 text-center">
+                ⚠️ 本功能由智能技术辅助生成，内容仅供参考
+              </Text>
+            </View>
 
             {/* 抖音标题 */}
             {script.douyinTitles && script.douyinTitles.length > 0 && (
