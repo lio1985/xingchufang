@@ -486,12 +486,8 @@ const HotspotPage = () => {
 
                 {/* 内容 */}
                 <View className="flex-1 min-w-0">
-                  {/* 标题和平台 */}
+                  {/* 标题 */}
                   <View className="flex items-start gap-2 mb-1.5">
-                    <View className="flex items-center gap-1.5 flex-shrink-0 bg-slate-700/50 px-2 py-0.5 rounded-full border border-slate-600/40">
-                      <Text className="block text-xs">{platformInfo.emoji}</Text>
-                      <Text className="block text-xs text-slate-400">{item.platform || '未知平台'}</Text>
-                    </View>
                     <Text className="block text-sm text-white font-medium flex-1 leading-snug">
                       {item.title}
                     </Text>
