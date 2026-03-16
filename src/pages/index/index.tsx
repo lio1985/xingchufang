@@ -278,7 +278,7 @@ const IndexPage = () => {
         <View className="flex flex-col justify-center gap-2">
           <Text
             className="block text-3xl font-bold text-white tracking-tight leading-tight"
-            onClick={handleTitleClick}
+            onTap={handleTitleClick}
           >
             星厨房
           </Text>
@@ -291,7 +291,7 @@ const IndexPage = () => {
               {/* 消息中心入口 */}
               <View
                 className="relative"
-                onClick={() => handleNavigateTo('/pages/notification/index')}
+                onTap={() => handleNavigateTo('/pages/notification/index')}
               >
                 <View
                   className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-3 transition-all active:scale-95"
@@ -311,7 +311,7 @@ const IndexPage = () => {
               {isAdmin && (
                 <View
                   className="relative"
-                  onClick={() => handleNavigateTo('/pages/admin/dashboard/index')}
+                  onTap={() => handleNavigateTo('/pages/admin/dashboard/index')}
                 >
                   <View
                     className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-3 transition-all active:scale-95"
@@ -332,7 +332,7 @@ const IndexPage = () => {
               {devModeEnabled && (
                 <View
                   className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-3 transition-all active:scale-95"
-                  onClick={() => handleNavigateTo('/pages/dev-tools/index')}
+                  onTap={() => handleNavigateTo('/pages/dev-tools/index')}
                 >
                   <IconSettings />
                 </View>
@@ -340,7 +340,7 @@ const IndexPage = () => {
               {/* 退出登录 */}
               <View
                 className="bg-slate-700/80 hover:bg-slate-600/80 rounded-2xl p-3 transition-all active:scale-95"
-                onClick={handleLogout}
+                onTap={handleLogout}
               >
                 <IconLogOut />
               </View>
@@ -349,7 +349,7 @@ const IndexPage = () => {
             /* 未登录状态 */
             <View
               className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-3 transition-all active:scale-95 shadow-lg shadow-blue-500/30"
-              onClick={handleLogin}
+              onTap={handleLogin}
             >
               <IconUser />
             </View>
@@ -400,7 +400,7 @@ const IndexPage = () => {
       <View className="px-4 mt-6 mb-6">
         <View
           className="bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500 rounded-3xl p-5 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-orange-500/20"
-          onClick={() => handleNavigateTo('/pages/quick-note/index', true)}
+          onTap={() => handleNavigateTo('/pages/quick-note/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -419,7 +419,7 @@ const IndexPage = () => {
         {/* 选题策划 */}
         <View
           className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-blue-500/20"
-          onClick={() => handleNavigateTo('/pages/systems/index', true)}
+          onTap={() => handleNavigateTo('/pages/systems/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -435,7 +435,7 @@ const IndexPage = () => {
         {/* 内容创作 */}
         <View
           className="bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/systems/index', true)}
+          onTap={() => handleNavigateTo('/pages/systems/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -451,7 +451,7 @@ const IndexPage = () => {
         {/* 语料优化系统 */}
         <View
           className="bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-emerald-500/20"
-          onClick={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
+          onTap={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -467,7 +467,7 @@ const IndexPage = () => {
         {/* 爆款复刻系统 */}
         <View
           className="bg-gradient-to-br from-pink-500 via-rose-600 to-red-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-pink-500/20"
-          onClick={() => handleNavigateTo('/pages/viral-system/index', true)}
+          onTap={() => handleNavigateTo('/pages/viral-system/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -483,7 +483,7 @@ const IndexPage = () => {
         {/* 知识分享 */}
         <View
           className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/knowledge-share/index', true)}
+          onTap={() => handleNavigateTo('/pages/knowledge-share/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -499,7 +499,7 @@ const IndexPage = () => {
         {/* 直播数据统计 */}
         <View
           className="bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-rose-500/20"
-          onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
+          onTap={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -515,7 +515,7 @@ const IndexPage = () => {
         {/* 客资管理 */}
         <View
           className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
-          onClick={() => handleNavigateTo('/pages/customer/index', true)}
+          onTap={() => handleNavigateTo('/pages/customer/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -531,7 +531,7 @@ const IndexPage = () => {
         {/* 厨具回收 */}
         <View
           className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
-          onClick={() => handleNavigateTo('/pages/recycle/index', true)}
+          onTap={() => handleNavigateTo('/pages/recycle/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
