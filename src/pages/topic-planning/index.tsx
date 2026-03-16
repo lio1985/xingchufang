@@ -1,9 +1,9 @@
-import { View, Text, ScrollView, Input } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import {
   Lightbulb, ArrowLeft, Sparkles, Check, Trash2, Settings,
-  TrendingUp, SlidersHorizontal, X, RefreshCw
+  TrendingUp, SlidersHorizontal, RefreshCw
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -19,7 +19,6 @@ const TopicPlanningPage = () => {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [inputSources, setInputSources] = useState<any>(null);
-  const [searchKeyword, setSearchKeyword] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
@@ -111,12 +110,6 @@ const TopicPlanningPage = () => {
     loadData();
   };
 
-  // 过滤选题
-  const filteredTopics = topicQuestions.filter(topic => {
-    if (!searchKeyword) return true;
-    return topic.question.toLowerCase().includes(searchKeyword.toLowerCase());
-  });
-
   return (
     <View className="min-h-screen bg-slate-900">
       {/* 顶部导航栏 */}
@@ -150,38 +143,10 @@ const TopicPlanningPage = () => {
           </View>
         </View>
 
-        {/* 搜索框 */}
-        <View className="mt-3" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <Input
-            style={{
-              width: '100%',
-              backgroundColor: '#1e293b',
-              borderRadius: '12px',
-              paddingLeft: '16px',
-              paddingRight: '16px',
-              paddingTop: '12px',
-              paddingBottom: '12px',
-              color: '#fff',
-              fontSize: '16px'
-            }}
-            placeholder="搜索选题..."
-            value={searchKeyword}
-            onInput={(e) => setSearchKeyword(e.detail.value)}
-          />
-          {searchKeyword && (
-            <View
-              className="absolute right-3 w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center"
-              onClick={() => setSearchKeyword('')}
-            >
-              <X size={14} color="#94a3b8" />
-            </View>
-          )}
-        </View>
-
         {/* 操作栏 */}
         <View className="flex items-center justify-between mt-3">
           <View className="flex items-center gap-2">
-            <Text className="block text-sm text-slate-400">共 {filteredTopics.length} 个选题</Text>
+            <Text className="block text-sm text-slate-400">共 {topicQuestions.length} 个选题</Text>
             {selectedTopics.length > 0 && (
               <Text className="block text-sm text-blue-400">已选 {selectedTopics.length} 个</Text>
             )}
@@ -232,24 +197,22 @@ const TopicPlanningPage = () => {
           <View className="flex items-center justify-center py-20">
             <Text className="block text-slate-400">加载中...</Text>
           </View>
-        ) : filteredTopics.length === 0 ? (
+        ) : topicQuestions.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20 px-4">
             <Lightbulb size={48} color="#475569" />
             <Text className="block text-slate-400 mt-4 text-center">
-              {searchKeyword ? '没有找到匹配的选题' : '暂无选题'}
+              暂无选题
             </Text>
-            {!searchKeyword && (
-              <View
-                className="mt-4 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg"
-                onClick={handleRefresh}
-              >
-                <Text className="block text-sm text-blue-300">刷新获取</Text>
-              </View>
-            )}
+            <View
+              className="mt-4 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg"
+              onClick={handleRefresh}
+            >
+              <Text className="block text-sm text-blue-300">刷新获取</Text>
+            </View>
           </View>
         ) : (
           <View className="p-4 flex flex-col gap-3">
-            {filteredTopics.map((topic, index) => (
+            {topicQuestions.map((topic, index) => (
               <View
                 key={index}
                 className={`bg-slate-800 rounded-xl border transition-all ${
