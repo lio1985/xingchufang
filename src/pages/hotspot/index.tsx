@@ -1,7 +1,7 @@
 import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
-import { Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon, Heart, Copy, Sparkles } from 'lucide-react-taro';
+import { Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon, Heart, Copy } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface HotKeyword {
@@ -17,28 +17,6 @@ interface HotKeyword {
   isBursting?: boolean;
   platform?: string;
 }
-
-// 平台图标映射
-const PLATFORM_ICONS: { [key: string]: { icon: string; color: string; emoji: string } } = {
-  '微博': { icon: 'w', color: '#e6162d', emoji: '🔴' },
-  '知乎': { icon: 'z', color: '#0084ff', emoji: '💬' },
-  '抖音': { icon: 'd', color: '#000000', emoji: '🎵' },
-  '哔哩哔哩': { icon: 'b', color: '#fb7299', emoji: '📺' },
-  '百度': { icon: 'b', color: '#2932e1', emoji: '🔍' },
-  '今日头条': { icon: 't', color: '#f85959', emoji: '📰' },
-  '腾讯新闻': { icon: 'q', color: '#0052d9', emoji: '📊' },
-  '凤凰网': { icon: 'f', color: '#d81e06', emoji: '🔥' },
-  '36氪': { icon: '3', color: '#0a9dd9', emoji: '💡' },
-  '少数派': { icon: 's', color: '#f04e98', emoji: '💻' },
-  '豆瓣': { icon: 'd', color: '#00b51d', emoji: '🎬' },
-  '小红书': { icon: 'x', color: '#ff2442', emoji: '📸' },
-  '快手': { icon: 'k', color: '#ff5000', emoji: '🎥' },
-  '视频号': { icon: 'v', color: '#07c160', emoji: '🎬' },
-  'GitHub': { icon: 'g', color: '#24292e', emoji: '💻' },
-  '掘金': { icon: 'j', color: '#1e80ff', emoji: '⚡' },
-  '综合': { icon: 'a', color: '#64748b', emoji: '🌐' },
-  '其他': { icon: 'o', color: '#64748b', emoji: '📰' }
-};
 
 const HotspotPage = () => {
   const [allHotKeywords, setAllHotKeywords] = useState<HotKeyword[]>([]);
@@ -264,39 +242,23 @@ const HotspotPage = () => {
     loadHotKeywords();
   }, [loadHotKeywords]);
 
-  // 点击热点关键词
+  // 点击热点关键词跳转到详情页
   const handleKeywordClick = (item: HotKeyword) => {
-    if (item.url) {
-      Taro.setClipboardData({
-        data: item.url,
-        success: () => {
-          Taro.showToast({
-            title: '链接已复制',
-            icon: 'success'
-          });
-        }
-      });
-    } else {
-      Taro.showToast({
-        title: '暂无链接',
-        icon: 'none'
-      });
-    }
-  };
+    const params = {
+      keyword: item.title,
+      platform: item.platform || '',
+      url: item.url || '',
+      hotness: item.hot || '0',
+      summary: item.summary || '',
+      category: item.category || ''
+    };
 
-  // 生成选题
-  const handleGenerateTopic = (item: HotKeyword) => {
-    // 跳转到选题生成页面
-    Taro.navigateTo({
-      url: `/pages/hot-topic-generation/index?hotId=${encodeURIComponent(item.title)}&platform=${encodeURIComponent(item.platform || '')}&hot=${encodeURIComponent(item.hot)}`
-    });
-  };
+    const queryString = Object.entries(params)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join('&');
 
-  // 生成脚本
-  const handleGenerateScript = (item: HotKeyword) => {
-    // 跳转到脚本生成页面
     Taro.navigateTo({
-      url: `/pages/hot-script-generation/index?hotId=${encodeURIComponent(item.title)}&platform=${encodeURIComponent(item.platform || '')}&hot=${encodeURIComponent(item.hot)}`
+      url: `/pages/hotspot-detail/index?${queryString}`
     });
   };
 
@@ -311,46 +273,6 @@ const HotspotPage = () => {
         });
       }
     });
-  };
-
-  // 收藏热点
-  const handleFavorite = async (item: HotKeyword) => {
-    try {
-      const res = await Network.request({
-        url: '/api/hot/favorite',
-        method: 'POST',
-        data: {
-          hotTitle: item.title,
-          platform: item.platform || '',
-          hot: item.hot,
-          topicTitle: '',
-          scriptSummary: '',
-          account: '',
-          responsible: '',
-          status: '待拍'
-        }
-      });
-
-      console.log('[Hotspot] 收藏热点响应:', res.data);
-
-      if (res.data?.code === 200) {
-        Taro.showToast({
-          title: '已添加到待拍清单',
-          icon: 'success'
-        });
-      } else {
-        Taro.showToast({
-          title: res.data?.msg || '收藏失败',
-          icon: 'none'
-        });
-      }
-    } catch (error) {
-      console.error('[Hotspot] 收藏热点失败:', error);
-      Taro.showToast({
-        title: '收藏失败',
-        icon: 'none'
-      });
-    }
   };
 
   // 渲染趋势图标
@@ -461,8 +383,6 @@ const HotspotPage = () => {
       {/* 热点列表 */}
       <View className="px-4 py-4 space-y-3">
         {allHotKeywords.map((item, index) => {
-          const platformInfo = PLATFORM_ICONS[item.platform || ''] || { icon: '', color: '#64748b', emoji: '📊' };
-
           return (
             <View
               key={index}
@@ -531,39 +451,6 @@ const HotspotPage = () => {
 
                   {/* 操作按钮 */}
                   <View className="flex items-center gap-2 mt-3 flex-wrap">
-                    <Button
-                      size="mini"
-                      className="bg-blue-500/20 text-blue-300 border border-blue-500/40"
-                      onTap={(e) => {
-                        e.stopPropagation();
-                        handleGenerateTopic(item);
-                      }}
-                    >
-                      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
-                        <Sparkles size={12} color="#93c5fd" />
-                        <Text className="block text-xs">选题</Text>
-                      </View>
-                    </Button>
-                    <Button
-                      size="mini"
-                      className="bg-purple-500/20 text-purple-300 border border-purple-500/40"
-                      onTap={(e) => {
-                        e.stopPropagation();
-                        handleGenerateScript(item);
-                      }}
-                    >
-                      <Text className="block text-xs">脚本</Text>
-                    </Button>
-                    <Button
-                      size="mini"
-                      className="bg-pink-500/20 text-pink-300 border border-pink-500/40"
-                      onTap={(e) => {
-                        e.stopPropagation();
-                        handleFavorite(item);
-                      }}
-                    >
-                      <Heart size={12} color="#f9a8d4" />
-                    </Button>
                     <Button
                       size="mini"
                       className="bg-amber-500/20 text-amber-300 border border-amber-500/40"
