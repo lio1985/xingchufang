@@ -68,7 +68,8 @@ export class HotService {
 
       result.list.forEach((item: any) => {
         // 将英文平台名映射为中文平台名
-        const platformName = platformNameMap[item.platform] || item.platform || '综合';
+        // 优先使用 platform 字段，如果没有则使用 site_name 或 site
+        const platformName = platformNameMap[item.platform] || item.platform || item.site_name || item.site || '综合';
 
         if (!platformMap.has(platformName)) {
           platformMap.set(platformName, []);
@@ -198,7 +199,7 @@ export class HotService {
           title: item.keyword || item.title,
           hotness: item.hotness || item.score,
           trend: trend,
-          platform: item.platform || '综合',
+          platform: item.platform || item.site_name || item.site || '综合',
           url: item.url || '',
           summary: item.summary || item.description,
           publishTime: item.publishTime || item.time,
