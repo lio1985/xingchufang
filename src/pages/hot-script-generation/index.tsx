@@ -59,21 +59,21 @@ export default function HotScriptGenerationPage() {
         }
       });
 
-      console.log('脚本生成响应:', response);
+      console.log('脚本响应:', response);
 
       if (response.statusCode === 200 && response.data && response.data.data) {
         setScript(response.data.data);
         Taro.showToast({
-          title: '脚本生成成功',
+          title: '脚本获取成功',
           icon: 'success'
         });
       } else {
-        throw new Error('生成失败');
+        throw new Error('获取失败');
       }
     } catch (error: any) {
-      console.error('生成脚本失败:', error);
+      console.error('获取脚本失败:', error);
       Taro.showToast({
-        title: error.message || '生成失败，请重试',
+        title: error.message || '获取失败，请重试',
         icon: 'none'
       });
     } finally {
@@ -156,8 +156,8 @@ export default function HotScriptGenerationPage() {
             <FileText size={24} color="#ec4899" strokeWidth={2.5} />
           </View>
           <View>
-            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">智能脚本</Text>
-            <Text className="block text-xs text-pink-400 font-medium tracking-wider">INTELLIGENT SCRIPT</Text>
+            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">脚本创作</Text>
+            <Text className="block text-xs text-pink-400 font-medium tracking-wider">SCRIPT CREATION</Text>
           </View>
         </View>
       </View>
@@ -193,12 +193,12 @@ export default function HotScriptGenerationPage() {
             {loading ? (
               <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
                 <Loader size={16} color="white" className="animate-spin" />
-                <Text>生成中...</Text>
+                <Text>处理中...</Text>
               </View>
             ) : script !== null ? (
-              <Text>已生成脚本</Text>
+              <Text>已完成脚本</Text>
             ) : (
-              <Text>生成脚本</Text>
+              <Text>获取脚本</Text>
             )}
           </Button>
         </View>
@@ -208,7 +208,7 @@ export default function HotScriptGenerationPage() {
           <View className="px-4 mt-6">
             <View className="flex items-center gap-2 mb-4">
               <Sparkles size={20} color="#ec4899" strokeWidth={2} />
-              <Text className="block text-lg font-bold text-white">AI 生成的脚本</Text>
+              <Text className="block text-lg font-bold text-white">脚本内容</Text>
             </View>
 
             {/* Tab切换 */}
@@ -242,7 +242,7 @@ export default function HotScriptGenerationPage() {
             {/* 提示说明 */}
             <View className="mt-4 bg-pink-500/10 border border-pink-500/30 rounded-lg px-3 py-2">
               <Text className="block text-xs text-pink-300 text-center">
-                ⚠️ 本功能由智能技术辅助生成，内容仅供参考
+                ⚠️ 内容仅供参考，建议结合实际使用
               </Text>
             </View>
 

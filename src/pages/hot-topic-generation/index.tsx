@@ -57,21 +57,21 @@ export default function HotTopicGenerationPage() {
         }
       });
 
-      console.log('选题生成响应:', response);
+      console.log('选题响应:', response);
 
       if (response.statusCode === 200 && response.data && response.data.data) {
         setTopics(response.data.data.topics || []);
         Taro.showToast({
-          title: '选题生成成功',
+          title: '选题获取成功',
           icon: 'success'
         });
       } else {
-        throw new Error('生成失败');
+        throw new Error('获取失败');
       }
     } catch (error: any) {
-      console.error('生成选题失败:', error);
+      console.error('获取选题失败:', error);
       Taro.showToast({
-        title: error.message || '生成失败，请重试',
+        title: error.message || '获取失败，请重试',
         icon: 'none'
       });
     } finally {
@@ -80,7 +80,7 @@ export default function HotTopicGenerationPage() {
   };
 
   const handleSelectTopic = (topic: Topic) => {
-    // 跳转到脚本生成页面
+    // 跳转到脚本创作页面
     Taro.navigateTo({
       url: `/pages/hot-script-generation/index?topicId=${encodeURIComponent(topic.id)}&title=${encodeURIComponent(topic.title)}&contentAngle=${encodeURIComponent(topic.contentAngle)}`
     });
@@ -108,8 +108,8 @@ export default function HotTopicGenerationPage() {
             <Lightbulb size={24} color="#a855f7" strokeWidth={2.5} />
           </View>
           <View>
-            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">智能选题</Text>
-            <Text className="block text-xs text-purple-400 font-medium tracking-wider">INTELLIGENT TOPIC</Text>
+            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">选题推荐</Text>
+            <Text className="block text-xs text-purple-400 font-medium tracking-wider">TOPIC RECOMMENDATION</Text>
           </View>
         </View>
       </View>
@@ -149,12 +149,12 @@ export default function HotTopicGenerationPage() {
             {loading ? (
               <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
                 <Loader size={16} color="white" className="animate-spin" />
-                <Text>生成中...</Text>
+                <Text>处理中...</Text>
               </View>
             ) : topics.length > 0 ? (
-              <Text>已生成选题</Text>
+              <Text>已完成选题</Text>
             ) : (
-              <Text>生成选题</Text>
+              <Text>获取选题</Text>
             )}
           </Button>
         </View>
@@ -164,13 +164,13 @@ export default function HotTopicGenerationPage() {
           <View className="px-4 mt-6">
             <View className="flex items-center gap-2 mb-4">
               <Sparkles size={20} color="#a855f7" strokeWidth={2} />
-              <Text className="block text-lg font-bold text-white">智能生成的选题</Text>
+              <Text className="block text-lg font-bold text-white">推荐选题</Text>
             </View>
 
             {/* 提示说明 */}
             <View className="mb-4 bg-purple-500/10 border border-purple-500/30 rounded-lg px-3 py-2">
               <Text className="block text-xs text-purple-300 text-center">
-                ⚠️ 本功能由智能技术辅助生成，内容仅供参考
+                ⚠️ 内容仅供参考，建议结合实际使用
               </Text>
             </View>
 
