@@ -659,6 +659,7 @@ const AiChatPage = () => {
               <Text className="block text-xl font-bold text-white">对话历史</Text>
               <View
                 className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center"
+                style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowConversationList(false)}
               >
                 <ChevronLeft size={20} color="#94a3b8" />
@@ -667,6 +668,7 @@ const AiChatPage = () => {
 
             <View
               className="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30 flex items-center justify-center gap-2 active:scale-95 transition-all"
+              style={{ touchAction: 'none', zIndex: 10 }}
               onClick={handleNewConversation}
             >
               <Plus size={18} color="#60a5fa" />
@@ -683,6 +685,7 @@ const AiChatPage = () => {
                         ? 'bg-blue-500/20 border border-blue-500/30'
                         : 'bg-slate-800 border border-slate-700'
                     }`}
+                    style={{ touchAction: 'none', zIndex: 10 }}
                     onClick={() => handleSelectConversation(conv)}
                     onTap={() => handleSelectConversation(conv)}
                   >
@@ -734,6 +737,7 @@ const AiChatPage = () => {
               <Text className="block text-xl font-bold text-white">语料知识库</Text>
               <View
                 className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center"
+                style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowLexiconList(false)}
               >
                 <ChevronLeft size={20} color="#94a3b8" />
@@ -792,6 +796,8 @@ const AiChatPage = () => {
           className="mt-3 bg-slate-800/50 rounded-xl overflow-hidden transition-all"
           style={{
             maxHeight: modelExpanded ? '200px' : '48px',
+            touchAction: 'none',
+            zIndex: 10,
           }}
           onClick={() => setModelExpanded(!modelExpanded)}
           onTap={() => setModelExpanded(!modelExpanded)}
@@ -844,6 +850,8 @@ const AiChatPage = () => {
                   backgroundColor: model === item.value ? 'rgba(59, 130, 246, 0.2)' : 'rgba(30, 41, 59, 1)',
                   border: model === item.value ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid rgba(51, 65, 85, 1)',
                   flexShrink: 0,
+                  touchAction: 'none',
+                  zIndex: 10,
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1163,6 +1171,7 @@ const AiChatPage = () => {
               zIndex: 100,
               display: 'flex',
               alignItems: 'flex-end',
+              touchAction: 'none',
             }}
             onClick={() => setShowActionSheet(false)}
             onTap={() => setShowActionSheet(false)}
