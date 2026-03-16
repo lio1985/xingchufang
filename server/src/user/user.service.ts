@@ -423,42 +423,102 @@ export class UserService {
    * 更新用户角色（管理员功能）
    */
   async updateUserRole(userId: string, role: 'user' | 'admin'): Promise<User> {
-    const now = new Date().toISOString();
+    try {
+      this.logger.log(`开始更新用户角色: userId=${userId}, role=${role}`);
+      
+      const now = new Date().toISOString();
 
-    const { data, error } = await this.client
-      .from('users')
-      .update({ role, updated_at: now })
-      .eq('id', userId)
-      .select()
-      .single();
+      const { data, error } = await this.client
+        .from('users')
+        .update({ role, updated_at: now })
+        .eq('id', userId)
+        .select()
+        .single();
 
-    if (error) {
-      this.logger.error('更新用户角色失败:', error);
-      throw new HttpException('更新用户角色失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error) {
+        this.logger.error('更新用户角色失败，数据库错误:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          userId,
+          role
+        });
+        throw new HttpException(`更新用户角色失败: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      if (!data) {
+        this.logger.error('更新用户角色失败，用户不存在:', userId);
+        throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
+      }
+
+      this.logger.log('更新用户角色成功:', {
+        userId,
+        oldRole: data.role,
+        newRole: role
+      });
+
+      return data;
+    } catch (error: any) {
+      this.logger.error('更新用户角色失败，系统错误:', {
+        error: error.message,
+        stack: error.stack,
+        userId,
+        role
+      });
+      throw error;
     }
-
-    return data;
   }
 
   /**
    * 更新用户状态（管理员功能）
    */
   async updateUserStatus(userId: string, status: 'active' | 'disabled' | 'deleted' | 'pending'): Promise<User> {
-    const now = new Date().toISOString();
+    try {
+      this.logger.log(`开始更新用户状态: userId=${userId}, status=${status}`);
+      
+      const now = new Date().toISOString();
 
-    const { data, error } = await this.client
-      .from('users')
-      .update({ status, updated_at: now })
-      .eq('id', userId)
-      .select()
-      .single();
+      const { data, error } = await this.client
+        .from('users')
+        .update({ status, updated_at: now })
+        .eq('id', userId)
+        .select()
+        .single();
 
-    if (error) {
-      this.logger.error('更新用户状态失败:', error);
-      throw new HttpException('更新用户状态失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error) {
+        this.logger.error('更新用户状态失败，数据库错误:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          userId,
+          status
+        });
+        throw new HttpException(`更新用户状态失败: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      if (!data) {
+        this.logger.error('更新用户状态失败，用户不存在:', userId);
+        throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
+      }
+
+      this.logger.log('更新用户状态成功:', {
+        userId,
+        oldStatus: data.status,
+        newStatus: status
+      });
+
+      return data;
+    } catch (error: any) {
+      this.logger.error('更新用户状态失败，系统错误:', {
+        error: error.message,
+        stack: error.stack,
+        userId,
+        status
+      });
+      throw error;
     }
-
-    return data;
   }
 
   /**

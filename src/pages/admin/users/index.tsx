@@ -169,16 +169,20 @@ export default function AdminUsersPage() {
           setShowDetailModal(false);
         }
       } else {
+        const errorMsg = res.data?.msg || '修改失败';
+        console.error('修改状态失败:', errorMsg);
         Taro.showToast({
-          title: res.data?.msg || '修改失败',
+          title: errorMsg,
           icon: 'none',
+          duration: 3000,
         });
       }
     } catch (error: any) {
-      console.error('修改状态失败:', error);
+      console.error('修改状态异常:', error);
       Taro.showToast({
-        title: error.message || '修改失败',
+        title: error.message || '网络错误，请稍后重试',
         icon: 'none',
+        duration: 3000,
       });
     }
   };
