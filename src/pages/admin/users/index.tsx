@@ -506,12 +506,27 @@ export default function AdminUsersPage() {
           right: 0,
           bottom: 0,
           zIndex: 50,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
           display: 'flex',
           alignItems: 'flex-end',
         }}
         >
+          {/* 背景遮罩 */}
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 51,
+            }}
+            onClick={() => setShowDetailModal(false)}
+          />
+          {/* 内容区域 */}
           <View style={{
+            position: 'relative',
+            zIndex: 52,
             width: '100%',
             backgroundColor: '#1e293b',
             borderTopLeftRadius: '24px',
@@ -747,7 +762,7 @@ export default function AdminUsersPage() {
                   <Text className="text-slate-400 text-sm mb-2 block">修改角色</Text>
                   <View className="flex gap-2">
                     <View
-                      className={`flex-1 py-2 rounded-lg text-center ${
+                      className={`flex-1 py-2 px-4 rounded-lg text-center cursor-pointer active:opacity-80 transition-opacity ${
                         selectedUser.role === 'user'
                           ? 'bg-slate-600 text-slate-400'
                           : 'bg-blue-500 text-white'
@@ -757,7 +772,7 @@ export default function AdminUsersPage() {
                       设为用户
                     </View>
                     <View
-                      className={`flex-1 py-2 rounded-lg text-center ${
+                      className={`flex-1 py-2 px-4 rounded-lg text-center cursor-pointer active:opacity-80 transition-opacity ${
                         selectedUser.role === 'admin'
                           ? 'bg-slate-600 text-slate-400'
                           : 'bg-purple-500 text-white'
@@ -775,7 +790,7 @@ export default function AdminUsersPage() {
                   <View className="flex gap-2 flex-wrap">
                     {(selectedUser.status as 'active' | 'disabled' | 'deleted') !== 'active' && (
                       <View
-                        className="flex-1 py-2 rounded-lg text-center bg-green-500 text-white min-w-[60px]"
+                        className="flex-1 py-2 px-4 rounded-lg text-center bg-green-500 text-white min-w-[60px] active:opacity-80 transition-opacity cursor-pointer"
                         onClick={() => changeUserStatus(selectedUser.id, 'active')}
                       >
                         激活
@@ -783,7 +798,7 @@ export default function AdminUsersPage() {
                     )}
                     {(selectedUser.status as 'active' | 'disabled' | 'deleted') !== 'disabled' && (
                       <View
-                        className="flex-1 py-2 rounded-lg text-center bg-yellow-500 text-white min-w-[60px]"
+                        className="flex-1 py-2 px-4 rounded-lg text-center bg-yellow-500 text-white min-w-[60px] active:opacity-80 transition-opacity cursor-pointer"
                         onClick={() => changeUserStatus(selectedUser.id, 'disabled')}
                       >
                         禁用
@@ -791,7 +806,7 @@ export default function AdminUsersPage() {
                     )}
                     {(selectedUser.status as 'active' | 'disabled' | 'deleted') !== 'deleted' && (
                       <View
-                        className="flex-1 py-2 rounded-lg text-center bg-red-500 text-white min-w-[60px]"
+                        className="flex-1 py-2 px-4 rounded-lg text-center bg-red-500 text-white min-w-[60px] active:opacity-80 transition-opacity cursor-pointer"
                         onClick={() => changeUserStatus(selectedUser.id, 'deleted')}
                       >
                         删除
