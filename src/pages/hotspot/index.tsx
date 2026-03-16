@@ -345,7 +345,7 @@ const HotspotPage = () => {
           <Button
             size="mini"
             className="bg-pink-500/20 text-pink-300 border border-pink-500/40 backdrop-blur-sm"
-            onTap={() => Taro.navigateTo({ url: '/pages/favorite-list/index' })}
+            onClick={() => Taro.navigateTo({ url: '/pages/favorite-list/index' })}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
               <Heart size={14} color="#f9a8d4" />
@@ -369,7 +369,7 @@ const HotspotPage = () => {
           <Button
             size="mini"
             className={`bg-blue-500/20 text-blue-300 border border-blue-500/40 backdrop-blur-sm ${refreshing ? 'opacity-50' : ''}`}
-            onTap={refreshHotKeywords}
+            onClick={refreshHotKeywords}
             disabled={refreshing}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
@@ -387,7 +387,7 @@ const HotspotPage = () => {
             <View
               key={index}
               className="bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg shadow-black/20 px-4 py-3.5"
-              onTap={() => handleKeywordClick(item)}
+              onClick={() => handleKeywordClick(item)}
             >
               <View className="flex items-start gap-3">
                 {/* 排名 */}
@@ -454,7 +454,7 @@ const HotspotPage = () => {
                     <Button
                       size="mini"
                       className="bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                      onTap={(e) => {
+                      onClick={(e) => {
                         e.stopPropagation();
                         handleCopyTitle(item.title);
                       }}
