@@ -1125,9 +1125,10 @@ const AiChatPage = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'pointer'
+                  touchAction: 'none',
+                  position: 'relative',
+                  zIndex: 10
                 }}
-                onClick={isRecording ? stopRecording : startRecording}
                 onTap={isRecording ? stopRecording : startRecording}
               >
                 <Mic size={20} color="white" />
@@ -1135,7 +1136,7 @@ const AiChatPage = () => {
             )}
 
             {/* 输入框 */}
-            <View style={{ flex: 1, backgroundColor: '#1e293b', borderRadius: '16px', padding: '12px' }}>
+            <View style={{ flex: 1, backgroundColor: '#1e293b', borderRadius: '16px', padding: '12px', position: 'relative' }}>
               <Textarea
                 style={{ width: '100%', minHeight: '40px', maxHeight: '120px', backgroundColor: 'transparent', color: '#fff', fontSize: '14px' }}
                 placeholder="输入消息..."
@@ -1143,6 +1144,8 @@ const AiChatPage = () => {
                 onInput={(e) => setInputText(e.detail.value)}
                 maxlength={2000}
                 autoHeight
+                confirmType="send"
+                onConfirm={() => !loading && handleSend()}
               />
             </View>
 
@@ -1156,9 +1159,10 @@ const AiChatPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer'
+                touchAction: 'none',
+                position: 'relative',
+                zIndex: 10
               }}
-              onClick={handleSelectFile}
               onTap={handleSelectFile}
             >
               <Paperclip size={20} color="#94a3b8" />
@@ -1176,9 +1180,10 @@ const AiChatPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer'
+                touchAction: 'none',
+                position: 'relative',
+                zIndex: 10
               }}
-              onClick={() => !loading && handleSend()}
               onTap={() => !loading && handleSend()}
             >
               <Send size={20} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
@@ -1225,9 +1230,10 @@ const AiChatPage = () => {
                     backgroundColor: '#334155',
                     borderRadius: '12px',
                     flexShrink: 0,
-                    cursor: 'pointer'
+                    touchAction: 'none',
+                    position: 'relative',
+                    zIndex: 10
                   }}
-                  onClick={handleSelectImage}
                   onTap={handleSelectImage}
                 >
                   <ImageIcon size={24} color="#60a5fa" />
@@ -1242,9 +1248,10 @@ const AiChatPage = () => {
                     backgroundColor: '#334155',
                     borderRadius: '12px',
                     flexShrink: 0,
-                    cursor: 'pointer'
+                    touchAction: 'none',
+                    position: 'relative',
+                    zIndex: 10
                   }}
-                  onClick={handleSelectVideo}
                   onTap={handleSelectVideo}
                 >
                   <Video size={24} color="#60a5fa" />
@@ -1259,9 +1266,10 @@ const AiChatPage = () => {
                     backgroundColor: '#334155',
                     borderRadius: '12px',
                     flexShrink: 0,
-                    cursor: 'pointer'
+                    touchAction: 'none',
+                    position: 'relative',
+                    zIndex: 10
                   }}
-                  onClick={handleSelectDocument}
                   onTap={handleSelectDocument}
                 >
                   <FileText size={24} color="#60a5fa" />

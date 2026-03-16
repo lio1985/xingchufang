@@ -1,9 +1,9 @@
-import { View, Text, ScrollView, Image, Input, Textarea } from '@tarojs/components';
+import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import {
   Lightbulb, ArrowLeft, Sparkles, Check, Trash2, Settings,
-  TrendingUp, Play, ChevronRight, SlidersHorizontal, X, RefreshCw
+  TrendingUp, SlidersHorizontal, X, RefreshCw
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -21,7 +21,6 @@ const TopicPlanningPage = () => {
   const [inputSources, setInputSources] = useState<any>(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedTopics, setGeneratedTopics] = useState<any[]>([]);
 
   useEffect(() => {
     loadData();
