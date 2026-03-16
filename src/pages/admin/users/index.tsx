@@ -760,26 +760,40 @@ export default function AdminUsersPage() {
                 {/* 修改角色 */}
                 <View className="bg-slate-700 rounded-lg p-4">
                   <Text className="text-slate-400 text-sm mb-2 block">修改角色</Text>
-                  <View className="flex gap-2">
+                  <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
                     <View
-                      className={`flex-1 py-2 px-4 rounded-lg text-center cursor-pointer active:opacity-80 transition-opacity ${
-                        selectedUser.role === 'user'
-                          ? 'bg-slate-600 text-slate-400'
-                          : 'bg-blue-500 text-white'
-                      }`}
+                      style={{
+                        flex: 1,
+                        padding: '8px 16px',
+                        backgroundColor: selectedUser.role === 'user' ? '#475569' : '#3b82f6',
+                        color: selectedUser.role === 'user' ? '#94a3b8' : '#ffffff',
+                        borderRadius: '8px',
+                        textAlign: 'center',
+                        minHeight: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
                       onClick={() => selectedUser.role !== 'user' && changeUserRole(selectedUser.id, 'user')}
                     >
-                      设为用户
+                      <Text className="block">设为用户</Text>
                     </View>
                     <View
-                      className={`flex-1 py-2 px-4 rounded-lg text-center cursor-pointer active:opacity-80 transition-opacity ${
-                        selectedUser.role === 'admin'
-                          ? 'bg-slate-600 text-slate-400'
-                          : 'bg-purple-500 text-white'
-                      }`}
+                      style={{
+                        flex: 1,
+                        padding: '8px 16px',
+                        backgroundColor: selectedUser.role === 'admin' ? '#475569' : '#9333ea',
+                        color: selectedUser.role === 'admin' ? '#94a3b8' : '#ffffff',
+                        borderRadius: '8px',
+                        textAlign: 'center',
+                        minHeight: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
                       onClick={() => selectedUser.role !== 'admin' && changeUserRole(selectedUser.id, 'admin')}
                     >
-                      设为管理员
+                      <Text className="block">设为管理员</Text>
                     </View>
                   </View>
                 </View>
@@ -787,29 +801,65 @@ export default function AdminUsersPage() {
                 {/* 修改状态 */}
                 <View className="bg-slate-700 rounded-lg p-4">
                   <Text className="text-slate-400 text-sm mb-2 block">修改状态</Text>
-                  <View className="flex gap-2 flex-wrap">
+                  <View style={{ display: 'flex', flexDirection: 'row', gap: '8px', flexWrap: 'wrap' }}>
                     {(selectedUser.status as 'active' | 'disabled' | 'deleted') !== 'active' && (
                       <View
-                        className="flex-1 py-2 px-4 rounded-lg text-center bg-green-500 text-white min-w-[60px] active:opacity-80 transition-opacity cursor-pointer"
+                        style={{
+                          flex: 1,
+                          minWidth: '80px',
+                          padding: '8px 16px',
+                          backgroundColor: '#22c55e',
+                          color: '#ffffff',
+                          borderRadius: '8px',
+                          textAlign: 'center',
+                          minHeight: '40px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
                         onClick={() => changeUserStatus(selectedUser.id, 'active')}
                       >
-                        激活
+                        <Text className="block">激活</Text>
                       </View>
                     )}
                     {(selectedUser.status as 'active' | 'disabled' | 'deleted') !== 'disabled' && (
                       <View
-                        className="flex-1 py-2 px-4 rounded-lg text-center bg-yellow-500 text-white min-w-[60px] active:opacity-80 transition-opacity cursor-pointer"
+                        style={{
+                          flex: 1,
+                          minWidth: '80px',
+                          padding: '8px 16px',
+                          backgroundColor: '#eab308',
+                          color: '#ffffff',
+                          borderRadius: '8px',
+                          textAlign: 'center',
+                          minHeight: '40px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
                         onClick={() => changeUserStatus(selectedUser.id, 'disabled')}
                       >
-                        禁用
+                        <Text className="block">禁用</Text>
                       </View>
                     )}
                     {(selectedUser.status as 'active' | 'disabled' | 'deleted') !== 'deleted' && (
                       <View
-                        className="flex-1 py-2 px-4 rounded-lg text-center bg-red-500 text-white min-w-[60px] active:opacity-80 transition-opacity cursor-pointer"
+                        style={{
+                          flex: 1,
+                          minWidth: '80px',
+                          padding: '8px 16px',
+                          backgroundColor: '#ef4444',
+                          color: '#ffffff',
+                          borderRadius: '8px',
+                          textAlign: 'center',
+                          minHeight: '40px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
                         onClick={() => changeUserStatus(selectedUser.id, 'deleted')}
                       >
-                        删除
+                        <Text className="block">删除</Text>
                       </View>
                     )}
                   </View>

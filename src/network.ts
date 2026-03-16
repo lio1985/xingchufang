@@ -24,8 +24,9 @@ const createUrl = (url: string): string => {
         return `https://api.xingchufang.cn${url}`;
     }
 
-    // H5 环境
-    if (env === Taro.ENV_TYPE.H5) {
+    // H5 环境（非 WEAPP 都认为是 H5）
+    // 注意：Taro.getEnv() 返回值在不同平台可能不同，使用 process.env.TARO_ENV 作为补充判断
+    if (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') {
         // 检查是否在 Coze 在线预览环境
         const isCozeDev = typeof window !== 'undefined' &&
                           window.location.hostname.includes('dev.coze.site');

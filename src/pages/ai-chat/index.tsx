@@ -1193,7 +1193,6 @@ const AiChatPage = () => {
                 borderTopRightRadius: '20px',
                 padding: '16px',
               }}
-              catchTap={(e) => e.stopPropagation()}
             >
               <Text style={{ fontSize: '16px', fontWeight: '600', color: '#fff', marginBottom: '16px', textAlign: 'center' }}>
                 选择文件类型
