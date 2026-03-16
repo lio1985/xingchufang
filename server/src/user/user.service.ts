@@ -892,87 +892,54 @@ export class UserService {
   async loginWithPassword(username: string, password: string): Promise<{ user: any; token: string }> {
     this.logger.log(`账号密码登录: ${username}`);
 
-    // 查找用户
-    const openid = `pwd_${username}`;
-    const { data: users, error: findError } = await this.client
+    // 查找用户：优先通过 nickname 查找
+    const { data: usersByNickname, error: nicknameError } = await this.client
       .from('users')
       .select('*')
-      .eq('openid', openid)
+      .eq('nickname', username)
+      .eq('status', 'active')
       .limit(1);
 
-    if (findError) {
-      this.logger.error('查询用户失败:', findError);
-      throw new HttpException('数据库查询失败', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    let user: any;
 
-    // 检查用户是否存在
-    if (!users || users.length === 0) {
-      // 兼容旧固定账号
-      const validAccounts: Record<string, { password: string; role: 'admin' | 'user'; nickname: string }> = {
-        'admin': { password: 'admin123', role: 'admin', nickname: '管理员' },
-        'user': { password: 'user123', role: 'user', nickname: '普通用户' },
-      };
-      const account = validAccounts[username];
-      if (account && account.password === password) {
-        // 创建旧账号用户（密码加密存储）
-        const employeeId = await this.generateUniqueEmployeeId();
-        const now = new Date().toISOString();
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = {
-          openid,
-          employee_id: employeeId,
-          nickname: account.nickname,
-          role: account.role,
-          status: 'active',
-          password: hashedPassword,
-          created_at: now,
-          updated_at: now,
-        };
-        const { data: createdUser, error: createError } = await this.client
-          .from('users')
-          .insert(newUser)
-          .select()
-          .single();
-        if (createError) {
-          this.logger.error('创建用户失败:', createError);
-          throw new HttpException('登录失败', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        // 生成 JWT token
-        const tokenPayload: Omit<TokenPayload, 'sub'> = {
-          userId: createdUser.id,
-          openid: createdUser.openid,
-          role: createdUser.role,
-          status: createdUser.status,
-        };
-        const token = JwtUtil.generateToken(tokenPayload);
-        return {
-          user: {
-            id: createdUser.id,
-            openid: createdUser.openid,
-            employeeId: createdUser.employee_id,
-            nickname: createdUser.nickname,
-            avatarUrl: createdUser.avatar_url,
-            role: createdUser.role,
-            status: createdUser.status,
-          },
-          token,
-        };
+    if (!nicknameError && usersByNickname && usersByNickname.length > 0) {
+      // 通过 nickname 找到用户
+      user = usersByNickname[0];
+    } else {
+      // 兼容旧方式：通过 openid 查找
+      const openid = `pwd_${username}`;
+      const { data: usersByOpenid, error: findError } = await this.client
+        .from('users')
+        .select('*')
+        .eq('openid', openid)
+        .limit(1);
+
+      if (findError) {
+        this.logger.error('查询用户失败:', findError);
+        throw new HttpException('数据库查询失败', HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      throw new HttpException('账号不存在', HttpStatus.UNAUTHORIZED);
+
+      if (!usersByOpenid || usersByOpenid.length === 0) {
+        throw new HttpException('账号不存在', HttpStatus.UNAUTHORIZED);
+      }
+
+      user = usersByOpenid[0];
     }
 
-    const user = users[0];
+    // 验证密码（支持 bcrypt 加密密码）
+    if (!user.password) {
+      throw new HttpException('该账号不支持密码登录', HttpStatus.UNAUTHORIZED);
+    }
 
-    // 验证密码（兼容旧明文密码和新的加密密码）
     let isPasswordValid = false;
-    if (user.password.startsWith('$2')) {
+    if (user.password.startsWith('$2') || user.password.startsWith('$2a')) {
       // 新格式：bcrypt 加密密码
       isPasswordValid = await bcrypt.compare(password, user.password);
     } else {
       // 旧格式：明文密码（兼容已有账号）
       isPasswordValid = user.password === password;
     }
-    
+
     if (!isPasswordValid) {
       throw new HttpException('密码错误', HttpStatus.UNAUTHORIZED);
     }
