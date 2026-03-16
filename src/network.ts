@@ -14,24 +14,13 @@ const createUrl = (url: string): string => {
         return url
     }
 
-    // 使用 Taro.getEnv() 准确检测运行环境
-    const env = Taro.getEnv();
-
-    // 小程序环境（包括微信小程序、支付宝小程序等）
-    if (env === Taro.ENV_TYPE.WEAPP) {
-        // 小程序线上环境：使用部署的服务器
-        // 注意：需要在微信小程序后台配置服务器域名 https://api.xingchufang.cn
-        return `https://api.xingchufang.cn${url}`;
-    }
-
-    // H5 环境（非 WEAPP 都认为是 H5）
-    // 注意：Taro.getEnv() 返回值在不同平台可能不同，使用 process.env.TARO_ENV 作为补充判断
+    // 优先使用环境变量判断（更可靠）
     if (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') {
         // 检查是否在 Coze 在线预览环境
         const isCozeDev = typeof window !== 'undefined' &&
                           window.location.hostname.includes('dev.coze.site');
 
-        // Coze 在线预览环境：使用相对路径，由代理处理
+        // Coze 在线预览环境：使用相对路径，由 Vite 代理处理
         if (isCozeDev) {
             return url;
         }
@@ -40,7 +29,14 @@ const createUrl = (url: string): string => {
         return `http://localhost:3000${url}`;
     }
 
-    // 其他环境（H5、RN 等），默认使用生产服务器
+    // 小程序环境（微信小程序）
+    const env = Taro.getEnv();
+    if (env === Taro.ENV_TYPE.WEAPP) {
+        // 小程序环境：使用部署的服务器
+        return `https://api.xingchufang.cn${url}`;
+    }
+
+    // 其他环境，默认使用生产服务器
     return `https://api.xingchufang.cn${url}`;
 }
 
