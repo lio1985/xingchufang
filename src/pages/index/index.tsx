@@ -276,12 +276,12 @@ const IndexPage = () => {
       {/* 标题区 */}
       <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-12 pb-8 flex justify-between items-center">
         <View className="flex flex-col justify-center gap-2">
-          <Text
+          <View
             className="block text-3xl font-bold text-white tracking-tight leading-tight"
             onTap={handleTitleClick}
           >
-            星厨房
-          </Text>
+            <Text className="block">星厨房</Text>
+          </View>
           <Text className="block text-sm text-blue-400 font-medium tracking-widest uppercase opacity-90">Star Kitchen</Text>
         </View>
         <View className="flex items-center gap-3 flex-shrink-0">

@@ -1,7 +1,7 @@
 import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
-import { Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon, Heart, ChevronDown, ChevronUp, Copy, Sparkles } from 'lucide-react-taro';
+import { Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon, Heart, Copy, Sparkles } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface HotKeyword {
@@ -16,12 +16,6 @@ interface HotKeyword {
   trendChange?: number;
   isBursting?: boolean;
   platform?: string;
-}
-
-interface PlatformData {
-  platform: string;
-  icon: string;
-  list: HotKeyword[];
 }
 
 // 平台图标映射
@@ -47,36 +41,12 @@ const PLATFORM_ICONS: { [key: string]: { icon: string; color: string; emoji: str
 };
 
 const HotspotPage = () => {
-  const [allPlatforms, setAllPlatforms] = useState<PlatformData[]>([]);
+  const [allHotKeywords, setAllHotKeywords] = useState<HotKeyword[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loadStatus, setLoadStatus] = useState<'loading' | 'success' | 'empty' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
-  const [collapsedPlatforms, setCollapsedPlatforms] = useState<Set<string>>(new Set());
   const CACHE_TTL = 5 * 60 * 1000; // 5分钟缓存
-
-  // 切换平台折叠状态
-  const togglePlatform = (platformName: string) => {
-    setCollapsedPlatforms(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(platformName)) {
-        newSet.delete(platformName);
-      } else {
-        newSet.add(platformName);
-      }
-      return newSet;
-    });
-  };
-
-  // 展开所有平台
-  const expandAll = () => {
-    setCollapsedPlatforms(new Set());
-  };
-
-  // 折叠所有平台
-  const collapseAll = () => {
-    setCollapsedPlatforms(new Set(allPlatforms.map(p => p.platform)));
-  };
 
   // 加载热力图数据
   const loadHotKeywords = useCallback(async (forceRefresh: boolean = false) => {
@@ -121,14 +91,55 @@ const HotspotPage = () => {
 
       if (response.statusCode === 200 && response.data && response.data.success && response.data.data && response.data.data.platforms) {
         const platforms = Array.isArray(response.data.data.platforms) ? response.data.data.platforms : [];
-        console.log('解析后的平台数量:', platforms.length);
-        console.log('第一个平台:', platforms[0]);
 
-        setAllPlatforms(platforms);
+        // 合并所有平台的热点到一个列表
+        const mergedKeywords: HotKeyword[] = [];
+        platforms.forEach((platform: any) => {
+          if (platform.list && Array.isArray(platform.list)) {
+            platform.list.forEach((item: HotKeyword) => {
+              mergedKeywords.push({
+                ...item,
+                platform: platform.platform
+              });
+            });
+          }
+        });
+
+        // 按热度排序（尝试解析热度值）
+        mergedKeywords.sort((a, b) => {
+          const parseHotValue = (hot: string): number => {
+            // 尝试提取数字
+            const match = hot.match(/[\d.]+/);
+            if (match) {
+              const num = parseFloat(match[0]);
+              // 处理单位
+              if (hot.includes('万')) {
+                return num * 10000;
+              } else if (hot.includes('亿')) {
+                return num * 100000000;
+              }
+              return num;
+            }
+            return 0;
+          };
+
+          const hotA = parseHotValue(a.hot);
+          const hotB = parseHotValue(b.hot);
+          return hotB - hotA; // 降序排列
+        });
+
+        // 确保至少显示20条（如果不足20条，显示所有）
+        const displayKeywords = mergedKeywords.slice(0, Math.max(20, mergedKeywords.length));
+
+        console.log('解析后的平台数量:', platforms.length);
+        console.log('合并后的热点数量:', mergedKeywords.length);
+        console.log('显示的热点数量:', displayKeywords.length);
+
+        setAllHotKeywords(displayKeywords);
         setLastUpdateTime(new Date().toISOString());
 
         // 更新状态
-        if (platforms.length === 0 || platforms.every((p: any) => p.list.length === 0)) {
+        if (displayKeywords.length === 0) {
           setLoadStatus('empty');
           console.log('状态更新为: empty');
         } else {
@@ -164,13 +175,13 @@ const HotspotPage = () => {
       console.log('状态更新为: error, 错误信息:', errorMsg);
 
       // 只在首次加载失败时显示提示
-      if (allPlatforms.length === 0) {
+      if (allHotKeywords.length === 0) {
         Taro.showToast({ title: errorMsg, icon: 'none', duration: 2000 });
       }
     } finally {
       setRefreshing(false);
     }
-  }, [refreshing, lastUpdateTime, allPlatforms.length, CACHE_TTL]);
+  }, [refreshing, lastUpdateTime, allHotKeywords.length, CACHE_TTL]);
 
   // 刷新热力图数据
   const refreshHotKeywords = async () => {
@@ -191,7 +202,43 @@ const HotspotPage = () => {
 
       if (response.statusCode === 200 && response.data && response.data.success && response.data.data && response.data.data.platforms) {
         const platforms = Array.isArray(response.data.data.platforms) ? response.data.data.platforms : [];
-        setAllPlatforms(platforms);
+
+        // 合并所有平台的热点到一个列表
+        const mergedKeywords: HotKeyword[] = [];
+        platforms.forEach((platform: any) => {
+          if (platform.list && Array.isArray(platform.list)) {
+            platform.list.forEach((item: HotKeyword) => {
+              mergedKeywords.push({
+                ...item,
+                platform: platform.platform
+              });
+            });
+          }
+        });
+
+        // 按热度排序
+        mergedKeywords.sort((a, b) => {
+          const parseHotValue = (hot: string): number => {
+            const match = hot.match(/[\d.]+/);
+            if (match) {
+              const num = parseFloat(match[0]);
+              if (hot.includes('万')) {
+                return num * 10000;
+              } else if (hot.includes('亿')) {
+                return num * 100000000;
+              }
+              return num;
+            }
+            return 0;
+          };
+
+          const hotA = parseHotValue(a.hot);
+          const hotB = parseHotValue(b.hot);
+          return hotB - hotA;
+        });
+
+        const displayKeywords = mergedKeywords.slice(0, Math.max(20, mergedKeywords.length));
+        setAllHotKeywords(displayKeywords);
         setLastUpdateTime(new Date().toISOString());
 
         Taro.showToast({
@@ -376,7 +423,7 @@ const HotspotPage = () => {
           <Button
             size="mini"
             className="bg-pink-500/20 text-pink-300 border border-pink-500/40 backdrop-blur-sm"
-            onClick={() => Taro.navigateTo({ url: '/pages/favorite-list/index' })}
+            onTap={() => Taro.navigateTo({ url: '/pages/favorite-list/index' })}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
               <Heart size={14} color="#f9a8d4" />
@@ -393,14 +440,14 @@ const HotspotPage = () => {
             </Text>
             {lastUpdateTime && (
               <Text className="block text-xs text-slate-500 mt-0.5">
-                更新于 {new Date(lastUpdateTime).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+                共 <Text className="text-white font-semibold">{allHotKeywords.length}</Text> 条热点 · 更新于 {new Date(lastUpdateTime).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
               </Text>
             )}
           </View>
           <Button
             size="mini"
             className={`bg-blue-500/20 text-blue-300 border border-blue-500/40 backdrop-blur-sm ${refreshing ? 'opacity-50' : ''}`}
-            onClick={refreshHotKeywords}
+            onTap={refreshHotKeywords}
             disabled={refreshing}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
@@ -411,208 +458,132 @@ const HotspotPage = () => {
         </View>
       </View>
 
-      {/* 平台折叠控制栏 */}
-      <View className="px-4 py-3 bg-slate-800/40 border-b border-slate-700/40">
-        <View className="flex items-center justify-between">
-          <Text className="block text-sm text-slate-400">
-            共 <Text className="text-white font-semibold">{allPlatforms.length}</Text> 个平台，
-            <Text className="text-white font-semibold">{allPlatforms.reduce((sum, p) => sum + p.list.length, 0)}</Text> 条热点
-          </Text>
-          <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-            <Button
-              size="mini"
-              className="bg-slate-700/50 text-slate-300 border border-slate-600/50"
-              onClick={collapseAll}
-            >
-              <Text className="block text-xs">全部折叠</Text>
-            </Button>
-            <Button
-              size="mini"
-              className="bg-slate-700/50 text-slate-300 border border-slate-600/50"
-              onClick={expandAll}
-            >
-              <Text className="block text-xs">全部展开</Text>
-            </Button>
-          </View>
-        </View>
-      </View>
-
-      {/* 平台列表区域 */}
+      {/* 热点列表 */}
       <View className="px-4 py-4 space-y-3">
-
-        {/* 平台卡片列表 */}
-        {allPlatforms.map((platform, platformIndex) => {
-          const platformInfo = PLATFORM_ICONS[platform.platform] || { icon: '', color: '#64748b', emoji: '📊' };
-          const isCollapsed = collapsedPlatforms.has(platform.platform);
+        {allHotKeywords.map((item, index) => {
+          const platformInfo = PLATFORM_ICONS[item.platform || ''] || { icon: '', color: '#64748b', emoji: '📊' };
 
           return (
-            <View key={platformIndex} className="bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg shadow-black/20">
-              {/* 平台标题栏（可点击折叠） */}
-              <View
-                className={`px-4 py-3.5 border-b border-slate-700/40 cursor-pointer transition-colors ${isCollapsed ? 'bg-slate-800/40' : 'bg-gradient-to-r from-slate-800/80 to-transparent'}`}
-                onClick={() => togglePlatform(platform.platform)}
-              >
-                <View className="flex items-center justify-between">
-                  <View className="flex items-center gap-3">
-                    {/* 平台图标 */}
-                    <View
-                      className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
-                      style={{ backgroundColor: `${platformInfo.color}20`, border: `1px solid ${platformInfo.color}30` }}
-                    >
-                      <Text className="block text-lg">{platformInfo.emoji}</Text>
-                    </View>
+            <View
+              key={index}
+              className="bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg shadow-black/20 px-4 py-3.5"
+              onTap={() => handleKeywordClick(item)}
+            >
+              <View className="flex items-start gap-3">
+                {/* 排名 */}
+                <View className="flex-shrink-0">
+                  <Text
+                    className={`block text-sm font-bold w-7 text-center ${
+                      index === 0 ? 'text-red-500' :
+                      index === 1 ? 'text-orange-500' :
+                      index === 2 ? 'text-yellow-500' :
+                      'text-slate-500'
+                    }`}
+                  >
+                    {index + 1}
+                  </Text>
+                </View>
 
-                    {/* 平台名称和计数 */}
-                    <View>
-                      <View className="flex items-center gap-2">
-                        <Text className="block text-base font-semibold text-white">{platform.platform}</Text>
-                        <Text className="block text-xs text-slate-400 bg-slate-700/60 px-2 py-0.5 rounded-full border border-slate-600/50">
-                          {platform.list.length}
-                        </Text>
+                {/* 内容 */}
+                <View className="flex-1 min-w-0">
+                  {/* 标题和平台 */}
+                  <View className="flex items-start gap-2 mb-1.5">
+                    <View className="flex items-center gap-1.5 flex-shrink-0 bg-slate-700/50 px-2 py-0.5 rounded-full border border-slate-600/40">
+                      <Text className="block text-xs">{platformInfo.emoji}</Text>
+                      <Text className="block text-xs text-slate-400">{item.platform || '未知平台'}</Text>
+                    </View>
+                    <Text className="block text-sm text-white font-medium flex-1 leading-snug">
+                      {item.title}
+                    </Text>
+                    {item.isBursting && (
+                      <View className="flex-shrink-0 bg-red-500/20 text-red-400 text-xs px-1.5 py-0.5 rounded border border-red-500/30">
+                        爆
                       </View>
-                      {platform.list.length > 0 && (
-                        <Text className="block text-xs text-slate-500 mt-0.5">
-                          TOP: {platform.list[0].title.slice(0, 12)}
-                          {platform.list[0].title.length > 12 ? '...' : ''}
+                    )}
+                  </View>
+
+                  {/* 热度和趋势 */}
+                  <View className="flex items-center gap-3 mb-2">
+                    <Text className="block text-xs text-slate-400">
+                      🔥 {item.hot}
+                    </Text>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
+                      {renderTrendIcon(item)}
+                      {item.trendChange !== undefined && item.trendChange !== 0 && (
+                        <Text className={`block text-xs ${item.trendChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {Math.abs(item.trendChange)}
                         </Text>
                       )}
                     </View>
                   </View>
 
-                  {/* 折叠/展开图标 */}
-                  <View className="flex-shrink-0">
-                    {isCollapsed ? (
-                      <ChevronDown size={20} color="#94a3b8" strokeWidth={2} />
-                    ) : (
-                      <ChevronUp size={20} color="#94a3b8" strokeWidth={2} />
-                    )}
+                  {/* 摘要 */}
+                  {item.summary && (
+                    <Text className="block text-xs text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
+                      {item.summary}
+                    </Text>
+                  )}
+
+                  {/* 分类标签 */}
+                  {item.category && (
+                    <View className="mt-2">
+                      <Text className="block text-xs text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded inline-block border border-amber-500/20">
+                        {item.category}
+                      </Text>
+                    </View>
+                  )}
+
+                  {/* 操作按钮 */}
+                  <View className="flex items-center gap-2 mt-3 flex-wrap">
+                    <Button
+                      size="mini"
+                      className="bg-blue-500/20 text-blue-300 border border-blue-500/40"
+                      onTap={(e) => {
+                        e.stopPropagation();
+                        handleGenerateTopic(item);
+                      }}
+                    >
+                      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
+                        <Sparkles size={12} color="#93c5fd" />
+                        <Text className="block text-xs">选题</Text>
+                      </View>
+                    </Button>
+                    <Button
+                      size="mini"
+                      className="bg-purple-500/20 text-purple-300 border border-purple-500/40"
+                      onTap={(e) => {
+                        e.stopPropagation();
+                        handleGenerateScript(item);
+                      }}
+                    >
+                      <Text className="block text-xs">脚本</Text>
+                    </Button>
+                    <Button
+                      size="mini"
+                      className="bg-pink-500/20 text-pink-300 border border-pink-500/40"
+                      onTap={(e) => {
+                        e.stopPropagation();
+                        handleFavorite(item);
+                      }}
+                    >
+                      <Heart size={12} color="#f9a8d4" />
+                    </Button>
+                    <Button
+                      size="mini"
+                      className="bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                      onTap={(e) => {
+                        e.stopPropagation();
+                        handleCopyTitle(item.title);
+                      }}
+                    >
+                      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
+                        <Copy size={12} color="#fcd34d" />
+                        <Text className="block text-xs">复制</Text>
+                      </View>
+                    </Button>
                   </View>
                 </View>
               </View>
-
-              {/* 热点列表（可折叠） */}
-              {!isCollapsed && (
-                <View className="divide-y divide-slate-700/30">
-                  {platform.list.map((item, index) => (
-                    <View
-                      key={index}
-                      className="px-4 py-3.5 hover:bg-slate-700/30 transition-colors cursor-pointer"
-                      onClick={() => handleKeywordClick(item)}
-                    >
-                      <View className="flex items-start gap-3">
-                        {/* 排名 */}
-                        <View className="flex-shrink-0">
-                          <Text
-                            className={`block text-sm font-bold w-7 text-center ${
-                              index === 0 ? 'text-red-500' :
-                              index === 1 ? 'text-orange-500' :
-                              index === 2 ? 'text-yellow-500' :
-                              'text-slate-500'
-                            }`}
-                          >
-                            {item.rank}
-                          </Text>
-                        </View>
-
-                        {/* 内容 */}
-                        <View className="flex-1 min-w-0">
-                          <View className="flex items-start gap-2 mb-1.5">
-                            <Text className="block text-sm text-white font-medium flex-1 leading-snug">
-                              {item.title}
-                            </Text>
-                            {item.isBursting && (
-                              <View className="flex-shrink-0 bg-red-500/20 text-red-400 text-xs px-1.5 py-0.5 rounded border border-red-500/30">
-                                爆
-                              </View>
-                            )}
-                          </View>
-
-                          {/* 热度和趋势 */}
-                          <View className="flex items-center gap-3 mb-2">
-                            <Text className="block text-xs text-slate-400">
-                              🔥 {item.hot}
-                            </Text>
-                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
-                              {renderTrendIcon(item)}
-                              {item.trendChange !== undefined && item.trendChange !== 0 && (
-                                <Text className={`block text-xs ${item.trendChange > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                  {Math.abs(item.trendChange)}
-                                </Text>
-                              )}
-                            </View>
-                          </View>
-
-                          {/* 摘要 */}
-                          {item.summary && (
-                            <Text className="block text-xs text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
-                              {item.summary}
-                            </Text>
-                          )}
-
-                          {/* 分类标签 */}
-                          {item.category && (
-                            <View className="mt-2">
-                              <Text className="block text-xs text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded inline-block border border-amber-500/20">
-                                {item.category}
-                              </Text>
-                            </View>
-                          )}
-
-                          {/* 操作按钮 */}
-                          <View className="flex items-center gap-2 mt-3 flex-wrap">
-                            <Button
-                              size="mini"
-                              className="bg-blue-500/20 text-blue-300 border border-blue-500/40"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleGenerateTopic(item);
-                              }}
-                            >
-                              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
-                                <Sparkles size={12} color="#93c5fd" />
-                                <Text className="block text-xs">选题</Text>
-                              </View>
-                            </Button>
-                            <Button
-                              size="mini"
-                              className="bg-purple-500/20 text-purple-300 border border-purple-500/40"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleGenerateScript(item);
-                              }}
-                            >
-                              <Text className="block text-xs">脚本</Text>
-                            </Button>
-                            <Button
-                              size="mini"
-                              className="bg-pink-500/20 text-pink-300 border border-pink-500/40"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleFavorite(item);
-                              }}
-                            >
-                              <Heart size={12} color="#f9a8d4" />
-                            </Button>
-                            <Button
-                              size="mini"
-                              className="bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCopyTitle(item.title);
-                              }}
-                            >
-                              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
-                                <Copy size={12} color="#fcd34d" />
-                                <Text className="block text-xs">复制</Text>
-                              </View>
-                            </Button>
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              )}
             </View>
           );
         })}
