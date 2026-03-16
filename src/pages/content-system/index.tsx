@@ -59,18 +59,23 @@ const ContentSystemPage = () => {
           platform: '通用',
           style: '标准版',
           length: 'medium'
-        }
+        },
+        timeout: 120000 // 120秒超时，内容生成需要较长时间
       });
 
       if (res.data.code === 200) {
         setGeneratedContents(res.data.data || []);
         Taro.showToast({ title: '生成成功', icon: 'success' });
       } else {
+        Taro.showToast({ title: res.data.msg || '生成失败', icon: 'error' });
+      }
+    } catch (error: any) {
+      console.error('生成内容失败', error);
+      if (error.errMsg?.includes('abort') || error.message?.includes('abort')) {
+        Taro.showToast({ title: '生成超时，请重试', icon: 'error' });
+      } else {
         Taro.showToast({ title: '生成失败', icon: 'error' });
       }
-    } catch (error) {
-      console.error('生成内容失败', error);
-      Taro.showToast({ title: '生成失败', icon: 'error' });
     } finally {
       setIsGenerating(false);
     }
