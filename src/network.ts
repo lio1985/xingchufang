@@ -14,11 +14,30 @@ const createUrl = (url: string): string => {
         return url
     }
 
-    // 优先使用环境变量判断（更可靠）
-    if (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') {
+    // 判断是否在浏览器/H5环境
+    const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+    
+    // 使用 Taro.getEnv() 判断环境
+    let env: string | undefined;
+    try {
+        env = Taro.getEnv();
+    } catch (e) {
+        // Taro.getEnv() 可能出错
+    }
+
+    // H5/Web 环境判断：
+    // 1. Taro.getEnv() 返回非 WEAPP 的值，且在浏览器环境中
+    // 2. 或者通过 process.env.TARO_ENV 判断
+    // 3. 或者直接检测浏览器环境
+    const isH5 = (
+        (env && env !== Taro.ENV_TYPE.WEAPP && isBrowser) ||
+        (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') ||
+        isBrowser
+    );
+
+    if (isH5) {
         // 检查是否在 Coze 在线预览环境
-        const isCozeDev = typeof window !== 'undefined' &&
-                          window.location.hostname.includes('dev.coze.site');
+        const isCozeDev = isBrowser && window.location.hostname.includes('dev.coze.site');
 
         // Coze 在线预览环境：使用相对路径，由 Vite 代理处理
         if (isCozeDev) {
@@ -30,7 +49,6 @@ const createUrl = (url: string): string => {
     }
 
     // 小程序环境（微信小程序）
-    const env = Taro.getEnv();
     if (env === Taro.ENV_TYPE.WEAPP) {
         // 小程序环境：使用部署的服务器
         return `https://api.xingchufang.cn${url}`;
