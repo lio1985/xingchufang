@@ -1831,7 +1831,7 @@ export class HotTopicsService {
     const hotnessFactor = 0.7 + Math.random() * 0.6; // 0.7 ~ 1.3
 
     const mockData = [
-      // 全国性热点
+      // 全国性热点（增加到20条）
       {
         id: 'mock-1',
         title: 'AI 技术突破：新一代大语言模型性能提升 300%',
@@ -1885,6 +1885,215 @@ export class HotTopicsService {
         site: '体育',
         category: '体育',
         site_name: '体育',
+        city: null
+      },
+      {
+        id: 'mock-5-2',
+        title: '国家重大科技基础设施建成投运',
+        url: '#',
+        hot: 578234,
+        time: timeStr,
+        site: '科技',
+        category: '科技',
+        site_name: '科技',
+        city: null
+      },
+      {
+        id: 'mock-5-3',
+        title: '教育部发布最新教育改革方案，引发热议',
+        url: '#',
+        hot: 556789,
+        time: timeStr,
+        site: '社会',
+        category: '社会',
+        site_name: '社会',
+        city: null
+      },
+      {
+        id: 'mock-5-4',
+        title: '热门综艺新一季开播，收视率破纪录',
+        url: '#',
+        hot: 534567,
+        time: timeStr,
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐',
+        city: null
+      },
+      {
+        id: 'mock-5-5',
+        title: '全国房价调控政策新动向，多个城市出台限购措施',
+        url: '#',
+        hot: 523456,
+        time: timeStr,
+        site: '财经',
+        category: '财经',
+        site_name: '财经',
+        city: null
+      },
+      {
+        id: 'mock-5-6',
+        title: '明星宣布婚讯，社交媒体引爆话题',
+        url: '#',
+        hot: 498234,
+        time: timeStr,
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐',
+        city: null
+      },
+      {
+        id: 'mock-5-7',
+        title: '国产3A大作获国际大奖，游戏行业迎来新里程碑',
+        url: '#',
+        hot: 487567,
+        time: timeStr,
+        site: '科技',
+        category: '科技',
+        site_name: '科技',
+        city: null
+      },
+      {
+        id: 'mock-5-8',
+        title: '健康饮食新趋势，植物基食品销量激增',
+        url: '#',
+        hot: 476890,
+        time: timeStr,
+        site: '生活',
+        category: '生活',
+        site_name: '生活',
+        city: null
+      },
+      {
+        id: 'mock-5-9',
+        title: '新型网络诈骗手法曝光，警方发布预警',
+        url: '#',
+        hot: 456789,
+        time: timeStr,
+        site: '社会',
+        category: '社会',
+        site_name: '社会',
+        city: null
+      },
+      {
+        id: 'mock-5-10',
+        title: '快递行业迎来智能化升级，配送效率大幅提升',
+        url: '#',
+        hot: 445678,
+        time: timeStr,
+        site: '科技',
+        category: '科技',
+        site_name: '科技',
+        city: null
+      },
+      {
+        id: 'mock-5-11',
+        title: '国产电视剧海外热播，中国文化输出再创佳绩',
+        url: '#',
+        hot: 434567,
+        time: timeStr,
+        site: '娱乐',
+        category: '娱乐',
+        site_name: '娱乐',
+        city: null
+      },
+      {
+        id: 'mock-5-12',
+        title: '全国多地发布高温预警，防暑降温成焦点',
+        url: '#',
+        hot: 423456,
+        time: timeStr,
+        site: '社会',
+        category: '社会',
+        site_name: '社会',
+        city: null
+      },
+      {
+        id: 'mock-5-13',
+        title: '新能源汽车充电桩建设加速，解决续航焦虑',
+        url: '#',
+        hot: 412345,
+        time: timeStr,
+        site: '科技',
+        category: '科技',
+        site_name: '科技',
+        city: null
+      },
+      {
+        id: 'mock-5-14',
+        title: '网红景点爆红，旅游热潮带动当地经济',
+        url: '#',
+        hot: 401234,
+        time: timeStr,
+        site: '生活',
+        category: '生活',
+        site_name: '生活',
+        city: null
+      },
+      {
+        id: 'mock-5-15',
+        title: '职场新人面试技巧分享，引发年轻人共鸣',
+        url: '#',
+        hot: 398123,
+        time: timeStr,
+        site: '社会',
+        category: '社会',
+        site_name: '社会',
+        city: null
+      },
+      {
+        id: 'mock-5-16',
+        title: '智能穿戴设备销量暴涨，健康监测成新需求',
+        url: '#',
+        hot: 387456,
+        time: timeStr,
+        site: '科技',
+        category: '科技',
+        site_name: '科技',
+        city: null
+      },
+      {
+        id: 'mock-5-17',
+        title: '短视频平台推出新功能，用户体验再升级',
+        url: '#',
+        hot: 376789,
+        time: timeStr,
+        site: '科技',
+        category: '科技',
+        site_name: '科技',
+        city: null
+      },
+      {
+        id: 'mock-5-18',
+        title: '双十一购物节开启，预售销量再创新高',
+        url: '#',
+        hot: 365456,
+        time: timeStr,
+        site: '商业',
+        category: '商业',
+        site_name: '商业',
+        city: null
+      },
+      {
+        id: 'mock-5-19',
+        title: '国潮品牌崛起，年轻人追捧本土设计',
+        url: '#',
+        hot: 354789,
+        time: timeStr,
+        site: '商业',
+        category: '商业',
+        site_name: '商业',
+        city: null
+      },
+      {
+        id: 'mock-5-20',
+        title: '健身运动成新潮流，线上健身课程爆火',
+        url: '#',
+        hot: 343456,
+        time: timeStr,
+        site: '生活',
+        category: '生活',
+        site_name: '生活',
         city: null
       },
       // 重庆相关热点
