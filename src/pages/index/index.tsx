@@ -419,8 +419,8 @@ const IndexPage = () => {
         {/* 选题策划 */}
         <View
           className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 shadow-xl shadow-blue-500/20"
-          onClick={() => handleNavigateTo('/pages/systems/index', false)}
-          onTap={() => handleNavigateTo('/pages/systems/index', false)}
+          onClick={() => handleNavigateTo('/pages/topic-planning/index', false)}
+          onTap={() => handleNavigateTo('/pages/topic-planning/index', false)}
           style={{ cursor: 'pointer' }}
         >
           <View className="flex items-center gap-4">

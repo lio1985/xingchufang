@@ -5,6 +5,7 @@ export default defineAppConfig({
     'pages/register/index',
     'pages/change-password/index',
     'pages/quick-note/index',
+    'pages/topic-planning/index',
     'pages/knowledge-share/index',
     'pages/knowledge-share/create',
     'pages/knowledge-share/edit',
