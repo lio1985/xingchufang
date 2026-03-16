@@ -14,26 +14,33 @@ const createUrl = (url: string): string => {
         return url
     }
 
-    // 检查是否在 Coze 在线预览环境
-    const isCozeDev = typeof window !== 'undefined' && 
-                      window.location.hostname.includes('dev.coze.site');
-    
-    // Coze 在线预览环境：使用相对路径，由代理处理
-    if (isCozeDev) {
-        return url;
+    // 使用 Taro.getEnv() 准确检测运行环境
+    const env = Taro.getEnv();
+
+    // 小程序环境（包括微信小程序、支付宝小程序等）
+    if (env === Taro.ENV_TYPE.WEAPP) {
+        // 小程序线上环境：使用部署的服务器
+        // 注意：需要在微信小程序后台配置服务器域名 https://api.xingchufang.cn
+        return `https://api.xingchufang.cn${url}`;
     }
 
-    // 更可靠的 H5 环境检测
-    const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
-    
-    // 本地 H5 开发环境：直接访问后端 API 端口 3000
-    if (isH5) {
-        return `http://localhost:3000${url}`
+    // H5 环境
+    if (env === Taro.ENV_TYPE.H5) {
+        // 检查是否在 Coze 在线预览环境
+        const isCozeDev = typeof window !== 'undefined' &&
+                          window.location.hostname.includes('dev.coze.site');
+
+        // Coze 在线预览环境：使用相对路径，由代理处理
+        if (isCozeDev) {
+            return url;
+        }
+
+        // 本地 H5 开发环境：直接访问后端 API 端口 3000
+        return `http://localhost:3000${url}`;
     }
 
-    // 小程序线上环境：使用部署的服务器
-    // 注意：需要在微信小程序后台配置服务器域名 https://api.xingchufang.cn
-    return `https://api.xingchufang.cn${url}`
+    // 其他环境（H5、RN 等），默认使用生产服务器
+    return `https://api.xingchufang.cn${url}`;
 }
 
 export const request: typeof Taro.request = option => {
