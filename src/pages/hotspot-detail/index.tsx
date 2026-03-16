@@ -98,19 +98,22 @@ export default function HotspotDetailPage() {
         }
       });
 
-      if (response.statusCode === 200) {
+      console.log('[HotspotDetail] 保存到选题库响应:', response);
+
+      // 检查响应状态码和业务数据
+      if (response.statusCode === 200 && response.data?.code === 200) {
         Taro.showToast({
           title: '已保存到选题库',
           icon: 'success'
         });
         setIsSaved(true);
       } else {
-        throw new Error('保存失败');
+        throw new Error(response.data?.msg || '保存失败');
       }
-    } catch (error) {
-      console.error('保存到选题库失败:', error);
+    } catch (error: any) {
+      console.error('[HotspotDetail] 保存到选题库失败:', error);
       Taro.showToast({
-        title: '保存失败，请重试',
+        title: error.message || '保存失败，请重试',
         icon: 'none'
       });
     } finally {
