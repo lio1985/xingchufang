@@ -418,9 +418,10 @@ const IndexPage = () => {
       <View className="px-4 mb-20">
         {/* 选题策划 */}
         <View
-          className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-blue-500/20"
-          onClick={() => handleNavigateTo('/pages/systems/index', true)}
-          onTap={() => handleNavigateTo('/pages/systems/index', true)}
+          className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 shadow-xl shadow-blue-500/20"
+          onClick={() => handleNavigateTo('/pages/systems/index', false)}
+          onTap={() => handleNavigateTo('/pages/systems/index', false)}
+          style={{ cursor: 'pointer' }}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
