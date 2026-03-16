@@ -416,6 +416,57 @@ const IndexPage = () => {
 
       {/* 功能介绍区 */}
       <View className="px-4 mb-20">
+        {/* 客资管理 */}
+        <View
+          className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
+          onClick={() => handleNavigateTo('/pages/customer/index', true)}
+          onTap={() => handleNavigateTo('/pages/customer/index', true)}
+        >
+          <View className="flex items-center gap-4">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+              <IconUsers />
+            </View>
+            <View className="flex-1">
+              <Text className="block text-xl font-bold text-white mb-1">客资管理</Text>
+              <Text className="block text-sm text-white/80">客户资料管理与跟进</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 厨具回收 */}
+        <View
+          className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
+          onClick={() => handleNavigateTo('/pages/recycle/index', true)}
+          onTap={() => handleNavigateTo('/pages/recycle/index', true)}
+        >
+          <View className="flex items-center gap-4">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+              <IconRecycle />
+            </View>
+            <View className="flex-1">
+              <Text className="block text-xl font-bold text-white mb-1">厨具回收</Text>
+              <Text className="block text-sm text-white/80">厨具设备回收管理</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 知识分享 */}
+        <View
+          className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
+          onClick={() => handleNavigateTo('/pages/knowledge-share/index', true)}
+          onTap={() => handleNavigateTo('/pages/knowledge-share/index', true)}
+        >
+          <View className="flex items-center gap-4">
+            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+              <IconBookOpen />
+            </View>
+            <View className="flex-1">
+              <Text className="block text-xl font-bold text-white mb-1">知识分享</Text>
+              <Text className="block text-sm text-white/80">分享创作经验和技巧</Text>
+            </View>
+          </View>
+        </View>
+
         {/* 选题策划 */}
         <View
           className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 shadow-xl shadow-blue-500/20"
@@ -485,23 +536,6 @@ const IndexPage = () => {
           </View>
         </View>
 
-        {/* 知识分享 */}
-        <View
-          className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/knowledge-share/index', true)}
-          onTap={() => handleNavigateTo('/pages/knowledge-share/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconBookOpen />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">知识分享</Text>
-              <Text className="block text-sm text-white/80">分享创作经验和技巧</Text>
-            </View>
-          </View>
-        </View>
-
         {/* 直播数据统计 */}
         <View
           className="bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-rose-500/20"
@@ -515,40 +549,6 @@ const IndexPage = () => {
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">直播数据统计</Text>
               <Text className="block text-sm text-white/80">抖音直播数据分析与复盘</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 客资管理 */}
-        <View
-          className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
-          onClick={() => handleNavigateTo('/pages/customer/index', true)}
-          onTap={() => handleNavigateTo('/pages/customer/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconUsers />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">客资管理</Text>
-              <Text className="block text-sm text-white/80">客户资料管理与跟进</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 厨具回收 */}
-        <View
-          className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
-          onClick={() => handleNavigateTo('/pages/recycle/index', true)}
-          onTap={() => handleNavigateTo('/pages/recycle/index', true)}
-        >
-          <View className="flex items-center gap-4">
-            <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-              <IconRecycle />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-xl font-bold text-white mb-1">厨具回收</Text>
-              <Text className="block text-sm text-white/80">厨具设备回收管理</Text>
             </View>
           </View>
         </View>
