@@ -776,20 +776,47 @@ const AiChatPage = () => {
           </View>
           <View className="flex gap-2">
             <View
-              className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
-              onClick={() => setShowConversationList(true)}
+              style={{
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#1e293b',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+              onTap={() => setShowConversationList(true)}
             >
               <Clock size={18} color="#94a3b8" />
             </View>
             <View
-              className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
-              onClick={() => setShowLexiconList(true)}
+              style={{
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#1e293b',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+              onTap={() => setShowLexiconList(true)}
             >
               <BookOpen size={18} color="#94a3b8" />
             </View>
             <View
-              className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
-              onClick={handleNewConversation}
+              style={{
+                width: '40px',
+                height: '40px',
+                backgroundColor: '#1e293b',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+              onTap={handleNewConversation}
             >
               <Plus size={18} color="#94a3b8" />
             </View>
@@ -1083,9 +1110,10 @@ const AiChatPage = () => {
                   backgroundColor: isRecording ? '#ef4444' : '#334155',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  cursor: 'pointer'
                 }}
-                onClick={isRecording ? stopRecording : startRecording}
+                onTap={isRecording ? stopRecording : startRecording}
               >
                 <Mic size={20} color="white" />
               </View>
@@ -1112,9 +1140,10 @@ const AiChatPage = () => {
                 backgroundColor: '#334155',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                cursor: 'pointer'
               }}
-              onClick={handleSelectFile}
+              onTap={handleSelectFile}
             >
               <Paperclip size={20} color="#94a3b8" />
             </View>
@@ -1127,12 +1156,13 @@ const AiChatPage = () => {
                 borderRadius: '12px',
                 background: loading || (!inputText.trim() && attachments.length === 0)
                   ? '#334155'
-                  : 'linear-gradient(to right, #3b82f6, #8b5cf6)',
+                  : '#3b82f6',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                cursor: 'pointer'
               }}
-              onClick={() => !loading && handleSend()}
+              onTap={() => !loading && handleSend()}
             >
               <Send size={20} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
             </View>
@@ -1153,7 +1183,7 @@ const AiChatPage = () => {
               display: 'flex',
               alignItems: 'flex-end',
             }}
-            onClick={() => setShowActionSheet(false)}
+            onTap={() => setShowActionSheet(false)}
           >
             <View
               style={{
@@ -1163,7 +1193,7 @@ const AiChatPage = () => {
                 borderTopRightRadius: '20px',
                 padding: '16px',
               }}
-              onClick={(e) => e.stopPropagation()}
+              catchTap={(e) => e.stopPropagation()}
             >
               <Text style={{ fontSize: '16px', fontWeight: '600', color: '#fff', marginBottom: '16px', textAlign: 'center' }}>
                 选择文件类型
@@ -1178,8 +1208,9 @@ const AiChatPage = () => {
                     backgroundColor: '#334155',
                     borderRadius: '12px',
                     flexShrink: 0,
+                    cursor: 'pointer'
                   }}
-                  onClick={handleSelectImage}
+                  onTap={handleSelectImage}
                 >
                   <ImageIcon size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>图片</Text>
@@ -1193,8 +1224,9 @@ const AiChatPage = () => {
                     backgroundColor: '#334155',
                     borderRadius: '12px',
                     flexShrink: 0,
+                    cursor: 'pointer'
                   }}
-                  onClick={handleSelectVideo}
+                  onTap={handleSelectVideo}
                 >
                   <Video size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>视频</Text>
@@ -1208,8 +1240,9 @@ const AiChatPage = () => {
                     backgroundColor: '#334155',
                     borderRadius: '12px',
                     flexShrink: 0,
+                    cursor: 'pointer'
                   }}
-                  onClick={handleSelectDocument}
+                  onTap={handleSelectDocument}
                 >
                   <FileText size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>文档</Text>
