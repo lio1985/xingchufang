@@ -544,14 +544,6 @@ const SystemsPage = () => {
     <View className="min-h-screen bg-slate-900">
       {/* 顶部导航 */}
       <View className="bg-slate-800 px-4 py-3 flex items-center gap-2 flex-wrap">
-        {/* 返回按钮 */}
-        <View
-          className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
-          onClick={() => Taro.navigateBack()}
-        >
-          <Text className="block text-sm">← 返回</Text>
-        </View>
-
         <View
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
           onClick={() => Taro.navigateTo({ url: '/pages/quick-note/index' })}
