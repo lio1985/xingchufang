@@ -192,6 +192,36 @@ const LoginPage = () => {
               修改密码
             </Text>
           </View>
+
+          {/* 测试账号信息 */}
+          <View className="test-account-section">
+            <View className="test-account-header">
+              <Text className="block test-account-title">测试账号</Text>
+            </View>
+            <View className="test-account-info">
+              <View className="test-account-row">
+                <Text className="block test-account-label">账号：</Text>
+                <Text className="block test-account-value">test</Text>
+              </View>
+              <View className="test-account-row">
+                <Text className="block test-account-label">密码：</Text>
+                <Text className="block test-account-value">123456</Text>
+              </View>
+              <Button
+                className="test-account-button"
+                onClick={() => {
+                  setUsername('test');
+                  setPassword('123456');
+                  Taro.showToast({
+                    title: '已填充测试账号',
+                    icon: 'success'
+                  });
+                }}
+              >
+                一键填充
+              </Button>
+            </View>
+          </View>
         </View>
       </View>
     </View>
