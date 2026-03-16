@@ -156,8 +156,8 @@ export default function HotScriptGenerationPage() {
             <FileText size={24} color="#ec4899" strokeWidth={2.5} />
           </View>
           <View>
-            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">AI 脚本</Text>
-            <Text className="block text-xs text-pink-400 font-medium tracking-wider">AI SCRIPT GENERATION</Text>
+            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">脚本生成</Text>
+            <Text className="block text-xs text-pink-400 font-medium tracking-wider">SCRIPT GENERATION</Text>
           </View>
         </View>
       </View>

@@ -1,3 +1,3 @@
 export default typeof definePageConfig === 'function'
-  ? definePageConfig({ navigationBarTitleText: 'AI 脚本' })
-  : { navigationBarTitleText: 'AI 脚本' }
+  ? definePageConfig({ navigationBarTitleText: '脚本生成' })
+  : { navigationBarTitleText: '脚本生成' }

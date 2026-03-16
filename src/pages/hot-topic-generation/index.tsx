@@ -108,8 +108,8 @@ export default function HotTopicGenerationPage() {
             <Lightbulb size={24} color="#a855f7" strokeWidth={2.5} />
           </View>
           <View>
-            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">AI 选题</Text>
-            <Text className="block text-xs text-purple-400 font-medium tracking-wider">AI TOPIC GENERATION</Text>
+            <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">选题生成</Text>
+            <Text className="block text-xs text-purple-400 font-medium tracking-wider">TOPIC GENERATION</Text>
           </View>
         </View>
       </View>
@@ -164,7 +164,7 @@ export default function HotTopicGenerationPage() {
           <View className="px-4 mt-6">
             <View className="flex items-center gap-2 mb-4">
               <Sparkles size={20} color="#a855f7" strokeWidth={2} />
-              <Text className="block text-lg font-bold text-white">AI 生成的选题</Text>
+              <Text className="block text-lg font-bold text-white">生成的选题</Text>
             </View>
 
             <View className="space-y-4 pb-6">
