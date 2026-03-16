@@ -1,0 +1,85 @@
+.register-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0c1929 0%, #6a11cb 50%, #2575fc 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.register-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* 输入框外层容器 */
+.input-wrapper {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+/* 输入框样式 */
+.register-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  outline: none;
+}
+
+.register-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+}
+
+/* 注册按钮 */
+.register-button {
+  width: 100%;
+  height: 56px;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  box-shadow: 0 8px 24px rgba(106, 17, 203, 0.4);
+}
+
+.register-button:active {
+  transform: scale(0.98);
+}
+
+.register-button.loading {
+  opacity: 0.7;
+}
+
+/* 返回按钮 */
+.back-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 8px 16px;
+  z-index: 20;
+}
+
+/* 底部链接 */
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  gap: 8px;
+}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
 import { View, Text, Input } from '@tarojs/components'
 import { Network } from '@/network'
+import './index.css'
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('')
@@ -71,7 +72,7 @@ const RegisterPage = () => {
   }
 
   return (
-    <View className="min-h-screen bg-slate-900 flex flex-col px-6 py-12 relative overflow-hidden">
+    <View className="register-page">
       {/* 背景装饰 */}
       <View className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <View className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-br from-blue-500/30 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl" />
@@ -80,15 +81,15 @@ const RegisterPage = () => {
       </View>
 
       {/* 返回按钮 */}
-      <View 
-        className="absolute top-4 left-4 z-20 px-4 py-2"
+      <View
+        className="back-button"
         onClick={() => Taro.navigateBack()}
       >
         <Text className="text-white/70 text-sm">← 返回</Text>
       </View>
 
       {/* 内容区域 */}
-      <View className="flex-1 flex flex-col items-center justify-center relative z-10 w-full max-w-md">
+      <View className="register-container">
         {/* 标题 */}
         <Text className="block text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-4 tracking-tight">
           注册账号
@@ -98,11 +99,11 @@ const RegisterPage = () => {
         </Text>
 
         {/* 注册表单 */}
-        <View className="w-full space-y-4">
+        <View className="w-full">
           {/* 账号输入 */}
-          <View className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+          <View className="input-wrapper">
             <Input
-              className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+              className="register-input"
               type="text"
               placeholder="请输入账号（至少3位）"
               value={username}
@@ -111,9 +112,9 @@ const RegisterPage = () => {
           </View>
 
           {/* 昵称输入 */}
-          <View className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+          <View className="input-wrapper">
             <Input
-              className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+              className="register-input"
               type="text"
               placeholder="请输入昵称（可选）"
               value={nickname}
@@ -122,10 +123,10 @@ const RegisterPage = () => {
           </View>
 
           {/* 密码输入 */}
-          <View className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+          <View className="input-wrapper">
             {showPassword ? (
               <Input
-                className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+                className="register-input"
                 type={'text' as any}
                 placeholder="请输入密码（至少6位）"
                 value={password}
@@ -133,7 +134,7 @@ const RegisterPage = () => {
               />
             ) : (
               <Input
-                className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+                className="register-input"
                 type={'password' as any}
                 placeholder="请输入密码（至少6位）"
                 value={password}
@@ -143,9 +144,9 @@ const RegisterPage = () => {
           </View>
 
           {/* 确认密码输入 */}
-          <View className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+          <View className="input-wrapper">
             <Input
-              className="w-full h-14 px-5 text-white text-base placeholder:text-white/50 bg-transparent"
+              className="register-input"
               type={showPassword ? ('text' as any) : ('password' as any)}
               placeholder="请再次输入密码"
               value={confirmPassword}
@@ -154,7 +155,7 @@ const RegisterPage = () => {
           </View>
 
           {/* 显示密码选项 */}
-          <View 
+          <View
             className="flex items-center justify-end"
             onClick={() => setShowPassword(!showPassword)}
           >
@@ -165,7 +166,7 @@ const RegisterPage = () => {
 
           {/* 注册按钮 */}
           <View
-            className={`w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl py-4 flex items-center justify-center shadow-2xl shadow-purple-500/40 mt-6 ${isRegistering ? 'opacity-70' : 'active:scale-[0.98]'}`}
+            className={`register-button ${isRegistering ? 'loading' : 'active:scale-[0.98]'}`}
             onClick={isRegistering ? undefined : handleRegister}
           >
             <Text className="text-white text-lg font-semibold">
@@ -174,7 +175,7 @@ const RegisterPage = () => {
           </View>
 
           {/* 已有账号入口 */}
-          <View className="flex items-center justify-center mt-6">
+          <View className="footer-links">
             <Text className="text-white/50 text-sm">已有账号？</Text>
             <View onClick={() => Taro.navigateBack()}>
               <Text className="text-blue-400 text-sm ml-1">立即登录</Text>
