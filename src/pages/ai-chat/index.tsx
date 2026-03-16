@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Textarea, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { Send, Bot, User, Trash2, Plus, Clock, ChevronLeft, BookOpen, ChevronDown, ChevronRight, Zap, Mic, Paperclip, X, Image as ImageIcon, FileText, Video } from 'lucide-react-taro';
+import { Send, Bot, User, Trash2, Plus, Clock, ChevronLeft, ChevronDown, ChevronRight, Zap, Mic, Paperclip, X, Image as ImageIcon, FileText, Video } from 'lucide-react-taro';
 import { Network } from '@/network';
 import StarIcon from '@/components/StarIcon';
 
@@ -777,56 +777,6 @@ const AiChatPage = () => {
           <View className="flex items-center gap-3">
             <StarIcon size={32} />
             <Text className="block text-xl font-bold text-white">星小帮</Text>
-          </View>
-          <View className="flex gap-2">
-            <View
-              style={{
-                width: '40px',
-                height: '40px',
-                backgroundColor: '#1e293b',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
-              onClick={() => setShowConversationList(true)}
-              onTap={() => setShowConversationList(true)}
-            >
-              <Clock size={18} color="#94a3b8" />
-            </View>
-            <View
-              style={{
-                width: '40px',
-                height: '40px',
-                backgroundColor: '#1e293b',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
-              onClick={() => setShowLexiconList(true)}
-              onTap={() => setShowLexiconList(true)}
-            >
-              <BookOpen size={18} color="#94a3b8" />
-            </View>
-            <View
-              style={{
-                width: '40px',
-                height: '40px',
-                backgroundColor: '#1e293b',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
-              onClick={handleNewConversation}
-              onTap={handleNewConversation}
-            >
-              <Plus size={18} color="#94a3b8" />
-            </View>
           </View>
         </View>
 
