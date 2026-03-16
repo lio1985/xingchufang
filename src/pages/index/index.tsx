@@ -420,6 +420,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-blue-500/20"
           onClick={() => handleNavigateTo('/pages/systems/index', true)}
+          onTap={() => handleNavigateTo('/pages/systems/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -436,6 +437,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
           onClick={() => handleNavigateTo('/pages/content-system/index', true)}
+          onTap={() => handleNavigateTo('/pages/content-system/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -452,6 +454,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-emerald-500/20"
           onClick={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
+          onTap={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -468,6 +471,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-pink-500 via-rose-600 to-red-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-pink-500/20"
           onClick={() => handleNavigateTo('/pages/viral-system/index', true)}
+          onTap={() => handleNavigateTo('/pages/viral-system/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -484,6 +488,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
           onClick={() => handleNavigateTo('/pages/knowledge-share/index', true)}
+          onTap={() => handleNavigateTo('/pages/knowledge-share/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -500,6 +505,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-rose-500/20"
           onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
+          onTap={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -516,6 +522,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
           onClick={() => handleNavigateTo('/pages/customer/index', true)}
+          onTap={() => handleNavigateTo('/pages/customer/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -532,6 +539,7 @@ const IndexPage = () => {
         <View
           className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
           onClick={() => handleNavigateTo('/pages/recycle/index', true)}
+          onTap={() => handleNavigateTo('/pages/recycle/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -548,6 +556,7 @@ const IndexPage = () => {
         {/* <View
           className="bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-slate-500/20 border border-slate-500/30"
           onClick={() => handleNavigateTo('/pages/admin/users/index', true)}
+          onTap={() => handleNavigateTo('/pages/admin/users/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
