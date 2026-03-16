@@ -58,7 +58,7 @@ const RegisterPage = () => {
         showToast({ title: '注册成功', icon: 'success' })
         // 跳转到登录页
         setTimeout(() => {
-          Taro.navigateBack()
+          Taro.redirectTo({ url: '/pages/login/index' })
         }, 1500)
       } else {
         throw new Error(response.data?.msg || '注册失败')
@@ -81,7 +81,7 @@ const RegisterPage = () => {
       </View>
 
       {/* 返回按钮 */}
-      <View className="back-button" onClick={() => Taro.navigateBack()}>
+      <View className="back-button" onClick={() => Taro.redirectTo({ url: '/pages/login/index' })}>
         <Text className="back-button-text">← 返回</Text>
       </View>
 
@@ -167,7 +167,7 @@ const RegisterPage = () => {
           {/* 已有账号入口 */}
           <View className="footer-links">
             <Text className="footer-links-text">已有账号？</Text>
-            <View onClick={() => Taro.navigateBack()}>
+            <View onClick={() => Taro.redirectTo({ url: '/pages/login/index' })}>
               <Text className="footer-links-action">立即登录</Text>
             </View>
           </View>
