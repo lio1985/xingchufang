@@ -39,7 +39,7 @@ const AiChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
-  const [model, setModel] = useState('doubao-seed-1-8-251228');
+  const [model, setModel] = useState('doubao-seed-2-0-pro-260215');
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [showConversationList, setShowConversationList] = useState(false);
@@ -695,6 +695,11 @@ const AiChatPage = () => {
                       </Text>
                       <View
                         className="ml-2"
+                        style={{
+                          padding: '4px',
+                          touchAction: 'none',
+                          zIndex: 10,
+                        }}
                         onClick={(e) => handleDeleteConversation(conv.id, e)}
                         onTap={(e) => handleDeleteConversation(conv.id, e)}
                       >
@@ -744,6 +749,7 @@ const AiChatPage = () => {
                     <View className="flex gap-2">
                       <View
                         className="flex-1 py-2 bg-blue-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+                        style={{ touchAction: 'none', zIndex: 10 }}
                         onClick={() => handleInsertLexicon(lexicon)}
                         onTap={() => handleInsertLexicon(lexicon)}
                       >
@@ -751,6 +757,7 @@ const AiChatPage = () => {
                       </View>
                       <View
                         className="flex-1 py-2 bg-green-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+                        style={{ touchAction: 'none', zIndex: 10 }}
                         onClick={() => handleSendLexicon(lexicon)}
                         onTap={() => handleSendLexicon(lexicon)}
                       >
@@ -1024,6 +1031,8 @@ const AiChatPage = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      touchAction: 'none',
+                      zIndex: 10,
                     }}
                     onClick={() => handleRemoveAttachment(index)}
                     onTap={() => handleRemoveAttachment(index)}
