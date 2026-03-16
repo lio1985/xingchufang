@@ -117,6 +117,7 @@ export default function AdminUsersPage() {
   };
 
   const changeUserRole = async (userId: string, newRole: 'user' | 'admin') => {
+    console.log('修改角色被调用:', userId, newRole);
     try {
       const res = await Network.request({
         url: `/api/admin/users/${userId}/role`,
@@ -132,6 +133,11 @@ export default function AdminUsersPage() {
           icon: 'success',
         });
         handleRefresh();
+      } else {
+        Taro.showToast({
+          title: res.data?.msg || '修改失败',
+          icon: 'none',
+        });
       }
     } catch (error: any) {
       console.error('修改角色失败:', error);
@@ -143,6 +149,7 @@ export default function AdminUsersPage() {
   };
 
   const changeUserStatus = async (userId: string, newStatus: 'active' | 'disabled' | 'deleted') => {
+    console.log('修改状态被调用:', userId, newStatus);
     try {
       const res = await Network.request({
         url: `/api/admin/users/${userId}/status`,
@@ -161,6 +168,11 @@ export default function AdminUsersPage() {
         if (selectedUser?.id === userId) {
           setShowDetailModal(false);
         }
+      } else {
+        Taro.showToast({
+          title: res.data?.msg || '修改失败',
+          icon: 'none',
+        });
       }
     } catch (error: any) {
       console.error('修改状态失败:', error);
@@ -524,17 +536,19 @@ export default function AdminUsersPage() {
             onClick={() => setShowDetailModal(false)}
           />
           {/* 内容区域 */}
-          <View style={{
-            position: 'relative',
-            zIndex: 52,
-            width: '100%',
-            backgroundColor: '#1e293b',
-            borderTopLeftRadius: '24px',
-            borderTopRightRadius: '24px',
-            padding: '16px',
-            maxHeight: '80vh',
-            overflowY: 'auto',
-          }}
+          <View
+            style={{
+              position: 'relative',
+              zIndex: 52,
+              width: '100%',
+              backgroundColor: '#1e293b',
+              borderTopLeftRadius: '24px',
+              borderTopRightRadius: '24px',
+              padding: '16px',
+              maxHeight: '80vh',
+              overflowY: 'auto',
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
             <View className="flex justify-between items-center mb-4">
               <Text className="text-white text-lg font-bold">用户详情</Text>
@@ -774,7 +788,17 @@ export default function AdminUsersPage() {
                         alignItems: 'center',
                         justifyContent: 'center'
                       }}
-                      onClick={() => selectedUser.role !== 'user' && changeUserRole(selectedUser.id, 'user')}
+                      onClick={() => {
+                        console.log('点击设为用户按钮，当前角色:', selectedUser.role);
+                        if (selectedUser.role !== 'user') {
+                          changeUserRole(selectedUser.id, 'user');
+                        } else {
+                          Taro.showToast({
+                            title: '用户已经是用户角色',
+                            icon: 'none',
+                          });
+                        }
+                      }}
                     >
                       <Text className="block">设为用户</Text>
                     </View>
@@ -791,7 +815,17 @@ export default function AdminUsersPage() {
                         alignItems: 'center',
                         justifyContent: 'center'
                       }}
-                      onClick={() => selectedUser.role !== 'admin' && changeUserRole(selectedUser.id, 'admin')}
+                      onClick={() => {
+                        console.log('点击设为管理员按钮，当前角色:', selectedUser.role);
+                        if (selectedUser.role !== 'admin') {
+                          changeUserRole(selectedUser.id, 'admin');
+                        } else {
+                          Taro.showToast({
+                            title: '用户已经是管理员',
+                            icon: 'none',
+                          });
+                        }
+                      }}
                     >
                       <Text className="block">设为管理员</Text>
                     </View>
@@ -817,7 +851,10 @@ export default function AdminUsersPage() {
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}
-                        onClick={() => changeUserStatus(selectedUser.id, 'active')}
+                        onClick={() => {
+                          console.log('点击激活按钮，当前状态:', selectedUser.status);
+                          changeUserStatus(selectedUser.id, 'active');
+                        }}
                       >
                         <Text className="block">激活</Text>
                       </View>
@@ -837,7 +874,10 @@ export default function AdminUsersPage() {
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}
-                        onClick={() => changeUserStatus(selectedUser.id, 'disabled')}
+                        onClick={() => {
+                          console.log('点击禁用按钮，当前状态:', selectedUser.status);
+                          changeUserStatus(selectedUser.id, 'disabled');
+                        }}
                       >
                         <Text className="block">禁用</Text>
                       </View>
@@ -857,7 +897,18 @@ export default function AdminUsersPage() {
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}
-                        onClick={() => changeUserStatus(selectedUser.id, 'deleted')}
+                        onClick={() => {
+                          console.log('点击删除按钮，当前状态:', selectedUser.status);
+                          Taro.showModal({
+                            title: '确认删除',
+                            content: '确定要删除该用户吗？此操作不可恢复。',
+                            success: (res) => {
+                              if (res.confirm) {
+                                changeUserStatus(selectedUser.id, 'deleted');
+                              }
+                            }
+                          });
+                        }}
                       >
                         <Text className="block">删除</Text>
                       </View>
