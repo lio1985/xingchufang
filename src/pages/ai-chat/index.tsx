@@ -684,6 +684,7 @@ const AiChatPage = () => {
                         : 'bg-slate-800 border border-slate-700'
                     }`}
                     onClick={() => handleSelectConversation(conv)}
+                    onTap={() => handleSelectConversation(conv)}
                   >
                     <View className="flex items-start justify-between mb-2">
                       <Text className={`block text-sm font-medium ${
@@ -695,6 +696,7 @@ const AiChatPage = () => {
                       <View
                         className="ml-2"
                         onClick={(e) => handleDeleteConversation(conv.id, e)}
+                        onTap={(e) => handleDeleteConversation(conv.id, e)}
                       >
                         <Trash2 size={14} color="#64748b" />
                       </View>
@@ -743,12 +745,14 @@ const AiChatPage = () => {
                       <View
                         className="flex-1 py-2 bg-blue-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                         onClick={() => handleInsertLexicon(lexicon)}
+                        onTap={() => handleInsertLexicon(lexicon)}
                       >
                         <Text className="text-xs text-blue-300">插入</Text>
                       </View>
                       <View
                         className="flex-1 py-2 bg-green-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                         onClick={() => handleSendLexicon(lexicon)}
+                        onTap={() => handleSendLexicon(lexicon)}
                       >
                         <Text className="text-xs text-green-300">发送</Text>
                       </View>
@@ -787,6 +791,7 @@ const AiChatPage = () => {
                 cursor: 'pointer'
               }}
               onClick={() => setShowConversationList(true)}
+              onTap={() => setShowConversationList(true)}
             >
               <Clock size={18} color="#94a3b8" />
             </View>
@@ -802,6 +807,7 @@ const AiChatPage = () => {
                 cursor: 'pointer'
               }}
               onClick={() => setShowLexiconList(true)}
+              onTap={() => setShowLexiconList(true)}
             >
               <BookOpen size={18} color="#94a3b8" />
             </View>
@@ -817,6 +823,7 @@ const AiChatPage = () => {
                 cursor: 'pointer'
               }}
               onClick={handleNewConversation}
+              onTap={handleNewConversation}
             >
               <Plus size={18} color="#94a3b8" />
             </View>
@@ -830,6 +837,7 @@ const AiChatPage = () => {
             maxHeight: modelExpanded ? '200px' : '48px',
           }}
           onClick={() => setModelExpanded(!modelExpanded)}
+          onTap={() => setModelExpanded(!modelExpanded)}
         >
           <View
             className="px-4 py-2 flex items-center justify-between cursor-pointer"
@@ -881,6 +889,11 @@ const AiChatPage = () => {
                   flexShrink: 0,
                 }}
                 onClick={(e) => {
+                  e.stopPropagation();
+                  setModel(item.value);
+                  setModelExpanded(false);
+                }}
+                onTap={(e) => {
                   e.stopPropagation();
                   setModel(item.value);
                   setModelExpanded(false);
@@ -1063,6 +1076,7 @@ const AiChatPage = () => {
                       justifyContent: 'center',
                     }}
                     onClick={() => handleRemoveAttachment(index)}
+                    onTap={() => handleRemoveAttachment(index)}
                   >
                     <X size={12} color="white" />
                   </View>
@@ -1114,6 +1128,7 @@ const AiChatPage = () => {
                   cursor: 'pointer'
                 }}
                 onClick={isRecording ? stopRecording : startRecording}
+                onTap={isRecording ? stopRecording : startRecording}
               >
                 <Mic size={20} color="white" />
               </View>
@@ -1144,6 +1159,7 @@ const AiChatPage = () => {
                 cursor: 'pointer'
               }}
               onClick={handleSelectFile}
+              onTap={handleSelectFile}
             >
               <Paperclip size={20} color="#94a3b8" />
             </View>
@@ -1163,6 +1179,7 @@ const AiChatPage = () => {
                 cursor: 'pointer'
               }}
               onClick={() => !loading && handleSend()}
+              onTap={() => !loading && handleSend()}
             >
               <Send size={20} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
             </View>
@@ -1184,6 +1201,7 @@ const AiChatPage = () => {
               alignItems: 'flex-end',
             }}
             onClick={() => setShowActionSheet(false)}
+            onTap={() => setShowActionSheet(false)}
           >
             <View
               style={{
@@ -1210,6 +1228,7 @@ const AiChatPage = () => {
                     cursor: 'pointer'
                   }}
                   onClick={handleSelectImage}
+                  onTap={handleSelectImage}
                 >
                   <ImageIcon size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>图片</Text>
@@ -1226,6 +1245,7 @@ const AiChatPage = () => {
                     cursor: 'pointer'
                   }}
                   onClick={handleSelectVideo}
+                  onTap={handleSelectVideo}
                 >
                   <Video size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>视频</Text>
@@ -1242,6 +1262,7 @@ const AiChatPage = () => {
                     cursor: 'pointer'
                   }}
                   onClick={handleSelectDocument}
+                  onTap={handleSelectDocument}
                 >
                   <FileText size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>文档</Text>
