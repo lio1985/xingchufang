@@ -174,9 +174,13 @@ ${userMessage}
 
       const parsed = JSON.parse(cleanResponse);
 
+      // 验证意图类型，只允许预定义的类型
+      const validTypes = ['quick_note', 'topic_generation', 'content_generation', 'lexicon_optimize', 'viral_replicate', 'unknown'];
+      const type = validTypes.includes(parsed.type) ? parsed.type : 'unknown';
+
       // 验证并返回意图
       return {
-        type: parsed.type || 'unknown',
+        type,
         confidence: parsed.confidence || 0,
         extractedParams: parsed.extractedParams || {},
         missingParams: parsed.missingParams || [],
