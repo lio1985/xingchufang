@@ -786,7 +786,7 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 cursor: 'pointer'
               }}
-              onTap={() => setShowConversationList(true)}
+              onClick={() => setShowConversationList(true)}
             >
               <Clock size={18} color="#94a3b8" />
             </View>
@@ -801,7 +801,7 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 cursor: 'pointer'
               }}
-              onTap={() => setShowLexiconList(true)}
+              onClick={() => setShowLexiconList(true)}
             >
               <BookOpen size={18} color="#94a3b8" />
             </View>
@@ -816,7 +816,7 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 cursor: 'pointer'
               }}
-              onTap={handleNewConversation}
+              onClick={handleNewConversation}
             >
               <Plus size={18} color="#94a3b8" />
             </View>
@@ -1113,7 +1113,7 @@ const AiChatPage = () => {
                   justifyContent: 'center',
                   cursor: 'pointer'
                 }}
-                onTap={isRecording ? stopRecording : startRecording}
+                onClick={isRecording ? stopRecording : startRecording}
               >
                 <Mic size={20} color="white" />
               </View>
@@ -1143,7 +1143,7 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 cursor: 'pointer'
               }}
-              onTap={handleSelectFile}
+              onClick={handleSelectFile}
             >
               <Paperclip size={20} color="#94a3b8" />
             </View>
@@ -1162,7 +1162,7 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 cursor: 'pointer'
               }}
-              onTap={() => !loading && handleSend()}
+              onClick={() => !loading && handleSend()}
             >
               <Send size={20} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
             </View>
@@ -1183,7 +1183,7 @@ const AiChatPage = () => {
               display: 'flex',
               alignItems: 'flex-end',
             }}
-            onTap={() => setShowActionSheet(false)}
+            onClick={() => setShowActionSheet(false)}
           >
             <View
               style={{
@@ -1210,7 +1210,7 @@ const AiChatPage = () => {
                     flexShrink: 0,
                     cursor: 'pointer'
                   }}
-                  onTap={handleSelectImage}
+                  onClick={handleSelectImage}
                 >
                   <ImageIcon size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>图片</Text>
@@ -1226,7 +1226,7 @@ const AiChatPage = () => {
                     flexShrink: 0,
                     cursor: 'pointer'
                   }}
-                  onTap={handleSelectVideo}
+                  onClick={handleSelectVideo}
                 >
                   <Video size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>视频</Text>
@@ -1242,7 +1242,7 @@ const AiChatPage = () => {
                     flexShrink: 0,
                     cursor: 'pointer'
                   }}
-                  onTap={handleSelectDocument}
+                  onClick={handleSelectDocument}
                 >
                   <FileText size={24} color="#60a5fa" />
                   <Text style={{ fontSize: '15px', color: '#fff' }}>文档</Text>
