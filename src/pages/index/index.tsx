@@ -435,7 +435,7 @@ const IndexPage = () => {
         {/* 内容创作 */}
         <View
           className="bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/systems/index', true)}
+          onClick={() => handleNavigateTo('/pages/content-system/index', true)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
