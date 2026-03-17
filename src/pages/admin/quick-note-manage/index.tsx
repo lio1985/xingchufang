@@ -276,9 +276,9 @@ export default function AdminQuickNoteManagePage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部导航栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
+      <View className="bg-white px-4 py-3 border-b border-slate-200">
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View onClick={() => Taro.navigateBack()}>
@@ -299,16 +299,16 @@ export default function AdminQuickNoteManagePage() {
                 <Text className="text-red-400 text-sm">删除 {selectedNoteIds.length}</Text>
               </View>
             ) : (
-              <Text className="text-slate-400 text-sm">共 {notes.length} 条</Text>
+              <Text className="text-slate-500 text-sm">共 {notes.length} 条</Text>
             )}
             <View
-              className="bg-slate-700 px-3 py-1.5 rounded-lg"
+              className="bg-white px-3 py-1.5 rounded-lg"
               onClick={() => {
                 setIsBatchMode(!isBatchMode);
                 setSelectedNoteIds([]);
               }}
             >
-              <Text className="text-slate-300 text-sm">
+              <Text className="text-slate-600 text-sm">
                 {isBatchMode ? '退出' : '批量'}
               </Text>
             </View>
@@ -317,8 +317,8 @@ export default function AdminQuickNoteManagePage() {
       </View>
 
       {/* 搜索栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-        <View className="bg-slate-700 rounded-xl px-4 py-2 flex items-center gap-2">
+      <View className="bg-white px-4 py-3 border-b border-slate-200">
+        <View className="bg-white rounded-xl px-4 py-2 flex items-center gap-2">
           <Search size={18} color="#94a3b8" />
           <Input
             className="flex-1 bg-transparent text-white"
@@ -336,26 +336,26 @@ export default function AdminQuickNoteManagePage() {
 
       {/* 标签筛选 */}
       {allTags.length > 0 && (
-        <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
+        <View className="bg-white px-4 py-3 border-b border-slate-200">
           <ScrollView
             scrollX
             className="whitespace-nowrap"
           >
             <View className="flex gap-2">
               <View
-                className={`px-3 py-1.5 rounded-lg text-sm ${!activeTag ? 'bg-amber-500' : 'bg-slate-700'}`}
+                className={`px-3 py-1.5 rounded-lg text-sm ${!activeTag ? 'bg-amber-500' : 'bg-white'}`}
                 onClick={() => setActiveTag('')}
               >
-                <Text className={!activeTag ? 'text-white' : 'text-slate-300'}>全部</Text>
+                <Text className={!activeTag ? 'text-white' : 'text-slate-600'}>全部</Text>
               </View>
               {allTags.map((tag) => (
                 <View
                   key={tag}
-                  className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${activeTag === tag ? 'bg-amber-500' : 'bg-slate-700'}`}
+                  className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${activeTag === tag ? 'bg-amber-500' : 'bg-white'}`}
                   onClick={() => setActiveTag(tag)}
                 >
                   <Tag size={14} />
-                  <Text className={activeTag === tag ? 'text-white' : 'text-slate-300'}>{tag}</Text>
+                  <Text className={activeTag === tag ? 'text-white' : 'text-slate-600'}>{tag}</Text>
                 </View>
               ))}
             </View>
@@ -372,14 +372,14 @@ export default function AdminQuickNoteManagePage() {
         <View className="px-4 py-3 space-y-3">
           {loading && (
             <View className="text-center py-12">
-              <Text className="text-slate-400">加载中...</Text>
+              <Text className="text-slate-500">加载中...</Text>
             </View>
           )}
 
           {!loading && filteredNotes.length > 0 && filteredNotes.map((note) => (
             <View
               key={note.id}
-              className={`bg-slate-800 rounded-xl p-4 border border-slate-700 ${note.isPinned ? 'border-amber-500/30' : ''}`}
+              className={`bg-white rounded-xl p-4 border border-slate-200 ${note.isPinned ? 'border-amber-500/30' : ''}`}
             >
               <View className="flex items-start gap-3">
                 {/* 批量选择复选框 */}
@@ -438,7 +438,7 @@ export default function AdminQuickNoteManagePage() {
 
                   {/* 内容 */}
                   <View className="mb-2" onClick={() => openDetail(note)}>
-                    <Text className="text-slate-300 text-sm block line-clamp-2">
+                    <Text className="text-slate-600 text-sm block line-clamp-2">
                       {note.content}
                     </Text>
                   </View>
@@ -457,8 +457,8 @@ export default function AdminQuickNoteManagePage() {
                           />
                         ))}
                         {note.images.length > 3 && (
-                          <View className="w-20 h-20 rounded-lg bg-slate-700 flex items-center justify-center flex-shrink-0">
-                            <Text className="text-slate-400 text-sm">+{note.images.length - 3}</Text>
+                          <View className="w-20 h-20 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                            <Text className="text-slate-500 text-sm">+{note.images.length - 3}</Text>
                           </View>
                         )}
                       </View>
@@ -500,8 +500,8 @@ export default function AdminQuickNoteManagePage() {
       {/* 详情对话框 */}
       {showDetailDialog && selectedNote && (
         <View className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <View className="bg-slate-800 w-full rounded-2xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-700 sticky top-0 bg-slate-800 z-10">
+          <View className="bg-white w-full rounded-2xl max-h-[80vh] overflow-y-auto">
+            <View className="p-4 border-b border-slate-200 sticky top-0 bg-white z-10">
               <View className="flex items-center justify-between">
                 <View className="flex items-center gap-2 flex-1 min-w-0">
                   {selectedNote.isPinned && (
@@ -543,14 +543,14 @@ export default function AdminQuickNoteManagePage() {
               {selectedNote.userNickname && (
                 <View className="flex items-center gap-2">
                   <User size={16} color="#94a3b8" />
-                  <Text className="text-slate-400 text-sm">{selectedNote.userNickname}</Text>
+                  <Text className="text-slate-500 text-sm">{selectedNote.userNickname}</Text>
                 </View>
               )}
 
               {/* 内容 */}
               <View>
                 <Text className="text-white font-semibold text-base block mb-2">内容</Text>
-                <Text className="text-slate-300 text-sm block leading-relaxed whitespace-pre-wrap">
+                <Text className="text-slate-600 text-sm block leading-relaxed whitespace-pre-wrap">
                   {selectedNote.content}
                 </Text>
               </View>
@@ -577,9 +577,9 @@ export default function AdminQuickNoteManagePage() {
               {selectedNote.audio && (
                 <View>
                   <Text className="text-white font-semibold text-base block mb-2">语音</Text>
-                  <View className="bg-slate-700 rounded-xl p-3 flex items-center gap-2">
+                  <View className="bg-white rounded-xl p-3 flex items-center gap-2">
                     <Mic size={24} color="#fbbf24" />
-                    <Text className="text-slate-300 text-sm flex-1">语音记录</Text>
+                    <Text className="text-slate-600 text-sm flex-1">语音记录</Text>
                     {isWeapp && (
                       <View
                         className="bg-amber-500 px-3 py-1.5 rounded-lg"
@@ -609,7 +609,7 @@ export default function AdminQuickNoteManagePage() {
               )}
 
               {/* 时间信息 */}
-              <View className="text-slate-500 text-xs pt-4 border-t border-slate-700 space-y-1">
+              <View className="text-slate-500 text-xs pt-4 border-t border-slate-200 space-y-1">
                 <Text className="block">
                   创建时间: {new Date(selectedNote.createdAt).toLocaleString('zh-CN')}
                 </Text>

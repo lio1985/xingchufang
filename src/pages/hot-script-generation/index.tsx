@@ -118,7 +118,7 @@ export default function HotScriptGenerationPage() {
     }
 
     return (
-      <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
+      <View className="bg-white/60 rounded-xl border border-slate-200/80 p-4">
         <View className="flex items-center justify-between mb-3">
           <View className="flex items-center gap-2">
             <Video size={18} color="#a855f7" strokeWidth={2} />
@@ -128,7 +128,7 @@ export default function HotScriptGenerationPage() {
           </View>
           <Button
             size="mini"
-            className="bg-slate-700/50 text-slate-400 border border-slate-600"
+            className="bg-slate-50 text-slate-500 border border-slate-200"
             onClick={() => handleCopy(content, '脚本')}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
@@ -148,9 +148,9 @@ export default function HotScriptGenerationPage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 标题区 */}
-      <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
+      <View className="bg-gradient-to-br from-sky-50 via-white to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
         <View className="flex items-center gap-3">
           <View className="w-12 h-12 bg-gradient-to-br from-pink-500/30 to-red-500/30 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/20">
             <FileText size={24} color="#ec4899" strokeWidth={2.5} />
@@ -166,14 +166,14 @@ export default function HotScriptGenerationPage() {
         {/* 选题信息 */}
         {title && (
           <View className="px-4 mt-4">
-            <View className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700/80 p-4">
-              <Text className="block text-xs text-slate-400 mb-1">选题标题</Text>
+            <View className="bg-white backdrop-blur-sm rounded-xl border border-slate-200/80 p-4">
+              <Text className="block text-xs text-slate-500 mb-1">选题标题</Text>
               <Text className="block text-base text-white font-medium leading-tight">
                 {title}
               </Text>
               {contentAngle && (
                 <View className="mt-2">
-                  <Text className="block text-xs text-slate-400 mb-1">内容角度</Text>
+                  <Text className="block text-xs text-slate-500 mb-1">内容角度</Text>
                   <Text className="block text-sm text-slate-200 leading-relaxed">
                     {contentAngle}
                   </Text>
@@ -215,21 +215,21 @@ export default function HotScriptGenerationPage() {
             <View className="flex items-center gap-2 mb-4">
               <Button
                 size="mini"
-                className={`flex-1 ${activeTab === '15s' ? 'bg-pink-500/30 text-pink-400 border-pink-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700/80'}`}
+                className={`flex-1 ${activeTab === '15s' ? 'bg-pink-500/30 text-pink-400 border-pink-500/40' : 'bg-white text-slate-500 border-slate-200/80'}`}
                 onClick={() => setActiveTab('15s')}
               >
                 <Text>15秒</Text>
               </Button>
               <Button
                 size="mini"
-                className={`flex-1 ${activeTab === '30s' ? 'bg-pink-500/30 text-pink-400 border-pink-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700/80'}`}
+                className={`flex-1 ${activeTab === '30s' ? 'bg-pink-500/30 text-pink-400 border-pink-500/40' : 'bg-white text-slate-500 border-slate-200/80'}`}
                 onClick={() => setActiveTab('30s')}
               >
                 <Text>30秒</Text>
               </Button>
               <Button
                 size="mini"
-                className={`flex-1 ${activeTab === '60s' ? 'bg-pink-500/30 text-pink-400 border-pink-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700/80'}`}
+                className={`flex-1 ${activeTab === '60s' ? 'bg-pink-500/30 text-pink-400 border-pink-500/40' : 'bg-white text-slate-500 border-slate-200/80'}`}
                 onClick={() => setActiveTab('60s')}
               >
                 <Text>60秒</Text>
@@ -249,7 +249,7 @@ export default function HotScriptGenerationPage() {
             {/* 抖音标题 */}
             {script.douyinTitles && script.douyinTitles.length > 0 && (
               <View className="mt-4">
-                <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
+                <View className="bg-white/60 rounded-xl border border-slate-200/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
                     <FileText size={18} color="#f472b6" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">抖音标题</Text>
@@ -261,7 +261,7 @@ export default function HotScriptGenerationPage() {
                         <Text className="block text-sm text-slate-200 flex-1">{t}</Text>
                         <Button
                           size="mini"
-                          className="bg-slate-700/50 text-slate-400 border border-slate-600"
+                          className="bg-slate-50 text-slate-500 border border-slate-200"
                           onClick={() => handleCopy(t, '标题')}
                         >
                           <Copy size={14} />
@@ -276,7 +276,7 @@ export default function HotScriptGenerationPage() {
             {/* 评论区引导 */}
             {script.commentGuidance && script.commentGuidance.length > 0 && (
               <View className="mt-4">
-                <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
+                <View className="bg-white/60 rounded-xl border border-slate-200/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
                     <MessageCircle size={18} color="#34d399" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">评论区引导</Text>
@@ -288,7 +288,7 @@ export default function HotScriptGenerationPage() {
                         <Text className="block text-sm text-slate-200 flex-1">{c}</Text>
                         <Button
                           size="mini"
-                          className="bg-slate-700/50 text-slate-400 border border-slate-600"
+                          className="bg-slate-50 text-slate-500 border border-slate-200"
                           onClick={() => handleCopy(c, '引导语')}
                         >
                           <Copy size={14} />
@@ -303,7 +303,7 @@ export default function HotScriptGenerationPage() {
             {/* 直播间话题 */}
             {script.liveTopics && script.liveTopics.length > 0 && (
               <View className="mt-4">
-                <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
+                <View className="bg-white/60 rounded-xl border border-slate-200/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
                     <Video size={18} color="#fbbf24" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">直播间话题</Text>
@@ -315,7 +315,7 @@ export default function HotScriptGenerationPage() {
                         <Text className="block text-sm text-slate-200 flex-1">{l}</Text>
                         <Button
                           size="mini"
-                          className="bg-slate-700/50 text-slate-400 border border-slate-600"
+                          className="bg-slate-50 text-slate-500 border border-slate-200"
                           onClick={() => handleCopy(l, '话题')}
                         >
                           <Copy size={14} />
@@ -330,7 +330,7 @@ export default function HotScriptGenerationPage() {
             {/* 推荐话题标签 */}
             {script.suggestedHashtags && script.suggestedHashtags.length > 0 && (
               <View className="mt-4">
-                <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
+                <View className="bg-white/60 rounded-xl border border-slate-200/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
                     <Hash size={18} color="#60a5fa" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">推荐话题标签</Text>
@@ -339,7 +339,7 @@ export default function HotScriptGenerationPage() {
                     {script.suggestedHashtags.map((h, index) => (
                       <Text
                         key={index}
-                        className="block text-sm text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full"
+                        className="block text-sm text-sky-600 bg-blue-500/10 px-3 py-1.5 rounded-full"
                       >
                         {h}
                       </Text>

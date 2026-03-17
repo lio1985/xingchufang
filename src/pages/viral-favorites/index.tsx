@@ -102,12 +102,12 @@ export default function ViralFavoritesPage() {
   }
 
   return (
-    <View className="min-h-screen bg-slate-900 pb-8">
+    <View className="min-h-screen bg-sky-50 pb-8">
       {/* 头部导航 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
+      <View className="sticky top-0 z-10 bg-sky-50/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
         <View className="flex items-center gap-3">
           <View
-            className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
+            className="w-10 h-10 bg-white rounded-xl flex items-center justify-center active:scale-95 transition-all"
             onClick={() => Taro.navigateBack()}
           >
             <ArrowLeft size={22} color="#94a3b8" />
@@ -123,15 +123,15 @@ export default function ViralFavoritesPage() {
         {/* 加载中 */}
         {loading ? (
           <View className="flex flex-col items-center justify-center py-20">
-            <Text className="block text-sm text-slate-400">加载中...</Text>
+            <Text className="block text-sm text-slate-500">加载中...</Text>
           </View>
         ) : /* 空状态 */
         favorites.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20">
-            <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+            <View className="w-20 h-20 bg-white/50 rounded-full flex items-center justify-center mb-4">
               <Heart size={40} color="#475569" />
             </View>
-            <Text className="block text-base text-slate-400 mb-2">还没有收藏</Text>
+            <Text className="block text-base text-slate-500 mb-2">还没有收藏</Text>
             <Text className="block text-sm text-slate-500">去爆款复刻系统收藏一些爆款框架吧</Text>
           </View>
         ) : /* 收藏列表 */
@@ -140,7 +140,7 @@ export default function ViralFavoritesPage() {
             {favorites.map((item) => (
               <View
                 key={item.id}
-                className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5 active:scale-[0.99] transition-all"
+                className="bg-white/90 rounded-2xl border border-slate-200/80 p-5 active:scale-[0.99] transition-all"
                 onClick={() => handleViewDetail(item)}
               >
                 {/* 标题和时间 */}
@@ -149,11 +149,11 @@ export default function ViralFavoritesPage() {
                     <Text className="block text-lg font-bold text-white mb-1">{item.title}</Text>
                     <View className="flex items-center gap-2">
                       <Calendar size={14} color="#64748b" />
-                      <Text className="block text-xs text-slate-400">{formatDate(item.created_at)}</Text>
+                      <Text className="block text-xs text-slate-500">{formatDate(item.created_at)}</Text>
                     </View>
                   </View>
                   <View
-                    className="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+                    className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                     onClick={(e) => handleDelete(item.id, e)}
                   >
                     <Trash2 size={16} color="#ef4444" />
@@ -168,7 +168,7 @@ export default function ViralFavoritesPage() {
                 </View>
 
                 {/* 框架描述 */}
-                <Text className="block text-sm text-slate-300 leading-relaxed mb-3 line-clamp-2">
+                <Text className="block text-sm text-slate-600 leading-relaxed mb-3 line-clamp-2">
                   {item.framework.description}
                 </Text>
 
@@ -177,16 +177,16 @@ export default function ViralFavoritesPage() {
                   {item.framework.keyPoints.slice(0, 2).map((point, idx) => (
                     <View
                       key={idx}
-                      className="bg-slate-700/60 rounded-lg px-3 py-1.5"
+                      className="bg-white/60 rounded-lg px-3 py-1.5"
                     >
-                      <Text className="block text-xs text-slate-300 line-clamp-1">
+                      <Text className="block text-xs text-slate-600 line-clamp-1">
                         {point}
                       </Text>
                     </View>
                   ))}
                   {item.framework.keyPoints.length > 2 && (
-                    <View className="bg-slate-700/60 rounded-lg px-3 py-1.5">
-                      <Text className="block text-xs text-slate-400">
+                    <View className="bg-white/60 rounded-lg px-3 py-1.5">
+                      <Text className="block text-xs text-slate-500">
                         +{item.framework.keyPoints.length - 2}
                       </Text>
                     </View>
@@ -194,9 +194,9 @@ export default function ViralFavoritesPage() {
                 </View>
 
                 {/* 查看详情按钮 */}
-                <View className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-center gap-2">
+                <View className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-center gap-2">
                   <BookOpen size={16} color="#60a5fa" />
-                  <Text className="block text-sm text-blue-400">查看详情</Text>
+                  <Text className="block text-sm text-sky-600">查看详情</Text>
                 </View>
               </View>
             ))}
@@ -211,17 +211,17 @@ export default function ViralFavoritesPage() {
           onClick={() => setShowDetail(false)}
         >
           <View
-            className="w-full max-h-[80vh] bg-slate-800 rounded-t-3xl overflow-hidden"
+            className="w-full max-h-[80vh] bg-white rounded-t-3xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* 弹窗头部 */}
-            <View className="sticky top-0 bg-slate-800 px-5 py-4 border-b border-slate-700/80 flex items-center justify-between">
+            <View className="sticky top-0 bg-white px-5 py-4 border-b border-slate-200/80 flex items-center justify-between">
               <Text className="block text-lg font-bold text-white">爆款框架详情</Text>
               <View
-                className="w-8 h-8 bg-slate-700/50 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+                className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                 onClick={() => setShowDetail(false)}
               >
-                <Text className="block text-xl text-slate-400">×</Text>
+                <Text className="block text-xl text-slate-500">×</Text>
               </View>
             </View>
 
@@ -234,19 +234,19 @@ export default function ViralFavoritesPage() {
               <View className="bg-emerald-500/20 rounded-xl p-4 mb-4">
                 <Text className="block text-sm font-bold text-emerald-400 mb-2">框架类型</Text>
                 <Text className="block text-base text-white mb-1">{selectedFavorite.framework.type}</Text>
-                <Text className="block text-sm text-slate-300">{selectedFavorite.framework.description}</Text>
+                <Text className="block text-sm text-slate-600">{selectedFavorite.framework.description}</Text>
               </View>
 
               {/* 结构拆解 */}
-              <View className="bg-slate-700/60 rounded-xl p-4 mb-4">
-                <Text className="block text-sm font-bold text-blue-400 mb-3">结构拆解</Text>
+              <View className="bg-white/60 rounded-xl p-4 mb-4">
+                <Text className="block text-sm font-bold text-sky-600 mb-3">结构拆解</Text>
                 <View className="space-y-3">
                   <View>
-                    <Text className="block text-xs font-semibold text-slate-300 mb-1">🎣 钩子（Hook）</Text>
+                    <Text className="block text-xs font-semibold text-slate-600 mb-1">🎣 钩子（Hook）</Text>
                     <Text className="block text-sm text-slate-200">{selectedFavorite.structure.hook}</Text>
                   </View>
                   <View>
-                    <Text className="block text-xs font-semibold text-slate-300 mb-1">📝 主体内容</Text>
+                    <Text className="block text-xs font-semibold text-slate-600 mb-1">📝 主体内容</Text>
                     {selectedFavorite.structure.body.map((item, idx) => (
                       <Text key={idx} className="block text-sm text-slate-200 mb-1">
                         {idx + 1}. {item}
@@ -254,18 +254,18 @@ export default function ViralFavoritesPage() {
                     ))}
                   </View>
                   <View>
-                    <Text className="block text-xs font-semibold text-slate-300 mb-1">🔥 高潮（Climax）</Text>
+                    <Text className="block text-xs font-semibold text-slate-600 mb-1">🔥 高潮（Climax）</Text>
                     <Text className="block text-sm text-slate-200">{selectedFavorite.structure.climax}</Text>
                   </View>
                   <View>
-                    <Text className="block text-xs font-semibold text-slate-300 mb-1">📢 号召（CTA）</Text>
+                    <Text className="block text-xs font-semibold text-slate-600 mb-1">📢 号召（CTA）</Text>
                     <Text className="block text-sm text-slate-200">{selectedFavorite.structure.callToAction}</Text>
                   </View>
                 </View>
               </View>
 
               {/* 关键要点 */}
-              <View className="bg-slate-700/60 rounded-xl p-4">
+              <View className="bg-white/60 rounded-xl p-4">
                 <Text className="block text-sm font-bold text-orange-400 mb-2">关键要点</Text>
                 {selectedFavorite.framework.keyPoints.map((point, idx) => (
                   <View key={idx} className="flex items-start gap-2 mb-2">

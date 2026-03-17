@@ -22,8 +22,8 @@ interface Statistics {
 }
 
 const statusMap = {
-  pending: { label: '待接触', color: 'text-slate-400', bg: 'bg-slate-500/20', icon: Target },
-  contacted: { label: '已接触', color: 'text-blue-400', bg: 'bg-blue-500/20', icon: Activity },
+  pending: { label: '待接触', color: 'text-slate-500', bg: 'bg-slate-500/20', icon: Target },
+  contacted: { label: '已接触', color: 'text-sky-600', bg: 'bg-sky-500/20', icon: Activity },
   assessing: { label: '评估中', color: 'text-purple-400', bg: 'bg-purple-500/20', icon: Activity },
   negotiating: { label: '谈判中', color: 'text-amber-400', bg: 'bg-amber-500/20', icon: TrendingUp },
   deal: { label: '已签约', color: 'text-emerald-400', bg: 'bg-emerald-500/20', icon: Check },
@@ -115,7 +115,7 @@ export default function RecycleStoreList() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部统计卡片 */}
       <View className="px-4 pt-4 pb-2">
         <View className="bg-gradient-to-r from-cyan-600 to-cyan-700 rounded-2xl p-4 mb-4">
@@ -149,7 +149,7 @@ export default function RecycleStoreList() {
         </View>
 
         {/* 搜索栏 */}
-        <View className="bg-slate-800 rounded-xl p-3 mb-4 flex items-center gap-3">
+        <View className="bg-white rounded-xl p-3 mb-4 flex items-center gap-3">
           <Search size={16} color="#94a3b8" />
           <Input
             className="flex-1 text-white text-sm bg-transparent"
@@ -169,15 +169,15 @@ export default function RecycleStoreList() {
         {/* 状态筛选 */}
         <View className="flex gap-2 mb-4 overflow-x-auto">
           <View
-            className={`px-3 py-1 rounded-full whitespace-nowrap ${!statusFilter ? 'bg-cyan-600' : 'bg-slate-700'}`}
+            className={`px-3 py-1 rounded-full whitespace-nowrap ${!statusFilter ? 'bg-cyan-600' : 'bg-white'}`}
             onClick={() => setStatusFilter('')}
           >
-            <Text className={`block text-xs ${!statusFilter ? 'text-white' : 'text-slate-400'}`}>全部</Text>
+            <Text className={`block text-xs ${!statusFilter ? 'text-white' : 'text-slate-500'}`}>全部</Text>
           </View>
           {Object.entries(statusMap).map(([key, config]) => (
             <View
               key={key}
-              className={`px-3 py-1 rounded-full whitespace-nowrap ${statusFilter === key ? 'bg-cyan-600' : 'bg-slate-700'}`}
+              className={`px-3 py-1 rounded-full whitespace-nowrap ${statusFilter === key ? 'bg-cyan-600' : 'bg-white'}`}
               onClick={() => {
                 setStatusFilter(key);
                 setPage(1);
@@ -185,7 +185,7 @@ export default function RecycleStoreList() {
                 loadStores(true, keyword, key);
               }}
             >
-              <Text className={`block text-xs ${statusFilter === key ? 'text-white' : 'text-slate-400'}`}>
+              <Text className={`block text-xs ${statusFilter === key ? 'text-white' : 'text-slate-500'}`}>
                 {config.label}
               </Text>
             </View>
@@ -198,7 +198,7 @@ export default function RecycleStoreList() {
         {stores.length === 0 && !loading ? (
           <View className="flex flex-col items-center justify-center py-20">
             <Store size={48} color="#64748b" />
-            <Text className="block text-slate-400 text-sm mt-3">暂无回收门店</Text>
+            <Text className="block text-slate-500 text-sm mt-3">暂无回收门店</Text>
             <View
               className="mt-4 bg-cyan-600 px-6 py-2 rounded-full"
               onClick={goToCreate}
@@ -213,7 +213,7 @@ export default function RecycleStoreList() {
               return (
                 <View
                   key={store.id}
-                  className="bg-slate-800 rounded-xl p-4 mb-3"
+                  className="bg-white rounded-xl p-4 mb-3"
                   onClick={() => goToDetail(store.id)}
                 >
                   <View className="flex justify-between items-start mb-2">
@@ -229,23 +229,23 @@ export default function RecycleStoreList() {
                           </Text>
                         </View>
                       </View>
-                      <Text className="block text-slate-400 text-xs">{store.business_type || '未分类'}</Text>
+                      <Text className="block text-slate-500 text-xs">{store.business_type || '未分类'}</Text>
                     </View>
                   </View>
 
                   <View className="flex items-center mt-3">
                     <Phone size={14} className="text-slate-500 mr-2" />
-                    <Text className="block text-slate-400 text-xs mr-4">
+                    <Text className="block text-slate-500 text-xs mr-4">
                       {store.phone || '未填写'}
                     </Text>
                     <MapPin size={14} className="text-slate-500 mr-2" />
-                    <Text className="block text-slate-400 text-xs">
+                    <Text className="block text-slate-500 text-xs">
                       {store.city || '未填写'}
                     </Text>
                   </View>
 
                   {store.estimated_value && (
-                    <View className="flex items-center justify-between mt-3 pt-3 border-t border-slate-700">
+                    <View className="flex items-center justify-between mt-3 pt-3 border-t border-slate-200">
                       <Text className="block text-slate-500 text-xs">预估价值</Text>
                       <Text className="block text-cyan-400 text-sm font-semibold">
                         ¥{store.estimated_value.toFixed(0)}元
@@ -260,7 +260,7 @@ export default function RecycleStoreList() {
 
         {loading && (
           <View className="flex justify-center py-4">
-            <Text className="block text-slate-400 text-sm">加载中...</Text>
+            <Text className="block text-slate-500 text-sm">加载中...</Text>
           </View>
         )}
 

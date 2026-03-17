@@ -154,12 +154,12 @@ export default function AdminAuditPage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部搜索栏 */}
-      <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700">
+      <View className="sticky top-0 z-10 bg-white px-4 py-3 border-b border-slate-200">
         <View className="flex items-center gap-3">
-          <View className="flex-1 bg-slate-700 rounded-lg px-4 py-2 flex items-center gap-2">
-            <Search size={16} className="text-slate-400" />
+          <View className="flex-1 bg-white rounded-lg px-4 py-2 flex items-center gap-2">
+            <Search size={16} className="text-slate-500" />
             <Input
               className="flex-1 text-white bg-transparent placeholder-slate-400"
               placeholder="搜索用户、操作..."
@@ -168,13 +168,13 @@ export default function AdminAuditPage() {
             />
           </View>
           <View
-            className="bg-slate-700 rounded-lg px-3 py-2"
+            className="bg-white rounded-lg px-3 py-2"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <ListFilter size={20} className="text-slate-300" />
+            <ListFilter size={20} className="text-slate-600" />
           </View>
-          <View className="bg-slate-700 rounded-lg px-3 py-2" onClick={exportLogs}>
-            <Download size={20} className="text-slate-300" />
+          <View className="bg-white rounded-lg px-3 py-2" onClick={exportLogs}>
+            <Download size={20} className="text-slate-600" />
           </View>
         </View>
 
@@ -185,7 +185,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 operationFilter === 'all'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setOperationFilter('all')}
             >
@@ -195,7 +195,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 operationFilter === 'login'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setOperationFilter('login')}
             >
@@ -205,7 +205,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 operationFilter === 'create'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setOperationFilter('create')}
             >
@@ -215,7 +215,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 operationFilter === 'update'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setOperationFilter('update')}
             >
@@ -225,7 +225,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 operationFilter === 'delete'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setOperationFilter('delete')}
             >
@@ -241,7 +241,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'all'
                   ? 'bg-green-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('all')}
             >
@@ -251,7 +251,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'success'
                   ? 'bg-green-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('success')}
             >
@@ -261,7 +261,7 @@ export default function AdminAuditPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'failure'
                   ? 'bg-red-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('failure')}
             >
@@ -271,7 +271,7 @@ export default function AdminAuditPage() {
         )}
 
         {/* 统计信息 */}
-        <View className="mt-3 flex justify-between text-slate-400 text-sm">
+        <View className="mt-3 flex justify-between text-slate-500 text-sm">
           <Text className="block">共 {total} 条日志</Text>
           <Text className="block">第 {page} 页</Text>
         </View>
@@ -290,12 +290,12 @@ export default function AdminAuditPage() {
           {logs.map((log) => (
             <View
               key={log.id}
-              className="bg-slate-800 rounded-xl p-4 border border-slate-700"
+              className="bg-white rounded-xl p-4 border border-slate-200"
               onClick={() => showLogDetail(log)}
             >
               <View className="flex items-start gap-3">
-                <View className="p-2 rounded-lg bg-slate-700 flex-shrink-0">
-                  <Clock size={16} className="text-slate-400" />
+                <View className="p-2 rounded-lg bg-white flex-shrink-0">
+                  <Clock size={16} className="text-slate-500" />
                 </View>
                 <View className="flex-1 min-w-0">
                   <View className="flex items-center gap-2 mb-1">
@@ -305,7 +305,7 @@ export default function AdminAuditPage() {
                     </View>
                   </View>
                   {log.username && (
-                    <Text className="text-slate-400 text-sm block">用户: {log.username}</Text>
+                    <Text className="text-slate-500 text-sm block">用户: {log.username}</Text>
                   )}
                   {log.resourceType && (
                     <View className="flex items-center gap-1">
@@ -317,14 +317,14 @@ export default function AdminAuditPage() {
                     {new Date(log.createdAt).toLocaleString('zh-CN')}
                   </Text>
                 </View>
-                <ChevronDown size={20} className="text-slate-400 flex-shrink-0" />
+                <ChevronDown size={20} className="text-slate-500 flex-shrink-0" />
               </View>
             </View>
           ))}
 
           {loading && (
             <View className="text-center py-4">
-              <Text className="text-slate-400">加载中...</Text>
+              <Text className="text-slate-500">加载中...</Text>
             </View>
           )}
 
@@ -349,18 +349,18 @@ export default function AdminAuditPage() {
       {/* 日志详情弹窗 */}
       {showDetailModal && selectedLog && (
         <View className="fixed inset-0 z-50 bg-black/50 flex items-end">
-          <View className="w-full bg-slate-800 rounded-t-3xl p-4 max-h-[80vh] overflow-y-auto">
+          <View className="w-full bg-white rounded-t-3xl p-4 max-h-[80vh] overflow-y-auto">
             <View className="flex justify-between items-center mb-4">
               <Text className="text-white text-lg font-bold">日志详情</Text>
               <View onClick={() => setShowDetailModal(false)}>
-                <Text className="text-slate-400 text-2xl">×</Text>
+                <Text className="text-slate-500 text-2xl">×</Text>
               </View>
             </View>
 
             <View className="space-y-3">
               {/* 操作信息 */}
-              <View className="bg-slate-700 rounded-lg p-4">
-                <Text className="text-slate-400 text-sm mb-2 block">操作</Text>
+              <View className="bg-white rounded-lg p-4">
+                <Text className="text-slate-500 text-sm mb-2 block">操作</Text>
                 <Text className="text-white font-semibold">{formatOperation(selectedLog.operation)}</Text>
                 <View className={`px-2 py-1 rounded text-xs mt-2 inline-block ${getStatusColor(selectedLog.status)}`}>
                   {getStatusBadge(selectedLog.status)}
@@ -368,8 +368,8 @@ export default function AdminAuditPage() {
               </View>
 
               {/* 用户信息 */}
-              <View className="bg-slate-700 rounded-lg p-4">
-                <Text className="text-slate-400 text-sm mb-2 block">用户信息</Text>
+              <View className="bg-white rounded-lg p-4">
+                <Text className="text-slate-500 text-sm mb-2 block">用户信息</Text>
                 {selectedLog.username && (
                   <View className="mb-2">
                     <Text className="text-slate-500 text-xs block">用户名</Text>
@@ -384,8 +384,8 @@ export default function AdminAuditPage() {
 
               {/* 资源信息 */}
               {selectedLog.resourceType && (
-                <View className="bg-slate-700 rounded-lg p-4">
-                  <Text className="text-slate-400 text-sm mb-2 block">资源信息</Text>
+                <View className="bg-white rounded-lg p-4">
+                  <Text className="text-slate-500 text-sm mb-2 block">资源信息</Text>
                   <View className="mb-2">
                     <Text className="text-slate-500 text-xs block">资源类型</Text>
                     <Text className="text-white">{selectedLog.resourceType}</Text>
@@ -400,8 +400,8 @@ export default function AdminAuditPage() {
               )}
 
               {/* 网络信息 */}
-              <View className="bg-slate-700 rounded-lg p-4">
-                <Text className="text-slate-400 text-sm mb-2 block">网络信息</Text>
+              <View className="bg-white rounded-lg p-4">
+                <Text className="text-slate-500 text-sm mb-2 block">网络信息</Text>
                 {selectedLog.ipAddress && (
                   <View className="mb-2">
                     <Text className="text-slate-500 text-xs block">IP地址</Text>
@@ -417,8 +417,8 @@ export default function AdminAuditPage() {
               </View>
 
               {/* 时间信息 */}
-              <View className="bg-slate-700 rounded-lg p-4">
-                <Text className="text-slate-400 text-sm mb-2 block">时间</Text>
+              <View className="bg-white rounded-lg p-4">
+                <Text className="text-slate-500 text-sm mb-2 block">时间</Text>
                 <View className="mb-2">
                   <Text className="text-slate-500 text-xs block">操作时间</Text>
                   <Text className="text-white">

@@ -30,7 +30,7 @@ const statusMap = {
 };
 
 const orderStatusMap = {
-  in_progress: { label: '进行中', color: 'text-blue-400' },
+  in_progress: { label: '进行中', color: 'text-sky-600' },
   completed: { label: '已成交', color: 'text-emerald-400' }
 };
 
@@ -152,7 +152,7 @@ export default function CustomerList() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部统计卡片 */}
       <View className="px-4 pt-4 pb-2">
         <View className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-4 mb-4">
@@ -188,19 +188,19 @@ export default function CustomerList() {
         {/* 快捷入口 */}
         <View className="flex gap-3 mb-4">
           <View
-            className="flex-1 bg-slate-800 rounded-xl p-3 flex items-center gap-3"
+            className="flex-1 bg-white rounded-xl p-3 flex items-center gap-3"
             onClick={goToSalesTarget}
           >
-            <View className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+            <View className="w-10 h-10 bg-sky-500/20 rounded-full flex items-center justify-center">
               <Target size={20} color="#60a5fa" />
             </View>
             <View>
               <Text className="block text-white text-sm font-medium">业绩目标</Text>
-              <Text className="block text-slate-400 text-xs">设置与追踪</Text>
+              <Text className="block text-slate-500 text-xs">设置与追踪</Text>
             </View>
           </View>
           <View
-            className="flex-1 bg-slate-800 rounded-xl p-3 flex items-center gap-3"
+            className="flex-1 bg-white rounded-xl p-3 flex items-center gap-3"
             onClick={goToSalesDashboard}
           >
             <View className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
@@ -208,7 +208,7 @@ export default function CustomerList() {
             </View>
             <View>
               <Text className="block text-white text-sm font-medium">业绩看板</Text>
-              <Text className="block text-slate-400 text-xs">个人与团队</Text>
+              <Text className="block text-slate-500 text-xs">个人与团队</Text>
             </View>
           </View>
         </View>
@@ -226,15 +226,15 @@ export default function CustomerList() {
               <Text className={`block text-lg font-bold mt-1 ${config.color}`}>
                 {statistics?.statusDistribution?.[key === 'at_risk' ? 'atRisk' : key] || 0}
               </Text>
-              <Text className="block text-slate-400 text-xs">{config.label}</Text>
+              <Text className="block text-slate-500 text-xs">{config.label}</Text>
             </View>
           ))}
         </View>
 
         {/* 搜索栏 */}
         <View className="flex gap-2 mb-4">
-          <View className="flex-1 bg-slate-800 rounded-xl px-3 py-2 flex items-center">
-            <Search size={18} className="text-slate-400 mr-2" />
+          <View className="flex-1 bg-white rounded-xl px-3 py-2 flex items-center">
+            <Search size={18} className="text-slate-500 mr-2" />
             <Input
               className="flex-1 text-white text-sm bg-transparent"
               placeholder="搜索客户姓名/电话"
@@ -265,7 +265,7 @@ export default function CustomerList() {
           return (
             <View
               key={customer.id}
-              className="bg-slate-800 rounded-xl p-4 mb-3"
+              className="bg-white rounded-xl p-4 mb-3"
               onClick={() => goToDetail(customer.id)}
             >
               <View className="flex justify-between items-start mb-2">
@@ -281,14 +281,14 @@ export default function CustomerList() {
               <View className="flex flex-wrap gap-y-2 mb-3">
                 {customer.phone && (
                   <View className="flex items-center mr-4">
-                    <Phone size={14} className="text-slate-400 mr-1" />
-                    <Text className="block text-slate-300 text-sm">{customer.phone}</Text>
+                    <Phone size={14} className="text-slate-500 mr-1" />
+                    <Text className="block text-slate-600 text-sm">{customer.phone}</Text>
                   </View>
                 )}
                 {customer.city && (
                   <View className="flex items-center mr-4">
-                    <MapPin size={14} className="text-slate-400 mr-1" />
-                    <Text className="block text-slate-300 text-sm">{customer.city}</Text>
+                    <MapPin size={14} className="text-slate-500 mr-1" />
+                    <Text className="block text-slate-600 text-sm">{customer.city}</Text>
                   </View>
                 )}
                 <View className="flex items-center">
@@ -296,8 +296,8 @@ export default function CustomerList() {
                 </View>
               </View>
 
-              <View className="flex justify-between items-center pt-2 border-t border-slate-700">
-                <Text className="block text-slate-400 text-xs">{customer.customer_type || '未分类'}</Text>
+              <View className="flex justify-between items-center pt-2 border-t border-slate-200">
+                <Text className="block text-slate-500 text-xs">{customer.customer_type || '未分类'}</Text>
                 <Text className="block text-emerald-400 text-sm font-medium">
                   ¥{(customer.estimated_amount || 0).toFixed(0)}万
                 </Text>
@@ -308,7 +308,7 @@ export default function CustomerList() {
 
         {loading && (
           <View className="py-4 items-center">
-            <Text className="block text-slate-400 text-sm">加载中...</Text>
+            <Text className="block text-slate-500 text-sm">加载中...</Text>
           </View>
         )}
 
@@ -320,7 +320,7 @@ export default function CustomerList() {
 
         {customers.length === 0 && !loading && (
           <View className="py-12 items-center">
-            <Text className="block text-slate-400 text-sm mb-2">暂无客户数据</Text>
+            <Text className="block text-slate-500 text-sm mb-2">暂无客户数据</Text>
             <Text className="block text-slate-500 text-xs">点击右下角添加新客户</Text>
           </View>
         )}

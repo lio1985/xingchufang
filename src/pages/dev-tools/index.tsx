@@ -105,14 +105,14 @@ const DevToolsPage = () => {
   }
 
   return (
-    <View className="min-h-screen bg-slate-900 px-6 py-8">
+    <View className="min-h-screen bg-sky-50 px-6 py-8">
       {/* 标题 */}
       <Text className="block text-2xl font-bold text-white mb-6">
         开发者工具
       </Text>
 
       {/* 当前用户信息 */}
-      <View className="bg-slate-800 rounded-2xl p-6 mb-6">
+      <View className="bg-white rounded-2xl p-6 mb-6">
         <View className="flex items-center gap-3 mb-4">
           <User size={24} color="#94a3b8" />
           <Text className="block text-lg font-semibold text-white">
@@ -123,19 +123,19 @@ const DevToolsPage = () => {
         {user ? (
           <View className="space-y-3">
             <View>
-              <Text className="block text-xs text-slate-400 mb-1">用户 ID</Text>
-              <Text className="block text-xs text-slate-300 break-all">{user.id}</Text>
+              <Text className="block text-xs text-slate-500 mb-1">用户 ID</Text>
+              <Text className="block text-xs text-slate-600 break-all">{user.id}</Text>
             </View>
 
             <View>
-              <Text className="block text-xs text-slate-400 mb-1">OpenID</Text>
+              <Text className="block text-xs text-slate-500 mb-1">OpenID</Text>
               <View className="flex items-center gap-2">
                 <Text className="block text-sm text-slate-200 break-all flex-1">
                   {user.openid || '未设置'}
                 </Text>
                 {user.openid && (
                   <View
-                    className="bg-slate-700 px-3 py-1 rounded-lg active:bg-slate-600"
+                    className="bg-white px-3 py-1 rounded-lg active:bg-slate-100"
                     onClick={() => {
                       Taro.setClipboardData({
                         data: user.openid,
@@ -157,12 +157,12 @@ const DevToolsPage = () => {
             </View>
 
             <View>
-              <Text className="block text-xs text-slate-400 mb-1">昵称</Text>
+              <Text className="block text-xs text-slate-500 mb-1">昵称</Text>
               <Text className="block text-sm text-slate-200">{user.nickname || '未设置'}</Text>
             </View>
 
             <View>
-              <Text className="block text-xs text-slate-400 mb-1">角色</Text>
+              <Text className="block text-xs text-slate-500 mb-1">角色</Text>
               <View className="flex items-center gap-2">
                 <Text
                   className={`block text-sm font-semibold ${
@@ -178,13 +178,13 @@ const DevToolsPage = () => {
             </View>
 
             <View>
-              <Text className="block text-xs text-slate-400 mb-1">状态</Text>
+              <Text className="block text-xs text-slate-500 mb-1">状态</Text>
               <Text className="block text-sm text-slate-200">{user.status || 'active'}</Text>
             </View>
 
             <View>
-              <Text className="block text-xs text-slate-400 mb-1">Token</Text>
-              <Text className="block text-xs text-slate-300 break-all">
+              <Text className="block text-xs text-slate-500 mb-1">Token</Text>
+              <Text className="block text-xs text-slate-600 break-all">
                 {token ? token.substring(0, 50) + '...' : '不存在'}
               </Text>
               {!token && (
@@ -195,7 +195,7 @@ const DevToolsPage = () => {
             </View>
           </View>
         ) : (
-          <Text className="block text-sm text-slate-400">未登录</Text>
+          <Text className="block text-sm text-slate-500">未登录</Text>
         )}
       </View>
 
@@ -212,7 +212,7 @@ const DevToolsPage = () => {
             去登录
           </Button>
           <Button
-            className="w-full bg-slate-700 text-white rounded-xl py-3 font-semibold mt-3"
+            className="w-full bg-white text-white rounded-xl py-3 font-semibold mt-3"
             onClick={handleTestLogin}
           >
             测试登录（H5环境）
@@ -237,15 +237,15 @@ const DevToolsPage = () => {
 
       {/* 管理员权限 */}
       {user && token && user.role !== 'admin' && (
-        <View className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl p-6 border border-blue-500/30">
+        <View className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl p-6 border border-sky-500/30">
           <View className="flex items-center gap-3 mb-4">
             <Shield size={24} color="#60a5fa" />
-            <Text className="block text-lg font-semibold text-blue-400">
+            <Text className="block text-lg font-semibold text-sky-600">
               管理员权限
             </Text>
           </View>
 
-          <Text className="block text-sm text-slate-300 mb-6">
+          <Text className="block text-sm text-slate-600 mb-6">
             一键将当前账号提升为管理员，可以访问用户管理、数据监控、审计日志等功能。
           </Text>
 
@@ -274,7 +274,7 @@ const DevToolsPage = () => {
               </Text>
             </View>
 
-            <Text className="block text-sm text-slate-300 text-center mb-4">
+            <Text className="block text-sm text-slate-600 text-center mb-4">
               您当前已拥有管理员权限，可以访问以下管理功能
             </Text>
           </View>
@@ -287,86 +287,86 @@ const DevToolsPage = () => {
 
             {/* 用户管理 */}
             <View
-              className="bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-700 active:bg-slate-700"
+              className="bg-white rounded-xl p-4 flex items-center justify-between border border-slate-200 active:bg-white"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/users/index' })}
             >
               <View className="flex items-center gap-3">
                 <User size={20} color="#60a5fa" />
                 <Text className="block text-white font-medium">用户管理</Text>
               </View>
-              <Text className="block text-xs text-slate-400">管理用户、角色、状态</Text>
+              <Text className="block text-xs text-slate-500">管理用户、角色、状态</Text>
             </View>
 
             {/* 语料库管理 */}
             <View
-              className="bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-700 active:bg-slate-700"
+              className="bg-white rounded-xl p-4 flex items-center justify-between border border-slate-200 active:bg-white"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/lexicon-manage/index' })}
             >
               <View className="flex items-center gap-3">
                 <Database size={20} color="#60a5fa" />
                 <Text className="block text-white font-medium">语料库管理</Text>
               </View>
-              <Text className="block text-xs text-slate-400">企业语料、个人IP、产品知识</Text>
+              <Text className="block text-xs text-slate-500">企业语料、个人IP、产品知识</Text>
             </View>
 
             {/* 灵感速记管理 */}
             <View
-              className="bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-700 active:bg-slate-700"
+              className="bg-white rounded-xl p-4 flex items-center justify-between border border-slate-200 active:bg-white"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/quick-note-manage/index' })}
             >
               <View className="flex items-center gap-3">
                 <Sparkles size={20} color="#fbbf24" />
                 <Text className="block text-white font-medium">灵感速记管理</Text>
               </View>
-              <Text className="block text-xs text-slate-400">查看所有用户的灵感记录</Text>
+              <Text className="block text-xs text-slate-500">查看所有用户的灵感记录</Text>
             </View>
 
             {/* 知识分享管理 */}
             <View
-              className="bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-700 active:bg-slate-700"
+              className="bg-white rounded-xl p-4 flex items-center justify-between border border-slate-200 active:bg-white"
               onClick={() => Taro.navigateTo({ url: '/pages/admin-knowledge-share/index' })}
             >
               <View className="flex items-center gap-3">
                 <BookOpen size={20} color="#60a5fa" />
                 <Text className="block text-white font-medium">知识分享管理</Text>
               </View>
-              <Text className="block text-xs text-slate-400">审核、导出、统计分析</Text>
+              <Text className="block text-xs text-slate-500">审核、导出、统计分析</Text>
             </View>
 
             {/* 回收门店管理 */}
             <View
-              className="bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-700 active:bg-slate-700"
+              className="bg-white rounded-xl p-4 flex items-center justify-between border border-slate-200 active:bg-white"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/recycle-management/index' })}
             >
               <View className="flex items-center gap-3">
                 <Store size={20} color="#06b6d4" />
                 <Text className="block text-white font-medium">回收门店管理</Text>
               </View>
-              <Text className="block text-xs text-slate-400">全局统计、回收排行、风险预警</Text>
+              <Text className="block text-xs text-slate-500">全局统计、回收排行、风险预警</Text>
             </View>
 
             {/* 数据监控 */}
             <View
-              className="bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-700 active:bg-slate-700"
+              className="bg-white rounded-xl p-4 flex items-center justify-between border border-slate-200 active:bg-white"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/dashboard/index' })}
             >
               <View className="flex items-center gap-3">
                 <TrendingUp size={20} color="#10b981" />
                 <Text className="block text-white font-medium">数据监控</Text>
               </View>
-              <Text className="block text-xs text-slate-400">全局统计、用户排行</Text>
+              <Text className="block text-xs text-slate-500">全局统计、用户排行</Text>
             </View>
 
             {/* 审计日志 */}
             <View
-              className="bg-slate-800 rounded-xl p-4 flex items-center justify-between border border-slate-700 active:bg-slate-700"
+              className="bg-white rounded-xl p-4 flex items-center justify-between border border-slate-200 active:bg-white"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/audit/index' })}
             >
               <View className="flex items-center gap-3">
                 <ClipboardList size={20} color="#f472b6" />
                 <Text className="block text-white font-medium">审计日志</Text>
               </View>
-              <Text className="block text-xs text-slate-400">操作记录、日志查询</Text>
+              <Text className="block text-xs text-slate-500">操作记录、日志查询</Text>
             </View>
           </View>
         </>

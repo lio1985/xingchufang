@@ -100,9 +100,9 @@ export default function HotTopicGenerationPage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 标题区 */}
-      <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
+      <View className="bg-gradient-to-br from-sky-50 via-white to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
         <View className="flex items-center gap-3">
           <View className="w-12 h-12 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
             <Lightbulb size={24} color="#a855f7" strokeWidth={2.5} />
@@ -118,20 +118,20 @@ export default function HotTopicGenerationPage() {
         {/* 热点信息 */}
         {hotId && (
           <View className="px-4 mt-4">
-            <View className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700/80 p-4">
-              <Text className="block text-xs text-slate-400 mb-1">原始热点</Text>
+            <View className="bg-white backdrop-blur-sm rounded-xl border border-slate-200/80 p-4">
+              <Text className="block text-xs text-slate-500 mb-1">原始热点</Text>
               <Text className="block text-base text-white font-medium leading-tight">
                 {hotId}
               </Text>
               {platform && (
                 <View className="mt-2 flex items-center gap-2">
-                  <Text className="block text-xs text-slate-400">平台：</Text>
-                  <Text className="block text-xs text-blue-400">{platform}</Text>
+                  <Text className="block text-xs text-slate-500">平台：</Text>
+                  <Text className="block text-xs text-sky-600">{platform}</Text>
                 </View>
               )}
               {hotValue && (
                 <View className="mt-1 flex items-center gap-2">
-                  <Text className="block text-xs text-slate-400">热度：</Text>
+                  <Text className="block text-xs text-slate-500">热度：</Text>
                   <Text className="block text-xs text-red-400">{hotValue}</Text>
                 </View>
               )}
@@ -178,10 +178,10 @@ export default function HotTopicGenerationPage() {
               {topics.map((topic, index) => (
                 <View
                   key={topic.id}
-                  className="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/80 overflow-hidden"
+                  className="bg-white/60 backdrop-blur-sm rounded-xl border border-slate-200/80 overflow-hidden"
                 >
                   {/* 选题标题 */}
-                  <View className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-4 py-3 border-b border-slate-700/80">
+                  <View className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-4 py-3 border-b border-slate-200/80">
                     <View className="flex items-start gap-2">
                       <View className="flex-shrink-0 w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center">
                         <Text className="block text-xs font-bold text-purple-400">{index + 1}</Text>
@@ -196,7 +196,7 @@ export default function HotTopicGenerationPage() {
                   <View className="p-4 space-y-3">
                     {/* 内容角度 */}
                     <View>
-                      <Text className="block text-xs text-slate-400 mb-1">内容角度</Text>
+                      <Text className="block text-xs text-slate-500 mb-1">内容角度</Text>
                       <Text className="block text-sm text-slate-200 leading-relaxed">
                         {topic.contentAngle}
                       </Text>
@@ -205,14 +205,14 @@ export default function HotTopicGenerationPage() {
                     {/* 适合账号 */}
                     <View className="flex items-center gap-2">
                       <User size={16} color="#60a5fa" strokeWidth={2} />
-                      <Text className="block text-xs text-slate-400">适合账号：</Text>
-                      <Text className="block text-xs text-blue-400">{topic.suitableAccount}</Text>
+                      <Text className="block text-xs text-slate-500">适合账号：</Text>
+                      <Text className="block text-xs text-sky-600">{topic.suitableAccount}</Text>
                     </View>
 
                     {/* 适合形式 */}
                     <View className="flex items-center gap-2">
                       <Clock size={16} color="#34d399" strokeWidth={2} />
-                      <Text className="block text-xs text-slate-400">适合形式：</Text>
+                      <Text className="block text-xs text-slate-500">适合形式：</Text>
                       <Text className={`block text-xs ${topic.format === 'short' ? 'text-green-400' : 'text-orange-400'}`}>
                         {topic.format === 'short' ? '短视频' : '直播'}
                       </Text>
@@ -221,7 +221,7 @@ export default function HotTopicGenerationPage() {
                     {/* 爆点关键词 */}
                     <View className="flex items-start gap-2">
                       <TrendingUp size={16} color="#fbbf24" strokeWidth={2} />
-                      <Text className="block text-xs text-slate-400">爆点关键词：</Text>
+                      <Text className="block text-xs text-slate-500">爆点关键词：</Text>
                       <View className="flex-1 flex flex-wrap gap-1">
                         {topic.keywords.map((keyword, kIndex) => (
                           <Text
@@ -238,16 +238,16 @@ export default function HotTopicGenerationPage() {
                     {topic.suggestedTime && (
                       <View className="flex items-center gap-2">
                         <Clock size={16} color="#f472b6" strokeWidth={2} />
-                        <Text className="block text-xs text-slate-400">建议发布时间：</Text>
+                        <Text className="block text-xs text-slate-500">建议发布时间：</Text>
                         <Text className="block text-xs text-pink-400">{topic.suggestedTime}</Text>
                       </View>
                     )}
 
                     {/* 操作按钮 */}
-                    <View className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-700/60">
+                    <View className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-200/60">
                       <Button
                         size="mini"
-                        className="flex-1 bg-blue-500/20 text-blue-400 border border-blue-500/40"
+                        className="flex-1 bg-sky-500/20 text-sky-600 border border-blue-500/40"
                         onClick={() => handleSelectTopic(topic)}
                       >
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
@@ -257,7 +257,7 @@ export default function HotTopicGenerationPage() {
                       </Button>
                       <Button
                         size="mini"
-                        className="bg-slate-700/50 text-slate-400 border border-slate-600"
+                        className="bg-slate-50 text-slate-500 border border-slate-200"
                         onClick={() => handleCopyTopic(topic)}
                       >
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>

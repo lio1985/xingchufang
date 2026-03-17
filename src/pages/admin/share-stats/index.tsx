@@ -50,15 +50,15 @@ export default function AdminShareStatsPage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部导航栏 */}
-      <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
+      <View className="sticky top-0 z-10 bg-white px-4 py-3 border-b border-slate-200 flex justify-between items-center">
         <Text className="text-white text-lg font-bold">共享统计</Text>
         <View
-          className={`p-2 rounded-lg bg-slate-700 ${loading ? 'opacity-50' : ''}`}
+          className={`p-2 rounded-lg bg-white ${loading ? 'opacity-50' : ''}`}
           onClick={loadStats}
         >
-          <RefreshCw size={20} className={`text-slate-300 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw size={20} className={`text-slate-600 ${loading ? 'animate-spin' : ''}`} />
         </View>
       </View>
 
@@ -96,17 +96,17 @@ export default function AdminShareStatsPage() {
         </View>
 
         {/* 共享率概览 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4 border border-slate-700">
+        <View className="bg-white rounded-xl p-4 mb-4 border border-slate-200">
           <View className="flex items-center justify-between mb-3">
             <Text className="text-white font-semibold">共享率概览</Text>
-            <TrendingUp size={18} className="text-blue-400" />
+            <TrendingUp size={18} className="text-sky-600" />
           </View>
-          <View className="bg-slate-700 rounded-lg p-4">
+          <View className="bg-white rounded-lg p-4">
             <View className="flex items-center justify-between mb-2">
               <Text className="text-gray-400 text-sm">语料库共享率</Text>
               <Text className="text-white text-2xl font-bold">{getShareRate()}%</Text>
             </View>
-            <View className="w-full bg-slate-600 rounded-full h-2">
+            <View className="w-full bg-slate-100 rounded-full h-2">
               <View
                 className="bg-gradient-to-r from-blue-500 to-emerald-500 h-2 rounded-full"
                 style={{ width: `${getShareRate()}%` }}
@@ -117,9 +117,9 @@ export default function AdminShareStatsPage() {
 
         {/* 共享范围分布 */}
         {stats?.shareScopeStats && (
-          <View className="bg-slate-800 rounded-xl p-4 mb-4 border border-slate-700">
+          <View className="bg-white rounded-xl p-4 mb-4 border border-slate-200">
             <View className="flex items-center gap-2 mb-3">
-              <TrendingUp size={18} className="text-blue-400" />
+              <TrendingUp size={18} className="text-sky-600" />
               <Text className="text-white font-semibold">共享范围分布</Text>
             </View>
             <View className="space-y-3">
@@ -128,7 +128,7 @@ export default function AdminShareStatsPage() {
                   <Text className="text-gray-400 text-sm">指定用户</Text>
                   <Text className="text-white text-sm">{stats.shareScopeStats.custom || 0}</Text>
                 </View>
-                <View className="w-full bg-slate-700 rounded-full h-2">
+                <View className="w-full bg-white rounded-full h-2">
                   <View
                     className="bg-blue-500 h-2 rounded-full"
                     style={{
@@ -144,7 +144,7 @@ export default function AdminShareStatsPage() {
                   <Text className="text-gray-400 text-sm">所有人</Text>
                   <Text className="text-white text-sm">{stats.shareScopeStats.all || 0}</Text>
                 </View>
-                <View className="w-full bg-slate-700 rounded-full h-2">
+                <View className="w-full bg-white rounded-full h-2">
                   <View
                     className="bg-emerald-500 h-2 rounded-full"
                     style={{
@@ -160,7 +160,7 @@ export default function AdminShareStatsPage() {
                   <Text className="text-gray-400 text-sm">同部门</Text>
                   <Text className="text-white text-sm">{stats.shareScopeStats.department || 0}</Text>
                 </View>
-                <View className="w-full bg-slate-700 rounded-full h-2">
+                <View className="w-full bg-white rounded-full h-2">
                   <View
                     className="bg-purple-500 h-2 rounded-full"
                     style={{
@@ -176,7 +176,7 @@ export default function AdminShareStatsPage() {
         )}
 
         {/* 统计说明 */}
-        <View className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+        <View className="bg-white/50 rounded-xl p-4 border border-slate-200">
           <Text className="text-gray-400 text-xs leading-relaxed">
             • 总语料库：系统中的所有语料库总数{'\n'}
             • 已共享：已开启共享功能的语料库数量{'\n'}

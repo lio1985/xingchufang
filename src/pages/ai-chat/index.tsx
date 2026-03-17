@@ -650,15 +650,15 @@ const AiChatPage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900 flex flex-col">
+    <View className="min-h-screen bg-sky-50 flex flex-col">
       {/* 对话列表侧边栏 */}
       {showConversationList && (
-        <View className="fixed inset-0 z-50 bg-slate-900/95">
+        <View className="fixed inset-0 z-50 bg-sky-50/95">
           <View className="h-full flex flex-col p-4">
             <View className="flex items-center justify-between mb-6">
               <Text className="block text-xl font-bold text-white">对话历史</Text>
               <View
-                className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center"
+                className="w-10 h-10 bg-white rounded-xl flex items-center justify-center"
                 style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowConversationList(false)}
               >
@@ -667,7 +667,7 @@ const AiChatPage = () => {
             </View>
 
             <View
-              className="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30 flex items-center justify-center gap-2 active:scale-95 transition-all"
+              className="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-sky-500/30 flex items-center justify-center gap-2 active:scale-95 transition-all"
               style={{ touchAction: 'none', zIndex: 10 }}
               onClick={handleNewConversation}
             >
@@ -682,8 +682,8 @@ const AiChatPage = () => {
                     key={conv.id}
                     className={`p-4 rounded-xl transition-all ${
                       currentConversationId === conv.id
-                        ? 'bg-blue-500/20 border border-blue-500/30'
-                        : 'bg-slate-800 border border-slate-700'
+                        ? 'bg-sky-500/20 border border-sky-500/30'
+                        : 'bg-white border border-slate-200'
                     }`}
                     style={{ touchAction: 'none', zIndex: 10 }}
                     onClick={() => handleSelectConversation(conv)}
@@ -691,7 +691,7 @@ const AiChatPage = () => {
                   >
                     <View className="flex items-start justify-between mb-2">
                       <Text className={`block text-sm font-medium ${
-                        currentConversationId === conv.id ? 'text-blue-300' : 'text-slate-300'
+                        currentConversationId === conv.id ? 'text-blue-300' : 'text-slate-600'
                       }`}
                       >
                         {conv.title}
@@ -731,12 +731,12 @@ const AiChatPage = () => {
 
       {/* 语料列表 */}
       {showLexiconList && (
-        <View className="fixed inset-0 z-50 bg-slate-900/95">
+        <View className="fixed inset-0 z-50 bg-sky-50/95">
           <View className="h-full flex flex-col p-4">
             <View className="flex items-center justify-between mb-6">
               <Text className="block text-xl font-bold text-white">语料知识库</Text>
               <View
-                className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center"
+                className="w-10 h-10 bg-white rounded-xl flex items-center justify-center"
                 style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowLexiconList(false)}
               >
@@ -747,12 +747,12 @@ const AiChatPage = () => {
             <ScrollView scrollY className="flex-1">
               <View className="flex flex-col gap-3">
                 {lexicons.map((lexicon) => (
-                  <View key={lexicon.id} className="p-4 bg-slate-800 rounded-xl border border-slate-700">
-                    <Text className="block text-sm font-medium text-slate-300 mb-2">{lexicon.title}</Text>
+                  <View key={lexicon.id} className="p-4 bg-white rounded-xl border border-slate-200">
+                    <Text className="block text-sm font-medium text-slate-600 mb-2">{lexicon.title}</Text>
                     <Text className="block text-xs text-slate-500 mb-3 leading-relaxed">{lexicon.content.substring(0, 100)}...</Text>
                     <View className="flex gap-2">
                       <View
-                        className="flex-1 py-2 bg-blue-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+                        className="flex-1 py-2 bg-sky-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                         style={{ touchAction: 'none', zIndex: 10 }}
                         onClick={() => handleInsertLexicon(lexicon)}
                         onTap={() => handleInsertLexicon(lexicon)}
@@ -783,17 +783,17 @@ const AiChatPage = () => {
       )}
 
       {/* 头部 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-3">
+      <View className="sticky top-0 z-10 bg-sky-50/95 backdrop-blur-sm border-b border-slate-200 px-4 py-3">
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <StarIcon size={32} />
-            <Text className="block text-xl font-bold text-white">星小帮</Text>
+            <Text className="block text-xl font-bold text-slate-800">星小帮</Text>
           </View>
         </View>
 
         {/* 模型选择折叠区域 */}
         <View
-          className="mt-3 bg-slate-800/50 rounded-xl overflow-hidden transition-all"
+          className="mt-3 bg-white/50 rounded-xl overflow-hidden transition-all"
           style={{
             maxHeight: modelExpanded ? '200px' : '48px',
             touchAction: 'none',
@@ -810,7 +810,7 @@ const AiChatPage = () => {
           >
             <View className="flex items-center gap-2">
               <Zap size={16} color="#fbbf24" />
-              <Text className="text-sm font-medium text-slate-300">
+              <Text className="text-sm font-medium text-slate-600">
                 {model === 'doubao-seed-2-0-pro-260215' && '豆包 Pro'}
                 {model === 'doubao-seed-2-0-lite-260215' && '豆包 Lite'}
                 {model === 'doubao-seed-2-0-mini-260215' && '豆包 Mini'}
@@ -818,7 +818,7 @@ const AiChatPage = () => {
                 {model === 'doubao-seed-1-6-thinking-250715' && '思考模型'}
               </Text>
               {model === 'doubao-seed-2-0-pro-260215' && (
-                <Text className="text-xs px-2 py-0.5 bg-amber-500/20 text-amber-400 rounded-full">推荐</Text>
+                <Text className="text-xs px-2 py-0.5 bg-sky-500/20 text-sky-600 rounded-full">推荐</Text>
               )}
             </View>
             <View className="flex items-center gap-1">
@@ -847,8 +847,8 @@ const AiChatPage = () => {
                   paddingTop: '6px',
                   paddingBottom: '6px',
                   borderRadius: '6px',
-                  backgroundColor: model === item.value ? 'rgba(59, 130, 246, 0.2)' : 'rgba(30, 41, 59, 1)',
-                  border: model === item.value ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid rgba(51, 65, 85, 1)',
+                  backgroundColor: model === item.value ? 'rgba(14, 165, 233, 0.2)' : 'rgba(241, 245, 249, 1)',
+                  border: model === item.value ? '1px solid rgba(14, 165, 233, 0.3)' : '1px solid rgba(226, 232, 240, 1)',
                   flexShrink: 0,
                   touchAction: 'none',
                   zIndex: 10,
@@ -868,13 +868,13 @@ const AiChatPage = () => {
                   <Text style={{
                     fontSize: '12px',
                     fontWeight: '500',
-                    color: model === item.value ? '#93c5fd' : '#94a3b8',
+                    color: model === item.value ? '#0EA5E9' : '#64748B',
                   }}
                   >
                     {item.label}
                   </Text>
                   {item.recommended && model !== item.value && (
-                    <Text className="text-[10px] px-1 py-0.5 bg-amber-500/20 text-amber-400 rounded">推荐</Text>
+                    <Text className="text-[10px] px-1 py-0.5 bg-sky-500/20 text-sky-600 rounded">推荐</Text>
                   )}
                 </View>
               </View>
@@ -909,7 +909,7 @@ const AiChatPage = () => {
                     className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                       msg.role === 'user'
                         ? 'bg-amber-500/20'
-                        : 'bg-blue-500/20'
+                        : 'bg-sky-500/20'
                     }`}
                   >
                     {msg.role === 'user' ? (
@@ -924,7 +924,7 @@ const AiChatPage = () => {
                       className={`px-4 py-3 rounded-2xl ${
                         msg.role === 'user'
                           ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-tr-none'
-                          : 'bg-slate-800 text-slate-200 rounded-tl-none'
+                          : 'bg-white text-slate-200 rounded-tl-none'
                       }`}
                     >
                       {/* 附件展示 */}
@@ -978,11 +978,11 @@ const AiChatPage = () => {
             {loading && (
               <View className="flex justify-start">
                 <View className="flex gap-3 max-w-[85%]">
-                  <View className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <View className="w-10 h-10 bg-sky-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
                     <Bot size={20} color="#60a5fa" />
                   </View>
-                  <View className="bg-slate-800 px-4 py-3 rounded-2xl rounded-tl-none">
-                    <Text className="block text-sm text-slate-400">思考中...</Text>
+                  <View className="bg-white px-4 py-3 rounded-2xl rounded-tl-none">
+                    <Text className="block text-sm text-slate-500">思考中...</Text>
                   </View>
                 </View>
               </View>
@@ -992,7 +992,7 @@ const AiChatPage = () => {
       </ScrollView>
 
       {/* 底部区域 */}
-      <View style={{ position: 'fixed', bottom: 50, left: 0, right: 0, backgroundColor: 'rgba(15, 23, 42, 0.98)', borderTop: '1px solid #334155', zIndex: 40 }}>
+      <View style={{ position: 'fixed', bottom: 50, left: 0, right: 0, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderTop: '1px solid #E2E8F0', zIndex: 40 }}>
         {/* 输入框 */}
         <View style={{ padding: '8px 16px 16px 16px' }}>
           {/* 附件预览 */}
@@ -1007,7 +1007,7 @@ const AiChatPage = () => {
                     height: '80px',
                     borderRadius: '8px',
                     overflow: 'hidden',
-                    backgroundColor: '#1e293b',
+                    backgroundColor: '#F1F5F9',
                   }}
                 >
                   {att.type === 'image' && (

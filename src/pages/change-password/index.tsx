@@ -115,7 +115,7 @@ const ChangePasswordPage = () => {
   }
 
   return (
-    <View className="min-h-screen bg-slate-900 flex flex-col px-6 py-12 relative overflow-hidden">
+    <View className="min-h-screen bg-sky-50 flex flex-col px-6 py-12 relative overflow-hidden">
       {/* 背景装饰 */}
       <View className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <View className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-br from-blue-500/30 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl" />
@@ -264,7 +264,7 @@ const ChangePasswordPage = () => {
         <View className="flex items-center justify-center mt-8">
           <Text className="text-white/50 text-sm">想起密码了？</Text>
           <View onClick={() => Taro.navigateBack()}>
-            <Text className="text-blue-400 text-sm ml-1">返回登录</Text>
+            <Text className="text-sky-600 text-sm ml-1">返回登录</Text>
           </View>
         </View>
       </View>

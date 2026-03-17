@@ -105,13 +105,13 @@ export default function AdminRecycleManagementPage() {
   }, []);
 
   const StatCard = ({ icon: Icon, label, value, color, trend }: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-white rounded-xl p-4 border border-slate-200">
       <View className="flex items-center justify-between mb-2">
         <View className="flex items-center gap-2">
           <View className={`p-2 rounded-lg ${color}`}>
             <Icon size={18} className="text-white" />
           </View>
-          <Text className="text-slate-400 text-sm">{label}</Text>
+          <Text className="text-slate-500 text-sm">{label}</Text>
         </View>
         {trend && (
           <View className="flex items-center gap-1">
@@ -120,9 +120,9 @@ export default function AdminRecycleManagementPage() {
             ) : trend < 0 ? (
               <ArrowDown size={14} className="text-red-400" />
             ) : (
-              <Minus size={14} className="text-slate-400" />
+              <Minus size={14} className="text-slate-500" />
             )}
-            <Text className={`text-xs ${trend > 0 ? 'text-green-400' : trend < 0 ? 'text-red-400' : 'text-slate-400'}`}>
+            <Text className={`text-xs ${trend > 0 ? 'text-green-400' : trend < 0 ? 'text-red-400' : 'text-slate-500'}`}>
               {Math.abs(trend)}%
             </Text>
           </View>
@@ -137,28 +137,28 @@ export default function AdminRecycleManagementPage() {
       if (idx === 0) return 'bg-yellow-500';
       if (idx === 1) return 'bg-gray-400';
       if (idx === 2) return 'bg-orange-500';
-      return 'bg-slate-700';
+      return 'bg-white';
     };
 
     return (
-      <View className="bg-slate-800 rounded-lg p-4 mb-3 border border-slate-700">
+      <View className="bg-white rounded-lg p-4 mb-3 border border-slate-200">
         <View className="flex items-center gap-3 mb-3">
           <View className={`w-8 h-8 rounded-full flex items-center justify-center ${getRankColor(index)}`}>
             <Text className="text-white font-bold text-sm">{index + 1}</Text>
           </View>
           <View className="flex-1 min-w-0">
             <Text className="text-white font-semibold block truncate">{ranking.realName || ranking.username}</Text>
-            <Text className="text-slate-400 text-sm">{ranking.storeCount} 家门店</Text>
+            <Text className="text-slate-500 text-sm">{ranking.storeCount} 家门店</Text>
           </View>
           <View className="text-right">
             <Text className="text-cyan-400 font-bold">¥{(ranking.totalDealValue / 10000).toFixed(1)}万</Text>
             <Text className="text-slate-500 text-xs">成交额</Text>
           </View>
         </View>
-        <View className="flex justify-between text-xs pt-3 border-t border-slate-700">
-          <Text className="text-slate-400">预估: ¥{(ranking.totalEstimatedValue / 10000).toFixed(1)}万</Text>
-          <Text className="text-slate-400">成交率: {(ranking.dealRate * 100).toFixed(1)}%</Text>
-          <Text className="text-slate-400">回收中: {ranking.recyclingCount}</Text>
+        <View className="flex justify-between text-xs pt-3 border-t border-slate-200">
+          <Text className="text-slate-500">预估: ¥{(ranking.totalEstimatedValue / 10000).toFixed(1)}万</Text>
+          <Text className="text-slate-500">成交率: {(ranking.dealRate * 100).toFixed(1)}%</Text>
+          <Text className="text-slate-500">回收中: {ranking.recyclingCount}</Text>
         </View>
       </View>
     );
@@ -184,7 +184,7 @@ export default function AdminRecycleManagementPage() {
     };
 
     return (
-      <View className="bg-slate-800 rounded-lg p-4 mb-3 border border-slate-700">
+      <View className="bg-white rounded-lg p-4 mb-3 border border-slate-200">
         <View className="flex items-start gap-3">
           <View className={`mt-1 p-1.5 rounded ${getRiskColor(store.risk_level)}`}>
             <Target size={16} className="text-white" />
@@ -196,10 +196,10 @@ export default function AdminRecycleManagementPage() {
                 <Text className="text-white text-xs">{getRiskLabel(store.risk_level)}</Text>
               </View>
             </View>
-            <Text className="text-slate-400 text-sm mb-2">销售: {store.sales_name}</Text>
+            <Text className="text-slate-500 text-sm mb-2">销售: {store.sales_name}</Text>
             <View className="flex justify-between text-xs">
-              <Text className="text-slate-400">状态: {store.recycle_status}</Text>
-              <Text className="text-slate-400">预估: ¥{store.estimated_value?.toLocaleString()}</Text>
+              <Text className="text-slate-500">状态: {store.recycle_status}</Text>
+              <Text className="text-slate-500">预估: ¥{store.estimated_value?.toLocaleString()}</Text>
             </View>
           </View>
         </View>
@@ -208,22 +208,22 @@ export default function AdminRecycleManagementPage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部标题栏 */}
-      <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
+      <View className="sticky top-0 z-10 bg-white px-4 py-3 border-b border-slate-200 flex justify-between items-center">
         <Text className="text-white text-lg font-bold">回收门店管理</Text>
-        <View className={`p-2 rounded-lg bg-slate-700 ${loading ? 'opacity-50' : ''}`} onClick={handleRefresh}>
-          <RefreshCw size={20} className={`text-slate-300 ${loading ? 'animate-spin' : ''}`} />
+        <View className={`p-2 rounded-lg bg-white ${loading ? 'opacity-50' : ''}`} onClick={handleRefresh}>
+          <RefreshCw size={20} className={`text-slate-600 ${loading ? 'animate-spin' : ''}`} />
         </View>
       </View>
 
       {/* 标签切换 */}
-      <View className="bg-slate-800 px-4 py-2 border-b border-slate-700 flex gap-2">
+      <View className="bg-white px-4 py-2 border-b border-slate-200 flex gap-2">
         <View
           className={`flex-1 py-2 px-4 rounded-lg text-center text-sm font-medium ${
             activeTab === 'overview'
               ? 'bg-cyan-500 text-white'
-              : 'bg-slate-700 text-slate-300'
+              : 'bg-white text-slate-600'
           }`}
           onClick={() => setActiveTab('overview')}
         >
@@ -233,7 +233,7 @@ export default function AdminRecycleManagementPage() {
           className={`flex-1 py-2 px-4 rounded-lg text-center text-sm font-medium ${
             activeTab === 'ranking'
               ? 'bg-cyan-500 text-white'
-              : 'bg-slate-700 text-slate-300'
+              : 'bg-white text-slate-600'
           }`}
           onClick={() => setActiveTab('ranking')}
         >
@@ -243,7 +243,7 @@ export default function AdminRecycleManagementPage() {
           className={`flex-1 py-2 px-4 rounded-lg text-center text-sm font-medium ${
             activeTab === 'risk'
               ? 'bg-cyan-500 text-white'
-              : 'bg-slate-700 text-slate-300'
+              : 'bg-white text-slate-600'
           }`}
           onClick={() => setActiveTab('risk')}
         >
@@ -294,13 +294,13 @@ export default function AdminRecycleManagementPage() {
               </View>
 
               {/* 状态分布 */}
-              <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+              <View className="bg-white rounded-xl p-4 border border-slate-200">
                 <Text className="text-white font-semibold mb-3 block">状态分布</Text>
                 <View className="space-y-3">
                   <View className="flex items-center gap-3">
                     <View className="flex-1">
-                      <Text className="text-slate-400 text-sm mb-1">待跟进</Text>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <Text className="text-slate-500 text-sm mb-1">待跟进</Text>
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-slate-400 rounded-full"
                           style={{ width: `${((statistics?.pendingCount || 0) / (statistics?.totalStores || 1)) * 100}%` }}
@@ -311,8 +311,8 @@ export default function AdminRecycleManagementPage() {
                   </View>
                   <View className="flex items-center gap-3">
                     <View className="flex-1">
-                      <Text className="text-slate-400 text-sm mb-1">评估中</Text>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <Text className="text-slate-500 text-sm mb-1">评估中</Text>
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-purple-400 rounded-full"
                           style={{ width: `${((statistics?.assessingCount || 0) / (statistics?.totalStores || 1)) * 100}%` }}
@@ -323,8 +323,8 @@ export default function AdminRecycleManagementPage() {
                   </View>
                   <View className="flex items-center gap-3">
                     <View className="flex-1">
-                      <Text className="text-slate-400 text-sm mb-1">谈判中</Text>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <Text className="text-slate-500 text-sm mb-1">谈判中</Text>
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-amber-400 rounded-full"
                           style={{ width: `${((statistics?.negotiatingCount || 0) / (statistics?.totalStores || 1)) * 100}%` }}
@@ -335,8 +335,8 @@ export default function AdminRecycleManagementPage() {
                   </View>
                   <View className="flex items-center gap-3">
                     <View className="flex-1">
-                      <Text className="text-slate-400 text-sm mb-1">回收中</Text>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <Text className="text-slate-500 text-sm mb-1">回收中</Text>
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-cyan-400 rounded-full"
                           style={{ width: `${((statistics?.recyclingCount || 0) / (statistics?.totalStores || 1)) * 100}%` }}
@@ -347,8 +347,8 @@ export default function AdminRecycleManagementPage() {
                   </View>
                   <View className="flex items-center gap-3">
                     <View className="flex-1">
-                      <Text className="text-slate-400 text-sm mb-1">已完成</Text>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <Text className="text-slate-500 text-sm mb-1">已完成</Text>
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-green-400 rounded-full"
                           style={{ width: `${((statistics?.completedCount || 0) / (statistics?.totalStores || 1)) * 100}%` }}
@@ -370,7 +370,7 @@ export default function AdminRecycleManagementPage() {
                   <Users size={20} className="text-cyan-400" />
                   <Text className="text-white font-semibold">回收业绩排行</Text>
                 </View>
-                <Text className="text-slate-400 text-sm">Top {salesRankings.length}</Text>
+                <Text className="text-slate-500 text-sm">Top {salesRankings.length}</Text>
               </View>
 
               {salesRankings.length > 0 ? (
@@ -380,7 +380,7 @@ export default function AdminRecycleManagementPage() {
                   ))}
                 </View>
               ) : (
-                <View className="bg-slate-800 rounded-lg p-8 text-center">
+                <View className="bg-white rounded-lg p-8 text-center">
                   <Users size={48} className="text-slate-600 mx-auto mb-3" />
                   <Text className="text-slate-500 block">暂无排行数据</Text>
                 </View>
@@ -396,7 +396,7 @@ export default function AdminRecycleManagementPage() {
                   <Target size={20} className="text-red-400" />
                   <Text className="text-white font-semibold">风险预警门店</Text>
                 </View>
-                <Text className="text-slate-400 text-sm">近期需要跟进</Text>
+                <Text className="text-slate-500 text-sm">近期需要跟进</Text>
               </View>
 
               {riskStores.length > 0 ? (
@@ -406,7 +406,7 @@ export default function AdminRecycleManagementPage() {
                   ))}
                 </View>
               ) : (
-                <View className="bg-slate-800 rounded-lg p-8 text-center">
+                <View className="bg-white rounded-lg p-8 text-center">
                   <Check size={48} className="text-green-600 mx-auto mb-3" />
                   <Text className="text-slate-500 block">暂无风险门店</Text>
                 </View>

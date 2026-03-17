@@ -426,17 +426,17 @@ const QuickNotePage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 头部 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-4">
+      <View className="sticky top-0 z-10 bg-sky-50/95 backdrop-blur-sm border-b border-slate-800 px-4 py-4">
         <View className="flex items-center gap-3 mb-4">
           <Text className="block text-xl font-bold text-white flex-1">灵感速记</Text>
           <View
-            className="px-4 py-2 bg-slate-800 rounded-xl flex items-center gap-2 active:scale-95 transition-all"
+            className="px-4 py-2 bg-white rounded-xl flex items-center gap-2 active:scale-95 transition-all"
             onClick={() => setIsBatchMode(!isBatchMode)}
           >
             <Check size={18} color={isBatchMode ? '#60a5fa' : '#94a3b8'} />
-            <Text className="block text-sm text-slate-300">
+            <Text className="block text-sm text-slate-600">
               {isBatchMode ? '取消' : '批量管理'}
             </Text>
           </View>
@@ -467,11 +467,11 @@ const QuickNotePage = () => {
             className={`px-4 py-2 rounded-xl flex-shrink-0 transition-all ${
               !activeTag
                 ? 'bg-amber-500/20 border border-amber-500/30'
-                : 'bg-slate-800 border border-slate-700'
+                : 'bg-white border border-slate-200'
             }`}
             onClick={() => setActiveTag('')}
           >
-            <Text className={`text-sm font-medium ${!activeTag ? 'text-amber-300' : 'text-slate-400'}`}>
+            <Text className={`text-sm font-medium ${!activeTag ? 'text-amber-300' : 'text-slate-500'}`}>
               全部
             </Text>
           </View>
@@ -480,12 +480,12 @@ const QuickNotePage = () => {
               key={tag}
               className={`px-4 py-2 rounded-xl flex-shrink-0 transition-all ${
                 activeTag === tag
-                  ? 'bg-blue-500/20 border border-blue-500/30'
-                  : 'bg-slate-800 border border-slate-700'
+                  ? 'bg-sky-500/20 border border-sky-500/30'
+                  : 'bg-white border border-slate-200'
               }`}
               onClick={() => setActiveTag(tag)}
             >
-              <Text className={`text-sm font-medium ${activeTag === tag ? 'text-blue-300' : 'text-slate-400'}`}>
+              <Text className={`text-sm font-medium ${activeTag === tag ? 'text-blue-300' : 'text-slate-500'}`}>
                 {tag}
               </Text>
             </View>
@@ -495,14 +495,14 @@ const QuickNotePage = () => {
 
       {/* 批量操作栏 */}
       {isBatchMode && selectedNoteIds.length > 0 && (
-        <View className="bg-slate-800/95 backdrop-blur-sm border-b border-slate-700 px-4 py-3 flex items-center justify-between">
-          <Text className="block text-sm text-slate-300">已选择 {selectedNoteIds.length} 条笔记</Text>
+        <View className="bg-white/95 backdrop-blur-sm border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+          <Text className="block text-sm text-slate-600">已选择 {selectedNoteIds.length} 条笔记</Text>
           <View className="flex gap-2">
             <View
-              className="px-4 py-2 bg-slate-700 rounded-xl active:scale-95 transition-all"
+              className="px-4 py-2 bg-white rounded-xl active:scale-95 transition-all"
               onClick={toggleSelectAll}
             >
-              <Text className="block text-sm text-slate-300">
+              <Text className="block text-sm text-slate-600">
                 {selectedNoteIds.length === filteredNotes.length ? '取消全选' : '全选'}
               </Text>
             </View>
@@ -520,7 +520,7 @@ const QuickNotePage = () => {
       <ScrollView scrollY className="flex-1 px-4 py-4">
         {filteredNotes.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20">
-            <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+            <View className="w-20 h-20 bg-white/50 rounded-full flex items-center justify-center mb-4">
               <FileText size={40} color="#475569" />
             </View>
             <Text className="block text-base text-slate-500 mb-2">暂无笔记</Text>
@@ -531,7 +531,7 @@ const QuickNotePage = () => {
             {filteredNotes.map(note => (
               <View
                 key={note.id}
-                className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-4 active:scale-[0.99] transition-all"
+                className="bg-white/90 rounded-2xl border border-slate-200/80 p-4 active:scale-[0.99] transition-all"
                 onLongPress={() => {
                   if (!isBatchMode) {
                     // 长按显示操作菜单
@@ -578,7 +578,7 @@ const QuickNotePage = () => {
                 <View className="mb-3">
                   <Text className="block text-base font-bold text-white mb-2">{note.title}</Text>
                   {note.content && (
-                    <Text className="block text-sm text-slate-400 leading-relaxed line-clamp-3">
+                    <Text className="block text-sm text-slate-500 leading-relaxed line-clamp-3">
                       {note.content}
                     </Text>
                   )}
@@ -602,9 +602,9 @@ const QuickNotePage = () => {
 
                 {/* 音频 */}
                 {note.audio && (
-                  <View className="flex items-center gap-2 mb-3 bg-slate-700/60 rounded-xl px-3 py-2">
+                  <View className="flex items-center gap-2 mb-3 bg-white/60 rounded-xl px-3 py-2">
                     <Mic size={16} color="#60a5fa" />
-                    <Text className="block text-xs text-slate-400">录音</Text>
+                    <Text className="block text-xs text-slate-500">录音</Text>
                   </View>
                 )}
 
@@ -614,13 +614,13 @@ const QuickNotePage = () => {
                     {note.tags.map(tag => (
                       <View
                         key={tag}
-                        className="px-3 py-1 bg-slate-700/60 rounded-lg"
+                        className="px-3 py-1 bg-white/60 rounded-lg"
                         onClick={(e) => {
                           e.stopPropagation();
                           setActiveTag(tag);
                         }}
                       >
-                        <Text className="block text-xs text-slate-400">#{tag}</Text>
+                        <Text className="block text-xs text-slate-500">#{tag}</Text>
                       </View>
                     ))}
                   </View>
@@ -652,7 +652,7 @@ const QuickNotePage = () => {
           onClick={() => setShowQuickNoteDialog(false)}
         >
           <View
-            className="bg-slate-800 rounded-3xl p-6 w-[92%] max-h-[85vh] overflow-auto shadow-2xl"
+            className="bg-white rounded-3xl p-6 w-[92%] max-h-[85vh] overflow-auto shadow-2xl"
             style={{ maxHeight: '85vh' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -664,11 +664,11 @@ const QuickNotePage = () => {
               </View>
               <View>
                 <Text className="block text-xl font-bold text-white">新建笔记</Text>
-                <Text className="block text-xs text-slate-400">记录您的灵感瞬间</Text>
+                <Text className="block text-xs text-slate-500">记录您的灵感瞬间</Text>
               </View>
             </View>
             <View
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-700/60 active:opacity-70"
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 active:opacity-70"
               onClick={() => setShowQuickNoteDialog(false)}
             >
               <X size={22} color="#94a3b8" />
@@ -678,7 +678,7 @@ const QuickNotePage = () => {
           {/* 标题输入 */}
           <View className="mb-5">
             <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-              <View style={{ flex: 1, padding: '12px 16px' }} className="bg-slate-950/60 rounded-2xl border border-slate-700/60">
+              <View style={{ flex: 1, padding: '12px 16px' }} className="bg-sky-50/60 rounded-2xl border border-slate-200/60">
                 <Input
                   style={{ width: '100%', backgroundColor: 'transparent', color: '#e2e8f0', fontSize: '17px', height: '44px', lineHeight: '44px' }}
                   placeholder="标题（可选）"
@@ -703,7 +703,7 @@ const QuickNotePage = () => {
 
           {/* 内容输入 */}
           <View className="mb-5">
-            <View className="bg-slate-950/60 rounded-2xl border border-slate-700/60" style={{ padding: '16px' }}>
+            <View className="bg-sky-50/60 rounded-2xl border border-slate-200/60" style={{ padding: '16px' }}>
               <Textarea
                 style={{ width: '100%', height: '300px', backgroundColor: 'transparent', color: '#e2e8f0', fontSize: '16px', lineHeight: '1.6' }}
                 placeholder="输入内容..."
@@ -760,7 +760,7 @@ const QuickNotePage = () => {
               <View className="flex gap-3">
                 {newNoteImages.map((img, index) => (
                   <View key={index} className="relative w-24 h-24 flex-shrink-0">
-                    <Image src={img} mode="aspectFill" className="w-full h-full rounded-2xl border border-slate-700" />
+                    <Image src={img} mode="aspectFill" className="w-full h-full rounded-2xl border border-slate-200" />
                     <View
                       className="absolute top-2 right-2 w-6 h-6 bg-black/70 rounded-full flex items-center justify-center active:bg-black/90"
                       onClick={() => handleRemoveImage(index)}
@@ -770,7 +770,7 @@ const QuickNotePage = () => {
                   </View>
                 ))}
                 <View
-                  className="w-24 h-24 bg-slate-900/60 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 border-dashed border-slate-700"
+                  className="w-24 h-24 bg-sky-50/60 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 border-dashed border-slate-200"
                   onClick={handleChooseImages}
                 >
                   <ImageIcon size={28} color="#60a5fa" />
@@ -782,10 +782,10 @@ const QuickNotePage = () => {
           {/* 音频预览 */}
           {newNoteAudio && (
             <View className="mb-5 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl border border-blue-500/20 px-4 py-4 flex items-center gap-3">
-              <View className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+              <View className="w-10 h-10 bg-sky-500/20 rounded-full flex items-center justify-center">
                 <Mic size={20} color="#60a5fa" />
               </View>
-              <Text className="block text-sm text-slate-300 flex-1">录音已完成</Text>
+              <Text className="block text-sm text-slate-600 flex-1">录音已完成</Text>
               <View
                 className="px-4 py-2 bg-red-500/20 rounded-xl active:bg-red-500/30"
                 onClick={() => setNewNoteAudio('')}
@@ -798,23 +798,23 @@ const QuickNotePage = () => {
           {/* 操作按钮 */}
           <View className="flex gap-3 mb-6">
             <View
-              className="flex-1 py-3.5 bg-slate-700/50 rounded-2xl flex items-center justify-center border border-slate-600/50 active:bg-slate-700/70 transition-all"
+              className="flex-1 py-3.5 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-200/50 active:bg-white/70 transition-all"
               onClick={handleChooseImages}
             >
               <ImageIcon size={20} color="#60a5fa" />
-              <Text className="block text-sm text-slate-300 ml-2 font-medium">图片</Text>
+              <Text className="block text-sm text-slate-600 ml-2 font-medium">图片</Text>
             </View>
             {isWeapp && (
               <View
                 className={`flex-1 py-3.5 rounded-2xl flex items-center justify-center transition-all border ${
                   isRecording
                     ? 'bg-red-500/10 border-red-500/30'
-                    : 'bg-slate-700/50 border-slate-600/50 active:bg-slate-700/70'
+                    : 'bg-slate-50 border-slate-200/50 active:bg-white/70'
                 }`}
                 onClick={isRecording ? handleStopRecord : handleStartRecord}
               >
                 <Mic size={20} color={isRecording ? '#f87171' : '#60a5fa'} />
-                <Text className={`block text-sm ml-2 font-medium ${isRecording ? 'text-red-300' : 'text-slate-300'}`}>
+                <Text className={`block text-sm ml-2 font-medium ${isRecording ? 'text-red-300' : 'text-slate-600'}`}>
                   {isRecording ? '停止录音' : '语音'}
                 </Text>
               </View>
@@ -825,7 +825,7 @@ const QuickNotePage = () => {
           <View
             className={`w-full py-4 rounded-2xl flex items-center justify-center transition-all ${
               !newNoteContent.trim() && newNoteImages.length === 0 && !newNoteAudio
-                ? 'bg-slate-700/50 text-slate-400'
+                ? 'bg-slate-50 text-slate-500'
                 : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-orange-500/30 active:scale-[0.98]'
             }`}
             onClick={handleCreateNote}
@@ -843,7 +843,7 @@ const QuickNotePage = () => {
           onClick={() => setShowEditDialog(false)}
         >
           <View
-            className="bg-slate-800 rounded-3xl p-6 w-[92%] max-h-[85vh] overflow-auto shadow-2xl"
+            className="bg-white rounded-3xl p-6 w-[92%] max-h-[85vh] overflow-auto shadow-2xl"
             style={{ maxHeight: '85vh' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -855,11 +855,11 @@ const QuickNotePage = () => {
               </View>
               <View>
                 <Text className="block text-xl font-bold text-white">编辑笔记</Text>
-                <Text className="block text-xs text-slate-400">修改您的内容</Text>
+                <Text className="block text-xs text-slate-500">修改您的内容</Text>
               </View>
             </View>
             <View
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-700/60 active:opacity-70"
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 active:opacity-70"
               onClick={() => setShowEditDialog(false)}
             >
               <X size={22} color="#94a3b8" />
@@ -868,7 +868,7 @@ const QuickNotePage = () => {
 
           {/* 标题 */}
           <View className="mb-5">
-            <View className="bg-slate-950/60 rounded-2xl border border-slate-700/60" style={{ padding: '16px' }}>
+            <View className="bg-sky-50/60 rounded-2xl border border-slate-200/60" style={{ padding: '16px' }}>
               <Input
                 style={{ width: '100%', backgroundColor: 'transparent', color: '#e2e8f0', fontSize: '18px', height: '52px', lineHeight: '52px' }}
                 placeholder="标题"
@@ -882,7 +882,7 @@ const QuickNotePage = () => {
 
           {/* 内容 */}
           <View className="mb-5">
-            <View className="bg-slate-950/60 rounded-2xl border border-slate-700/60" style={{ padding: '16px' }}>
+            <View className="bg-sky-50/60 rounded-2xl border border-slate-200/60" style={{ padding: '16px' }}>
               <Textarea
                 style={{ width: '100%', height: '300px', backgroundColor: 'transparent', color: '#e2e8f0', fontSize: '16px', lineHeight: '1.6' }}
                 placeholder="内容..."
@@ -901,7 +901,7 @@ const QuickNotePage = () => {
             {editingNote?.tags && editingNote.tags.length > 0 && (
               <View className="flex flex-wrap gap-2 mb-3">
                 {editingNote.tags.map(tag => (
-                  <View key={tag} className="px-3 py-1.5 bg-blue-500/20 border border-blue-500/30 rounded-xl flex items-center gap-2">
+                  <View key={tag} className="px-3 py-1.5 bg-sky-500/20 border border-sky-500/30 rounded-xl flex items-center gap-2">
                     <Text className="block text-xs text-blue-300">#{tag}</Text>
                     <X size={12} color="#60a5fa" onClick={() => removeTag(tag)} />
                   </View>

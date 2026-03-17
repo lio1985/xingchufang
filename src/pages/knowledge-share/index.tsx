@@ -79,9 +79,9 @@ const KnowledgeSharePage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部标题栏 */}
-      <View className="bg-slate-800 px-4 py-4 flex items-center justify-between border-b border-slate-700">
+      <View className="bg-white px-4 py-4 flex items-center justify-between border-b border-slate-200">
         <View className="flex items-center gap-2">
           <BookOpen size={24} color="#60a5fa" />
           <Text className="block text-xl font-bold text-white">知识分享</Text>
@@ -96,8 +96,8 @@ const KnowledgeSharePage = () => {
       </View>
 
       {/* 搜索栏 */}
-      <View className="px-4 py-3 bg-slate-800">
-        <View className="bg-slate-700 rounded-xl px-4 py-2.5 flex items-center gap-2">
+      <View className="px-4 py-3 bg-white">
+        <View className="bg-white rounded-xl px-4 py-2.5 flex items-center gap-2">
           <Search size={18} color="#94a3b8" />
           <View className="flex-1">
             <input
@@ -120,17 +120,17 @@ const KnowledgeSharePage = () => {
         <View className="p-4">
           {loading ? (
             <View className="text-center py-20">
-              <Text className="block text-sm text-slate-400">加载中...</Text>
+              <Text className="block text-sm text-slate-500">加载中...</Text>
             </View>
           ) : knowledgeList.length === 0 ? (
             <View className="text-center py-20">
               <BookOpen size={64} color="#334155" />
-              <Text className="block text-sm text-slate-400 mt-4">暂无知识分享</Text>
+              <Text className="block text-sm text-slate-500 mt-4">暂无知识分享</Text>
               <View
-                className="inline-block mt-4 px-6 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg"
+                className="inline-block mt-4 px-6 py-2 bg-sky-500/20 border border-sky-500/30 rounded-lg"
                 onClick={handleCreateKnowledge}
               >
-                <Text className="block text-sm text-blue-400">创建第一条知识分享</Text>
+                <Text className="block text-sm text-sky-600">创建第一条知识分享</Text>
               </View>
             </View>
           ) : (
@@ -138,7 +138,7 @@ const KnowledgeSharePage = () => {
               {knowledgeList.map((item) => (
                 <View
                   key={item.id}
-                  className="bg-slate-800 rounded-xl border border-slate-700 p-4 active:scale-[0.99] transition-transform"
+                  className="bg-white rounded-xl border border-slate-200 p-4 active:scale-[0.99] transition-transform"
                   onClick={() => handleViewDetail(item)}
                 >
                   {/* 标题 */}
@@ -147,7 +147,7 @@ const KnowledgeSharePage = () => {
                   </Text>
 
                   {/* 内容摘要 */}
-                  <Text className="block text-sm text-slate-400 mb-3 line-clamp-2">
+                  <Text className="block text-sm text-slate-500 mb-3 line-clamp-2">
                     {item.content}
                   </Text>
 
@@ -157,16 +157,16 @@ const KnowledgeSharePage = () => {
                       {item.tags.slice(0, 3).map((tag, idx) => (
                         <View
                           key={idx}
-                          className="bg-slate-700/50 px-2 py-1 rounded"
+                          className="bg-slate-50 px-2 py-1 rounded"
                         >
-                          <Text className="block text-xs text-slate-300">{tag}</Text>
+                          <Text className="block text-xs text-slate-600">{tag}</Text>
                         </View>
                       ))}
                     </View>
                   )}
 
                   {/* 底部信息 */}
-                  <View className="flex items-center justify-between text-slate-400">
+                  <View className="flex items-center justify-between text-slate-500">
                     <View className="flex items-center gap-4">
                       <Text className="block text-xs">{item.author}</Text>
                       <View className="flex items-center gap-1">

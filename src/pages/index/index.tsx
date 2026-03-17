@@ -272,17 +272,17 @@ const IndexPage = () => {
   }, [isLoggedIn]);
 
   return (
-    <View className="h-screen bg-slate-900 flex flex-col overflow-hidden">
+    <View className="h-screen bg-sky-50 flex flex-col overflow-hidden">
       {/* 标题区 */}
-      <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-12 pb-8 flex justify-between items-center">
+      <View className="bg-gradient-to-br from-sky-50 via-white to-sky-100 px-6 pt-12 pb-8 flex justify-between items-center">
         <View className="flex flex-col justify-center gap-2">
           <View
-            className="block text-3xl font-bold text-white tracking-tight leading-tight"
+            className="block text-3xl font-bold text-slate-800 tracking-tight leading-tight"
             onClick={handleTitleClick}
           >
             <Text className="block">星厨房</Text>
           </View>
-          <Text className="block text-sm text-blue-400 font-medium tracking-widest uppercase opacity-90">Star Kitchen</Text>
+          <Text className="block text-sm text-sky-600 font-medium tracking-widest uppercase opacity-90">Star Kitchen</Text>
         </View>
         <View className="flex items-center gap-3 flex-shrink-0">
           {/* 已登录状态 */}
@@ -339,7 +339,7 @@ const IndexPage = () => {
               )}
               {/* 退出登录 */}
               <View
-                className="bg-slate-700/80 hover:bg-slate-600/80 rounded-2xl p-3 transition-all active:scale-95"
+                className="bg-white/80 hover:bg-slate-100/80 rounded-2xl p-3 transition-all active:scale-95"
                 onClick={handleLogout}
               >
                 <IconLogOut />
@@ -375,11 +375,11 @@ const IndexPage = () => {
             interval={5000}
             circular
             indicatorColor="rgba(148, 163, 184, 0.3)"
-            indicatorActiveColor="#60a5fa"
+            indicatorActiveColor="#0EA5E9"
           >
             {welcomeMessages.map((msg) => (
               <SwiperItem key={msg.id}>
-                <View className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl p-5 border border-blue-500/30 flex flex-col justify-center">
+                <View className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl p-5 border border-sky-500/30 flex flex-col justify-center">
                   {msg.image_url && (
                     <Image
                       src={msg.image_url}
@@ -388,7 +388,7 @@ const IndexPage = () => {
                     />
                   )}
                   <Text className="block text-lg font-bold text-white mb-2">{msg.title}</Text>
-                  <Text className="block text-sm text-slate-300 leading-relaxed">{msg.content}</Text>
+                  <Text className="block text-sm text-slate-600 leading-relaxed">{msg.content}</Text>
                 </View>
               </SwiperItem>
             ))}
@@ -555,7 +555,7 @@ const IndexPage = () => {
 
         {/* 账号管理入口 - 暂时隐藏 */}
         {/* <View
-          className="bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-slate-500/20 border border-slate-500/30"
+          className="bg-gradient-to-br from-slate-600 via-slate-700 to-sky-100 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-slate-500/20 border border-slate-500/30"
           onClick={() => handleNavigateTo('/pages/admin/users/index', true)}
           onTap={() => handleNavigateTo('/pages/admin/users/index', true)}
         >
@@ -565,7 +565,7 @@ const IndexPage = () => {
             </View>
             <View className="flex-1">
               <Text className="block text-xl font-bold text-white mb-1">账号管理</Text>
-              <Text className="block text-sm text-slate-300">管理用户账号与权限</Text>
+              <Text className="block text-sm text-slate-600">管理用户账号与权限</Text>
             </View>
           </View>
         </View> */}

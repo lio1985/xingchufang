@@ -132,9 +132,9 @@ export default function LexiconSystemPage() {
   }
 
   return (
-    <View className="min-h-screen bg-slate-900 pb-8">
+    <View className="min-h-screen bg-sky-50 pb-8">
       {/* 头部导航 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
+      <View className="sticky top-0 z-10 bg-sky-50/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
         <View className="flex items-center gap-3">
           <View className="w-10 h-10 bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 rounded-xl flex items-center justify-center">
             <Sparkles size={24} color="#34d399" strokeWidth={2.5} />
@@ -145,9 +145,9 @@ export default function LexiconSystemPage() {
 
       <View className="px-4 mt-6 flex flex-col gap-6">
         {/* 知识库选择 */}
-        <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 overflow-hidden">
+        <View className="bg-white/90 rounded-2xl border border-slate-200/80 overflow-hidden">
           {/* 标题栏 */}
-          <View className="bg-gradient-to-r from-slate-800/95 to-slate-800/80 px-5 py-4 border-b border-slate-700/60">
+          <View className="bg-gradient-to-r from-slate-800/95 to-sky-100/80 px-5 py-4 border-b border-slate-200/60">
             <View className="flex items-center justify-between mb-3">
               <View className="flex items-center gap-2.5">
                 <View className="w-9 h-9 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 rounded-xl flex items-center justify-center">
@@ -155,7 +155,7 @@ export default function LexiconSystemPage() {
                 </View>
                 <View>
                   <Text className="block text-base font-bold text-white">选择语料库</Text>
-                  <Text className="block text-xs text-slate-400 mt-0.5">多选语料以获得更全面的优化效果</Text>
+                  <Text className="block text-xs text-slate-500 mt-0.5">多选语料以获得更全面的优化效果</Text>
                 </View>
               </View>
               <View
@@ -169,11 +169,11 @@ export default function LexiconSystemPage() {
             <View className="flex items-center justify-between">
               <View className="flex items-center gap-2">
                 <View className="px-2.5 py-1 bg-blue-500/10 rounded-lg">
-                  <Text className="block text-xs text-blue-400 font-medium">已选 {selectedLexicons.length} 个</Text>
+                  <Text className="block text-xs text-sky-600 font-medium">已选 {selectedLexicons.length} 个</Text>
                 </View>
               </View>
               <View
-                className="px-3 py-1.5 bg-slate-700/60 hover:bg-slate-700/80 rounded-lg active:scale-95 transition-all flex items-center gap-1.5"
+                className="px-3 py-1.5 bg-white/60 hover:bg-white/80 rounded-lg active:scale-95 transition-all flex items-center gap-1.5"
                 onClick={toggleAll}
               >
                 {expandedCategory === 'all' ? (
@@ -181,7 +181,7 @@ export default function LexiconSystemPage() {
                 ) : (
                   <ChevronRight size={14} color="#94a3b8" strokeWidth={2.5} />
                 )}
-                <Text className="block text-xs text-slate-300">
+                <Text className="block text-xs text-slate-600">
                   {expandedCategory === 'all' ? '全部折叠' : '全部展开'}
                 </Text>
               </View>
@@ -192,10 +192,10 @@ export default function LexiconSystemPage() {
           <View className="p-4">
             {lexicons.length === 0 ? (
               <View className="flex flex-col items-center justify-center py-16">
-                <View className="w-16 h-16 bg-slate-700/50 rounded-2xl flex items-center justify-center mb-4">
+                <View className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-4">
                   <BookOpen size={32} color="#475569" strokeWidth={1.5} />
                 </View>
-                <Text className="block text-base text-slate-400 font-medium mb-2">暂无语料库</Text>
+                <Text className="block text-base text-slate-500 font-medium mb-2">暂无语料库</Text>
                 <Text className="block text-sm text-slate-500">点击右上角管理按钮添加语料</Text>
               </View>
             ) : (
@@ -205,7 +205,7 @@ export default function LexiconSystemPage() {
                 {(() => {
                   const enterpriseLexicons = lexicons.filter(l => l.type === 'enterprise')
                   return enterpriseLexicons.length > 0 && (
-                    <View className="bg-gradient-to-br from-slate-700/30 to-slate-700/20 rounded-2xl overflow-hidden border border-slate-700/50">
+                    <View className="bg-gradient-to-br from-slate-700/30 to-slate-700/20 rounded-2xl overflow-hidden border border-slate-200">
                       <View
                         className="flex items-center justify-between px-4 py-3.5 bg-emerald-500/5 hover:bg-emerald-500/10 border-b border-emerald-500/15 active:bg-emerald-500/15 transition-all cursor-pointer"
                         onClick={() => toggleCategory('enterprise')}
@@ -230,7 +230,7 @@ export default function LexiconSystemPage() {
                           {enterpriseLexicons.map((lexicon) => (
                             <View
                               key={lexicon.id}
-                              className="bg-slate-700/50 hover:bg-slate-700/70 rounded-xl p-3.5 border border-slate-700/50 hover:border-slate-600/50 active:bg-slate-700/80 active:scale-[0.99] transition-all"
+                              className="bg-slate-50 hover:bg-white/70 rounded-xl p-3.5 border border-slate-200 hover:border-slate-200/50 active:bg-white/80 active:scale-[0.99] transition-all"
                             >
                               <View className="flex items-start gap-3">
                                 <View className="pt-0.5">
@@ -246,12 +246,12 @@ export default function LexiconSystemPage() {
                                   </Text>
                                   {lexicon.category && (
                                     <View className="mb-2">
-                                      <Text className="inline-block text-xs text-slate-400 bg-slate-800/50 px-2 py-0.5 rounded-md">
+                                      <Text className="inline-block text-xs text-slate-500 bg-white/50 px-2 py-0.5 rounded-md">
                                         {lexicon.category}
                                       </Text>
                                     </View>
                                   )}
-                                  <Text className="block text-xs text-slate-300 leading-relaxed line-clamp-2">
+                                  <Text className="block text-xs text-slate-600 leading-relaxed line-clamp-2">
                                     {lexicon.content}
                                   </Text>
                                 </View>
@@ -268,18 +268,18 @@ export default function LexiconSystemPage() {
                 {(() => {
                   const personalLexicons = lexicons.filter(l => l.type === 'personal')
                   return personalLexicons.length > 0 && (
-                    <View className="bg-gradient-to-br from-slate-700/30 to-slate-700/20 rounded-2xl overflow-hidden border border-slate-700/50">
+                    <View className="bg-gradient-to-br from-slate-700/30 to-slate-700/20 rounded-2xl overflow-hidden border border-slate-200">
                       <View
                         className="flex items-center justify-between px-4 py-3.5 bg-blue-500/5 hover:bg-blue-500/10 border-b border-blue-500/15 active:bg-blue-500/15 transition-all cursor-pointer"
                         onClick={() => toggleCategory('personal')}
                       >
                         <View className="flex items-center gap-2.5">
-                          <View className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                          <View className="w-8 h-8 bg-sky-500/20 rounded-lg flex items-center justify-center">
                             <User size={18} color="#60a5fa" strokeWidth={2.5} />
                           </View>
                           <Text className="block text-sm font-bold text-white">个人IP语料库</Text>
-                          <View className="px-2 py-0.5 bg-blue-500/20 rounded-md border border-blue-500/30">
-                            <Text className="block text-xs text-blue-400 font-semibold">{personalLexicons.length}</Text>
+                          <View className="px-2 py-0.5 bg-sky-500/20 rounded-md border border-sky-500/30">
+                            <Text className="block text-xs text-sky-600 font-semibold">{personalLexicons.length}</Text>
                           </View>
                         </View>
                         {expandedCategory === 'all' || expandedCategory === 'personal' ? (
@@ -293,7 +293,7 @@ export default function LexiconSystemPage() {
                           {personalLexicons.map((lexicon) => (
                             <View
                               key={lexicon.id}
-                              className="bg-slate-700/50 hover:bg-slate-700/70 rounded-xl p-3.5 border border-slate-700/50 hover:border-slate-600/50 active:bg-slate-700/80 active:scale-[0.99] transition-all"
+                              className="bg-slate-50 hover:bg-white/70 rounded-xl p-3.5 border border-slate-200 hover:border-slate-200/50 active:bg-white/80 active:scale-[0.99] transition-all"
                             >
                               <View className="flex items-start gap-3">
                                 <View className="pt-0.5">
@@ -309,12 +309,12 @@ export default function LexiconSystemPage() {
                                   </Text>
                                   {lexicon.category && (
                                     <View className="mb-2">
-                                      <Text className="inline-block text-xs text-slate-400 bg-slate-800/50 px-2 py-0.5 rounded-md">
+                                      <Text className="inline-block text-xs text-slate-500 bg-white/50 px-2 py-0.5 rounded-md">
                                         {lexicon.category}
                                       </Text>
                                     </View>
                                   )}
-                                  <Text className="block text-xs text-slate-300 leading-relaxed line-clamp-2">
+                                  <Text className="block text-xs text-slate-600 leading-relaxed line-clamp-2">
                                     {lexicon.content}
                                   </Text>
                                 </View>
@@ -331,7 +331,7 @@ export default function LexiconSystemPage() {
                 {(() => {
                   const productLexicons = lexicons.filter(l => l.type === 'product')
                   return productLexicons.length > 0 && (
-                    <View className="bg-gradient-to-br from-slate-700/30 to-slate-700/20 rounded-2xl overflow-hidden border border-slate-700/50">
+                    <View className="bg-gradient-to-br from-slate-700/30 to-slate-700/20 rounded-2xl overflow-hidden border border-slate-200">
                       <View
                         className="flex items-center justify-between px-4 py-3.5 bg-purple-500/5 hover:bg-purple-500/10 border-b border-purple-500/15 active:bg-purple-500/15 transition-all cursor-pointer"
                         onClick={() => toggleCategory('product')}
@@ -356,7 +356,7 @@ export default function LexiconSystemPage() {
                           {productLexicons.map((lexicon) => (
                             <View
                               key={lexicon.id}
-                              className="bg-slate-700/50 hover:bg-slate-700/70 rounded-xl p-3.5 border border-slate-700/50 hover:border-slate-600/50 active:bg-slate-700/80 active:scale-[0.99] transition-all"
+                              className="bg-slate-50 hover:bg-white/70 rounded-xl p-3.5 border border-slate-200 hover:border-slate-200/50 active:bg-white/80 active:scale-[0.99] transition-all"
                             >
                               <View className="flex items-start gap-3">
                                 <View className="pt-0.5">
@@ -372,12 +372,12 @@ export default function LexiconSystemPage() {
                                   </Text>
                                   {lexicon.category && (
                                     <View className="mb-2">
-                                      <Text className="inline-block text-xs text-slate-400 bg-slate-800/50 px-2 py-0.5 rounded-md">
+                                      <Text className="inline-block text-xs text-slate-500 bg-white/50 px-2 py-0.5 rounded-md">
                                         {lexicon.category}
                                       </Text>
                                     </View>
                                   )}
-                                  <Text className="block text-xs text-slate-300 leading-relaxed line-clamp-2">
+                                  <Text className="block text-xs text-slate-600 leading-relaxed line-clamp-2">
                                     {lexicon.content}
                                   </Text>
                                 </View>
@@ -395,12 +395,12 @@ export default function LexiconSystemPage() {
         </View>
 
         {/* 输入区域 */}
-        <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
+        <View className="bg-white/90 rounded-2xl border border-slate-200/80 p-5">
           <View className="flex justify-between items-center mb-4">
             <Text className="block text-lg font-bold text-white tracking-wide">输入文本</Text>
-            <Text className="block text-xs text-slate-400 font-medium">{inputText.length}/2000</Text>
+            <Text className="block text-xs text-slate-500 font-medium">{inputText.length}/2000</Text>
           </View>
-          <View className="bg-slate-700/60 rounded-2xl p-4 mb-4">
+          <View className="bg-white/60 rounded-2xl p-4 mb-4">
             <Textarea
               className="w-full bg-transparent text-slate-200 text-base leading-relaxed"
               placeholder="请输入需要优化的文本..."
@@ -414,7 +414,7 @@ export default function LexiconSystemPage() {
             <View
               className={`flex-1 py-4 rounded-xl text-center flex items-center justify-center transition-all ${
                 isProcessing || !inputText.trim()
-                  ? 'bg-slate-700 text-slate-400'
+                  ? 'bg-white text-slate-500'
                   : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20'
               }`}
               onClick={handleOptimize}
@@ -426,7 +426,7 @@ export default function LexiconSystemPage() {
               )}
             </View>
             <View
-              className="w-14 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center justify-center active:scale-95 transition-all"
+              className="w-14 bg-white hover:bg-slate-100 rounded-xl flex items-center justify-center active:scale-95 transition-all"
               onClick={handleClear}
             >
               <RefreshCw size={20} color="#94a3b8" strokeWidth={2} />
@@ -436,7 +436,7 @@ export default function LexiconSystemPage() {
 
         {/* 输出区域 */}
         {outputText && (
-          <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
+          <View className="bg-white/90 rounded-2xl border border-slate-200/80 p-5">
             <View className="flex justify-between items-center mb-4">
               <Text className="block text-lg font-bold text-white tracking-wide flex items-center gap-2">
                 <View className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
@@ -445,14 +445,14 @@ export default function LexiconSystemPage() {
                 优化结果
               </Text>
               <View
-                className="px-4 py-2 bg-slate-700/80 rounded-xl flex items-center gap-2 active:scale-95 transition-transform"
+                className="px-4 py-2 bg-white/80 rounded-xl flex items-center gap-2 active:scale-95 transition-transform"
                 onClick={handleCopy}
               >
                 <Copy size={16} color="#94a3b8" />
                 <Text className="block text-white text-xs font-medium">复制</Text>
               </View>
             </View>
-            <View className="bg-slate-700/60 rounded-2xl p-4">
+            <View className="bg-white/60 rounded-2xl p-4">
               <Text className="block text-slate-200 text-base leading-relaxed">
                 {outputText}
               </Text>
@@ -466,32 +466,32 @@ export default function LexiconSystemPage() {
             <Zap size={20} color="#34d399" strokeWidth={2.5} />
             <Text className="block text-base font-bold text-white">执行机制</Text>
           </View>
-          <Text className="block text-sm text-slate-300 leading-relaxed mb-3">
+          <Text className="block text-sm text-slate-600 leading-relaxed mb-3">
             所有输出脚本必须经过语料替换与人工优化，确保自然表达与专业统一。
           </Text>
           <View className="space-y-2">
             <View className="flex items-start gap-2">
               <View className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-1.5 flex-shrink-0" />
-              <Text className="block text-sm text-slate-400">使用企业语料库确保专业术语统一</Text>
+              <Text className="block text-sm text-slate-500">使用企业语料库确保专业术语统一</Text>
             </View>
             <View className="flex items-start gap-2">
               <View className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-1.5 flex-shrink-0" />
-              <Text className="block text-sm text-slate-400">使用个人IP语料库保持主播风格</Text>
+              <Text className="block text-sm text-slate-500">使用个人IP语料库保持主播风格</Text>
             </View>
             <View className="flex items-start gap-2">
               <View className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-1.5 flex-shrink-0" />
-              <Text className="block text-sm text-slate-400">使用产品知识库突出产品卖点</Text>
+              <Text className="block text-sm text-slate-500">使用产品知识库突出产品卖点</Text>
             </View>
             <View className="flex items-start gap-2">
               <View className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-1.5 flex-shrink-0" />
-              <Text className="block text-sm text-slate-400">人工复核确保表达自然流畅</Text>
+              <Text className="block text-sm text-slate-500">人工复核确保表达自然流畅</Text>
             </View>
           </View>
         </View>
 
         {/* 提示信息 */}
-        <View className="bg-slate-800/50 rounded-2xl border border-slate-700/50 p-5">
-          <Text className="block text-sm text-slate-400 leading-relaxed">
+        <View className="bg-white/50 rounded-2xl border border-slate-200 p-5">
+          <Text className="block text-sm text-slate-500 leading-relaxed">
             💡 提示：选择语料库后，系统会根据选中的语料库对文本进行优化，使表达更自然、更专业。支持多选语料库以获得更全面的优化效果。
           </Text>
         </View>

@@ -101,14 +101,14 @@ export default function UserDataPage() {
   }, [type, userId])
 
   const renderConversationItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-white rounded-xl p-4 border border-slate-200">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.title || '未命名对话'}</Text>
         <Text className="text-slate-500 text-xs">
           {new Date(item.created_at || item.createdAt).toLocaleDateString('zh-CN')}
         </Text>
       </View>
-      <Text className="text-slate-400 text-sm block mb-2">
+      <Text className="text-slate-500 text-sm block mb-2">
         模型: {item.model || '未知'}
       </Text>
       <Text className="text-slate-500 text-xs block">
@@ -118,7 +118,7 @@ export default function UserDataPage() {
   )
 
   const renderLexiconItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-white rounded-xl p-4 border border-slate-200">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.title || '未命名语料'}</Text>
         <Text className="text-slate-500 text-xs">
@@ -126,16 +126,16 @@ export default function UserDataPage() {
         </Text>
       </View>
       <View className="mb-2">
-        <Text className="text-blue-400 text-xs block mb-1">{item.category || '未分类'}</Text>
+        <Text className="text-sky-600 text-xs block mb-1">{item.category || '未分类'}</Text>
       </View>
-      <Text className="text-slate-400 text-sm block line-clamp-2">
+      <Text className="text-slate-500 text-sm block line-clamp-2">
         {item.content || '无内容'}
       </Text>
     </View>
   )
 
   const renderFileItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-white rounded-xl p-4 border border-slate-200">
       <View className="flex items-start gap-3 mb-2">
         <Folder size={24} color="#fbbf24" />
         <View className="flex-1 min-w-0">
@@ -145,7 +145,7 @@ export default function UserDataPage() {
           </Text>
         </View>
       </View>
-      <Text className="text-slate-400 text-xs block">
+      <Text className="text-slate-500 text-xs block">
         大小: {item.file_size ? (item.file_size / 1024).toFixed(2) + ' KB' : '未知'}
       </Text>
       <Text className="text-slate-500 text-xs block">
@@ -155,7 +155,7 @@ export default function UserDataPage() {
   )
 
   const renderTaskItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-white rounded-xl p-4 border border-slate-200">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.title || '未命名任务'}</Text>
         <Text className="text-slate-500 text-xs">
@@ -163,7 +163,7 @@ export default function UserDataPage() {
         </Text>
       </View>
       {item.description && (
-        <Text className="text-slate-400 text-sm block mb-2 line-clamp-2">
+        <Text className="text-slate-500 text-sm block mb-2 line-clamp-2">
           {item.description}
         </Text>
       )}
@@ -174,7 +174,7 @@ export default function UserDataPage() {
   )
 
   const renderAuditLogItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-white rounded-xl p-4 border border-slate-200">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.operation || '未知操作'}</Text>
         <Text className="text-slate-500 text-xs">
@@ -182,7 +182,7 @@ export default function UserDataPage() {
         </Text>
       </View>
       {item.resource_type && (
-        <Text className="text-blue-400 text-xs block mb-1">
+        <Text className="text-sky-600 text-xs block mb-1">
           资源类型: {item.resource_type}
         </Text>
       )}
@@ -217,9 +217,9 @@ export default function UserDataPage() {
   const config = getTypeConfig()
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部导航栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
+      <View className="bg-white px-4 py-3 border-b border-slate-200">
         <View className="flex items-center gap-3">
           <View onClick={() => Taro.navigateBack()}>
             <ArrowLeft size={24} color="#94a3b8" />
@@ -239,7 +239,7 @@ export default function UserDataPage() {
         <View className="px-4 py-3 space-y-3">
           {loading && (
             <View className="text-center py-12">
-              <Text className="text-slate-400">加载中...</Text>
+              <Text className="text-slate-500">加载中...</Text>
             </View>
           )}
 

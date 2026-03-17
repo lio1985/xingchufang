@@ -83,16 +83,16 @@ const NewsPage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 头部搜索区 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-4">
+      <View className="sticky top-0 z-10 bg-sky-50/95 backdrop-blur-sm border-b border-slate-800 px-4 py-4">
         <Text className="block text-xl font-bold text-white mb-4">热点资讯</Text>
 
         {/* 搜索框 */}
         <View className="relative mb-4">
           <Search size={18} color="#94a3b8" className="absolute left-4 top-1/2 -translate-y-1/2" />
           <Input
-            className="w-full bg-slate-800 rounded-xl pl-12 pr-4 py-3 text-white text-base"
+            className="w-full bg-white rounded-xl pl-12 pr-4 py-3 text-white text-base"
             placeholder="搜索热点资讯..."
             value={keyword}
             onInput={(e) => setKeyword(e.detail.value)}
@@ -112,12 +112,12 @@ const NewsPage = () => {
               className={`px-4 py-2 rounded-xl flex-shrink-0 transition-all ${
                 timeRange === item.value
                   ? 'bg-amber-500/20 border border-amber-500/30'
-                  : 'bg-slate-800 border border-slate-700'
+                  : 'bg-white border border-slate-200'
               }`}
               onClick={() => setTimeRange(item.value)}
             >
               <Text className={`text-sm font-medium ${
-                timeRange === item.value ? 'text-amber-300' : 'text-slate-400'
+                timeRange === item.value ? 'text-amber-300' : 'text-slate-500'
               }`}
               >
                 {item.label}
@@ -130,7 +130,7 @@ const NewsPage = () => {
         <View
           className={`w-full py-3 rounded-xl flex items-center justify-center mt-4 transition-all ${
             loading || !keyword.trim()
-              ? 'bg-slate-700 text-slate-400'
+              ? 'bg-white text-slate-500'
               : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-orange-500/20 active:scale-95'
           }`}
           onClick={() => !loading && handleSearch()}
@@ -145,12 +145,12 @@ const NewsPage = () => {
       <ScrollView scrollY className="flex-1 px-4 py-4">
         {/* 摘要 */}
         {aiSummary && (
-          <View className="mb-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl border border-blue-500/30 p-5">
+          <View className="mb-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl border border-sky-500/30 p-5">
             <View className="flex items-center gap-2 mb-3">
               <Sparkles size={18} color="#60a5fa" />
               <Text className="block text-base font-bold text-blue-300">摘要</Text>
             </View>
-            <Text className="block text-sm text-slate-300 leading-relaxed">
+            <Text className="block text-sm text-slate-600 leading-relaxed">
               {aiSummary}
             </Text>
           </View>
@@ -159,7 +159,7 @@ const NewsPage = () => {
         {/* 搜索结果 */}
         {results.length === 0 && !loading && keyword === '' && (
           <View className="flex flex-col items-center justify-center py-20">
-            <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+            <View className="w-20 h-20 bg-white/50 rounded-full flex items-center justify-center mb-4">
               <Search size={40} color="#475569" />
             </View>
             <Text className="block text-base text-slate-500 mb-2">搜索热点资讯</Text>
@@ -169,7 +169,7 @@ const NewsPage = () => {
 
         {results.length === 0 && !loading && keyword !== '' && (
           <View className="flex flex-col items-center justify-center py-20">
-            <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+            <View className="w-20 h-20 bg-white/50 rounded-full flex items-center justify-center mb-4">
               <Globe size={40} color="#475569" />
             </View>
             <Text className="block text-base text-slate-500 mb-2">未找到相关资讯</Text>
@@ -179,13 +179,13 @@ const NewsPage = () => {
 
         {results.length > 0 && (
           <View className="flex flex-col gap-3">
-            <Text className="block text-sm font-medium text-slate-400 mb-2">
+            <Text className="block text-sm font-medium text-slate-500 mb-2">
               找到 {results.length} 条结果
             </Text>
             {results.map((item, index) => (
               <View
                 key={index}
-                className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-4 active:scale-[0.99] transition-all"
+                className="bg-white/90 rounded-2xl border border-slate-200/80 p-4 active:scale-[0.99] transition-all"
               >
                 {/* 标题 */}
                 <Text className="block text-base font-bold text-white mb-2 leading-snug">
@@ -209,13 +209,13 @@ const NewsPage = () => {
                 </View>
 
                 {/* 摘要 */}
-                <Text className="block text-sm text-slate-400 leading-relaxed mb-3 line-clamp-3">
+                <Text className="block text-sm text-slate-500 leading-relaxed mb-3 line-clamp-3">
                   {item.snippet}
                 </Text>
 
                 {/* 链接按钮 */}
                 <View
-                  className="flex items-center gap-2 px-4 py-2 bg-slate-700/60 rounded-xl self-start active:scale-95 transition-all"
+                  className="flex items-center gap-2 px-4 py-2 bg-white/60 rounded-xl self-start active:scale-95 transition-all"
                   onClick={() => openUrl(item.url)}
                 >
                   <ExternalLink size={14} color="#60a5fa" />

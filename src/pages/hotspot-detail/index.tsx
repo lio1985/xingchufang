@@ -406,13 +406,13 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
   };
 
   return (
-    <View className="min-h-screen bg-slate-900 pb-20">
+    <View className="min-h-screen bg-sky-50 pb-20">
       <ScrollView scrollY className="h-full">
         {/* 标题区 */}
-        <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-4 pb-6">
+        <View className="bg-gradient-to-br from-sky-50 via-white to-slate-900 px-6 pt-4 pb-6">
           {/* 返回按钮 */}
           <View
-            className="mb-4 w-10 h-10 bg-slate-800/80 rounded-xl flex items-center justify-center active:scale-95 transition-all"
+            className="mb-4 w-10 h-10 bg-white rounded-xl flex items-center justify-center active:scale-95 transition-all"
             onClick={() => Taro.navigateBack()}
           >
             <ArrowLeft size={20} color="#94a3b8" />
@@ -426,9 +426,9 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
           {/* 元信息 */}
           <View className="flex flex-wrap gap-3 mb-4">
             {/* 平台 */}
-            <View className="bg-blue-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+            <View className="bg-sky-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
               <TrendingUp size={14} color="#3b82f6" strokeWidth={2} />
-              <Text className="block text-xs text-blue-400 font-medium">{platform}</Text>
+              <Text className="block text-xs text-sky-600 font-medium">{platform}</Text>
             </View>
 
             {/* 热度 */}
@@ -439,9 +439,9 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
 
             {/* 时间 */}
             {publishTime && (
-              <View className="bg-slate-700/50 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+              <View className="bg-slate-50 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                 <Clock size={14} color="#94a3b8" strokeWidth={2} />
-                <Text className="block text-xs text-slate-400">{formatTime(publishTime)}</Text>
+                <Text className="block text-xs text-slate-500">{formatTime(publishTime)}</Text>
               </View>
             )}
 
@@ -457,29 +457,29 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
         {/* 内容区 */}
         <View className="px-6 py-6">
           {/* 详细内容 */}
-          <View className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700/50">
+          <View className="bg-white/50 rounded-2xl p-5 mb-6 border border-slate-200">
             {loadingContent ? (
               <View className="flex items-center justify-center py-8">
-                <Text className="block text-sm text-slate-400">加载内容中...</Text>
+                <Text className="block text-sm text-slate-500">加载内容中...</Text>
               </View>
             ) : content ? (
-              <Text className="block text-base text-slate-300 leading-relaxed whitespace-pre-line">
+              <Text className="block text-base text-slate-600 leading-relaxed whitespace-pre-line">
                 {content}
               </Text>
             ) : (
-              <Text className="block text-sm text-slate-400">暂无内容</Text>
+              <Text className="block text-sm text-slate-500">暂无内容</Text>
             )}
           </View>
 
           {/* 💡 创作角度建议 */}
           {creativeAngles.length > 0 && (
-            <View className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700/50">
+            <View className="bg-white/50 rounded-2xl p-5 mb-6 border border-slate-200">
               <View className="flex items-center gap-2 mb-3">
                 <Lightbulb size={18} color="#fbbf24" strokeWidth={2} />
                 <Text className="block text-base font-bold text-white">💡 创作角度建议</Text>
               </View>
               {loadingAngles ? (
-                <Text className="block text-sm text-slate-400">加载中...</Text>
+                <Text className="block text-sm text-slate-500">加载中...</Text>
               ) : (
                 <View className="space-y-2">
                   {creativeAngles.map((angle, index) => (
@@ -487,7 +487,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
                       <View className="w-5 h-5 bg-emerald-500/20 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
                         <Text className="text-xs text-emerald-400 font-medium">{index + 1}</Text>
                       </View>
-                      <Text className="flex-1 text-sm text-slate-300 leading-relaxed">{angle}</Text>
+                      <Text className="flex-1 text-sm text-slate-600 leading-relaxed">{angle}</Text>
                     </View>
                   ))}
                 </View>
@@ -497,23 +497,23 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
 
           {/* 📊 舆情分析 */}
           {sentimentData && (
-            <View className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700/50">
+            <View className="bg-white/50 rounded-2xl p-5 mb-6 border border-slate-200">
               <View className="flex items-center gap-2 mb-3">
                 <TrendingUp size={18} color="#3b82f6" strokeWidth={2} />
                 <Text className="block text-base font-bold text-white">📊 舆情分析</Text>
               </View>
               {loadingSentiment ? (
-                <Text className="block text-sm text-slate-400">分析中...</Text>
+                <Text className="block text-sm text-slate-500">分析中...</Text>
               ) : (
                 <View className="space-y-3">
                   {/* 情感比例 */}
                   <View className="flex items-center gap-3">
                     <View className="flex-1">
                       <View className="flex items-center justify-between mb-1">
-                        <Text className="text-xs text-slate-400">正面</Text>
+                        <Text className="text-xs text-slate-500">正面</Text>
                         <Text className="text-xs text-green-400 font-medium">{sentimentData.positive}%</Text>
                       </View>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-green-500 transition-all"
                           style={{ width: `${sentimentData.positive}%` }}
@@ -522,10 +522,10 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
                     </View>
                     <View className="flex-1">
                       <View className="flex items-center justify-between mb-1">
-                        <Text className="text-xs text-slate-400">负面</Text>
+                        <Text className="text-xs text-slate-500">负面</Text>
                         <Text className="text-xs text-red-400 font-medium">{sentimentData.negative}%</Text>
                       </View>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-red-500 transition-all"
                           style={{ width: `${sentimentData.negative}%` }}
@@ -534,10 +534,10 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
                     </View>
                     <View className="flex-1">
                       <View className="flex items-center justify-between mb-1">
-                        <Text className="text-xs text-slate-400">中性</Text>
-                        <Text className="text-xs text-slate-400 font-medium">{sentimentData.neutral}%</Text>
+                        <Text className="text-xs text-slate-500">中性</Text>
+                        <Text className="text-xs text-slate-500 font-medium">{sentimentData.neutral}%</Text>
                       </View>
-                      <View className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <View className="h-2 bg-white rounded-full overflow-hidden">
                         <View
                           className="h-full bg-slate-500 transition-all"
                           style={{ width: `${sentimentData.neutral}%` }}
@@ -548,14 +548,14 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
 
                   {/* 争议点 */}
                   {sentimentData.controversies && sentimentData.controversies.length > 0 && (
-                    <View className="mt-3 pt-3 border-t border-slate-700">
+                    <View className="mt-3 pt-3 border-t border-slate-200">
                       <View className="flex items-center gap-2 mb-2">
                         <Info size={14} color="#f59e0b" strokeWidth={2} />
                         <Text className="text-xs text-amber-400 font-medium">主要争议点</Text>
                       </View>
                       <View className="space-y-1">
                         {sentimentData.controversies.map((controversy, index) => (
-                          <Text key={index} className="text-xs text-slate-400">• {controversy}</Text>
+                          <Text key={index} className="text-xs text-slate-500">• {controversy}</Text>
                         ))}
                       </View>
                     </View>
@@ -567,19 +567,19 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
 
           {/* 🔗 相关热点推荐 */}
           {relatedTopics.length > 0 && (
-            <View className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700/50">
+            <View className="bg-white/50 rounded-2xl p-5 mb-6 border border-slate-200">
               <View className="flex items-center gap-2 mb-3">
                 <Link2 size={18} color="#8b5cf6" strokeWidth={2} />
                 <Text className="block text-base font-bold text-white">🔗 相关热点推荐</Text>
               </View>
               {loadingRelated ? (
-                <Text className="block text-sm text-slate-400">加载中...</Text>
+                <Text className="block text-sm text-slate-500">加载中...</Text>
               ) : (
                 <View className="space-y-2">
                   {relatedTopics.map((topic, index) => (
                     <View
                       key={topic.id}
-                      className="bg-slate-700/30 rounded-lg p-3 active:scale-[0.98] transition-transform"
+                      className="bg-white/30 rounded-lg p-3 active:scale-[0.98] transition-transform"
                       onClick={() => {
                         Taro.navigateTo({
                           url: `/pages/hotspot-detail/index?id=${topic.id}&keyword=${encodeURIComponent(topic.title)}&platform=${encodeURIComponent(topic.platform)}&hotness=${topic.hotness}`
@@ -593,7 +593,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
                         <View className="flex-1 min-w-0">
                           <Text className="text-sm text-white font-medium line-clamp-1 mb-1">{topic.title}</Text>
                           <View className="flex items-center gap-2">
-                            <Text className="text-xs text-slate-400">{topic.platform}</Text>
+                            <Text className="text-xs text-slate-500">{topic.platform}</Text>
                             <View className="flex items-center gap-1">
                               <Flame size={10} color="#fbbf24" strokeWidth={2} />
                               <Text className="text-xs text-amber-400">{formatHotness(topic.hotness)}</Text>
@@ -616,15 +616,15 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
           {/* 原文链接 - 改为次要按钮 */}
           {url && url !== '#' && (
             <View
-              className="bg-slate-700/30 rounded-xl p-4 border border-slate-700/30 active:scale-[0.98] transition-all cursor-pointer"
+              className="bg-white/30 rounded-xl p-4 border border-slate-200/30 active:scale-[0.98] transition-all cursor-pointer"
               onClick={handleOpenUrl}
             >
               <View className="flex items-center gap-3">
-                <View className="w-8 h-8 bg-slate-600/50 rounded-lg flex items-center justify-center">
+                <View className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
                   <ExternalLink size={16} color="#94a3b8" strokeWidth={2} />
                 </View>
                 <View className="flex-1">
-                  <Text className="block text-sm text-slate-300">查看原文链接</Text>
+                  <Text className="block text-sm text-slate-600">查看原文链接</Text>
                   <Text className="block text-xs text-slate-500">复制链接到剪贴板</Text>
                 </View>
               </View>
@@ -634,7 +634,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
       </ScrollView>
 
       {/* 底部操作栏 */}
-      <View className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 px-6 py-4 safe-area-bottom">
+      <View className="fixed bottom-0 left-0 right-0 bg-sky-50/95 backdrop-blur-lg border-t border-slate-800 px-6 py-4 safe-area-bottom">
         <View className="flex gap-3">
           {/* 收藏按钮 */}
           <View style={{ flex: 1 }}>
@@ -661,7 +661,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
           {/* 分享按钮 */}
           <View style={{ flex: 1 }}>
             <Button
-              className="w-full h-12 rounded-xl bg-slate-700/80 border border-slate-600 text-white font-medium flex items-center justify-center gap-2"
+              className="w-full h-12 rounded-xl bg-white/80 border border-slate-200 text-white font-medium flex items-center justify-center gap-2"
               onClick={() => {
                 // 复制内容到剪贴板
                 const shareText = `${keyword}\n\n${content || summary || ''}\n\n来源：${platform}\n热度：${formatHotness(hotness)}\n\n分享自星厨房内容创作助手`;

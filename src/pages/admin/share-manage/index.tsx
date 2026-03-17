@@ -79,7 +79,7 @@ export default function AdminShareManagePage() {
   // 获取共享范围标签
   const getShareScopeLabel = (scope: string) => {
     const labels: Record<string, { label: string; color: string; bg: string }> = {
-      custom: { label: '指定用户', color: 'text-blue-400', bg: 'bg-blue-500/20' },
+      custom: { label: '指定用户', color: 'text-sky-600', bg: 'bg-sky-500/20' },
       all: { label: '所有人', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
       department: { label: '同部门', color: 'text-purple-400', bg: 'bg-purple-500/20' },
     };
@@ -252,9 +252,9 @@ export default function AdminShareManagePage() {
   }, []);
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部导航栏 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
+      <View className="sticky top-0 z-10 bg-sky-50/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl flex items-center justify-center">
@@ -264,16 +264,16 @@ export default function AdminShareManagePage() {
           </View>
           <View className="flex items-center gap-2">
             <View
-              className="p-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
+              className="p-2 bg-white rounded-lg active:scale-95 transition-all"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/share-stats/index' })}
             >
-              <TrendingUp size={20} className="text-slate-400" />
+              <TrendingUp size={20} className="text-slate-500" />
             </View>
             <View
-              className="p-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
+              className="p-2 bg-white rounded-lg active:scale-95 transition-all"
               onClick={loadShareRecords}
             >
-              <RefreshCw size={20} className={`text-slate-400 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw size={20} className={`text-slate-500 ${loading ? 'animate-spin' : ''}`} />
             </View>
           </View>
         </View>
@@ -283,19 +283,19 @@ export default function AdminShareManagePage() {
         <View className="px-4 py-6">
           {/* 统计卡片 */}
           <View className="grid grid-cols-2 gap-3 mb-6">
-            <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700/50">
+            <View className="bg-white/60 rounded-2xl p-4 border border-slate-200">
               <View className="flex items-center gap-2 mb-2">
                 <Share2 size={20} color="#60a5fa" />
-                <Text className="block text-sm text-slate-400">用户共享</Text>
+                <Text className="block text-sm text-slate-500">用户共享</Text>
               </View>
               <Text className="block text-2xl font-bold text-white">
                 {shareRecords.filter((r) => r.isShared).length}
               </Text>
             </View>
-            <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700/50">
+            <View className="bg-white/60 rounded-2xl p-4 border border-slate-200">
               <View className="flex items-center gap-2 mb-2">
                 <Globe size={20} color="#34d399" />
-                <Text className="block text-sm text-slate-400">全局共享</Text>
+                <Text className="block text-sm text-slate-500">全局共享</Text>
               </View>
               <Text className="block text-2xl font-bold text-white">
                 {shareRecords.filter((r) => r.isGloballyShared).length}
@@ -304,8 +304,8 @@ export default function AdminShareManagePage() {
           </View>
 
           {/* 搜索框 */}
-          <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700/50 mb-4">
-            <View className="bg-slate-700/50 rounded-xl px-4 py-3 flex items-center gap-3">
+          <View className="bg-white/60 rounded-2xl p-4 border border-slate-200 mb-4">
+            <View className="bg-slate-50 rounded-xl px-4 py-3 flex items-center gap-3">
               <Search size={20} color="#94a3b8" />
               <Input
                 className="flex-1 bg-transparent text-white text-sm"
@@ -328,13 +328,13 @@ export default function AdminShareManagePage() {
                 className={`px-4 py-2 rounded-xl border-2 transition-all ${
                   filterType === filter.value
                     ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-slate-700 bg-slate-800/50'
+                    : 'border-slate-200 bg-white/50'
                 }`}
                 onClick={() => setFilterType(filter.value as any)}
               >
                 <Text
                   className={`block text-sm ${
-                    filterType === filter.value ? 'text-white' : 'text-slate-400'
+                    filterType === filter.value ? 'text-white' : 'text-slate-500'
                   }`}
                 >
                   {filter.label}
@@ -359,7 +359,7 @@ export default function AdminShareManagePage() {
                 return (
                   <View
                     key={record.lexiconId}
-                    className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700/50"
+                    className="bg-white/60 rounded-2xl p-4 border border-slate-200"
                   >
                     {/* 语料信息 */}
                     <View className="mb-3">
@@ -384,7 +384,7 @@ export default function AdminShareManagePage() {
                           <Text className="block text-base font-bold text-white mb-1">
                             {record.lexiconTitle}
                           </Text>
-                          <Text className="block text-xs text-slate-400">
+                          <Text className="block text-xs text-slate-500">
                             所有者: {record.userName}
                           </Text>
                         </View>
@@ -393,9 +393,9 @@ export default function AdminShareManagePage() {
 
                     {/* 共享详情 */}
                     {record.isShared && (
-                      <View className="mb-3 px-3 py-2 bg-slate-700/30 rounded-xl">
+                      <View className="mb-3 px-3 py-2 bg-white/30 rounded-xl">
                         <View className="flex items-center justify-between">
-                          <Text className="block text-xs text-slate-400">
+                          <Text className="block text-xs text-slate-500">
                             共享给 {record.shareScope === 'custom' ? `${record.sharedWithUsers.length} 位用户` : scopeInfo.label}
                           </Text>
                           {record.sharedAt && (
@@ -409,13 +409,13 @@ export default function AdminShareManagePage() {
 
                     {/* 操作按钮 */}
                     <View
-                      className="flex gap-2 pt-3 border-t border-slate-700/50"
+                      className="flex gap-2 pt-3 border-t border-slate-200"
                       style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}
                     >
                       <View style={{ flex: 1 }}>
                         <Button
                           size="mini"
-                          className="w-full bg-slate-700 text-white"
+                          className="w-full bg-white text-white"
                           onClick={() => loadShareHistory(record.lexiconId)}
                         >
                           查看历史
@@ -453,18 +453,18 @@ export default function AdminShareManagePage() {
           onClick={() => setShowHistory(false)}
         >
           <View
-            className="bg-slate-800 w-full rounded-t-3xl max-h-[80vh]"
+            className="bg-white w-full rounded-t-3xl max-h-[80vh]"
             style={{ display: 'flex', flexDirection: 'column' }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* 弹窗标题 */}
             <View
-              className="px-4 py-3 border-b border-slate-700"
+              className="px-4 py-3 border-b border-slate-200"
               style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
             >
               <Text className="block text-white text-base font-semibold">共享历史</Text>
               <View
-                className="p-1 bg-slate-700 rounded-full"
+                className="p-1 bg-white rounded-full"
                 onClick={() => setShowHistory(false)}
               >
                 <X size={18} color="#94a3b8" />
@@ -489,7 +489,7 @@ export default function AdminShareManagePage() {
                 historyRecords.map((record) => (
                   <View
                     key={record.id}
-                    className="bg-slate-700/30 rounded-xl p-3 mb-2 border border-slate-700/50"
+                    className="bg-white/30 rounded-xl p-3 mb-2 border border-slate-200"
                   >
                     {/* 操作人 */}
                     <View
@@ -502,7 +502,7 @@ export default function AdminShareManagePage() {
                         <Share2 size={14} color="#60a5fa" />
                         <Text className="block text-white text-sm">{record.operatorName}</Text>
                       </View>
-                      <Text className="block text-slate-400 text-xs">
+                      <Text className="block text-slate-500 text-xs">
                         {new Date(record.createdAt).toLocaleString('zh-CN')}
                       </Text>
                     </View>
@@ -528,7 +528,7 @@ export default function AdminShareManagePage() {
                     {record.shareScope && record.shareScope !== 'global' && (
                       <View className="flex items-center gap-1 mb-2">
                         <Users size={12} color="#94a3b8" />
-                        <Text className="block text-slate-400 text-xs">
+                        <Text className="block text-slate-500 text-xs">
                           范围: {record.shareScope === 'custom' ? '指定用户' : record.shareScope === 'all' ? '所有人' : '同部门'}
                         </Text>
                       </View>
@@ -537,9 +537,9 @@ export default function AdminShareManagePage() {
                     {/* 共享用户 */}
                     {record.sharedWithUsers && record.sharedWithUsers.length > 0 && (
                       <View
-                        className="px-2 py-1.5 bg-slate-600/30 rounded-lg"
+                        className="px-2 py-1.5 bg-slate-100/30 rounded-lg"
                       >
-                        <Text className="block text-slate-300 text-xs">
+                        <Text className="block text-slate-600 text-xs">
                           共享给 {record.sharedWithUsers.length} 位用户
                         </Text>
                       </View>

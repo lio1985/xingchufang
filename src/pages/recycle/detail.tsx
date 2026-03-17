@@ -45,8 +45,8 @@ interface FollowUp {
 }
 
 const statusMap = {
-  pending: { label: '待接触', color: 'text-slate-400', bg: 'bg-slate-500/20', icon: Target },
-  contacted: { label: '已接触', color: 'text-blue-400', bg: 'bg-blue-500/20', icon: Activity },
+  pending: { label: '待接触', color: 'text-slate-500', bg: 'bg-slate-500/20', icon: Target },
+  contacted: { label: '已接触', color: 'text-sky-600', bg: 'bg-sky-500/20', icon: Activity },
   assessing: { label: '评估中', color: 'text-purple-400', bg: 'bg-purple-500/20', icon: Activity },
   negotiating: { label: '谈判中', color: 'text-amber-400', bg: 'bg-amber-500/20', icon: TrendingUp },
   deal: { label: '已签约', color: 'text-emerald-400', bg: 'bg-emerald-500/20', icon: Check },
@@ -181,8 +181,8 @@ export default function RecycleStoreDetail() {
 
   if (!store) {
     return (
-      <View className="min-h-screen bg-slate-900 items-center justify-center">
-        <Text className="block text-slate-400">加载中...</Text>
+      <View className="min-h-screen bg-sky-50 items-center justify-center">
+        <Text className="block text-slate-500">加载中...</Text>
       </View>
     );
   }
@@ -190,9 +190,9 @@ export default function RecycleStoreDetail() {
   const statusConfig = statusMap[store.recycle_status];
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 头部 */}
-      <View className="px-4 pt-12 pb-4 bg-slate-800/50">
+      <View className="px-4 pt-12 pb-4 bg-white/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center" onClick={goBack}>
             <ArrowLeft size={24} color="#ffffff" />
@@ -221,27 +221,27 @@ export default function RecycleStoreDetail() {
 
       <ScrollView className="px-4 pb-24" scrollY style={{ height: 'calc(100vh - 160px)' }}>
         {/* 关键信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
+        <View className="bg-white rounded-xl p-4 mb-4">
           <View className="flex justify-between mb-4">
             <View className="items-center">
               <Text className="block text-2xl font-bold text-cyan-400">
                 ¥{(store.estimated_value || 0).toFixed(0)}
               </Text>
-              <Text className="block text-slate-400 text-xs mt-1">预估价值（元）</Text>
+              <Text className="block text-slate-500 text-xs mt-1">预估价值（元）</Text>
             </View>
             {store.total_cost && (
               <View className="items-center">
                 <Text className="block text-2xl font-bold text-emerald-400">
                   ¥{store.total_cost.toFixed(0)}
                 </Text>
-                <Text className="block text-slate-400 text-xs mt-1">总成本（元）</Text>
+                <Text className="block text-slate-500 text-xs mt-1">总成本（元）</Text>
               </View>
             )}
           </View>
 
-          <View className="border-t border-slate-700 pt-4">
+          <View className="border-t border-slate-200 pt-4">
             <View className="flex items-center mb-3" onClick={makePhoneCall}>
-              <Phone size={16} className="text-blue-400 mr-3" />
+              <Phone size={16} className="text-sky-600 mr-3" />
               <Text className="block text-white text-sm">{store.phone || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
@@ -261,32 +261,32 @@ export default function RecycleStoreDetail() {
               <Text className="block text-white text-sm flex-1">
                 {store.city || ''} {store.address || '未填写地址'}
               </Text>
-              {store.location && <Navigation size={16} className="text-blue-400" />}
+              {store.location && <Navigation size={16} className="text-sky-600" />}
             </View>
           </View>
         </View>
 
         {/* 业务信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
+        <View className="bg-white rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">业务信息</Text>
 
           <View className="flex justify-between mb-3">
-            <Text className="block text-slate-400 text-sm">餐饮类别</Text>
+            <Text className="block text-slate-500 text-sm">餐饮类别</Text>
             <Text className="block text-white text-sm">{store.business_type || '未填写'}</Text>
           </View>
           <View className="flex justify-between mb-3">
-            <Text className="block text-slate-400 text-sm">面积</Text>
+            <Text className="block text-slate-500 text-sm">面积</Text>
             <Text className="block text-white text-sm">
               {store.area_size ? `${store.area_size}㎡` : '未填写'}
             </Text>
           </View>
           <View className="flex justify-between mb-3">
-            <Text className="block text-slate-400 text-sm">开业时间</Text>
+            <Text className="block text-slate-500 text-sm">开业时间</Text>
             <Text className="block text-white text-sm">{store.open_date || '未填写'}</Text>
           </View>
           {store.close_reason && (
-            <View className="mt-3 pt-3 border-t border-slate-700">
-              <Text className="block text-slate-400 text-sm mb-2">关店原因</Text>
+            <View className="mt-3 pt-3 border-t border-slate-200">
+              <Text className="block text-slate-500 text-sm mb-2">关店原因</Text>
               <Text className="block text-white text-sm">{store.close_reason}</Text>
             </View>
           )}
@@ -294,18 +294,18 @@ export default function RecycleStoreDetail() {
 
         {/* 回收信息 */}
         {(store.estimated_devices || store.purchase_price || store.recycle_date) && (
-          <View className="bg-slate-800 rounded-xl p-4 mb-4">
+          <View className="bg-white rounded-xl p-4 mb-4">
             <Text className="block text-white text-base font-semibold mb-4">回收信息</Text>
 
             {store.estimated_devices && (
               <View className="mb-3">
-                <Text className="block text-slate-400 text-sm mb-2">预估设备清单</Text>
+                <Text className="block text-slate-500 text-sm mb-2">预估设备清单</Text>
                 <Text className="block text-white text-sm">{store.estimated_devices}</Text>
               </View>
             )}
             {store.purchase_price && (
               <View className="flex justify-between mb-3">
-                <Text className="block text-slate-400 text-sm">收购价格</Text>
+                <Text className="block text-slate-500 text-sm">收购价格</Text>
                 <Text className="block text-emerald-400 text-sm font-semibold">
                   ¥{store.purchase_price.toFixed(0)}
                 </Text>
@@ -313,13 +313,13 @@ export default function RecycleStoreDetail() {
             )}
             {store.recycle_date && (
               <View className="flex justify-between mb-3">
-                <Text className="block text-slate-400 text-sm">回收日期</Text>
+                <Text className="block text-slate-500 text-sm">回收日期</Text>
                 <Text className="block text-white text-sm">{store.recycle_date}</Text>
               </View>
             )}
             {store.device_count && (
               <View className="flex justify-between">
-                <Text className="block text-slate-400 text-sm">设备数量</Text>
+                <Text className="block text-slate-500 text-sm">设备数量</Text>
                 <Text className="block text-white text-sm">{store.device_count}台</Text>
               </View>
             )}
@@ -327,7 +327,7 @@ export default function RecycleStoreDetail() {
         )}
 
         {/* 跟进记录 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
+        <View className="bg-white rounded-xl p-4 mb-4">
           <View className="flex justify-between items-center mb-4">
             <Text className="block text-white text-base font-semibold">跟进记录</Text>
             <View
@@ -342,14 +342,14 @@ export default function RecycleStoreDetail() {
 
           {followUps.length === 0 ? (
             <View className="text-center py-8">
-              <Text className="block text-slate-400 text-sm">暂无跟进记录</Text>
+              <Text className="block text-slate-500 text-sm">暂无跟进记录</Text>
             </View>
           ) : (
             <View>
               {followUps.map((followUp) => (
-                <View key={followUp.id} className="border-l-2 border-slate-700 pl-4 mb-4">
+                <View key={followUp.id} className="border-l-2 border-slate-200 pl-4 mb-4">
                   <View className="flex items-center justify-between mb-2">
-                    <Text className="block text-slate-400 text-xs">
+                    <Text className="block text-slate-500 text-xs">
                       {new Date(followUp.follow_up_time).toLocaleString('zh-CN', {
                         year: 'numeric',
                         month: '2-digit',
@@ -359,8 +359,8 @@ export default function RecycleStoreDetail() {
                       })}
                     </Text>
                     {followUp.follow_up_method && (
-                      <View className="bg-slate-700 px-2 py-0.5 rounded">
-                        <Text className="block text-slate-400 text-xs">
+                      <View className="bg-white px-2 py-0.5 rounded">
+                        <Text className="block text-slate-500 text-xs">
                           {followUp.follow_up_method}
                         </Text>
                       </View>
@@ -368,7 +368,7 @@ export default function RecycleStoreDetail() {
                   </View>
                   <Text className="block text-white text-sm mb-2">{followUp.content}</Text>
                   {followUp.next_follow_up_plan && (
-                    <View className="mt-2 pt-2 border-t border-slate-700">
+                    <View className="mt-2 pt-2 border-t border-slate-200">
                       <Text className="block text-slate-500 text-xs">
                         下次计划：{followUp.next_follow_up_plan}
                       </Text>
@@ -384,24 +384,24 @@ export default function RecycleStoreDetail() {
       {/* 新增跟进弹窗 */}
       {showAddFollowUp && (
         <View className="fixed inset-0 bg-black/50 flex items-end z-50">
-          <View className="bg-slate-800 w-full rounded-t-2xl p-4">
+          <View className="bg-white w-full rounded-t-2xl p-4">
             <View className="flex justify-between items-center mb-4">
               <Text className="block text-white text-base font-semibold">新增跟进记录</Text>
               <View onClick={() => setShowAddFollowUp(false)}>
-                <Text className="block text-slate-400 text-xl">×</Text>
+                <Text className="block text-slate-500 text-xl">×</Text>
               </View>
             </View>
 
             <View className="mb-4">
-              <Text className="block text-slate-400 text-sm mb-2">跟进方式</Text>
+              <Text className="block text-slate-500 text-sm mb-2">跟进方式</Text>
               <View className="flex gap-2">
                 {['电话', '微信', '上门'].map((method) => (
                   <View
                     key={method}
-                    className={`px-4 py-2 rounded-lg ${followUpMethod === method ? 'bg-cyan-600' : 'bg-slate-700'}`}
+                    className={`px-4 py-2 rounded-lg ${followUpMethod === method ? 'bg-cyan-600' : 'bg-white'}`}
                     onClick={() => setFollowUpMethod(method)}
                   >
-                    <Text className={`block text-sm ${followUpMethod === method ? 'text-white' : 'text-slate-400'}`}>
+                    <Text className={`block text-sm ${followUpMethod === method ? 'text-white' : 'text-slate-500'}`}>
                       {method}
                     </Text>
                   </View>
@@ -410,9 +410,9 @@ export default function RecycleStoreDetail() {
             </View>
 
             <View className="mb-4">
-              <Text className="block text-slate-400 text-sm mb-2">跟进内容</Text>
+              <Text className="block text-slate-500 text-sm mb-2">跟进内容</Text>
               <Textarea
-                className="bg-slate-700 rounded-lg p-3 text-white text-sm min-h-[100px]"
+                className="bg-white rounded-lg p-3 text-white text-sm min-h-[100px]"
                 placeholder="请输入跟进内容"
                 value={followUpContent}
                 onInput={(e) => setFollowUpContent(e.detail.value)}

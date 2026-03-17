@@ -85,7 +85,7 @@ export default function AdminAIReportPage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部导航栏 */}
       <View style={{
         position: 'fixed',
@@ -115,13 +115,13 @@ export default function AdminAIReportPage() {
       >
         <View className="px-4 py-6">
           {/* 操作卡片 */}
-          <View className="bg-slate-800 rounded-2xl p-4 mb-6">
+          <View className="bg-white rounded-2xl p-4 mb-6">
             <Text className="block text-white text-base font-semibold mb-4">
               生成设置
             </Text>
 
             <View className="mb-4">
-              <Text className="block text-slate-400 text-sm mb-2">
+              <Text className="block text-slate-500 text-sm mb-2">
                 时间范围
               </Text>
               <View style={{
@@ -143,7 +143,7 @@ export default function AdminAIReportPage() {
                   >
                     <Text
                       className={`text-sm ${
-                        timeRange === option.value ? 'text-white' : 'text-slate-300'
+                        timeRange === option.value ? 'text-white' : 'text-slate-600'
                       }`}
                     >
                       {option.label}
@@ -183,7 +183,7 @@ export default function AdminAIReportPage() {
           {reportData && reportData.length > 0 ? (
             <>
               {/* 报告头部 */}
-              <View className="bg-slate-800 rounded-2xl p-4 mb-6">
+              <View className="bg-white rounded-2xl p-4 mb-6">
                 <View className="flex items-center justify-between mb-4">
                   <View className="flex items-center gap-2">
                     <FileText size={20} color="#3b82f6" />
@@ -195,14 +195,14 @@ export default function AdminAIReportPage() {
                     <Download size={20} color="#10b981" />
                   </View>
                 </View>
-                <Text className="block text-slate-400 text-sm">
+                <Text className="block text-slate-500 text-sm">
                   生成时间: {new Date().toLocaleString('zh-CN')}
                 </Text>
               </View>
 
               {/* 报告内容 */}
               {reportData.map((section, index) => (
-                <View key={index} className="bg-slate-800 rounded-2xl p-4 mb-4">
+                <View key={index} className="bg-white rounded-2xl p-4 mb-4">
                   <View className="flex items-center gap-2 mb-3">
                     {section.icon && (
                       <Text className="text-2xl">{section.icon}</Text>
@@ -211,49 +211,49 @@ export default function AdminAIReportPage() {
                       {section.title}
                     </Text>
                   </View>
-                  <Text className="block text-slate-300 text-sm leading-relaxed whitespace-pre-line">
+                  <Text className="block text-slate-600 text-sm leading-relaxed whitespace-pre-line">
                     {section.content}
                   </Text>
                 </View>
               ))}
 
               {/* 数据统计卡片 */}
-              <View className="bg-slate-800 rounded-2xl p-4 mb-4">
+              <View className="bg-white rounded-2xl p-4 mb-4">
                 <Text className="block text-white text-base font-semibold mb-4">
                   数据概览
                 </Text>
                 <View className="grid grid-cols-2 gap-4">
-                  <View className="bg-slate-700 rounded-xl p-4">
+                  <View className="bg-white rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
                       <Users size={18} color="#3b82f6" />
-                      <Text className="text-slate-400 text-xs">活跃用户</Text>
+                      <Text className="text-slate-500 text-xs">活跃用户</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
                       128
                     </Text>
                   </View>
-                  <View className="bg-slate-700 rounded-xl p-4">
+                  <View className="bg-white rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
                       <Activity size={18} color="#10b981" />
-                      <Text className="text-slate-400 text-xs">使用频次</Text>
+                      <Text className="text-slate-500 text-xs">使用频次</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
                       1,234
                     </Text>
                   </View>
-                  <View className="bg-slate-700 rounded-xl p-4">
+                  <View className="bg-white rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
                       <FileText size={18} color="#f59e0b" />
-                      <Text className="text-slate-400 text-xs">对话数量</Text>
+                      <Text className="text-slate-500 text-xs">对话数量</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
                       567
                     </Text>
                   </View>
-                  <View className="bg-slate-700 rounded-xl p-4">
+                  <View className="bg-white rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
                       <TrendingUp size={18} color="#ec4899" />
-                      <Text className="text-slate-400 text-xs">转化率</Text>
+                      <Text className="text-slate-500 text-xs">转化率</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
                       42.3%
@@ -263,11 +263,11 @@ export default function AdminAIReportPage() {
               </View>
             </>
           ) : (
-            <View className="bg-slate-800 rounded-2xl p-8 text-center">
+            <View className="bg-white rounded-2xl p-8 text-center">
               <View className="flex justify-center mb-4">
                 <Info size={48} color="#64748b" />
               </View>
-              <Text className="block text-slate-400 text-base mb-2">
+              <Text className="block text-slate-500 text-base mb-2">
                 暂无报告数据
               </Text>
               <Text className="block text-slate-500 text-sm">
@@ -308,7 +308,7 @@ export default function AdminAIReportPage() {
           }}
         >
           <RefreshCw size={20} color="#94a3b8" />
-          <Text className="text-slate-300 font-semibold text-base">刷新</Text>
+          <Text className="text-slate-600 font-semibold text-base">刷新</Text>
         </View>
         <View
           onClick={exportReport}

@@ -301,12 +301,12 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部搜索栏 */}
-      <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700">
+      <View className="sticky top-0 z-10 bg-white px-4 py-3 border-b border-slate-200">
         <View className="flex items-center gap-3">
-          <View className="flex-1 bg-slate-700 rounded-lg px-4 py-2 flex items-center gap-2">
-            <Search size={16} className="text-slate-400" />
+          <View className="flex-1 bg-white rounded-lg px-4 py-2 flex items-center gap-2">
+            <Search size={16} className="text-slate-500" />
             <Input
               className="flex-1 text-white bg-transparent placeholder-slate-400"
               placeholder="搜索用户名、姓名、员工ID..."
@@ -315,10 +315,10 @@ export default function AdminUsersPage() {
             />
           </View>
           <View
-            className="bg-slate-700 rounded-lg px-3 py-2"
+            className="bg-white rounded-lg px-3 py-2"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <ListFilter size={20} className="text-slate-300" />
+            <ListFilter size={20} className="text-slate-600" />
           </View>
         </View>
 
@@ -329,7 +329,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 roleFilter === 'all'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setRoleFilter('all')}
             >
@@ -339,7 +339,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 roleFilter === 'user'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setRoleFilter('user')}
             >
@@ -349,7 +349,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 roleFilter === 'admin'
                   ? 'bg-blue-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setRoleFilter('admin')}
             >
@@ -365,7 +365,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'all'
                   ? 'bg-green-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('all')}
             >
@@ -375,7 +375,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'active'
                   ? 'bg-green-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('active')}
             >
@@ -385,7 +385,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'pending'
                   ? 'bg-amber-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('pending')}
             >
@@ -395,7 +395,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'disabled'
                   ? 'bg-yellow-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('disabled')}
             >
@@ -405,7 +405,7 @@ export default function AdminUsersPage() {
               className={`px-3 py-1.5 rounded-lg text-sm ${
                 statusFilter === 'deleted'
                   ? 'bg-red-500 text-white'
-                  : 'bg-slate-700 text-slate-300'
+                  : 'bg-white text-slate-600'
               }`}
               onClick={() => setStatusFilter('deleted')}
             >
@@ -415,7 +415,7 @@ export default function AdminUsersPage() {
         )}
 
         {/* 统计信息 */}
-        <View className="mt-3 flex justify-between text-slate-400 text-sm">
+        <View className="mt-3 flex justify-between text-slate-500 text-sm">
           <Text className="block">共 {total} 位用户</Text>
           <Text className="block">第 {page} 页</Text>
         </View>
@@ -434,7 +434,7 @@ export default function AdminUsersPage() {
           {users.map((user) => (
             <View
               key={user.id}
-              className="bg-slate-800 rounded-xl p-4 border border-slate-700"
+              className="bg-white rounded-xl p-4 border border-slate-200"
               onClick={() => showUserDetail(user)}
             >
               <View className="flex items-start gap-3">
@@ -457,7 +457,7 @@ export default function AdminUsersPage() {
                     </View>
                   </View>
                   {user.profile?.realName && (
-                    <Text className="text-slate-400 text-sm block">{user.profile.realName}</Text>
+                    <Text className="text-slate-500 text-sm block">{user.profile.realName}</Text>
                   )}
                   {user.profile?.department && (
                     <Text className="text-slate-500 text-sm block">{user.profile.department}</Text>
@@ -466,22 +466,22 @@ export default function AdminUsersPage() {
                     注册于 {new Date(user.createdAt).toLocaleDateString('zh-CN')}
                   </Text>
                 </View>
-                <ChevronDown size={20} className="text-slate-400 flex-shrink-0" />
+                <ChevronDown size={20} className="text-slate-500 flex-shrink-0" />
               </View>
 
               {/* 用户统计 */}
               {user.statistics && (
-                <View className="mt-3 pt-3 border-t border-slate-700 flex gap-4 text-xs">
+                <View className="mt-3 pt-3 border-t border-slate-200 flex gap-4 text-xs">
                   <View className="flex items-center gap-1">
-                    <Text className="text-slate-400">对话:</Text>
-                    <Text className="text-blue-400 font-semibold">{user.statistics.conversationCount}</Text>
+                    <Text className="text-slate-500">对话:</Text>
+                    <Text className="text-sky-600 font-semibold">{user.statistics.conversationCount}</Text>
                   </View>
                   <View className="flex items-center gap-1">
-                    <Text className="text-slate-400">消息:</Text>
+                    <Text className="text-slate-500">消息:</Text>
                     <Text className="text-green-400 font-semibold">{user.statistics.messageCount}</Text>
                   </View>
                   <View className="flex items-center gap-1">
-                    <Text className="text-slate-400">文件:</Text>
+                    <Text className="text-slate-500">文件:</Text>
                     <Text className="text-purple-400 font-semibold">{user.statistics.fileCount}</Text>
                   </View>
                 </View>
@@ -491,7 +491,7 @@ export default function AdminUsersPage() {
 
           {loading && (
             <View className="text-center py-4">
-              <Text className="text-slate-400">加载中...</Text>
+              <Text className="text-slate-500">加载中...</Text>
             </View>
           )}
 
@@ -557,7 +557,7 @@ export default function AdminUsersPage() {
             <View className="flex justify-between items-center mb-4">
               <Text className="text-white text-lg font-bold">用户详情</Text>
               <View onClick={() => setShowDetailModal(false)}>
-                <Text className="text-slate-400 text-2xl">×</Text>
+                <Text className="text-slate-500 text-2xl">×</Text>
               </View>
             </View>
 
@@ -570,7 +570,7 @@ export default function AdminUsersPage() {
                 <View className="flex-1">
                   {editingNickname ? (
                     <View className="flex gap-2">
-                      <View className="flex-1 bg-slate-700 rounded-lg px-3 py-2">
+                      <View className="flex-1 bg-white rounded-lg px-3 py-2">
                         <Input
                           className="text-white"
                           value={newNickname}
@@ -585,7 +585,7 @@ export default function AdminUsersPage() {
                         <Text>保存</Text>
                       </View>
                       <View
-                        className="bg-slate-600 text-white px-4 py-2 rounded-lg"
+                        className="bg-slate-100 text-white px-4 py-2 rounded-lg"
                         onClick={() => {
                           setEditingNickname(false);
                           setNewNickname('');
@@ -598,18 +598,18 @@ export default function AdminUsersPage() {
                     <View className="flex items-center gap-2">
                       <View className="flex-1">
                         <Text className="text-white font-bold text-lg block">{selectedUser.username}</Text>
-                        <Text className="text-slate-400 text-sm block">
+                        <Text className="text-slate-500 text-sm block">
                           {selectedUser.profile?.realName || '未设置姓名'}
                         </Text>
                       </View>
                       <View
-                        className="bg-slate-700 px-3 py-1 rounded-lg"
+                        className="bg-white px-3 py-1 rounded-lg"
                         onClick={() => {
                           setEditingNickname(true);
                           setNewNickname(selectedUser.username);
                         }}
                       >
-                        <Text className="text-slate-400 text-sm">编辑</Text>
+                        <Text className="text-slate-500 text-sm">编辑</Text>
                       </View>
                     </View>
                   )}
@@ -632,53 +632,53 @@ export default function AdminUsersPage() {
             </View>
 
             {/* 档案信息 */}
-            <View className="bg-slate-700 rounded-lg p-4 mb-4">
+            <View className="bg-white rounded-lg p-4 mb-4">
               <Text className="text-white font-semibold mb-3 block">档案信息</Text>
               {selectedUser.employeeId && (
                 <View className="mb-2">
-                  <Text className="text-slate-400 text-sm block">员工ID</Text>
+                  <Text className="text-slate-500 text-sm block">员工ID</Text>
                   <Text className="text-emerald-400 font-mono">#{selectedUser.employeeId}</Text>
                 </View>
               )}
               {selectedUser.profile?.realName && (
                 <View className="mb-2">
-                  <Text className="text-slate-400 text-sm block">真实姓名</Text>
+                  <Text className="text-slate-500 text-sm block">真实姓名</Text>
                   <Text className="text-white">{selectedUser.profile.realName}</Text>
                 </View>
               )}
               {selectedUser.profile?.department && (
                 <View className="mb-2">
-                  <Text className="text-slate-400 text-sm block">部门</Text>
+                  <Text className="text-slate-500 text-sm block">部门</Text>
                   <Text className="text-white">{selectedUser.profile.department}</Text>
                 </View>
               )}
               {selectedUser.profile?.position && (
                 <View className="mb-2">
-                  <Text className="text-slate-400 text-sm block">职位</Text>
+                  <Text className="text-slate-500 text-sm block">职位</Text>
                   <Text className="text-white">{selectedUser.profile.position}</Text>
                 </View>
               )}
               {selectedUser.profile?.email && (
                 <View className="mb-2">
-                  <Text className="text-slate-400 text-sm block">邮箱</Text>
+                  <Text className="text-slate-500 text-sm block">邮箱</Text>
                   <Text className="text-white">{selectedUser.profile.email}</Text>
                 </View>
               )}
               {selectedUser.profile?.phone && (
                 <View className="mb-2">
-                  <Text className="text-slate-400 text-sm block">电话</Text>
+                  <Text className="text-slate-500 text-sm block">电话</Text>
                   <Text className="text-white">{selectedUser.profile.phone}</Text>
                 </View>
               )}
               <View className="mb-2">
-                <Text className="text-slate-400 text-sm block">注册时间</Text>
+                <Text className="text-slate-500 text-sm block">注册时间</Text>
                 <Text className="text-white">
                   {new Date(selectedUser.createdAt).toLocaleString('zh-CN')}
                 </Text>
               </View>
               {selectedUser.lastLoginAt && (
                 <View className="mb-2">
-                  <Text className="text-slate-400 text-sm block">最后登录</Text>
+                  <Text className="text-slate-500 text-sm block">最后登录</Text>
                   <Text className="text-white">
                     {new Date(selectedUser.lastLoginAt).toLocaleString('zh-CN')}
                   </Text>
@@ -688,84 +688,84 @@ export default function AdminUsersPage() {
 
             {/* 用户数据统计 */}
             {selectedUser.statistics && (
-              <View className="bg-slate-700 rounded-lg p-4 mb-4">
+              <View className="bg-white rounded-lg p-4 mb-4">
                 <Text className="text-white font-semibold mb-3 block">数据统计</Text>
                 <View className="grid grid-cols-3 gap-3">
-                  <View className="bg-slate-600 rounded-lg p-3 text-center">
-                    <Text className="text-2xl font-bold text-blue-400 block">
+                  <View className="bg-slate-100 rounded-lg p-3 text-center">
+                    <Text className="text-2xl font-bold text-sky-600 block">
                       {selectedUser.statistics.conversationCount}
                     </Text>
-                    <Text className="text-slate-400 text-xs block">对话</Text>
+                    <Text className="text-slate-500 text-xs block">对话</Text>
                   </View>
-                  <View className="bg-slate-600 rounded-lg p-3 text-center">
+                  <View className="bg-slate-100 rounded-lg p-3 text-center">
                     <Text className="text-2xl font-bold text-green-400 block">
                       {selectedUser.statistics.messageCount}
                     </Text>
-                    <Text className="text-slate-400 text-xs block">消息</Text>
+                    <Text className="text-slate-500 text-xs block">消息</Text>
                   </View>
-                  <View className="bg-slate-600 rounded-lg p-3 text-center">
+                  <View className="bg-slate-100 rounded-lg p-3 text-center">
                     <Text className="text-2xl font-bold text-purple-400 block">
                       {selectedUser.statistics.fileCount}
                     </Text>
-                    <Text className="text-slate-400 text-xs block">文件</Text>
+                    <Text className="text-slate-500 text-xs block">文件</Text>
                   </View>
                 </View>
               </View>
             )}
 
             {/* 查看用户数据 */}
-            <View className="bg-slate-700 rounded-lg p-4 mb-4">
+            <View className="bg-white rounded-lg p-4 mb-4">
               <Text className="text-white font-semibold mb-3 block">查看用户数据</Text>
               <View className="space-y-2">
                 <View
-                  className="bg-slate-600 rounded-lg p-3 flex items-center justify-between"
+                  className="bg-slate-100 rounded-lg p-3 flex items-center justify-between"
                   onClick={() => viewUserConversations(selectedUser.id)}
                 >
                   <View className="flex items-center gap-3">
                     <Text className="text-xl">💬</Text>
                     <Text className="text-white">对话记录</Text>
                   </View>
-                  <Text className="text-slate-400 text-sm">查看 {selectedUser.statistics?.conversationCount || 0} 条</Text>
+                  <Text className="text-slate-500 text-sm">查看 {selectedUser.statistics?.conversationCount || 0} 条</Text>
                 </View>
                 <View
-                  className="bg-slate-600 rounded-lg p-3 flex items-center justify-between"
+                  className="bg-slate-100 rounded-lg p-3 flex items-center justify-between"
                   onClick={() => viewUserLexicons(selectedUser.id)}
                 >
                   <View className="flex items-center gap-3">
                     <Text className="text-xl">📚</Text>
                     <Text className="text-white">语料库</Text>
                   </View>
-                  <Text className="text-slate-400 text-sm">查看 {selectedUser.statistics?.lexiconCount || 0} 个</Text>
+                  <Text className="text-slate-500 text-sm">查看 {selectedUser.statistics?.lexiconCount || 0} 个</Text>
                 </View>
                 <View
-                  className="bg-slate-600 rounded-lg p-3 flex items-center justify-between"
+                  className="bg-slate-100 rounded-lg p-3 flex items-center justify-between"
                   onClick={() => viewUserFiles(selectedUser.id)}
                 >
                   <View className="flex items-center gap-3">
                     <Text className="text-xl">📁</Text>
                     <Text className="text-white">文件上传</Text>
                   </View>
-                  <Text className="text-slate-400 text-sm">查看 {selectedUser.statistics?.fileCount || 0} 个</Text>
+                  <Text className="text-slate-500 text-sm">查看 {selectedUser.statistics?.fileCount || 0} 个</Text>
                 </View>
                 <View
-                  className="bg-slate-600 rounded-lg p-3 flex items-center justify-between"
+                  className="bg-slate-100 rounded-lg p-3 flex items-center justify-between"
                   onClick={() => viewUserTasks(selectedUser.id)}
                 >
                   <View className="flex items-center gap-3">
                     <Text className="text-xl">✅</Text>
                     <Text className="text-white">任务计划</Text>
                   </View>
-                  <Text className="text-slate-400 text-sm">查看 {selectedUser.statistics?.workPlanCount || 0} 个</Text>
+                  <Text className="text-slate-500 text-sm">查看 {selectedUser.statistics?.workPlanCount || 0} 个</Text>
                 </View>
                 <View
-                  className="bg-slate-600 rounded-lg p-3 flex items-center justify-between"
+                  className="bg-slate-100 rounded-lg p-3 flex items-center justify-between"
                   onClick={() => viewUserAuditLogs(selectedUser.id)}
                 >
                   <View className="flex items-center gap-3">
                     <Text className="text-xl">📋</Text>
                     <Text className="text-white">操作日志</Text>
                   </View>
-                  <Text className="text-slate-400 text-sm">查看详细记录</Text>
+                  <Text className="text-slate-500 text-sm">查看详细记录</Text>
                 </View>
               </View>
             </View>
@@ -776,8 +776,8 @@ export default function AdminUsersPage() {
                 <Text className="text-white font-semibold block">操作</Text>
 
                 {/* 修改角色 */}
-                <View className="bg-slate-700 rounded-lg p-4">
-                  <Text className="text-slate-400 text-sm mb-2 block">修改角色</Text>
+                <View className="bg-white rounded-lg p-4">
+                  <Text className="text-slate-500 text-sm mb-2 block">修改角色</Text>
                   <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
                     <View
                       style={{
@@ -837,8 +837,8 @@ export default function AdminUsersPage() {
                 </View>
 
                 {/* 修改状态 */}
-                <View className="bg-slate-700 rounded-lg p-4">
-                  <Text className="text-slate-400 text-sm mb-2 block">修改状态</Text>
+                <View className="bg-white rounded-lg p-4">
+                  <Text className="text-slate-500 text-sm mb-2 block">修改状态</Text>
                   <View style={{ display: 'flex', flexDirection: 'row', gap: '8px', flexWrap: 'wrap' }}>
                     {(selectedUser.status as 'active' | 'disabled' | 'deleted') !== 'active' && (
                       <View

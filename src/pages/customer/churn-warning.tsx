@@ -170,14 +170,14 @@ export default function ChurnWarningList() {
   };
 
   return (
-    <View className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+    <View className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-slate-900">
       {/* Header */}
-      <View className="pt-12 pb-4 px-4 bg-slate-900/95 sticky top-0 z-20 border-b border-slate-700/50">
+      <View className="pt-12 pb-4 px-4 bg-sky-50/95 sticky top-0 z-20 border-b border-slate-200">
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-3">
             <View
               onClick={() => Taro.navigateBack()}
-              className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
+              className="w-8 h-8 rounded-full bg-white flex items-center justify-center active:scale-95"
             >
               <ChevronRight size={18} color="#94a3b8" />
             </View>
@@ -186,7 +186,7 @@ export default function ChurnWarningList() {
           <View className="flex items-center gap-2">
             <View
               onClick={navigateToAnalysis}
-              className="w-9 h-9 rounded-full bg-blue-500/20 flex items-center justify-center active:scale-95 mr-2"
+              className="w-9 h-9 rounded-full bg-sky-500/20 flex items-center justify-center active:scale-95 mr-2"
             >
               <Activity size={18} color="#60a5fa" />
             </View>
@@ -208,20 +208,20 @@ export default function ChurnWarningList() {
               onClick={() => setActiveFilter(item.key)}
               className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-xl border transition-all ${
                 activeFilter === item.key
-                  ? item.key === 'all' ? 'bg-blue-500/20 border-blue-500/50' :
+                  ? item.key === 'all' ? 'bg-sky-500/20 border-blue-500/50' :
                     item.key === 'red' ? 'bg-red-500/20 border-red-500/50' :
                     item.key === 'orange' ? 'bg-amber-500/20 border-amber-500/50' :
                     'bg-yellow-500/20 border-yellow-500/50'
-                  : 'bg-slate-800 border-slate-700'
+                  : 'bg-white border-slate-200'
               }`}
             >
               <Text className={`block text-sm font-medium ${
                 activeFilter === item.key
-                  ? item.key === 'all' ? 'text-blue-400' :
+                  ? item.key === 'all' ? 'text-sky-600' :
                     item.key === 'red' ? 'text-red-400' :
                     item.key === 'orange' ? 'text-amber-400' :
                     'text-yellow-400'
-                  : 'text-slate-400'
+                  : 'text-slate-500'
               }`}
               >
                 {item.label}
@@ -235,7 +235,7 @@ export default function ChurnWarningList() {
                 }`}
                 >
                   <Text className={`block text-xs font-bold ${
-                    item.key === 'all' ? 'text-blue-400' :
+                    item.key === 'all' ? 'text-sky-600' :
                     item.key === 'red' ? 'text-red-400' :
                     item.key === 'orange' ? 'text-amber-400' :
                     'text-yellow-400'
@@ -261,13 +261,13 @@ export default function ChurnWarningList() {
               <TrendingUp size={40} color="#34d399" />
             </View>
             <Text className="block text-white text-lg font-semibold mb-2">暂无流失预警</Text>
-            <Text className="block text-slate-400 text-sm">您的客户跟进情况良好，继续保持！</Text>
+            <Text className="block text-slate-500 text-sm">您的客户跟进情况良好，继续保持！</Text>
             <View
               onClick={navigateToAnalysis}
-              className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-xl"
+              className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 border border-sky-500/30 rounded-xl"
             >
               <Activity size={16} color="#60a5fa" />
-              <Text className="block text-blue-400 text-sm">查看效果分析</Text>
+              <Text className="block text-sky-600 text-sm">查看效果分析</Text>
             </View>
           </View>
         ) : (
@@ -280,13 +280,13 @@ export default function ChurnWarningList() {
                 <View
                   key={risk.customerId}
                   onClick={() => handleCallCustomer(risk)}
-                  className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 active:scale-[0.98] transition-transform"
+                  className="bg-white/50 rounded-2xl p-4 border border-slate-200 active:scale-[0.98] transition-transform"
                 >
                   {/* 头部：客户名称和风险等级 */}
                   <View className="flex items-start justify-between mb-3">
                     <View className="flex-1">
                       <Text className="block text-white text-lg font-semibold">{risk.customerName}</Text>
-                      <Text className="block text-slate-400 text-xs mt-1">{levelInfo.desc}</Text>
+                      <Text className="block text-slate-500 text-xs mt-1">{levelInfo.desc}</Text>
                     </View>
                     <View className={`flex items-center gap-1 px-3 py-1.5 rounded-full ${levelInfo.bg} ${levelInfo.border} border`}>
                       <IconComponent size={14} color={risk.riskLevel === 'red' ? '#f87171' : risk.riskLevel === 'orange' ? '#fbbf24' : '#facc15'} />
@@ -298,7 +298,7 @@ export default function ChurnWarningList() {
                   <View className="flex items-center gap-4 mb-3">
                     <View className="flex items-center gap-1">
                       <Clock size={14} color="#64748b" />
-                      <Text className="block text-slate-400 text-sm">
+                      <Text className="block text-slate-500 text-sm">
                         <Text className={risk.daysSinceLastFollowUp >= 30 ? 'text-red-400' : risk.daysSinceLastFollowUp >= 14 ? 'text-amber-400' : 'text-yellow-400'}>
                           {risk.daysSinceLastFollowUp}天
                         </Text>
@@ -325,8 +325,8 @@ export default function ChurnWarningList() {
                           </View>
                         ))}
                         {risk.riskFactors.length > 2 && (
-                          <View className="px-2 py-1 bg-slate-700/50 rounded-lg">
-                            <Text className="block text-slate-400 text-xs">+{risk.riskFactors.length - 2}</Text>
+                          <View className="px-2 py-1 bg-slate-50 rounded-lg">
+                            <Text className="block text-slate-500 text-xs">+{risk.riskFactors.length - 2}</Text>
                           </View>
                         )}
                       </View>
@@ -335,12 +335,12 @@ export default function ChurnWarningList() {
 
                   {/* 建议措施 */}
                   {risk.suggestedActions.length > 0 && (
-                    <View className="pt-3 border-t border-slate-700/50">
+                    <View className="pt-3 border-t border-slate-200">
                       <View className="flex items-start gap-2">
-                        <View className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Text className="block text-blue-400 text-xs">💡</Text>
+                        <View className="w-5 h-5 rounded-full bg-sky-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Text className="block text-sky-600 text-xs">💡</Text>
                         </View>
-                        <Text className="block text-blue-400 text-sm flex-1">
+                        <Text className="block text-sky-600 text-sm flex-1">
                           {risk.suggestedActions[0]}
                         </Text>
                       </View>
@@ -348,7 +348,7 @@ export default function ChurnWarningList() {
                   )}
 
                   {/* 操作提示 */}
-                  <View className="mt-3 pt-3 border-t border-slate-700/50 flex items-center justify-between">
+                  <View className="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between">
                     <Text className="block text-slate-500 text-xs">点击查看详情</Text>
                     <View className="flex gap-2">
                       <View
@@ -360,8 +360,8 @@ export default function ChurnWarningList() {
                       >
                         <Text className="block text-emerald-400 text-sm font-medium">标记处理</Text>
                       </View>
-                      <View className="px-3 py-1.5 bg-blue-500/20 rounded-lg">
-                        <Text className="block text-blue-400 text-sm font-medium">立即跟进</Text>
+                      <View className="px-3 py-1.5 bg-sky-500/20 rounded-lg">
+                        <Text className="block text-sky-600 text-sm font-medium">立即跟进</Text>
                       </View>
                     </View>
                   </View>
@@ -381,20 +381,20 @@ export default function ChurnWarningList() {
           onClick={closeHandleModal}
         >
           <View
-            className="bg-slate-800 rounded-2xl w-full max-w-sm overflow-hidden"
+            className="bg-white rounded-2xl w-full max-w-sm overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* 弹窗头部 */}
-            <View className="px-4 py-4 border-b border-slate-700">
+            <View className="px-4 py-4 border-b border-slate-200">
               <Text className="block text-white text-lg font-semibold">标记预警处理</Text>
-              <Text className="block text-slate-400 text-sm mt-1">客户：{selectedCustomer.customerName}</Text>
+              <Text className="block text-slate-500 text-sm mt-1">客户：{selectedCustomer.customerName}</Text>
             </View>
 
             {/* 弹窗内容 */}
             <ScrollView scrollY className="px-4 py-4 max-h-[60vh]">
               {/* 处理方式 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">处理方式</Text>
+                <Text className="block text-slate-600 text-sm mb-2">处理方式</Text>
                 <View className="flex flex-wrap gap-2">
                   {actionOptions.map((action) => {
                     const Icon = action.icon;
@@ -404,12 +404,12 @@ export default function ChurnWarningList() {
                         onClick={() => setHandleForm({ ...handleForm, handle_action: action.key as any })}
                         className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border transition-all ${
                           handleForm.handle_action === action.key
-                            ? 'bg-blue-500/20 border-blue-500/50'
-                            : 'bg-slate-700 border-slate-600'
+                            ? 'bg-sky-500/20 border-blue-500/50'
+                            : 'bg-white border-slate-200'
                         }`}
                       >
                         <Icon size={14} color={handleForm.handle_action === action.key ? '#60a5fa' : '#94a3b8'} />
-                        <Text className={`block text-sm ${handleForm.handle_action === action.key ? 'text-blue-400' : 'text-slate-400'}`}>
+                        <Text className={`block text-sm ${handleForm.handle_action === action.key ? 'text-sky-600' : 'text-slate-500'}`}>
                           {action.label}
                         </Text>
                       </View>
@@ -420,7 +420,7 @@ export default function ChurnWarningList() {
 
               {/* 处理结果 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">处理结果</Text>
+                <Text className="block text-slate-600 text-sm mb-2">处理结果</Text>
                 <View className="grid grid-cols-2 gap-2">
                   {resultOptions.map((result) => (
                     <View
@@ -429,10 +429,10 @@ export default function ChurnWarningList() {
                       className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border transition-all ${
                         handleForm.handle_result === result.key
                           ? result.key === 'success' ? 'bg-emerald-500/20 border-emerald-500/50' :
-                            result.key === 'converted' ? 'bg-blue-500/20 border-blue-500/50' :
+                            result.key === 'converted' ? 'bg-sky-500/20 border-blue-500/50' :
                             result.key === 'pending' ? 'bg-amber-500/20 border-amber-500/50' :
-                            'bg-slate-600 border-slate-500'
-                          : 'bg-slate-700 border-slate-600'
+                            'bg-slate-100 border-slate-500'
+                          : 'bg-white border-slate-200'
                       }`}
                     >
                       {handleForm.handle_result === result.key && (
@@ -447,10 +447,10 @@ export default function ChurnWarningList() {
                       <Text className={`block text-sm ${
                         handleForm.handle_result === result.key
                           ? result.key === 'success' ? 'text-emerald-400' :
-                            result.key === 'converted' ? 'text-blue-400' :
+                            result.key === 'converted' ? 'text-sky-600' :
                             result.key === 'pending' ? 'text-amber-400' :
-                            'text-slate-400'
-                          : 'text-slate-400'
+                            'text-slate-500'
+                          : 'text-slate-500'
                       }`}
                       >
                         {result.label}
@@ -462,8 +462,8 @@ export default function ChurnWarningList() {
 
               {/* 备注 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">处理备注</Text>
-                <View className="bg-slate-700 rounded-xl p-3">
+                <Text className="block text-slate-600 text-sm mb-2">处理备注</Text>
+                <View className="bg-white rounded-xl p-3">
                   <Textarea
                     style={{ width: '100%', minHeight: '80px', backgroundColor: 'transparent', color: '#fff', fontSize: '14px' }}
                     placeholder="记录沟通内容、客户反馈等..."
@@ -478,8 +478,8 @@ export default function ChurnWarningList() {
 
               {/* 下次跟进日期 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">下次跟进日期（可选）</Text>
-                <View className="bg-slate-700 rounded-xl px-3 py-2">
+                <Text className="block text-slate-600 text-sm mb-2">下次跟进日期（可选）</Text>
+                <View className="bg-white rounded-xl px-3 py-2">
                   <Input
                     style={{ width: '100%', color: '#fff', fontSize: '14px' }}
                     type="text"
@@ -491,12 +491,12 @@ export default function ChurnWarningList() {
             </ScrollView>
 
             {/* 弹窗底部 */}
-            <View className="px-4 py-4 border-t border-slate-700 flex gap-3">
+            <View className="px-4 py-4 border-t border-slate-200 flex gap-3">
               <View
                 onClick={closeHandleModal}
-                className="flex-1 py-3 bg-slate-700 rounded-xl flex items-center justify-center"
+                className="flex-1 py-3 bg-white rounded-xl flex items-center justify-center"
               >
-                <Text className="block text-slate-300 font-medium">取消</Text>
+                <Text className="block text-slate-600 font-medium">取消</Text>
               </View>
               <View
                 onClick={submitHandleRecord}

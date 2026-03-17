@@ -111,13 +111,13 @@ const TopicPlanningPage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 顶部导航栏 */}
-      <View className="sticky top-0 z-10 bg-slate-800 border-b border-slate-700 px-4 py-4">
+      <View className="sticky top-0 z-10 bg-white border-b border-slate-200 px-4 py-4">
         <View className="flex items-center gap-3">
           {/* 返回按钮 */}
           <View
-            className="flex items-center justify-center w-10 h-10 bg-slate-700 rounded-xl active:scale-95 transition-all"
+            className="flex items-center justify-center w-10 h-10 bg-white rounded-xl active:scale-95 transition-all"
             onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
           >
             <ArrowLeft size={20} color="#94a3b8" />
@@ -128,7 +128,7 @@ const TopicPlanningPage = () => {
 
           {/* 刷新按钮 */}
           <View
-            className="flex items-center justify-center w-10 h-10 bg-slate-700 rounded-xl active:scale-95 transition-all"
+            className="flex items-center justify-center w-10 h-10 bg-white rounded-xl active:scale-95 transition-all"
             onClick={handleRefresh}
           >
             <RefreshCw size={20} color="#94a3b8" />
@@ -136,7 +136,7 @@ const TopicPlanningPage = () => {
 
           {/* 筛选按钮 */}
           <View
-            className="flex items-center justify-center w-10 h-10 bg-slate-700 rounded-xl active:scale-95 transition-all"
+            className="flex items-center justify-center w-10 h-10 bg-white rounded-xl active:scale-95 transition-all"
             onClick={() => Taro.navigateTo({ url: '/pages/input-sources/index' })}
           >
             <SlidersHorizontal size={20} color="#94a3b8" />
@@ -146,23 +146,23 @@ const TopicPlanningPage = () => {
         {/* 操作栏 */}
         <View className="flex items-center justify-between mt-3">
           <View className="flex items-center gap-2">
-            <Text className="block text-sm text-slate-400">共 {topicQuestions.length} 个选题</Text>
+            <Text className="block text-sm text-slate-500">共 {topicQuestions.length} 个选题</Text>
             {selectedTopics.length > 0 && (
-              <Text className="block text-sm text-blue-400">已选 {selectedTopics.length} 个</Text>
+              <Text className="block text-sm text-sky-600">已选 {selectedTopics.length} 个</Text>
             )}
           </View>
           <View className="flex items-center gap-2">
             {selectedTopics.length > 0 && (
               <>
                 <Text
-                  className="block text-sm text-slate-400"
+                  className="block text-sm text-slate-500"
                   onClick={handleClearAll}
                 >
                   清空
                 </Text>
-                <View className="w-px h-4 bg-slate-600"></View>
+                <View className="w-px h-4 bg-slate-100"></View>
                 <Text
-                  className="block text-sm text-blue-400"
+                  className="block text-sm text-sky-600"
                   onClick={handleSelectAll}
                 >
                   全选
@@ -177,8 +177,8 @@ const TopicPlanningPage = () => {
       <ScrollView className="flex-1" scrollY>
         {/* 输入来源信息 */}
         {inputSources && (
-          <View className="px-4 py-3 bg-slate-800/50 border-b border-slate-700">
-            <View className="flex items-center gap-2 text-sm text-slate-400">
+          <View className="px-4 py-3 bg-white/50 border-b border-slate-200">
+            <View className="flex items-center gap-2 text-sm text-slate-500">
               <Settings size={16} color="#60a5fa" />
               <Text>来源配置：</Text>
               {inputSources.platforms?.length > 0 ? (
@@ -195,16 +195,16 @@ const TopicPlanningPage = () => {
         {/* 选题列表 */}
         {loading ? (
           <View className="flex items-center justify-center py-20">
-            <Text className="block text-slate-400">加载中...</Text>
+            <Text className="block text-slate-500">加载中...</Text>
           </View>
         ) : topicQuestions.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20 px-4">
             <Lightbulb size={48} color="#475569" />
-            <Text className="block text-slate-400 mt-4 text-center">
+            <Text className="block text-slate-500 mt-4 text-center">
               暂无选题
             </Text>
             <View
-              className="mt-4 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg"
+              className="mt-4 px-4 py-2 bg-sky-500/20 border border-sky-500/30 rounded-lg"
               onClick={handleRefresh}
             >
               <Text className="block text-sm text-blue-300">刷新获取</Text>
@@ -215,17 +215,17 @@ const TopicPlanningPage = () => {
             {topicQuestions.map((topic, index) => (
               <View
                 key={index}
-                className={`bg-slate-800 rounded-xl border transition-all ${
+                className={`bg-white rounded-xl border transition-all ${
                   selectedTopics.includes(topic.question)
                     ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-slate-700'
+                    : 'border-slate-200'
                 }`}
                 onClick={() => toggleTopicSelection(topic.question)}
               >
                 <View className="p-4">
                   {/* 选题标题 */}
                   <View className="flex items-start gap-3">
-                    <View className="flex items-center justify-center w-5 h-5 border-2 border-slate-600 rounded mt-0.5">
+                    <View className="flex items-center justify-center w-5 h-5 border-2 border-slate-200 rounded mt-0.5">
                       {selectedTopics.includes(topic.question) && (
                         <Check size={14} color="#60a5fa" />
                       )}
@@ -241,13 +241,13 @@ const TopicPlanningPage = () => {
                   <View className="flex items-center gap-3 mt-3 ml-8">
                     <View className="flex items-center gap-1">
                       <TrendingUp size={14} color={topic.hotScore > 80 ? '#f87171' : '#94a3b8'} />
-                      <Text className={`text-xs ${topic.hotScore > 80 ? 'text-red-400' : 'text-slate-400'}`}>
+                      <Text className={`text-xs ${topic.hotScore > 80 ? 'text-red-400' : 'text-slate-500'}`}>
                         热度 {topic.hotScore}
                       </Text>
                     </View>
                     {topic.category && (
-                      <View className="px-2 py-0.5 bg-slate-700 rounded">
-                        <Text className="block text-xs text-slate-400">{topic.category}</Text>
+                      <View className="px-2 py-0.5 bg-white rounded">
+                        <Text className="block text-xs text-slate-500">{topic.category}</Text>
                       </View>
                     )}
                     {topic.source && (
@@ -258,14 +258,14 @@ const TopicPlanningPage = () => {
 
                 {/* 删除按钮 */}
                 <View
-                  className="px-4 py-2 border-t border-slate-700 flex items-center justify-end"
+                  className="px-4 py-2 border-t border-slate-200 flex items-center justify-end"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDeleteTopic(topic.question);
                   }}
                 >
                   <Trash2 size={14} color="#94a3b8" />
-                  <Text className="block text-xs text-slate-400 ml-1">删除</Text>
+                  <Text className="block text-xs text-slate-500 ml-1">删除</Text>
                 </View>
               </View>
             ))}
@@ -274,11 +274,11 @@ const TopicPlanningPage = () => {
       </ScrollView>
 
       {/* 底部操作栏 */}
-      <View className="sticky bottom-0 bg-slate-800 border-t border-slate-700 px-4 py-3 safe-area-bottom">
+      <View className="sticky bottom-0 bg-white border-t border-slate-200 px-4 py-3 safe-area-bottom">
         <View
           className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 transition-all ${
             selectedTopics.length === 0
-              ? 'bg-slate-700'
+              ? 'bg-white'
               : 'bg-gradient-to-r from-blue-500 to-cyan-500'
           }`}
           onClick={handleGenerate}

@@ -196,14 +196,14 @@ export default function SalesTargetPage() {
   });
 
   return (
-    <View className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+    <View className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-slate-900">
       {/* Header */}
-      <View className="pt-12 pb-4 px-4 bg-slate-900/95 sticky top-0 z-20 border-b border-slate-700/50">
+      <View className="pt-12 pb-4 px-4 bg-sky-50/95 sticky top-0 z-20 border-b border-slate-200">
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View
               onClick={() => Taro.navigateBack()}
-              className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
+              className="w-8 h-8 rounded-full bg-white flex items-center justify-center active:scale-95"
             >
               <ChevronRight size={18} color="#94a3b8" />
             </View>
@@ -211,7 +211,7 @@ export default function SalesTargetPage() {
           </View>
           <View
             onClick={() => setShowCreateModal(true)}
-            className="w-9 h-9 rounded-full bg-blue-500/20 flex items-center justify-center active:scale-95"
+            className="w-9 h-9 rounded-full bg-sky-500/20 flex items-center justify-center active:scale-95"
           >
             <Plus size={20} color="#60a5fa" />
           </View>
@@ -228,11 +228,11 @@ export default function SalesTargetPage() {
               onClick={() => setActiveTab(tab.key as any)}
               className={`flex-1 py-2 rounded-xl text-center transition-all ${
                 activeTab === tab.key
-                  ? 'bg-blue-500/20 border border-blue-500/50'
-                  : 'bg-slate-800 border border-slate-700'
+                  ? 'bg-sky-500/20 border border-blue-500/50'
+                  : 'bg-white border border-slate-200'
               }`}
             >
-              <Text className={`block text-sm font-medium ${activeTab === tab.key ? 'text-blue-400' : 'text-slate-400'}`}>
+              <Text className={`block text-sm font-medium ${activeTab === tab.key ? 'text-sky-600' : 'text-slate-500'}`}>
                 {tab.label}
               </Text>
             </View>
@@ -250,29 +250,29 @@ export default function SalesTargetPage() {
           <View className="space-y-4">
             {currentProgresses.length === 0 ? (
               <View className="py-20 text-center">
-                <View className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <View className="w-20 h-20 bg-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Target size={40} color="#60a5fa" />
                 </View>
                 <Text className="block text-white text-lg font-semibold mb-2">暂无当前目标</Text>
-                <Text className="block text-slate-400 text-sm mb-4">设置业绩目标，追踪完成情况</Text>
+                <Text className="block text-slate-500 text-sm mb-4">设置业绩目标，追踪完成情况</Text>
                 <View
                   onClick={() => setShowCreateModal(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-xl"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 border border-sky-500/30 rounded-xl"
                 >
                   <Plus size={16} color="#60a5fa" />
-                  <Text className="block text-blue-400 text-sm">创建目标</Text>
+                  <Text className="block text-sky-600 text-sm">创建目标</Text>
                 </View>
               </View>
             ) : (
               currentProgresses.map((progress) => (
-                <View key={progress.target.id} className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
+                <View key={progress.target.id} className="bg-white/50 rounded-2xl p-4 border border-slate-200">
                   {/* 目标标题 */}
                   <View className="flex items-center justify-between mb-4">
                     <View>
                       <Text className="block text-white font-semibold">
                         {typeLabels[progress.target.target_type]}
                       </Text>
-                      <Text className="block text-slate-400 text-xs mt-1">
+                      <Text className="block text-slate-500 text-xs mt-1">
                         {progress.target.target_type === 'monthly' && `${progress.target.target_year}年${progress.target.target_month}月`}
                         {progress.target.target_type === 'quarterly' && `${progress.target.target_year}年Q${progress.target.target_quarter}`}
                         {progress.target.target_type === 'yearly' && `${progress.target.target_year}年`}
@@ -290,34 +290,34 @@ export default function SalesTargetPage() {
                     <View className="flex items-center justify-between mb-2">
                       <View className="flex items-center gap-2">
                         <DollarSign size={16} color="#60a5fa" />
-                        <Text className="block text-slate-300 text-sm">金额目标</Text>
+                        <Text className="block text-slate-600 text-sm">金额目标</Text>
                       </View>
                       <Text className="block text-white font-semibold">
                         ¥{(progress.currentAmount / 10000).toFixed(1)}万 / ¥{(progress.target.target_amount / 10000).toFixed(1)}万
                       </Text>
                     </View>
-                    <View className="h-3 bg-slate-700 rounded-full overflow-hidden">
+                    <View className="h-3 bg-white rounded-full overflow-hidden">
                       <View
                         className={`h-full rounded-full ${progress.amountProgress >= 100 ? 'bg-emerald-500' : 'bg-blue-500'}`}
                         style={{ width: `${Math.min(progress.amountProgress, 100)}%` }}
                       />
                     </View>
                     <View className="flex items-center justify-between mt-1">
-                      <Text className="block text-slate-400 text-xs">完成度 {progress.amountProgress}%</Text>
-                      <Text className="block text-slate-400 text-xs">剩余 ¥{(progress.gapAmount / 10000).toFixed(1)}万</Text>
+                      <Text className="block text-slate-500 text-xs">完成度 {progress.amountProgress}%</Text>
+                      <Text className="block text-slate-500 text-xs">剩余 ¥{(progress.gapAmount / 10000).toFixed(1)}万</Text>
                     </View>
                   </View>
 
                   {/* 其他指标 */}
                   <View className="grid grid-cols-2 gap-4 mb-4">
                     {progress.target.target_deals > 0 && (
-                      <View className="bg-slate-700/50 rounded-xl p-3">
+                      <View className="bg-slate-50 rounded-xl p-3">
                         <View className="flex items-center gap-2 mb-1">
                           <CircleCheck size={14} color="#94a3b8" />
-                          <Text className="block text-slate-400 text-xs">成交单数</Text>
+                          <Text className="block text-slate-500 text-xs">成交单数</Text>
                         </View>
                         <Text className="block text-white font-semibold">{progress.currentDeals} / {progress.target.target_deals}</Text>
-                        <View className="h-1.5 bg-slate-600 rounded-full mt-2 overflow-hidden">
+                        <View className="h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
                           <View
                             className="h-full bg-purple-500 rounded-full"
                             style={{ width: `${Math.min(progress.dealsProgress, 100)}%` }}
@@ -326,13 +326,13 @@ export default function SalesTargetPage() {
                       </View>
                     )}
                     {progress.target.target_customers > 0 && (
-                      <View className="bg-slate-700/50 rounded-xl p-3">
+                      <View className="bg-slate-50 rounded-xl p-3">
                         <View className="flex items-center gap-2 mb-1">
                           <Users size={14} color="#94a3b8" />
-                          <Text className="block text-slate-400 text-xs">客户数</Text>
+                          <Text className="block text-slate-500 text-xs">客户数</Text>
                         </View>
                         <Text className="block text-white font-semibold">{progress.currentCustomers} / {progress.target.target_customers}</Text>
-                        <View className="h-1.5 bg-slate-600 rounded-full mt-2 overflow-hidden">
+                        <View className="h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden">
                           <View
                             className="h-full bg-amber-500 rounded-full"
                             style={{ width: `${Math.min(progress.customersProgress, 100)}%` }}
@@ -343,12 +343,12 @@ export default function SalesTargetPage() {
                   </View>
 
                   {/* 时间进度 */}
-                  <View className="pt-3 border-t border-slate-700/50">
+                  <View className="pt-3 border-t border-slate-200">
                     <View className="flex items-center justify-between">
-                      <Text className="block text-slate-400 text-xs">时间进度 {progress.timeProgress}%</Text>
-                      <Text className="block text-slate-400 text-xs">已用 {progress.daysElapsed} / {progress.daysTotal} 天</Text>
+                      <Text className="block text-slate-500 text-xs">时间进度 {progress.timeProgress}%</Text>
+                      <Text className="block text-slate-500 text-xs">已用 {progress.daysElapsed} / {progress.daysTotal} 天</Text>
                     </View>
-                    <View className="h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
+                    <View className="h-1.5 bg-white rounded-full mt-2 overflow-hidden">
                       <View className="h-full bg-slate-500 rounded-full" style={{ width: `${progress.timeProgress}%` }} />
                     </View>
                   </View>
@@ -362,32 +362,32 @@ export default function SalesTargetPage() {
           <View className="space-y-3">
             {targets.length === 0 ? (
               <View className="py-20 text-center">
-                <Text className="block text-slate-400">暂无目标记录</Text>
+                <Text className="block text-slate-500">暂无目标记录</Text>
               </View>
             ) : (
               targets.map((target) => (
-                <View key={target.id} className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
+                <View key={target.id} className="bg-white/50 rounded-2xl p-4 border border-slate-200">
                   <View className="flex items-center justify-between">
                     <View className="flex-1">
                       <View className="flex items-center gap-2 mb-1">
                         <Text className="block text-white font-semibold">{typeLabels[target.target_type]}</Text>
                         <View className={`px-2 py-0.5 rounded-full ${
                           target.status === 'active' ? 'bg-emerald-500/20' :
-                          target.status === 'completed' ? 'bg-blue-500/20' :
-                          'bg-slate-600/20'
+                          target.status === 'completed' ? 'bg-sky-500/20' :
+                          'bg-slate-100/20'
                         }`}
                         >
                           <Text className={`block text-xs ${
                             target.status === 'active' ? 'text-emerald-400' :
-                            target.status === 'completed' ? 'text-blue-400' :
-                            'text-slate-400'
+                            target.status === 'completed' ? 'text-sky-600' :
+                            'text-slate-500'
                           }`}
                           >
                             {target.status === 'active' ? '进行中' : target.status === 'completed' ? '已完成' : '已取消'}
                           </Text>
                         </View>
                       </View>
-                      <Text className="block text-slate-400 text-sm">
+                      <Text className="block text-slate-500 text-sm">
                         ¥{(target.target_amount / 10000).toFixed(1)}万
                         {target.target_deals > 0 && ` · ${target.target_deals}单`}
                         {target.target_customers > 0 && ` · ${target.target_customers}客户`}
@@ -418,17 +418,17 @@ export default function SalesTargetPage() {
           onClick={() => setShowCreateModal(false)}
         >
           <View
-            className="bg-slate-800 rounded-2xl w-full max-w-sm overflow-hidden"
+            className="bg-white rounded-2xl w-full max-w-sm overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <View className="px-4 py-4 border-b border-slate-700">
+            <View className="px-4 py-4 border-b border-slate-200">
               <Text className="block text-white text-lg font-semibold">创建业绩目标</Text>
             </View>
 
             <ScrollView scrollY className="px-4 py-4 max-h-[60vh]">
               {/* 目标类型 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">目标类型</Text>
+                <Text className="block text-slate-600 text-sm mb-2">目标类型</Text>
                 <View className="flex gap-2">
                   {[
                     { key: 'monthly', label: '月度' },
@@ -440,11 +440,11 @@ export default function SalesTargetPage() {
                       onClick={() => setCreateForm({ ...createForm, target_type: type.key as any })}
                       className={`flex-1 py-2 rounded-xl text-center border transition-all ${
                         createForm.target_type === type.key
-                          ? 'bg-blue-500/20 border-blue-500/50'
-                          : 'bg-slate-700 border-slate-600'
+                          ? 'bg-sky-500/20 border-blue-500/50'
+                          : 'bg-white border-slate-200'
                       }`}
                     >
-                      <Text className={`block text-sm ${createForm.target_type === type.key ? 'text-blue-400' : 'text-slate-400'}`}>
+                      <Text className={`block text-sm ${createForm.target_type === type.key ? 'text-sky-600' : 'text-slate-500'}`}>
                         {type.label}
                       </Text>
                     </View>
@@ -454,8 +454,8 @@ export default function SalesTargetPage() {
 
               {/* 年份 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">年份</Text>
-                <View className="bg-slate-700 rounded-xl px-3 py-2">
+                <Text className="block text-slate-600 text-sm mb-2">年份</Text>
+                <View className="bg-white rounded-xl px-3 py-2">
                   <Input
                     style={{ width: '100%', color: '#fff', fontSize: '14px' }}
                     type="number"
@@ -468,7 +468,7 @@ export default function SalesTargetPage() {
               {/* 月份/季度 */}
               {createForm.target_type === 'monthly' && (
                 <View className="mb-4">
-                  <Text className="block text-slate-300 text-sm mb-2">月份</Text>
+                  <Text className="block text-slate-600 text-sm mb-2">月份</Text>
                   <View className="grid grid-cols-4 gap-2">
                     {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                       <View
@@ -476,11 +476,11 @@ export default function SalesTargetPage() {
                         onClick={() => setCreateForm({ ...createForm, target_month: month })}
                         className={`py-2 rounded-lg text-center border transition-all ${
                           createForm.target_month === month
-                            ? 'bg-blue-500/20 border-blue-500/50'
-                            : 'bg-slate-700 border-slate-600'
+                            ? 'bg-sky-500/20 border-blue-500/50'
+                            : 'bg-white border-slate-200'
                         }`}
                       >
-                        <Text className={`block text-sm ${createForm.target_month === month ? 'text-blue-400' : 'text-slate-400'}`}>
+                        <Text className={`block text-sm ${createForm.target_month === month ? 'text-sky-600' : 'text-slate-500'}`}>
                           {month}月
                         </Text>
                       </View>
@@ -491,7 +491,7 @@ export default function SalesTargetPage() {
 
               {createForm.target_type === 'quarterly' && (
                 <View className="mb-4">
-                  <Text className="block text-slate-300 text-sm mb-2">季度</Text>
+                  <Text className="block text-slate-600 text-sm mb-2">季度</Text>
                   <View className="flex gap-2">
                     {[1, 2, 3, 4].map((q) => (
                       <View
@@ -499,11 +499,11 @@ export default function SalesTargetPage() {
                         onClick={() => setCreateForm({ ...createForm, target_quarter: q })}
                         className={`flex-1 py-2 rounded-xl text-center border transition-all ${
                           createForm.target_quarter === q
-                            ? 'bg-blue-500/20 border-blue-500/50'
-                            : 'bg-slate-700 border-slate-600'
+                            ? 'bg-sky-500/20 border-blue-500/50'
+                            : 'bg-white border-slate-200'
                         }`}
                       >
-                        <Text className={`block text-sm ${createForm.target_quarter === q ? 'text-blue-400' : 'text-slate-400'}`}>
+                        <Text className={`block text-sm ${createForm.target_quarter === q ? 'text-sky-600' : 'text-slate-500'}`}>
                           Q{q}
                         </Text>
                       </View>
@@ -514,8 +514,8 @@ export default function SalesTargetPage() {
 
               {/* 目标金额 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">目标金额（元）</Text>
-                <View className="bg-slate-700 rounded-xl px-3 py-2">
+                <Text className="block text-slate-600 text-sm mb-2">目标金额（元）</Text>
+                <View className="bg-white rounded-xl px-3 py-2">
                   <Input
                     style={{ width: '100%', color: '#fff', fontSize: '14px' }}
                     type="digit"
@@ -528,8 +528,8 @@ export default function SalesTargetPage() {
 
               {/* 目标单数 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">目标成交单数（可选）</Text>
-                <View className="bg-slate-700 rounded-xl px-3 py-2">
+                <Text className="block text-slate-600 text-sm mb-2">目标成交单数（可选）</Text>
+                <View className="bg-white rounded-xl px-3 py-2">
                   <Input
                     style={{ width: '100%', color: '#fff', fontSize: '14px' }}
                     type="number"
@@ -542,8 +542,8 @@ export default function SalesTargetPage() {
 
               {/* 目标客户数 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">目标客户数（可选）</Text>
-                <View className="bg-slate-700 rounded-xl px-3 py-2">
+                <Text className="block text-slate-600 text-sm mb-2">目标客户数（可选）</Text>
+                <View className="bg-white rounded-xl px-3 py-2">
                   <Input
                     style={{ width: '100%', color: '#fff', fontSize: '14px' }}
                     type="number"
@@ -556,8 +556,8 @@ export default function SalesTargetPage() {
 
               {/* 说明 */}
               <View className="mb-4">
-                <Text className="block text-slate-300 text-sm mb-2">目标说明（可选）</Text>
-                <View className="bg-slate-700 rounded-xl px-3 py-2">
+                <Text className="block text-slate-600 text-sm mb-2">目标说明（可选）</Text>
+                <View className="bg-white rounded-xl px-3 py-2">
                   <Input
                     style={{ width: '100%', color: '#fff', fontSize: '14px' }}
                     placeholder="请输入目标说明"
@@ -568,12 +568,12 @@ export default function SalesTargetPage() {
               </View>
             </ScrollView>
 
-            <View className="px-4 py-4 border-t border-slate-700 flex gap-3">
+            <View className="px-4 py-4 border-t border-slate-200 flex gap-3">
               <View
                 onClick={() => setShowCreateModal(false)}
-                className="flex-1 py-3 bg-slate-700 rounded-xl flex items-center justify-center"
+                className="flex-1 py-3 bg-white rounded-xl flex items-center justify-center"
               >
-                <Text className="block text-slate-300 font-medium">取消</Text>
+                <Text className="block text-slate-600 font-medium">取消</Text>
               </View>
               <View
                 onClick={createTarget}

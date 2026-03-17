@@ -149,9 +149,9 @@ export default function RecycleStoreEdit() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-sky-50">
       {/* 头部 */}
-      <View className="px-4 pt-12 pb-4 bg-slate-800/50">
+      <View className="px-4 pt-12 pb-4 bg-white/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center" onClick={goBack}>
             <ArrowLeft size={24} color="#ffffff" />
@@ -171,13 +171,13 @@ export default function RecycleStoreEdit() {
 
       <ScrollView className="px-4 pb-8" scrollY style={{ height: 'calc(100vh - 100px)' }}>
         {/* 基本信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
+        <View className="bg-white rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">基本信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">门店名称 <Text className="text-red-400">*</Text></Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <Store size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">门店名称 <Text className="text-red-400">*</Text></Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <Store size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入门店名称"
@@ -188,9 +188,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">手机号码</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <Phone size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">手机号码</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <Phone size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入手机号码"
@@ -202,9 +202,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">微信号</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <MessageCircle size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">微信号</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <MessageCircle size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入微信号"
@@ -215,9 +215,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">小红书号</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <User size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">小红书号</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <User size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入小红书号"
@@ -228,9 +228,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">抖音号</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <User size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">抖音号</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <User size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入抖音号"
@@ -242,12 +242,12 @@ export default function RecycleStoreEdit() {
         </View>
 
         {/* 位置信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
+        <View className="bg-white rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">位置信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">所在城市</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2">
+            <Text className="block text-slate-500 text-sm mb-2">所在城市</Text>
+            <View className="bg-white rounded-lg px-3 py-2">
               <Input
                 className="text-white text-sm bg-transparent"
                 placeholder="请输入城市"
@@ -258,8 +258,8 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">详细地址</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center justify-between">
+            <Text className="block text-slate-500 text-sm mb-2">详细地址</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center justify-between">
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请选择或输入地址"
@@ -274,11 +274,11 @@ export default function RecycleStoreEdit() {
         </View>
 
         {/* 业务信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
+        <View className="bg-white rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">业务信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">餐饮类别</Text>
+            <Text className="block text-slate-500 text-sm mb-2">餐饮类别</Text>
             <Picker
               mode="selector"
               range={businessTypes}
@@ -289,15 +289,15 @@ export default function RecycleStoreEdit() {
                 handleInput('business_type', businessTypes[index]);
               }}
             >
-              <View className="bg-slate-700 rounded-lg px-3 py-2">
+              <View className="bg-white rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{form.business_type || '请选择餐饮类别'}</Text>
               </View>
             </Picker>
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">面积（㎡）</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2">
+            <Text className="block text-slate-500 text-sm mb-2">面积（㎡）</Text>
+            <View className="bg-white rounded-lg px-3 py-2">
               <Input
                 className="text-white text-sm bg-transparent"
                 placeholder="请输入面积"
@@ -309,22 +309,22 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">开业时间</Text>
+            <Text className="block text-slate-500 text-sm mb-2">开业时间</Text>
             <Picker
               mode="date"
               value={form.open_date || ''}
               onChange={(e) => handleInput('open_date', e.detail.value)}
             >
-              <View className="bg-slate-700 rounded-lg px-3 py-2">
+              <View className="bg-white rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{form.open_date || '请选择开业时间'}</Text>
               </View>
             </Picker>
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">关店原因</Text>
+            <Text className="block text-slate-500 text-sm mb-2">关店原因</Text>
             <Textarea
-              className="bg-slate-700 rounded-lg px-3 py-2 text-white text-sm min-h-[80px]"
+              className="bg-white rounded-lg px-3 py-2 text-white text-sm min-h-[80px]"
               placeholder="请输入关店原因"
               value={form.close_reason}
               onInput={(e) => handleInput('close_reason', e.detail.value)}
@@ -333,11 +333,11 @@ export default function RecycleStoreEdit() {
         </View>
 
         {/* 回收信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
+        <View className="bg-white rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">回收信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">回收状态</Text>
+            <Text className="block text-slate-500 text-sm mb-2">回收状态</Text>
             <Picker
               mode="selector"
               range={statuses.map(s => s.label)}
@@ -348,7 +348,7 @@ export default function RecycleStoreEdit() {
                 handleInput('recycle_status', statuses[index].value);
               }}
             >
-              <View className="bg-slate-700 rounded-lg px-3 py-2">
+              <View className="bg-white rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">
                   {statuses[statusIndex].label}
                 </Text>
@@ -357,9 +357,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">预估设备清单</Text>
+            <Text className="block text-slate-500 text-sm mb-2">预估设备清单</Text>
             <Textarea
-              className="bg-slate-700 rounded-lg px-3 py-2 text-white text-sm min-h-[80px]"
+              className="bg-white rounded-lg px-3 py-2 text-white text-sm min-h-[80px]"
               placeholder="请输入预估设备清单（如：冷柜2台、烤箱1台等）"
               value={form.estimated_devices}
               onInput={(e) => handleInput('estimated_devices', e.detail.value)}
@@ -367,9 +367,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">预估价值（元）</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">预估价值（元）</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <DollarSign size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入预估价值"
@@ -381,8 +381,8 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">收购价格（元）</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
+            <Text className="block text-slate-500 text-sm mb-2">收购价格（元）</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
               <DollarSign size={16} className="text-emerald-400 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
@@ -395,9 +395,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">运输成本（元）</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">运输成本（元）</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <DollarSign size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入运输成本"
@@ -409,9 +409,9 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">人工成本（元）</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-slate-400 mr-2" />
+            <Text className="block text-slate-500 text-sm mb-2">人工成本（元）</Text>
+            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
+              <DollarSign size={16} className="text-slate-500 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入人工成本"
@@ -423,21 +423,21 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">回收日期</Text>
+            <Text className="block text-slate-500 text-sm mb-2">回收日期</Text>
             <Picker
               mode="date"
               value={form.recycle_date || ''}
               onChange={(e) => handleInput('recycle_date', e.detail.value)}
             >
-              <View className="bg-slate-700 rounded-lg px-3 py-2">
+              <View className="bg-white rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{form.recycle_date || '请选择回收日期'}</Text>
               </View>
             </Picker>
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">设备数量</Text>
-            <View className="bg-slate-700 rounded-lg px-3 py-2">
+            <Text className="block text-slate-500 text-sm mb-2">设备数量</Text>
+            <View className="bg-white rounded-lg px-3 py-2">
               <Input
                 className="text-white text-sm bg-transparent"
                 placeholder="请输入设备数量"
@@ -449,7 +449,7 @@ export default function RecycleStoreEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-400 text-sm mb-2">设备状态</Text>
+            <Text className="block text-slate-500 text-sm mb-2">设备状态</Text>
             <Picker
               mode="selector"
               range={deviceStatuses}
@@ -460,7 +460,7 @@ export default function RecycleStoreEdit() {
                 handleInput('device_status', deviceStatuses[index]);
               }}
             >
-              <View className="bg-slate-700 rounded-lg px-3 py-2">
+              <View className="bg-white rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{form.device_status || '请选择设备状态'}</Text>
               </View>
             </Picker>

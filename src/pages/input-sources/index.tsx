@@ -52,7 +52,7 @@ const InputSourcesPage = () => {
 
   const hotTopicSources = [
     { id: 'douyin' as HotTopicSource, name: '抖音', color: 'text-pink-400' },
-    { id: 'baidu' as HotTopicSource, name: '百度', color: 'text-blue-400' },
+    { id: 'baidu' as HotTopicSource, name: '百度', color: 'text-sky-600' },
     { id: 'toutiao' as HotTopicSource, name: '今日头条', color: 'text-amber-400' },
     { id: 'weibo' as HotTopicSource, name: '微博', color: 'text-orange-400' }
   ];
@@ -60,7 +60,7 @@ const InputSourcesPage = () => {
   const customQuestionTypes = [
     { id: 'liveQuestions' as keyof CustomQuestionInput, name: '直播间高频问题', description: '客户在直播间问到的高频问题', icon: '📺', color: 'text-purple-400' },
     { id: 'salesQuestions' as keyof CustomQuestionInput, name: '销售对接高频问题', description: '销售与客户对接过程中遇到的问题', icon: '💰', color: 'text-emerald-400' },
-    { id: 'commentQuestions' as keyof CustomQuestionInput, name: '私信评论热点话题', description: '私信和评论区遇到的热点话题', icon: '💬', color: 'text-blue-400' }
+    { id: 'commentQuestions' as keyof CustomQuestionInput, name: '私信评论热点话题', description: '私信和评论区遇到的热点话题', icon: '💬', color: 'text-sky-600' }
   ];
 
   // 加载星标笔记
@@ -314,17 +314,17 @@ const InputSourcesPage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900 pb-4">
+    <View className="min-h-screen bg-sky-50 pb-4">
       {/* 头部说明 */}
       <View className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-b border-blue-500/20 p-4">
         <Text className="block text-lg font-semibold text-white mb-1">选择创作素材来源</Text>
-        <Text className="block text-sm text-slate-400">点击卡片选择素材，生成专属选题库</Text>
+        <Text className="block text-sm text-slate-500">点击卡片选择素材，生成专属选题库</Text>
       </View>
 
       {/* 1. 星标笔记入口 */}
       <View className="p-4">
         <View
-          className="bg-slate-800 rounded-xl p-4 border border-slate-700 active:scale-[0.99] transition-all"
+          className="bg-white rounded-xl p-4 border border-slate-200 active:scale-[0.99] transition-all"
           onClick={() => setShowStarredNotesModal(true)}
         >
           <View className="flex items-center justify-between">
@@ -334,7 +334,7 @@ const InputSourcesPage = () => {
               </View>
               <View>
                 <Text className="block text-base font-semibold text-white mb-1">星标笔记</Text>
-                <Text className="block text-xs text-slate-400">
+                <Text className="block text-xs text-slate-500">
                   已选择 {selectedNotes.length} / {starredNotes.length} 条笔记
                 </Text>
               </View>
@@ -347,7 +347,7 @@ const InputSourcesPage = () => {
       {/* 2. 自定义问题库入口 */}
       <View className="px-4 pb-4">
         <View
-          className="bg-slate-800 rounded-xl p-4 border border-slate-700 active:scale-[0.99] transition-all"
+          className="bg-white rounded-xl p-4 border border-slate-200 active:scale-[0.99] transition-all"
           onClick={() => setShowQuestionsModal(true)}
         >
           <View className="flex items-center justify-between">
@@ -357,7 +357,7 @@ const InputSourcesPage = () => {
               </View>
               <View>
                 <Text className="block text-base font-semibold text-white mb-1">自定义问题库</Text>
-                <Text className="block text-xs text-slate-400">
+                <Text className="block text-xs text-slate-500">
                   已选择 {selectedQuestions.length} 个问题
                 </Text>
               </View>
@@ -370,7 +370,7 @@ const InputSourcesPage = () => {
       {/* 3. 热点榜单入口 */}
       <View className="px-4 pb-4">
         <View
-          className="bg-slate-800 rounded-xl p-4 border border-slate-700 active:scale-[0.99] transition-all"
+          className="bg-white rounded-xl p-4 border border-slate-200 active:scale-[0.99] transition-all"
           onClick={openHotTopicsModal}
         >
           <View className="flex items-center justify-between">
@@ -380,7 +380,7 @@ const InputSourcesPage = () => {
               </View>
               <View>
                 <Text className="block text-base font-semibold text-white mb-1">热点榜单</Text>
-                <Text className="block text-xs text-slate-400">
+                <Text className="block text-xs text-slate-500">
                   已选择 {selectedHotTopics.length} / {hotTopics.length} 条话题
                 </Text>
               </View>
@@ -393,7 +393,7 @@ const InputSourcesPage = () => {
       {/* 底部操作按钮 */}
       <View className="px-4 flex gap-3">
         <View
-          className="flex-1 bg-slate-700 text-white text-center py-3 rounded-xl font-medium active:opacity-80"
+          className="flex-1 bg-white text-white text-center py-3 rounded-xl font-medium active:opacity-80"
           onClick={saveConfig}
         >
           保存配置
@@ -409,23 +409,23 @@ const InputSourcesPage = () => {
       {/* 星标笔记弹窗 */}
       {showStarredNotesModal && (
         <View className="fixed inset-0 bg-black/80 z-50 flex flex-col">
-          <View className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between">
+          <View className="bg-white p-4 border-b border-slate-200 flex items-center justify-between">
             <View className="flex items-center gap-2">
               <Star size={20} color="#f59e0b" />
               <Text className="block text-lg font-semibold text-white">星标笔记</Text>
-              <Text className="block text-sm text-slate-400">
+              <Text className="block text-sm text-slate-500">
                 已选 {selectedNotes.length} / {starredNotes.length}
               </Text>
             </View>
             <View className="flex items-center gap-3">
               <Text
-                className="text-sm text-blue-400"
+                className="text-sm text-sky-600"
                 onClick={() => setSelectedNotes(starredNotes.map(n => n.id))}
               >
                 全选
               </Text>
               <View
-                className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center"
+                className="w-8 h-8 bg-white rounded-full flex items-center justify-center"
                 onClick={() => setShowStarredNotesModal(false)}
               >
                 <X size={20} color="#94a3b8" />
@@ -439,10 +439,10 @@ const InputSourcesPage = () => {
                 {starredNotes.map((note) => (
                   <View
                     key={note.id}
-                    className={`bg-slate-800 rounded-xl p-4 border-2 ${
+                    className={`bg-white rounded-xl p-4 border-2 ${
                       selectedNotes.includes(note.id)
                         ? 'border-blue-500 bg-blue-500/10'
-                        : 'border-slate-700'
+                        : 'border-slate-200'
                     }`}
                     onClick={() => toggleNoteSelection(note.id)}
                   >
@@ -451,7 +451,7 @@ const InputSourcesPage = () => {
                         className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                           selectedNotes.includes(note.id)
                             ? 'bg-blue-500 border-blue-500'
-                            : 'border-slate-600'
+                            : 'border-slate-200'
                         }`}
                       >
                         {selectedNotes.includes(note.id) && <Check size={14} color="white" />}
@@ -463,7 +463,7 @@ const InputSourcesPage = () => {
                           </Text>
                         )}
                         {note.content && (
-                          <Text className="block text-xs text-slate-400 leading-relaxed line-clamp-2 mb-2">
+                          <Text className="block text-xs text-slate-500 leading-relaxed line-clamp-2 mb-2">
                             {note.content}
                           </Text>
                         )}
@@ -476,7 +476,7 @@ const InputSourcesPage = () => {
                 ))}
               </View>
             ) : (
-              <View className="text-center py-12 bg-slate-800 rounded-xl">
+              <View className="text-center py-12 bg-white rounded-xl">
                 <FileText size={48} color="#475569" />
                 <Text className="block text-slate-500 text-base mt-4 mb-2">
                   还没有星标笔记
@@ -497,7 +497,7 @@ const InputSourcesPage = () => {
             )}
           </ScrollView>
 
-          <View className="bg-slate-800 p-4 border-t border-slate-700">
+          <View className="bg-white p-4 border-t border-slate-200">
             <View
               className="bg-blue-500 text-white text-center py-3 rounded-xl font-medium active:opacity-80"
               onClick={() => setShowStarredNotesModal(false)}
@@ -511,16 +511,16 @@ const InputSourcesPage = () => {
       {/* 自定义问题库弹窗 */}
       {showQuestionsModal && (
         <View className="fixed inset-0 bg-black/80 z-50 flex flex-col">
-          <View className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between">
+          <View className="bg-white p-4 border-b border-slate-200 flex items-center justify-between">
             <View className="flex items-center gap-2">
               <Sparkles size={20} color="#60a5fa" />
               <Text className="block text-lg font-semibold text-white">自定义问题库</Text>
-              <Text className="block text-sm text-slate-400">
+              <Text className="block text-sm text-slate-500">
                 已选 {selectedQuestions.length}
               </Text>
             </View>
             <View
-              className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center"
+              className="w-8 h-8 bg-white rounded-full flex items-center justify-center"
               onClick={() => {
                 setShowQuestionsModal(false);
                 setEditingQuestion(null);
@@ -536,7 +536,7 @@ const InputSourcesPage = () => {
               {customQuestionTypes.map((typeInfo) => {
                 const questions = customQuestions[typeInfo.id];
                 return (
-                  <View key={typeInfo.id} className="bg-slate-800 rounded-xl p-4">
+                  <View key={typeInfo.id} className="bg-white rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-3">
                       <Text className="block text-xl">{typeInfo.icon}</Text>
                       <Text className={`block text-base font-semibold ${typeInfo.color}`}>
@@ -561,13 +561,13 @@ const InputSourcesPage = () => {
                                 ? 'border-blue-500 bg-blue-500/10'
                                 : selectedQuestions.includes(question)
                                 ? 'border-blue-500/50 bg-blue-500/5'
-                                : 'border-slate-700 bg-slate-700/50'
+                                : 'border-slate-200 bg-slate-50'
                             }`}
                           >
                             {editingQuestion?.type === typeInfo.id && editingQuestion?.index === index ? (
                               <View className="flex items-start gap-2">
                                 <View style={{ flex: 1 }}>
-                                  <View className="bg-slate-700 rounded-lg p-3">
+                                  <View className="bg-white rounded-lg p-3">
                                     <Input
                                       className="w-full bg-transparent text-white text-sm"
                                       placeholder="输入问题内容"
@@ -583,7 +583,7 @@ const InputSourcesPage = () => {
                                   className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                                     selectedQuestions.includes(question)
                                       ? 'bg-blue-500 border-blue-500'
-                                      : 'border-slate-600'
+                                      : 'border-slate-200'
                                   }`}
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -592,7 +592,7 @@ const InputSourcesPage = () => {
                                 >
                                   {selectedQuestions.includes(question) && <Check size={12} color="white" />}
                                 </View>
-                                <Text className="block text-sm text-slate-300 flex-1 leading-relaxed">
+                                <Text className="block text-sm text-slate-600 flex-1 leading-relaxed">
                                   {question}
                                 </Text>
                                 <View
@@ -626,10 +626,10 @@ const InputSourcesPage = () => {
                                   <Text className="block text-xs text-white">保存</Text>
                                 </View>
                                 <View
-                                  className="flex-1 py-2 bg-slate-700 rounded-lg flex items-center justify-center active:opacity-80"
+                                  className="flex-1 py-2 bg-white rounded-lg flex items-center justify-center active:opacity-80"
                                   onClick={() => setEditingQuestion(null)}
                                 >
-                                  <Text className="block text-xs text-slate-300">取消</Text>
+                                  <Text className="block text-xs text-slate-600">取消</Text>
                                 </View>
                               </View>
                             )}
@@ -637,7 +637,7 @@ const InputSourcesPage = () => {
                         ))}
                       </View>
                     ) : (
-                      <View className="text-center py-6 bg-slate-700/30 rounded-lg mb-3">
+                      <View className="text-center py-6 bg-white/30 rounded-lg mb-3">
                         <Text className="block text-slate-500 text-xs">
                           暂无问题
                         </Text>
@@ -646,10 +646,10 @@ const InputSourcesPage = () => {
 
                     {/* 添加新问题 */}
                     {newQuestionInput.type === typeInfo.id ? (
-                      <View className="bg-slate-700/50 rounded-lg p-3">
+                      <View className="bg-slate-50 rounded-lg p-3">
                         <View className="flex items-start gap-2">
                           <View style={{ flex: 1 }}>
-                            <View className="bg-slate-700 rounded-lg p-3 mb-2">
+                            <View className="bg-white rounded-lg p-3 mb-2">
                               <Input
                                 className="w-full bg-transparent text-white text-sm"
                                 placeholder="输入新问题..."
@@ -665,10 +665,10 @@ const InputSourcesPage = () => {
                                 <Text className="block text-xs text-white">添加</Text>
                               </View>
                               <View
-                                className="flex-1 py-2 bg-slate-600 rounded-lg flex items-center justify-center active:opacity-80"
+                                className="flex-1 py-2 bg-slate-100 rounded-lg flex items-center justify-center active:opacity-80"
                                 onClick={() => setNewQuestionInput({ type: null, value: '' })}
                               >
-                                <Text className="block text-xs text-slate-300">取消</Text>
+                                <Text className="block text-xs text-slate-600">取消</Text>
                               </View>
                             </View>
                           </View>
@@ -676,11 +676,11 @@ const InputSourcesPage = () => {
                       </View>
                     ) : (
                       <View
-                        className="flex items-center gap-2 py-2 px-3 bg-slate-700/50 rounded-lg active:opacity-80"
+                        className="flex items-center gap-2 py-2 px-3 bg-slate-50 rounded-lg active:opacity-80"
                         onClick={() => setNewQuestionInput({ type: typeInfo.id, value: '' })}
                       >
                         <Plus size={16} color="#60a5fa" />
-                        <Text className="block text-sm text-blue-400">添加问题</Text>
+                        <Text className="block text-sm text-sky-600">添加问题</Text>
                       </View>
                     )}
                   </View>
@@ -689,7 +689,7 @@ const InputSourcesPage = () => {
             </View>
           </ScrollView>
 
-          <View className="bg-slate-800 p-4 border-t border-slate-700">
+          <View className="bg-white p-4 border-t border-slate-200">
             <View
               className="bg-blue-500 text-white text-center py-3 rounded-xl font-medium active:opacity-80"
               onClick={() => {
@@ -707,24 +707,24 @@ const InputSourcesPage = () => {
       {/* 热点榜单弹窗 */}
       {showHotTopicsModal && (
         <View className="fixed inset-0 bg-black/80 z-50 flex flex-col">
-          <View className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between">
+          <View className="bg-white p-4 border-b border-slate-200 flex items-center justify-between">
             <View className="flex items-center gap-2">
               <TrendingUp size={20} color="#a855f7" />
               <Text className="block text-lg font-semibold text-white">热点榜单</Text>
-              <Text className="block text-sm text-slate-400">
+              <Text className="block text-sm text-slate-500">
                 已选 {selectedHotTopics.length} / {getFilteredHotTopics().length}
               </Text>
             </View>
             <View
-              className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center"
+              className="w-8 h-8 bg-white rounded-full flex items-center justify-center"
               onClick={() => setShowHotTopicsModal(false)}
             >
               <X size={20} color="#94a3b8" />
             </View>
           </View>
 
-          <View className="bg-slate-800 p-4 border-b border-slate-700">
-            <Text className="block text-sm text-slate-400 mb-2">选择平台（可多选）</Text>
+          <View className="bg-white p-4 border-b border-slate-200">
+            <Text className="block text-sm text-slate-500 mb-2">选择平台（可多选）</Text>
             <View className="flex flex-wrap gap-2">
               {hotTopicSources.map((source) => (
                 <View
@@ -732,14 +732,14 @@ const InputSourcesPage = () => {
                   className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                     selectedHotSources.includes(source.id)
                       ? 'bg-purple-500/20 border-purple-500 border'
-                      : 'bg-slate-700 border-slate-600 border'
+                      : 'bg-white border-slate-200 border'
                   }`}
                   onClick={() => toggleHotSource(source.id)}
                 >
                   {selectedHotSources.includes(source.id) && <Check size={14} color="#a855f7" />}
                   <Text
                     className={`block text-sm ${
-                      selectedHotSources.includes(source.id) ? 'text-purple-400' : 'text-slate-300'
+                      selectedHotSources.includes(source.id) ? 'text-purple-400' : 'text-slate-600'
                     }`}
                   >
                     {source.name}
@@ -749,8 +749,8 @@ const InputSourcesPage = () => {
             </View>
           </View>
 
-          <View className="bg-slate-800 p-4 border-b border-slate-700">
-            <View className="bg-slate-700 rounded-lg px-4 py-3 flex items-center gap-2">
+          <View className="bg-white p-4 border-b border-slate-200">
+            <View className="bg-white rounded-lg px-4 py-3 flex items-center gap-2">
               <Search size={16} color="#94a3b8" />
               <Input
                 className="w-full bg-transparent text-white text-sm"
@@ -770,7 +770,7 @@ const InputSourcesPage = () => {
                     className={`rounded-xl p-4 border-2 ${
                       selectedHotTopics.includes(topic.id || index.toString())
                         ? 'border-purple-500 bg-purple-500/10'
-                        : 'border-slate-700 bg-slate-800'
+                        : 'border-slate-200 bg-white'
                     }`}
                     onClick={() => toggleHotTopicSelection(topic.id || index.toString())}
                   >
@@ -791,7 +791,7 @@ const InputSourcesPage = () => {
                             </Text>
                           </View>
                           {topic.source && (
-                            <View className="px-2 py-0.5 bg-blue-500/20 rounded">
+                            <View className="px-2 py-0.5 bg-sky-500/20 rounded">
                               <Text className="block text-xs text-blue-300">
                                 {hotTopicSources.find(s => s.id === topic.source)?.name}
                               </Text>
@@ -803,7 +803,7 @@ const InputSourcesPage = () => {
                         className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 ${
                           selectedHotTopics.includes(topic.id || index.toString())
                             ? 'bg-purple-500 border-purple-500'
-                            : 'border-slate-600'
+                            : 'border-slate-200'
                         }`}
                       >
                         {selectedHotTopics.includes(topic.id || index.toString()) && <Check size={14} color="white" />}
@@ -813,7 +813,7 @@ const InputSourcesPage = () => {
                 ))}
               </View>
             ) : (
-              <View className="text-center py-12 bg-slate-800 rounded-xl">
+              <View className="text-center py-12 bg-white rounded-xl">
                 <TrendingUp size={48} color="#475569" />
                 <Text className="block text-slate-500 text-base mt-4">
                   暂无热点话题
@@ -825,7 +825,7 @@ const InputSourcesPage = () => {
             )}
           </ScrollView>
 
-          <View className="bg-slate-800 p-4 border-t border-slate-700">
+          <View className="bg-white p-4 border-t border-slate-200">
             <View
               className="bg-purple-500 text-white text-center py-3 rounded-xl font-medium active:opacity-80"
               onClick={() => setShowHotTopicsModal(false)}
