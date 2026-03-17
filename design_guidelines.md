@@ -2,7 +2,7 @@
 
 ## 品牌定位
 - **应用名称**: 星厨房创作助手
-- **设计风格**: 深色科技风、专业、高效、现代化
+- **设计风格**: 清爽科技风、专业、高效、现代化
 - **目标用户**: 内容创作者、运营人员、营销团队
 - **核心理念**: 通过高效工具提升内容生产效率与品牌曝光
 
@@ -10,31 +10,40 @@
 
 ### 主色板
 - **背景色**:
-  - 深色背景: `bg-slate-900` (#0f172a)
-  - 次级背景: `bg-slate-800` (#1e293b)
-  - 卡片背景: `bg-slate-800/80` (半透明)
+  - 主背景: `#F0F9FF` (冰蓝色)
+  - 次级背景: `#E0F2FE` (浅蓝)
+  - 卡片背景: `#FFFFFF` (纯白)
+  - 卡片次级: `#F8FAFC` (极浅灰)
 
 - **主色调**:
-  - 科技蓝: `text-blue-400` (#60a5fa) - 用于标题和重点文字
-  - 亮白色: `text-white` (#ffffff) - 主要文字
-  - 浅灰色: `text-slate-300` (#cbd5e1) - 次要文字
+  - 科技蓝: `#0EA5E9` - 主题色、按钮、重点
+  - 深蓝: `#0284C7` - 悬停状态、强调
+  - 浅蓝: `rgba(14, 165, 233, 0.15)` - 背景点缀
+
+- **文字色**:
+  - 主文字: `#1E3A5F` (深灰蓝)
+  - 次文字: `#475569` (灰蓝)
+  - 辅助文字: `#64748B` (中灰)
+  - 弱化文字: `#94A3B8` (浅灰)
+
+- **边框与分隔线**:
+  - 卡片边框: `#E2E8F0`
+  - 分隔线: `#F1F5F9`
+  - 聚焦边框: `#0EA5E9`
 
 - **强调色**:
-  - 成功绿: `text-emerald-400` (#34d399)
-  - 警告黄: `text-amber-400` (#fbbf24)
-  - 信息蓝: `bg-blue-500/20` + `text-blue-400`
-
-### 边框与分隔线
-- 卡片边框: `border-slate-700`
-- 分隔线: `border-slate-700` 或 `divide-slate-700`
+  - 成功绿: `#10B981`
+  - 警告黄: `#F59E0B`
+  - 错误红: `#EF4444`
+  - 信息蓝: `#0EA5E9`
 
 ## 字体规范
-- **H1 标题**: `text-2xl font-bold text-white` (24px, 粗体)
-- **H2 标题**: `text-xl font-semibold text-blue-400` (20px, 半粗体)
-- **H3 标题**: `text-lg font-medium text-white` (18px, 中等粗细)
-- **正文**: `text-base text-slate-300` (16px)
-- **小字**: `text-sm text-slate-400` (14px)
-- **微字**: `text-xs text-slate-500` (12px)
+- **H1 标题**: `text-2xl font-bold text-slate-800` (24px, 粗体)
+- **H2 标题**: `text-xl font-semibold text-sky-600` (20px, 半粗体, 科技蓝)
+- **H3 标题**: `text-lg font-medium text-slate-800` (18px, 中等粗细)
+- **正文**: `text-base text-slate-600` (16px)
+- **小字**: `text-sm text-slate-500` (14px)
+- **微字**: `text-xs text-slate-400` (12px)
 
 ## 间距系统
 - **页面边距**: `p-4` 或 `p-6` (16px / 24px)
