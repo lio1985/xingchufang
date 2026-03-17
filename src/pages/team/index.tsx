@@ -87,18 +87,18 @@ export default function MyTeam() {
 
   if (loading) {
     return (
-      <View className="min-h-screen bg-sky-50 flex items-center justify-center">
-        <Text className="block text-slate-500">加载中...</Text>
+      <View className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Text className="block text-slate-400">加载中...</Text>
       </View>
     );
   }
 
   if (!team) {
     return (
-      <View className="min-h-screen bg-sky-50 flex flex-col items-center justify-center p-4">
-        <Users size={64} className="text-slate-500 mb-4" />
-        <Text className="block text-xl text-slate-800 font-semibold mb-2">尚未加入团队</Text>
-        <Text className="block text-sm text-slate-500 text-center mb-6">
+      <View className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
+        <Users size={64} className="text-slate-400 mb-4" />
+        <Text className="block text-xl text-white font-semibold mb-2">尚未加入团队</Text>
+        <Text className="block text-sm text-slate-400 text-center mb-6">
           您还没有加入任何团队，请联系管理员添加您到相应的销售团队
         </Text>
       </View>
@@ -109,13 +109,13 @@ export default function MyTeam() {
   const isLeader = myInfo?.role === 'leader';
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* Header */}
-      <View className="bg-gradient-to-br from-sky-100 to-sky-50 px-4 py-8">
+      <View className="bg-gradient-to-br from-slate-900 to-sky-50 px-4 py-8">
         <View className="flex items-center justify-between mb-4">
           <View>
-            <Text className="block text-sm text-sky-600 mb-1">我的团队</Text>
-            <Text className="block text-2xl font-bold text-slate-800">{team.name}</Text>
+            <Text className="block text-sm text-blue-400 mb-1">我的团队</Text>
+            <Text className="block text-2xl font-bold text-white">{team.name}</Text>
           </View>
           {isLeader && (
             <View className="flex items-center gap-1 px-3 py-1 bg-yellow-500/30 rounded-full">
@@ -133,35 +133,35 @@ export default function MyTeam() {
         {/* Stats */}
         {stats && (
           <View className="px-4 py-4">
-            <Text className="block text-base font-semibold text-slate-800 mb-3">团队业绩</Text>
+            <Text className="block text-base font-semibold text-white mb-3">团队业绩</Text>
             <View className="grid grid-cols-2 gap-3">
-              <View className="bg-sky-50 rounded-xl p-4 border border-slate-800">
+              <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
-                  <Users size={16} className="text-sky-600" />
-                  <Text className="block text-sm text-slate-500">团队成员</Text>
+                  <Users size={16} className="text-blue-400" />
+                  <Text className="block text-sm text-slate-400">团队成员</Text>
                 </View>
-                <Text className="block text-2xl font-bold text-slate-800">{stats.memberCount}</Text>
+                <Text className="block text-2xl font-bold text-white">{stats.memberCount}</Text>
               </View>
-              <View className="bg-sky-50 rounded-xl p-4 border border-slate-800">
+              <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
                   <Target size={16} className="text-emerald-400" />
-                  <Text className="block text-sm text-slate-500">客户总数</Text>
+                  <Text className="block text-sm text-slate-400">客户总数</Text>
                 </View>
-                <Text className="block text-2xl font-bold text-slate-800">{stats.totalCustomers}</Text>
+                <Text className="block text-2xl font-bold text-white">{stats.totalCustomers}</Text>
               </View>
-              <View className="bg-sky-50 rounded-xl p-4 border border-slate-800">
+              <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
                   <TrendingUp size={16} className="text-purple-400" />
-                  <Text className="block text-sm text-slate-500">回收门店</Text>
+                  <Text className="block text-sm text-slate-400">回收门店</Text>
                 </View>
-                <Text className="block text-2xl font-bold text-slate-800">{stats.totalRecycleStores}</Text>
+                <Text className="block text-2xl font-bold text-white">{stats.totalRecycleStores}</Text>
               </View>
-              <View className="bg-sky-50 rounded-xl p-4 border border-slate-800">
+              <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
                   <DollarSign size={16} className="text-orange-400" />
-                  <Text className="block text-sm text-slate-500">成交总额</Text>
+                  <Text className="block text-sm text-slate-400">成交总额</Text>
                 </View>
-                <Text className="block text-2xl font-bold text-slate-800">¥{(stats.totalDealValue / 10000).toFixed(1)}万</Text>
+                <Text className="block text-2xl font-bold text-white">¥{(stats.totalDealValue / 10000).toFixed(1)}万</Text>
               </View>
             </View>
           </View>
@@ -169,8 +169,8 @@ export default function MyTeam() {
 
         {/* Members */}
         <View className="px-4 pb-4">
-          <Text className="block text-base font-semibold text-slate-800 mb-3">团队成员</Text>
-          <View className="bg-sky-50 rounded-xl border border-slate-800 overflow-hidden">
+          <Text className="block text-base font-semibold text-white mb-3">团队成员</Text>
+          <View className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
             {members.map((member, index) => (
               <View
                 key={member.id}
@@ -179,7 +179,7 @@ export default function MyTeam() {
                 <View className="flex items-center gap-3">
                   <View className="relative">
                     <View className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                      <Text className="block text-slate-800 font-semibold">
+                      <Text className="block text-white font-semibold">
                         {(member.user?.nickname || 'U').charAt(0).toUpperCase()}
                       </Text>
                     </View>
@@ -190,7 +190,7 @@ export default function MyTeam() {
                             ? 'bg-yellow-500 text-yellow-950'
                             : index === 1
                               ? 'bg-gray-400 text-gray-900'
-                              : 'bg-orange-600 text-slate-800'
+                              : 'bg-orange-600 text-white'
                         }`}
                       >
                         {index + 1}
@@ -198,7 +198,7 @@ export default function MyTeam() {
                     )}
                   </View>
                   <View>
-                    <Text className="block text-slate-800 font-medium">{member.user?.nickname || '未知用户'}</Text>
+                    <Text className="block text-white font-medium">{member.user?.nickname || '未知用户'}</Text>
                     <View className="flex items-center gap-2 mt-0.5">
                       {member.role === 'leader' ? (
                         <View className="flex items-center gap-1">
@@ -206,14 +206,14 @@ export default function MyTeam() {
                           <Text className="block text-xs text-yellow-400">负责人</Text>
                         </View>
                       ) : (
-                        <Text className="block text-xs text-slate-500">成员</Text>
+                        <Text className="block text-xs text-slate-400">成员</Text>
                       )}
                     </View>
                   </View>
                 </View>
                 {stats?.memberRanking.find(r => r.userId === member.user_id) && (
                   <View className="text-right">
-                    <Text className="block text-sm text-slate-800 font-medium">
+                    <Text className="block text-sm text-white font-medium">
                       {stats.memberRanking.find(r => r.userId === member.user_id)?.customerCount || 0} 客户
                     </Text>
                     <Text className="block text-xs text-emerald-400">
@@ -225,8 +225,8 @@ export default function MyTeam() {
             ))}
             {members.length === 0 && (
               <View className="flex flex-col items-center justify-center py-8">
-                <Users size={32} className="text-slate-500 mb-2" />
-                <Text className="block text-slate-500">暂无成员</Text>
+                <Users size={32} className="text-slate-400 mb-2" />
+                <Text className="block text-slate-400">暂无成员</Text>
               </View>
             )}
           </View>

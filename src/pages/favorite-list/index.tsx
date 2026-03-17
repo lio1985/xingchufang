@@ -149,7 +149,7 @@ export default function FavoriteListPage() {
   return (
     <View className="min-h-screen bg-gray-50">
       {/* 顶部导航栏 */}
-      <View className="bg-white sticky top-0 z-10 shadow-sm">
+      <View className="bg-slate-800 sticky top-0 z-10 shadow-sm">
         <View className="px-4 py-3 flex items-center justify-between">
           <View className="flex items-center gap-2">
             <Heart size={24} color="#ec4899" />
@@ -177,7 +177,7 @@ export default function FavoriteListPage() {
         ) : (
           <View className="p-4 space-y-4">
             {favorites.map((item) => (
-              <View key={item.id} className="bg-white rounded-xl p-4 shadow-sm">
+              <View key={item.id} className="bg-slate-800 rounded-xl p-4 shadow-sm">
                 {/* 热点标题 */}
                 <View className="mb-3 pb-3 border-b border-gray-100">
                   <Text className="block text-xs text-gray-500 mb-1">热点标题</Text>

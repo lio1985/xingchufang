@@ -147,9 +147,9 @@ export default function CustomerEdit() {
   };
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* 头部 */}
-      <View className="px-4 pt-12 pb-4 bg-white/50">
+      <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center" onClick={goBack}>
             <ArrowLeft size={24} color="#ffffff" />
@@ -169,12 +169,12 @@ export default function CustomerEdit() {
 
       <ScrollView className="px-4 pb-8" scrollY style={{ height: 'calc(100vh - 100px)' }}>
         {/* 基本信息 */}
-        <View className="bg-white rounded-xl p-4 mb-4">
+        <View className="bg-slate-800 rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">基本信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">客户称呼 <Text className="text-red-400">*</Text></Text>
-            <View className="bg-white rounded-lg px-3 py-2">
+            <Text className="block text-slate-400 text-sm mb-2">客户称呼 <Text className="text-red-400">*</Text></Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2">
               <Input
                 className="text-white text-sm bg-transparent"
                 placeholder="请输入客户姓名"
@@ -185,9 +185,9 @@ export default function CustomerEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">手机号码</Text>
-            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
-              <Phone size={16} className="text-slate-500 mr-2" />
+            <Text className="block text-slate-400 text-sm mb-2">手机号码</Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
+              <Phone size={16} className="text-slate-400 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入手机号码"
@@ -199,9 +199,9 @@ export default function CustomerEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">微信号</Text>
-            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
-              <MessageCircle size={16} className="text-slate-500 mr-2" />
+            <Text className="block text-slate-400 text-sm mb-2">微信号</Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
+              <MessageCircle size={16} className="text-slate-400 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入微信号"
@@ -212,9 +212,9 @@ export default function CustomerEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">小红书号</Text>
-            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
-              <User size={16} className="text-slate-500 mr-2" />
+            <Text className="block text-slate-400 text-sm mb-2">小红书号</Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
+              <User size={16} className="text-slate-400 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入小红书号"
@@ -225,9 +225,9 @@ export default function CustomerEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">抖音号</Text>
-            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
-              <User size={16} className="text-slate-500 mr-2" />
+            <Text className="block text-slate-400 text-sm mb-2">抖音号</Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
+              <User size={16} className="text-slate-400 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入抖音号"
@@ -239,12 +239,12 @@ export default function CustomerEdit() {
         </View>
 
         {/* 业务信息 */}
-        <View className="bg-white rounded-xl p-4 mb-4">
+        <View className="bg-slate-800 rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">业务信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">餐饮类别</Text>
-            <View className="bg-white rounded-lg px-3 py-2">
+            <Text className="block text-slate-400 text-sm mb-2">餐饮类别</Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2">
               <Input
                 className="text-white text-sm bg-transparent"
                 placeholder="如：火锅、烧烤、中餐等"
@@ -255,7 +255,7 @@ export default function CustomerEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">客户来源</Text>
+            <Text className="block text-slate-400 text-sm mb-2">客户来源</Text>
             <Picker
               mode="selector"
               range={customerSources}
@@ -266,14 +266,14 @@ export default function CustomerEdit() {
                 handleInput('source', customerSources[index]);
               }}
             >
-              <View className="bg-white rounded-lg px-3 py-2">
+              <View className="bg-slate-800 rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{form.source || '请选择客户来源'}</Text>
               </View>
             </Picker>
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">客户类别</Text>
+            <Text className="block text-slate-400 text-sm mb-2">客户类别</Text>
             <Picker
               mode="selector"
               range={customerTypes}
@@ -284,16 +284,16 @@ export default function CustomerEdit() {
                 handleInput('customer_type', customerTypes[index]);
               }}
             >
-              <View className="bg-white rounded-lg px-3 py-2">
+              <View className="bg-slate-800 rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{form.customer_type || '请选择客户类别'}</Text>
               </View>
             </Picker>
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">预计销售金额（万元）</Text>
-            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-slate-500 mr-2" />
+            <Text className="block text-slate-400 text-sm mb-2">预计销售金额（万元）</Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
+              <DollarSign size={16} className="text-slate-400 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入预计金额"
@@ -306,13 +306,13 @@ export default function CustomerEdit() {
         </View>
 
         {/* 位置信息 */}
-        <View className="bg-white rounded-xl p-4 mb-4">
+        <View className="bg-slate-800 rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">位置信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">所在城市</Text>
-            <View className="bg-white rounded-lg px-3 py-2 flex items-center">
-              <MapPin size={16} className="text-slate-500 mr-2" />
+            <Text className="block text-slate-400 text-sm mb-2">所在城市</Text>
+            <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
+              <MapPin size={16} className="text-slate-400 mr-2" />
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入城市"
@@ -323,12 +323,12 @@ export default function CustomerEdit() {
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">项目详细位置</Text>
+            <Text className="block text-slate-400 text-sm mb-2">项目详细位置</Text>
             <View
-              className="bg-white rounded-lg px-3 py-3 flex items-center"
+              className="bg-slate-800 rounded-lg px-3 py-3 flex items-center"
               onClick={handleLocation}
             >
-              <Navigation size={16} className="text-sky-600 mr-2" />
+              <Navigation size={16} className="text-blue-400 mr-2" />
               <Text className="flex-1 text-white text-sm">
                 {form.location?.address || '点击选择位置'}
               </Text>
@@ -337,11 +337,11 @@ export default function CustomerEdit() {
         </View>
 
         {/* 订单信息 */}
-        <View className="bg-white rounded-xl p-4 mb-4">
+        <View className="bg-slate-800 rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">订单信息</Text>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">订单归属</Text>
+            <Text className="block text-slate-400 text-sm mb-2">订单归属</Text>
             <Picker
               mode="selector"
               range={orderBelongings}
@@ -352,15 +352,15 @@ export default function CustomerEdit() {
                 handleInput('order_belonging', orderBelongings[index]);
               }}
             >
-              <View className="bg-white rounded-lg px-3 py-2 flex items-center">
-                <Building size={16} className="text-slate-500 mr-2" />
+              <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
+                <Building size={16} className="text-slate-400 mr-2" />
                 <Text className="flex-1 text-white text-sm">{form.order_belonging || '请选择订单归属'}</Text>
               </View>
             </Picker>
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">客户状态</Text>
+            <Text className="block text-slate-400 text-sm mb-2">客户状态</Text>
             <Picker
               mode="selector"
               range={statuses.map(s => s.label)}
@@ -371,14 +371,14 @@ export default function CustomerEdit() {
                 handleInput('status', statuses[index].value as any);
               }}
             >
-              <View className="bg-white rounded-lg px-3 py-2">
+              <View className="bg-slate-800 rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{statuses[statusIndex].label}</Text>
               </View>
             </Picker>
           </View>
 
           <View className="mb-4">
-            <Text className="block text-slate-500 text-sm mb-2">订单状态</Text>
+            <Text className="block text-slate-400 text-sm mb-2">订单状态</Text>
             <Picker
               mode="selector"
               range={orderStatuses.map(s => s.label)}
@@ -389,7 +389,7 @@ export default function CustomerEdit() {
                 handleInput('order_status', orderStatuses[index].value as any);
               }}
             >
-              <View className="bg-white rounded-lg px-3 py-2">
+              <View className="bg-slate-800 rounded-lg px-3 py-2">
                 <Text className="block text-white text-sm">{orderStatuses[orderStatusIndex].label}</Text>
               </View>
             </Picker>
@@ -397,9 +397,9 @@ export default function CustomerEdit() {
         </View>
 
         {/* 客户需求 */}
-        <View className="bg-white rounded-xl p-4 mb-8">
+        <View className="bg-slate-800 rounded-xl p-4 mb-8">
           <Text className="block text-white text-base font-semibold mb-4">客户需求</Text>
-          <View className="bg-white rounded-lg p-3">
+          <View className="bg-slate-800 rounded-lg p-3">
             <Textarea
               className="w-full h-24 text-white text-sm bg-transparent"
               placeholder="请输入客户的具体需求..."
@@ -407,7 +407,7 @@ export default function CustomerEdit() {
               onInput={(e) => handleInput('requirements', e.detail.value)}
               maxlength={500}
             />
-            <Text className="block text-slate-500 text-xs text-right mt-1">
+            <Text className="block text-slate-400 text-xs text-right mt-1">
               {(form.requirements?.length || 0)}/500
             </Text>
           </View>

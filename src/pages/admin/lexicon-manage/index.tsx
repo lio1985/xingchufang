@@ -311,9 +311,9 @@ export default function AdminLexiconManagePage() {
   };
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* 顶部导航栏 */}
-      <View className="bg-white px-4 py-3 border-b border-slate-200">
+      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View onClick={() => Taro.navigateBack()}>
@@ -325,14 +325,14 @@ export default function AdminLexiconManagePage() {
             </View>
           </View>
           <View className="flex items-center gap-2">
-            <Text className="text-slate-500 text-sm">共 {total} 条</Text>
+            <Text className="text-slate-400 text-sm">共 {total} 条</Text>
           </View>
         </View>
       </View>
 
       {/* 搜索栏 */}
-      <View className="bg-white px-4 py-3 border-b border-slate-200">
-        <View className="bg-white rounded-xl px-4 py-2 flex items-center gap-2">
+      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
+        <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2">
           <Search size={18} color="#94a3b8" />
           <Input
             className="flex-1 bg-transparent text-white"
@@ -349,23 +349,23 @@ export default function AdminLexiconManagePage() {
       </View>
 
       {/* 筛选栏 */}
-      <View className="bg-white px-4 py-3 border-b border-slate-200">
+      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
         <View className="flex items-center gap-2">
           <View
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800"
             onClick={() => setShowFilters(!showFilters)}
           >
             <List size={16} color="#94a3b8" />
-            <Text className="text-slate-600 text-sm">筛选</Text>
+            <Text className="text-slate-300 text-sm">筛选</Text>
             <ChevronDown size={16} color="#94a3b8" />
           </View>
 
           {typeFilter !== 'all' && (
             <View
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-sky-500/20"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-9000/20"
               onClick={() => setTypeFilter('all')}
             >
-              <Text className="text-sky-600 text-sm">{typeConfig[typeFilter].label}</Text>
+              <Text className="text-blue-400 text-sm">{typeConfig[typeFilter].label}</Text>
               <X size={14} color="#60a5fa" />
             </View>
           )}
@@ -385,22 +385,22 @@ export default function AdminLexiconManagePage() {
           <View className="mt-3 space-y-3">
             {/* 类型筛选 */}
             <View>
-              <Text className="text-slate-500 text-xs block mb-2">类型</Text>
+              <Text className="text-slate-400 text-xs block mb-2">类型</Text>
               <View className="flex flex-wrap gap-2">
                 <View
-                  className={`px-3 py-1.5 rounded-lg text-sm ${typeFilter === 'all' ? 'bg-blue-500' : 'bg-white'}`}
+                  className={`px-3 py-1.5 rounded-lg text-sm ${typeFilter === 'all' ? 'bg-blue-500' : 'bg-slate-800'}`}
                   onClick={() => setTypeFilter('all')}
                 >
-                  <Text className={typeFilter === 'all' ? 'text-white' : 'text-slate-600'}>全部</Text>
+                  <Text className={typeFilter === 'all' ? 'text-white' : 'text-slate-300'}>全部</Text>
                 </View>
                 {Object.entries(typeConfig).map(([key, config]) => (
                   <View
                     key={key}
-                    className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${typeFilter === key ? config.color : 'bg-white'}`}
+                    className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${typeFilter === key ? config.color : 'bg-slate-800'}`}
                     onClick={() => setTypeFilter(key as any)}
                   >
                     {config.icon}
-                    <Text className={typeFilter === key ? 'text-white' : 'text-slate-600'}>{config.label}</Text>
+                    <Text className={typeFilter === key ? 'text-white' : 'text-slate-300'}>{config.label}</Text>
                   </View>
                 ))}
               </View>
@@ -408,21 +408,21 @@ export default function AdminLexiconManagePage() {
 
             {/* 分类筛选 */}
             <View>
-              <Text className="text-slate-500 text-xs block mb-2">分类</Text>
+              <Text className="text-slate-400 text-xs block mb-2">分类</Text>
               <View className="flex flex-wrap gap-2">
                 <View
-                  className={`px-3 py-1.5 rounded-lg text-sm ${!categoryFilter ? 'bg-emerald-500' : 'bg-white'}`}
+                  className={`px-3 py-1.5 rounded-lg text-sm ${!categoryFilter ? 'bg-emerald-500' : 'bg-slate-800'}`}
                   onClick={() => setCategoryFilter('')}
                 >
-                  <Text className={!categoryFilter ? 'text-white' : 'text-slate-600'}>全部</Text>
+                  <Text className={!categoryFilter ? 'text-white' : 'text-slate-300'}>全部</Text>
                 </View>
                 {categories.map((cat) => (
                   <View
                     key={cat}
-                    className={`px-3 py-1.5 rounded-lg text-sm ${categoryFilter === cat ? 'bg-emerald-500' : 'bg-white'}`}
+                    className={`px-3 py-1.5 rounded-lg text-sm ${categoryFilter === cat ? 'bg-emerald-500' : 'bg-slate-800'}`}
                     onClick={() => setCategoryFilter(cat)}
                   >
-                    <Text className={categoryFilter === cat ? 'text-white' : 'text-slate-600'}>{cat}</Text>
+                    <Text className={categoryFilter === cat ? 'text-white' : 'text-slate-300'}>{cat}</Text>
                   </View>
                 ))}
               </View>
@@ -440,21 +440,21 @@ export default function AdminLexiconManagePage() {
         <View className="px-4 py-3 space-y-3">
           {loading && (
             <View className="text-center py-12">
-              <Text className="text-slate-500">加载中...</Text>
+              <Text className="text-slate-400">加载中...</Text>
             </View>
           )}
 
           {!loading && lexicons.length > 0 && lexicons.map((item) => {
             const config = typeConfig[item.type];
             return (
-              <View key={item.id} className="bg-white rounded-xl p-4 border border-slate-200">
+              <View key={item.id} className="bg-slate-800 rounded-xl p-4 border border-slate-700">
                 <View className="flex items-start justify-between mb-2">
                   <View className="flex-1 min-w-0">
                     <View className="flex items-center gap-2 mb-1">
                       {config.icon}
                       <Text className="text-white font-semibold text-base block truncate">{item.title}</Text>
                     </View>
-                    <Text className="text-slate-500 text-xs block">
+                    <Text className="text-slate-400 text-xs block">
                       {item.userNickname || item.userId} · {new Date(item.createdAt).toLocaleDateString('zh-CN')}
                     </Text>
                   </View>
@@ -472,7 +472,7 @@ export default function AdminLexiconManagePage() {
                 </View>
 
                 <View className="mb-2">
-                  <Text className="text-slate-600 text-sm block line-clamp-2">
+                  <Text className="text-slate-300 text-sm block line-clamp-2">
                     {item.content}
                   </Text>
                 </View>
@@ -480,12 +480,12 @@ export default function AdminLexiconManagePage() {
                 <View className="flex items-center justify-between">
                   <View className="flex items-center gap-1">
                     <Folder size={14} color="#94a3b8" />
-                    <Text className="text-slate-500 text-xs">{item.category}</Text>
+                    <Text className="text-slate-400 text-xs">{item.category}</Text>
                   </View>
                   {item.tags && item.tags.length > 0 && (
                     <View className="flex items-center gap-1">
                       <Tag size={14} color="#94a3b8" />
-                      <Text className="text-slate-500 text-xs">{item.tags.length} 标签</Text>
+                      <Text className="text-slate-400 text-xs">{item.tags.length} 标签</Text>
                     </View>
                   )}
                 </View>
@@ -496,7 +496,7 @@ export default function AdminLexiconManagePage() {
           {!loading && lexicons.length === 0 && (
             <View className="text-center py-12">
               <FileText size={48} color="#475569" />
-              <Text className="text-slate-500 mt-2">暂无语料库</Text>
+              <Text className="text-slate-400 mt-2">暂无语料库</Text>
             </View>
           )}
 
@@ -521,8 +521,8 @@ export default function AdminLexiconManagePage() {
       {/* 创建语料库对话框 */}
       {showCreateDialog && (
         <View className="fixed inset-0 bg-black/50 flex items-end z-50">
-          <View className="bg-white w-full rounded-t-3xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-200">
+          <View className="bg-slate-800 w-full rounded-t-3xl max-h-[80vh] overflow-y-auto">
+            <View className="p-4 border-b border-slate-700">
               <View className="flex items-center justify-between">
                 <Text className="text-white font-semibold text-lg">新建语料库</Text>
                 <View onClick={() => setShowCreateDialog(false)}>
@@ -534,17 +534,17 @@ export default function AdminLexiconManagePage() {
             <View className="p-4 space-y-4">
               {/* 类型选择 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">类型</Text>
+                <Text className="text-slate-300 text-sm block mb-2">类型</Text>
                 <View className="flex gap-2">
                   {Object.entries(typeConfig).map(([key, config]) => (
                     <View
                       key={key}
-                      className={`flex-1 px-3 py-2 rounded-lg text-center ${formType === key ? config.color : 'bg-white'}`}
+                      className={`flex-1 px-3 py-2 rounded-lg text-center ${formType === key ? config.color : 'bg-slate-800'}`}
                       onClick={() => setFormType(key as any)}
                     >
                       <View className="flex items-center justify-center gap-1">
                         {config.icon}
-                        <Text className={formType === key ? 'text-white' : 'text-slate-600'} text-sm>{config.label}</Text>
+                        <Text className={formType === key ? 'text-white' : 'text-slate-300'} text-sm>{config.label}</Text>
                       </View>
                     </View>
                   ))}
@@ -553,9 +553,9 @@ export default function AdminLexiconManagePage() {
 
               {/* 标题 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">标题</Text>
+                <Text className="text-slate-300 text-sm block mb-2">标题</Text>
                 <Input
-                  className="w-full bg-white rounded-xl px-4 py-3 text-white"
+                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
                   placeholder="请输入标题"
                   value={formTitle}
                   onInput={(e) => setFormTitle(e.detail.value)}
@@ -564,9 +564,9 @@ export default function AdminLexiconManagePage() {
 
               {/* 分类 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">分类</Text>
+                <Text className="text-slate-300 text-sm block mb-2">分类</Text>
                 <Input
-                  className="w-full bg-white rounded-xl px-4 py-3 text-white"
+                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
                   placeholder="请输入分类"
                   value={formCategory}
                   onInput={(e) => setFormCategory(e.detail.value)}
@@ -575,9 +575,9 @@ export default function AdminLexiconManagePage() {
 
               {/* 内容 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">内容</Text>
+                <Text className="text-slate-300 text-sm block mb-2">内容</Text>
                 <Textarea
-                  className="w-full bg-white rounded-xl px-4 py-3 text-white min-h-[200px]"
+                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white min-h-[200px]"
                   placeholder="请输入语料库内容"
                   value={formContent}
                   onInput={(e) => setFormContent(e.detail.value)}
@@ -586,8 +586,8 @@ export default function AdminLexiconManagePage() {
 
               {/* 标签 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">标签</Text>
-                <View className="bg-white rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
+                <Text className="text-slate-300 text-sm block mb-2">标签</Text>
+                <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
                   <Tag size={18} color="#94a3b8" />
                   <Input
                     className="flex-1 bg-transparent text-white"
@@ -605,10 +605,10 @@ export default function AdminLexiconManagePage() {
                     {formTags.map((tag, index) => (
                       <View
                         key={index}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-sky-500/20"
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-9000/20"
                         onClick={() => handleRemoveTag(tag)}
                       >
-                        <Text className="text-sky-600 text-sm">{tag}</Text>
+                        <Text className="text-blue-400 text-sm">{tag}</Text>
                         <X size={14} color="#60a5fa" />
                       </View>
                     ))}
@@ -619,7 +619,7 @@ export default function AdminLexiconManagePage() {
               {/* 按钮 */}
               <View className="flex gap-3 pt-2">
                 <View
-                  className="flex-1 bg-white rounded-xl py-3 text-center"
+                  className="flex-1 bg-slate-800 rounded-xl py-3 text-center"
                   onClick={() => setShowCreateDialog(false)}
                 >
                   <Text className="text-white">取消</Text>
@@ -639,8 +639,8 @@ export default function AdminLexiconManagePage() {
       {/* 编辑语料库对话框 */}
       {showEditDialog && selectedLexicon && (
         <View className="fixed inset-0 bg-black/50 flex items-end z-50">
-          <View className="bg-white w-full rounded-t-3xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-200">
+          <View className="bg-slate-800 w-full rounded-t-3xl max-h-[80vh] overflow-y-auto">
+            <View className="p-4 border-b border-slate-700">
               <View className="flex items-center justify-between">
                 <Text className="text-white font-semibold text-lg">编辑语料库</Text>
                 <View onClick={() => setShowEditDialog(false)}>
@@ -652,17 +652,17 @@ export default function AdminLexiconManagePage() {
             <View className="p-4 space-y-4">
               {/* 类型选择 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">类型</Text>
+                <Text className="text-slate-300 text-sm block mb-2">类型</Text>
                 <View className="flex gap-2">
                   {Object.entries(typeConfig).map(([key, config]) => (
                     <View
                       key={key}
-                      className={`flex-1 px-3 py-2 rounded-lg text-center ${formType === key ? config.color : 'bg-white'}`}
+                      className={`flex-1 px-3 py-2 rounded-lg text-center ${formType === key ? config.color : 'bg-slate-800'}`}
                       onClick={() => setFormType(key as any)}
                     >
                       <View className="flex items-center justify-center gap-1">
                         {config.icon}
-                        <Text className={formType === key ? 'text-white' : 'text-slate-600'} text-sm>{config.label}</Text>
+                        <Text className={formType === key ? 'text-white' : 'text-slate-300'} text-sm>{config.label}</Text>
                       </View>
                     </View>
                   ))}
@@ -671,9 +671,9 @@ export default function AdminLexiconManagePage() {
 
               {/* 标题 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">标题</Text>
+                <Text className="text-slate-300 text-sm block mb-2">标题</Text>
                 <Input
-                  className="w-full bg-white rounded-xl px-4 py-3 text-white"
+                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
                   placeholder="请输入标题"
                   value={formTitle}
                   onInput={(e) => setFormTitle(e.detail.value)}
@@ -682,9 +682,9 @@ export default function AdminLexiconManagePage() {
 
               {/* 分类 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">分类</Text>
+                <Text className="text-slate-300 text-sm block mb-2">分类</Text>
                 <Input
-                  className="w-full bg-white rounded-xl px-4 py-3 text-white"
+                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
                   placeholder="请输入分类"
                   value={formCategory}
                   onInput={(e) => setFormCategory(e.detail.value)}
@@ -693,9 +693,9 @@ export default function AdminLexiconManagePage() {
 
               {/* 内容 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">内容</Text>
+                <Text className="text-slate-300 text-sm block mb-2">内容</Text>
                 <Textarea
-                  className="w-full bg-white rounded-xl px-4 py-3 text-white min-h-[200px]"
+                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white min-h-[200px]"
                   placeholder="请输入语料库内容"
                   value={formContent}
                   onInput={(e) => setFormContent(e.detail.value)}
@@ -704,8 +704,8 @@ export default function AdminLexiconManagePage() {
 
               {/* 标签 */}
               <View>
-                <Text className="text-slate-600 text-sm block mb-2">标签</Text>
-                <View className="bg-white rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
+                <Text className="text-slate-300 text-sm block mb-2">标签</Text>
+                <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
                   <Tag size={18} color="#94a3b8" />
                   <Input
                     className="flex-1 bg-transparent text-white"
@@ -723,10 +723,10 @@ export default function AdminLexiconManagePage() {
                     {formTags.map((tag, index) => (
                       <View
                         key={index}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-sky-500/20"
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-9000/20"
                         onClick={() => handleRemoveTag(tag)}
                       >
-                        <Text className="text-sky-600 text-sm">{tag}</Text>
+                        <Text className="text-blue-400 text-sm">{tag}</Text>
                         <X size={14} color="#60a5fa" />
                       </View>
                     ))}
@@ -737,7 +737,7 @@ export default function AdminLexiconManagePage() {
               {/* 按钮 */}
               <View className="flex gap-3 pt-2">
                 <View
-                  className="flex-1 bg-white rounded-xl py-3 text-center"
+                  className="flex-1 bg-slate-800 rounded-xl py-3 text-center"
                   onClick={() => setShowEditDialog(false)}
                 >
                   <Text className="text-white">取消</Text>
@@ -757,8 +757,8 @@ export default function AdminLexiconManagePage() {
       {/* 详情对话框 */}
       {showDetailDialog && selectedLexicon && (
         <View className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <View className="bg-white w-full rounded-2xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-200 sticky top-0 bg-white z-10">
+          <View className="bg-slate-800 w-full rounded-2xl max-h-[80vh] overflow-y-auto">
+            <View className="p-4 border-b border-slate-700 sticky top-0 bg-slate-800 z-10">
               <View className="flex items-center justify-between">
                 <Text className="text-white font-semibold text-lg truncate">{selectedLexicon.title}</Text>
                 <View onClick={() => setShowDetailDialog(false)}>
@@ -770,14 +770,14 @@ export default function AdminLexiconManagePage() {
             <View className="p-4 space-y-4">
               <View className="flex items-center gap-2 mb-4">
                 {typeConfig[selectedLexicon.type].icon}
-                <Text className="text-slate-600 text-sm">{typeConfig[selectedLexicon.type].label}</Text>
-                <Text className="text-slate-500">·</Text>
-                <Text className="text-slate-500 text-sm">{selectedLexicon.category}</Text>
+                <Text className="text-slate-300 text-sm">{typeConfig[selectedLexicon.type].label}</Text>
+                <Text className="text-slate-400">·</Text>
+                <Text className="text-slate-400 text-sm">{selectedLexicon.category}</Text>
               </View>
 
               <View>
                 <Text className="text-white font-semibold text-base block mb-2">内容</Text>
-                <Text className="text-slate-600 text-sm block leading-relaxed whitespace-pre-wrap">
+                <Text className="text-slate-300 text-sm block leading-relaxed whitespace-pre-wrap">
                   {selectedLexicon.content}
                 </Text>
               </View>
@@ -789,16 +789,16 @@ export default function AdminLexiconManagePage() {
                     {selectedLexicon.tags.map((tag, index) => (
                       <View
                         key={index}
-                        className="px-3 py-1.5 rounded-lg bg-sky-500/20"
+                        className="px-3 py-1.5 rounded-lg bg-slate-9000/20"
                       >
-                        <Text className="text-sky-600 text-sm">{tag}</Text>
+                        <Text className="text-blue-400 text-sm">{tag}</Text>
                       </View>
                     ))}
                   </View>
                 </View>
               )}
 
-              <View className="text-slate-500 text-xs pt-4 border-t border-slate-200">
+              <View className="text-slate-400 text-xs pt-4 border-t border-slate-700">
                 <Text className="block">
                   创建时间: {new Date(selectedLexicon.createdAt).toLocaleString('zh-CN')}
                 </Text>

@@ -260,12 +260,12 @@ export default function ViralRemixPage() {
   }
 
   return (
-    <View className="min-h-screen bg-sky-50 pb-8">
+    <View className="min-h-screen bg-slate-900 pb-8">
       {/* 头部导航 */}
-      <View className="sticky top-0 z-10 bg-sky-50/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
+      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
         <View className="flex items-center gap-3">
           <View
-            className="w-10 h-10 bg-white rounded-xl flex items-center justify-center active:scale-95 transition-all"
+            className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
             onClick={() => Taro.navigateBack()}
           >
             <ArrowLeft size={22} color="#94a3b8" />
@@ -280,12 +280,12 @@ export default function ViralRemixPage() {
       <View className="px-4 mt-6 flex flex-col gap-6">
         {/* 提取的文案 */}
         {analysis && (
-          <View className="bg-white/90 rounded-2xl border border-slate-200/80 p-5">
+          <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
             <View className="flex items-center gap-2 mb-4">
               <BookOpen size={18} color="#34d399" strokeWidth={2.5} />
               <Text className="block text-lg font-bold text-white">提取的文案</Text>
             </View>
-            <View className="bg-white/60 rounded-xl p-4 max-h-48 overflow-y-auto">
+            <View className="bg-slate-800/60 rounded-xl p-4 max-h-48 overflow-y-auto">
               <Text className="block text-sm text-slate-200 leading-relaxed">
                 {analysis.transcript}
               </Text>
@@ -295,7 +295,7 @@ export default function ViralRemixPage() {
 
         {/* 爆款框架（只读） */}
         {analysis && (
-          <View className="bg-white/90 rounded-2xl border border-slate-200/80 p-5">
+          <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
             <View className="flex items-center gap-2 mb-4">
               <BookOpen size={18} color="#a855f7" strokeWidth={2.5} />
               <Text className="block text-lg font-bold text-white">爆款框架参考</Text>
@@ -304,7 +304,7 @@ export default function ViralRemixPage() {
               <Text className="block text-sm font-semibold text-emerald-400 mb-1">
                 {analysis.framework.type}
               </Text>
-              <Text className="block text-xs text-slate-600">
+              <Text className="block text-xs text-slate-300">
                 {analysis.framework.description}
               </Text>
             </View>
@@ -312,18 +312,18 @@ export default function ViralRemixPage() {
         )}
 
         {/* 语料库选择 - 按类别显示 */}
-        <View className="bg-white/90 rounded-2xl border border-slate-200/80 p-5">
+        <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
           <View className="flex items-center justify-between mb-4">
             <View className="flex items-center gap-2">
               <BookOpen size={18} color="#34d399" strokeWidth={2.5} />
               <Text className="block text-lg font-bold text-white">选择语料库</Text>
             </View>
             <View className="flex items-center gap-2">
-              <Text className="block text-sm text-slate-500">
+              <Text className="block text-sm text-slate-400">
                 已选 {selectedLexicons.length} 个
               </Text>
               <View
-                className="px-3 py-1.5 bg-white rounded-lg active:scale-95 transition-all"
+                className="px-3 py-1.5 bg-slate-800 rounded-lg active:scale-95 transition-all"
                 onClick={toggleAll}
               >
                 <Text className="text-xs text-white">
@@ -335,7 +335,7 @@ export default function ViralRemixPage() {
 
           {lexicons.length === 0 ? (
             <View className="flex flex-col items-center justify-center py-10">
-              <Text className="block text-sm text-slate-500">暂无语料库</Text>
+              <Text className="block text-sm text-slate-400">暂无语料库</Text>
             </View>
           ) : (
             <CheckboxGroup onChange={handleLexiconChange}>
@@ -344,7 +344,7 @@ export default function ViralRemixPage() {
                 {(() => {
                   const enterpriseLexicons = lexicons.filter(l => l.type === 'enterprise')
                   return enterpriseLexicons.length > 0 && (
-                    <View className="bg-white/40 rounded-xl overflow-hidden">
+                    <View className="bg-slate-800/40 rounded-xl overflow-hidden">
                       <View
                         className="flex items-center justify-between px-4 py-3 bg-emerald-500/10 border-b border-emerald-500/20 active:bg-emerald-500/20 transition-all"
                         onClick={() => toggleCategory('enterprise')}
@@ -363,7 +363,7 @@ export default function ViralRemixPage() {
                           {enterpriseLexicons.map((lexicon) => (
                             <View
                               key={lexicon.id}
-                              className="bg-white/60 rounded-lg p-3 active:bg-white/80 transition-all"
+                              className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
                             >
                               <View className="flex items-start gap-3">
                                 <Checkbox
@@ -376,11 +376,11 @@ export default function ViralRemixPage() {
                                     {lexicon.title}
                                   </Text>
                                   {lexicon.category && (
-                                    <Text className="block text-xs text-slate-500 mb-1">
+                                    <Text className="block text-xs text-slate-400 mb-1">
                                       {lexicon.category}
                                     </Text>
                                   )}
-                                  <Text className="block text-xs text-slate-600 line-clamp-2">
+                                  <Text className="block text-xs text-slate-300 line-clamp-2">
                                     {lexicon.content}
                                   </Text>
                                 </View>
@@ -397,16 +397,16 @@ export default function ViralRemixPage() {
                 {(() => {
                   const personalLexicons = lexicons.filter(l => l.type === 'personal')
                   return personalLexicons.length > 0 && (
-                    <View className="bg-white/40 rounded-xl overflow-hidden">
+                    <View className="bg-slate-800/40 rounded-xl overflow-hidden">
                       <View
-                        className="flex items-center justify-between px-4 py-3 bg-blue-500/10 border-b border-blue-500/20 active:bg-sky-500/20 transition-all"
+                        className="flex items-center justify-between px-4 py-3 bg-blue-500/10 border-b border-blue-500/20 active:bg-slate-9000/20 transition-all"
                         onClick={() => toggleCategory('personal')}
                       >
                         <View className="flex items-center gap-2">
                           <User size={16} color="#60a5fa" strokeWidth={2.5} />
                           <Text className="text-sm font-bold text-white">个人IP语料库</Text>
-                          <View className="px-2 py-0.5 bg-sky-500/20 rounded">
-                            <Text className="text-xs text-sky-600">{personalLexicons.length}</Text>
+                          <View className="px-2 py-0.5 bg-slate-9000/20 rounded">
+                            <Text className="text-xs text-blue-400">{personalLexicons.length}</Text>
                           </View>
                         </View>
                         <Check size={14} color="#60a5fa" className={`transition-transform ${expandedCategory === 'all' || expandedCategory === 'personal' ? 'rotate-90' : ''}`} />
@@ -416,7 +416,7 @@ export default function ViralRemixPage() {
                           {personalLexicons.map((lexicon) => (
                             <View
                               key={lexicon.id}
-                              className="bg-white/60 rounded-lg p-3 active:bg-white/80 transition-all"
+                              className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
                             >
                               <View className="flex items-start gap-3">
                                 <Checkbox
@@ -429,11 +429,11 @@ export default function ViralRemixPage() {
                                     {lexicon.title}
                                   </Text>
                                   {lexicon.category && (
-                                    <Text className="block text-xs text-slate-500 mb-1">
+                                    <Text className="block text-xs text-slate-400 mb-1">
                                       {lexicon.category}
                                     </Text>
                                   )}
-                                  <Text className="block text-xs text-slate-600 line-clamp-2">
+                                  <Text className="block text-xs text-slate-300 line-clamp-2">
                                     {lexicon.content}
                                   </Text>
                                 </View>
@@ -450,7 +450,7 @@ export default function ViralRemixPage() {
                 {(() => {
                   const productLexicons = lexicons.filter(l => l.type === 'product')
                   return productLexicons.length > 0 && (
-                    <View className="bg-white/40 rounded-xl overflow-hidden">
+                    <View className="bg-slate-800/40 rounded-xl overflow-hidden">
                       <View
                         className="flex items-center justify-between px-4 py-3 bg-purple-500/10 border-b border-purple-500/20 active:bg-purple-500/20 transition-all"
                         onClick={() => toggleCategory('product')}
@@ -469,7 +469,7 @@ export default function ViralRemixPage() {
                           {productLexicons.map((lexicon) => (
                             <View
                               key={lexicon.id}
-                              className="bg-white/60 rounded-lg p-3 active:bg-white/80 transition-all"
+                              className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
                             >
                               <View className="flex items-start gap-3">
                                 <Checkbox
@@ -482,11 +482,11 @@ export default function ViralRemixPage() {
                                     {lexicon.title}
                                   </Text>
                                   {lexicon.category && (
-                                    <Text className="block text-xs text-slate-500 mb-1">
+                                    <Text className="block text-xs text-slate-400 mb-1">
                                       {lexicon.category}
                                     </Text>
                                   )}
-                                  <Text className="block text-xs text-slate-600 line-clamp-2">
+                                  <Text className="block text-xs text-slate-300 line-clamp-2">
                                     {lexicon.content}
                                   </Text>
                                 </View>
@@ -504,7 +504,7 @@ export default function ViralRemixPage() {
         </View>
 
         {/* 改写想法 */}
-        <View className="bg-white/90 rounded-2xl border border-slate-200/80 p-5">
+        <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
           <View className="flex items-center justify-between mb-4">
             <View className="flex items-center gap-2">
               <Wand size={18} color="#f59e0b" strokeWidth={2.5} />
@@ -514,7 +514,7 @@ export default function ViralRemixPage() {
               <View
                 className={`px-3 py-1.5 rounded-lg active:scale-95 transition-all ${
                   isOptimizing
-                    ? 'bg-white text-slate-500'
+                    ? 'bg-slate-800 text-slate-400'
                     : 'bg-purple-500 text-white'
                 }`}
                 onClick={!isOptimizing ? handleOptimizeIdea : undefined}
@@ -532,7 +532,7 @@ export default function ViralRemixPage() {
               </View>
             )}
           </View>
-          <View className="bg-white/60 rounded-xl p-4">
+          <View className="bg-slate-800/60 rounded-xl p-4">
             <Textarea
               className="w-full bg-transparent text-slate-200 text-base leading-relaxed"
               placeholder="请输入你的改写想法，例如：重点突出产品优势，增加购买引导..."
@@ -553,7 +553,7 @@ export default function ViralRemixPage() {
                   className={`px-4 py-2 rounded-xl border-2 transition-all ${
                     selectedStyle === option.value
                       ? `${option.bg} border-transparent text-white`
-                      : 'bg-slate-50 border-slate-200 text-slate-600'
+                      : 'bg-slate-800 border-slate-700 text-slate-300'
                   }`}
                   onClick={() => setSelectedStyle(option.value)}
                 >
@@ -570,10 +570,10 @@ export default function ViralRemixPage() {
                   <View className="flex items-start gap-2">
                     <Text className="text-lg">💡</Text>
                     <View className="flex-1">
-                      <Text className="block text-sm text-sky-600 mb-1">
+                      <Text className="block text-sm text-blue-400 mb-1">
                         {selectedOption.label}标题限制：{selectedOption.titleLimit}
                       </Text>
-                      <Text className="block text-xs text-slate-500">
+                      <Text className="block text-xs text-slate-400">
                         {selectedOption.titleTips}
                       </Text>
                     </View>
@@ -588,7 +588,7 @@ export default function ViralRemixPage() {
         <View
           className={`py-4 rounded-xl text-center transition-all ${
             isGenerating || !remixIdea.trim()
-              ? 'bg-white text-slate-500'
+              ? 'bg-slate-800 text-slate-400'
               : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white active:scale-[0.98]'
           }`}
           onClick={!isGenerating && remixIdea.trim() ? handleGenerate : undefined}
@@ -616,7 +616,7 @@ export default function ViralRemixPage() {
             {generatedSchemes.map((scheme, idx) => (
               <View
                 key={idx}
-                className="bg-white/90 rounded-2xl border border-slate-200/80 p-5"
+                className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5"
               >
                 <View className="flex items-center justify-between mb-4">
                   <View className="flex items-center gap-2">
@@ -626,12 +626,12 @@ export default function ViralRemixPage() {
                     </Text>
                   </View>
                   <View
-                    className="px-3 py-1.5 bg-sky-500/20 rounded-lg active:scale-95 transition-all"
+                    className="px-3 py-1.5 bg-slate-9000/20 rounded-lg active:scale-95 transition-all"
                     onClick={() => handleCopy(scheme)}
                   >
                     <View className="flex items-center gap-1">
                       <Copy size={14} color="#60a5fa" />
-                      <Text className="text-xs text-sky-600">复制</Text>
+                      <Text className="text-xs text-blue-400">复制</Text>
                     </View>
                   </View>
                 </View>
@@ -639,12 +639,12 @@ export default function ViralRemixPage() {
                 {/* 标题 */}
                 <View className="mb-4">
                   <View className="flex items-center justify-between mb-2">
-                    <Text className="block text-xs text-slate-500">标题</Text>
+                    <Text className="block text-xs text-slate-400">标题</Text>
                     <Text className={`text-xs ${scheme.title.length > 50 ? 'text-red-400' : scheme.title.length >= 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
                       {scheme.title.length}字
                     </Text>
                   </View>
-                  <View className="bg-white/60 rounded-xl p-4">
+                  <View className="bg-slate-800/60 rounded-xl p-4">
                     <Text className="block text-base font-semibold text-white">
                       {scheme.title}
                     </Text>
@@ -653,8 +653,8 @@ export default function ViralRemixPage() {
 
                 {/* 内容 */}
                 <View className="mb-4">
-                  <Text className="block text-xs text-slate-500 mb-2">内容</Text>
-                  <View className="bg-white/60 rounded-xl p-4">
+                  <Text className="block text-xs text-slate-400 mb-2">内容</Text>
+                  <View className="bg-slate-800/60 rounded-xl p-4">
                     <Text className="block text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
                       {scheme.content}
                     </Text>
@@ -664,11 +664,11 @@ export default function ViralRemixPage() {
                 {/* 标签 */}
                 {scheme.tags && scheme.tags.length > 0 && (
                   <View>
-                    <Text className="block text-xs text-slate-500 mb-2">标签</Text>
+                    <Text className="block text-xs text-slate-400 mb-2">标签</Text>
                     <View className="flex flex-wrap gap-2">
                       {scheme.tags.map((tag, tagIdx) => (
-                        <View key={tagIdx} className="px-3 py-1.5 bg-sky-500/20 rounded-lg">
-                          <Text className="text-xs text-sky-600">{tag}</Text>
+                        <View key={tagIdx} className="px-3 py-1.5 bg-slate-9000/20 rounded-lg">
+                          <Text className="text-xs text-blue-400">{tag}</Text>
                         </View>
                       ))}
                     </View>
@@ -681,8 +681,8 @@ export default function ViralRemixPage() {
             <View
               className={`py-3 rounded-xl text-center transition-all ${
                 isGenerating
-                  ? 'bg-white text-slate-500'
-                  : 'bg-slate-50 text-slate-600 active:scale-[0.98]'
+                  ? 'bg-slate-800 text-slate-400'
+                  : 'bg-slate-800 text-slate-300 active:scale-[0.98]'
               }`}
               onClick={!isGenerating ? handleGenerate : undefined}
             >

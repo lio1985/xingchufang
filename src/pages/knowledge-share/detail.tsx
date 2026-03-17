@@ -310,16 +310,16 @@ const KnowledgeShareDetailPage = () => {
 
   if (loading) {
     return (
-      <View className="min-h-screen bg-sky-50 flex items-center justify-center">
-        <Text className="block text-slate-500">加载中...</Text>
+      <View className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Text className="block text-slate-400">加载中...</Text>
       </View>
     );
   }
 
   if (!detail) {
     return (
-      <View className="min-h-screen bg-sky-50 flex items-center justify-center">
-        <Text className="block text-slate-500">内容不存在</Text>
+      <View className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Text className="block text-slate-400">内容不存在</Text>
       </View>
     );
   }
@@ -327,9 +327,9 @@ const KnowledgeShareDetailPage = () => {
   const isOwner = detail.userId === userId;
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* 顶部导航栏 */}
-      <View className="bg-white px-4 py-4 flex items-center justify-between border-b border-slate-200">
+      <View className="bg-slate-800 px-4 py-4 flex items-center justify-between border-b border-slate-700">
         <View
           className="flex items-center gap-2"
           onClick={() => Taro.navigateBack()}
@@ -344,7 +344,7 @@ const KnowledgeShareDetailPage = () => {
           <View className="flex items-center gap-2">
             {isOwner && (
               <View
-                className="p-2 rounded-lg active:bg-white"
+                className="p-2 rounded-lg active:bg-slate-800"
                 onClick={handleEdit}
               >
                 <Pencil size={20} color="#94a3b8" />
@@ -352,7 +352,7 @@ const KnowledgeShareDetailPage = () => {
             )}
             {isAdmin && (
               <View
-                className="p-2 rounded-lg active:bg-white"
+                className="p-2 rounded-lg active:bg-slate-800"
                 onClick={handleFeature}
               >
                 <Star
@@ -362,7 +362,7 @@ const KnowledgeShareDetailPage = () => {
               </View>
             )}
             <View
-              className="p-2 rounded-lg active:bg-white"
+              className="p-2 rounded-lg active:bg-slate-800"
               onClick={handleDelete}
             >
               <Trash2 size={20} color="#ef4444" />
@@ -381,7 +381,7 @@ const KnowledgeShareDetailPage = () => {
 
           {/* 作者信息 */}
           <View className="flex items-center gap-3 mb-4">
-            <View className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+            <View className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center">
               <Text className="block text-lg font-bold text-white">
                 {detail.author.charAt(0)}
               </Text>
@@ -392,14 +392,14 @@ const KnowledgeShareDetailPage = () => {
               </Text>
               <View className="flex items-center gap-1">
                 <Clock size={12} color="#94a3b8" />
-                <Text className="block text-xs text-slate-500">
+                <Text className="block text-xs text-slate-400">
                   {formatTime(detail.createdAt)}
                 </Text>
               </View>
             </View>
             <View className="flex items-center gap-1">
               <Eye size={16} color="#94a3b8" />
-              <Text className="block text-sm text-slate-500">
+              <Text className="block text-sm text-slate-400">
                 {detail.viewCount}
               </Text>
             </View>
@@ -407,7 +407,7 @@ const KnowledgeShareDetailPage = () => {
 
           {/* 分类 */}
           <View className="mb-4">
-            <View className="inline-block px-3 py-1 bg-sky-500/20 border border-sky-500/30 rounded-lg">
+            <View className="inline-block px-3 py-1 bg-slate-9000/20 border border-sky-500/30 rounded-lg">
               <Text className="block text-sm text-blue-300">
                 {detail.category || '其他'}
               </Text>
@@ -420,16 +420,16 @@ const KnowledgeShareDetailPage = () => {
               {detail.tags.map((tag, index) => (
                 <View
                   key={index}
-                  className="bg-slate-50 px-3 py-1.5 rounded-lg"
+                  className="bg-slate-800 px-3 py-1.5 rounded-lg"
                 >
-                  <Text className="block text-sm text-slate-600">{tag}</Text>
+                  <Text className="block text-sm text-slate-300">{tag}</Text>
                 </View>
               ))}
             </View>
           )}
 
           {/* 内容 */}
-          <View className="bg-white rounded-xl border border-slate-200 p-5 mb-6">
+          <View className="bg-slate-800 rounded-xl border border-slate-700 p-5 mb-6">
             <Text className="block text-base text-slate-200 leading-relaxed whitespace-pre-wrap">
               {detail.content}
             </Text>
@@ -445,7 +445,7 @@ const KnowledgeShareDetailPage = () => {
                 {detail.attachments.map((attachment, index) => (
                   <View
                     key={index}
-                    className="bg-white rounded-xl border border-slate-200 p-4"
+                    className="bg-slate-800 rounded-xl border border-slate-700 p-4"
                   >
                     {attachment.fileType === 'image' ? (
                       <View
@@ -463,24 +463,24 @@ const KnowledgeShareDetailPage = () => {
                           mode="widthFix"
                         />
                         <View className="mt-2 flex items-center justify-between">
-                          <Text className="block text-sm text-slate-600 truncate flex-1 mr-2">
+                          <Text className="block text-sm text-slate-300 truncate flex-1 mr-2">
                             {attachment.fileName}
                           </Text>
-                          <Text className="block text-xs text-slate-500">
+                          <Text className="block text-xs text-slate-400">
                             {formatFileSize(attachment.fileSize)}
                           </Text>
                         </View>
                       </View>
                     ) : attachment.fileType === 'audio' ? (
                       <View className="flex items-center gap-3">
-                        <View className="w-12 h-12 rounded-lg bg-sky-500/20 flex items-center justify-center">
+                        <View className="w-12 h-12 rounded-lg bg-slate-9000/20 flex items-center justify-center">
                           <Mic size={24} color="#60a5fa" />
                         </View>
                         <View className="flex-1">
                           <Text className="block text-sm text-white truncate mb-1">
                             {attachment.fileName}
                           </Text>
-                          <Text className="block text-xs text-slate-500">
+                          <Text className="block text-xs text-slate-400">
                             {formatFileSize(attachment.fileSize)}
                           </Text>
                         </View>
@@ -493,7 +493,7 @@ const KnowledgeShareDetailPage = () => {
                             />
                           )}
                           <View
-                            className="p-2 rounded-lg bg-white"
+                            className="p-2 rounded-lg bg-slate-800"
                             onClick={() => handleDownloadFile(attachment)}
                           >
                             <Download size={18} color="#94a3b8" />
@@ -502,19 +502,19 @@ const KnowledgeShareDetailPage = () => {
                       </View>
                     ) : (
                       <View className="flex items-center gap-3">
-                        <View className="w-12 h-12 rounded-lg bg-white flex items-center justify-center">
+                        <View className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center">
                           <FileText size={24} color="#94a3b8" />
                         </View>
                         <View className="flex-1 min-w-0">
                           <Text className="block text-sm text-white truncate mb-1">
                             {attachment.fileName}
                           </Text>
-                          <Text className="block text-xs text-slate-500">
+                          <Text className="block text-xs text-slate-400">
                             {formatFileSize(attachment.fileSize)}
                           </Text>
                         </View>
                         <View
-                          className="p-2 rounded-lg bg-white"
+                          className="p-2 rounded-lg bg-slate-800"
                           onClick={() => handleDownloadFile(attachment)}
                         >
                           <Download size={18} color="#94a3b8" />
@@ -528,10 +528,10 @@ const KnowledgeShareDetailPage = () => {
           )}
 
           {/* 底部操作栏 */}
-          <View className="flex items-center justify-center gap-6 py-4 border-t border-slate-200">
+          <View className="flex items-center justify-center gap-6 py-4 border-t border-slate-700">
             <View
               className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all ${
-                detail.isLiked ? 'bg-pink-500' : 'bg-white'
+                detail.isLiked ? 'bg-pink-500' : 'bg-slate-800'
               }`}
               onClick={handleLike}
             >

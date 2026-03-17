@@ -48,7 +48,7 @@ const statusLabels = {
 };
 
 const statusColors = {
-  pending: 'bg-slate-500',
+  pending: 'bg-slate-8000',
   contacted: 'bg-blue-500',
   assessing: 'bg-purple-500',
   negotiating: 'bg-amber-500',
@@ -86,9 +86,9 @@ export default function RecycleDashboard() {
   }, []);
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* 头部 */}
-      <View className="px-4 pt-12 pb-4 bg-white/50">
+      <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center">
             <Activity size={24} color="#ffffff" />
@@ -101,7 +101,7 @@ export default function RecycleDashboard() {
         {!statistics ? (
           <View className="flex flex-col items-center justify-center py-20">
             <Activity size={48} color="#64748b" />
-            <Text className="block text-slate-500 text-sm mt-3">
+            <Text className="block text-slate-400 text-sm mt-3">
               {loading ? '加载中...' : '暂无数据'}
             </Text>
           </View>
@@ -144,16 +144,16 @@ export default function RecycleDashboard() {
 
             {/* 周期增长 */}
             {statistics.recentGrowth && (
-              <View className="bg-white rounded-xl p-4 mb-4">
+              <View className="bg-slate-800 rounded-xl p-4 mb-4">
                 <View className="flex items-center justify-between">
                   <View>
-                    <Text className="block text-slate-500 text-xs mb-1">本周新增</Text>
+                    <Text className="block text-slate-400 text-xs mb-1">本周新增</Text>
                     <Text className="block text-white text-2xl font-bold">
                       {statistics.recentGrowth.thisWeek}
                     </Text>
                   </View>
                   <View className="text-right">
-                    <Text className="block text-slate-500 text-xs mb-1">环比增长</Text>
+                    <Text className="block text-slate-400 text-xs mb-1">环比增长</Text>
                     <Text
                       className={`block text-lg font-semibold ${
                         statistics.recentGrowth.growthRate >= 0
@@ -170,7 +170,7 @@ export default function RecycleDashboard() {
             )}
 
             {/* 状态分布 */}
-            <View className="bg-white rounded-xl p-4 mb-4">
+            <View className="bg-slate-800 rounded-xl p-4 mb-4">
               <Text className="block text-white text-base font-semibold mb-4">状态分布</Text>
               <View className="grid grid-cols-4 gap-3">
                 {Object.entries(statistics.statusDistribution).map(([status, count]) => (
@@ -181,7 +181,7 @@ export default function RecycleDashboard() {
                     <Text className="block text-white text-sm font-semibold">
                       {count}
                     </Text>
-                    <Text className="block text-slate-500 text-xs mt-1">
+                    <Text className="block text-slate-400 text-xs mt-1">
                       {statusLabels[status as keyof typeof statusLabels]}
                     </Text>
                   </View>
@@ -190,7 +190,7 @@ export default function RecycleDashboard() {
             </View>
 
             {/* 业务类别分布 */}
-            <View className="bg-white rounded-xl p-4 mb-4">
+            <View className="bg-slate-800 rounded-xl p-4 mb-4">
               <Text className="block text-white text-base font-semibold mb-4">
                 业务类别分布
               </Text>
@@ -198,9 +198,9 @@ export default function RecycleDashboard() {
                 <View key={type} className="mb-3">
                   <View className="flex justify-between items-center mb-1">
                     <Text className="block text-white text-sm">{type}</Text>
-                    <Text className="block text-slate-500 text-sm">{count}家</Text>
+                    <Text className="block text-slate-400 text-sm">{count}家</Text>
                   </View>
-                  <View className="bg-white rounded-full h-2">
+                  <View className="bg-slate-800 rounded-full h-2">
                     <View
                       className="bg-cyan-500 h-2 rounded-full"
                       style={{
@@ -214,7 +214,7 @@ export default function RecycleDashboard() {
 
             {/* 月度趋势 */}
             {statistics.monthlyTrend && statistics.monthlyTrend.length > 0 && (
-              <View className="bg-white rounded-xl p-4 mb-4">
+              <View className="bg-slate-800 rounded-xl p-4 mb-4">
                 <Text className="block text-white text-base font-semibold mb-4">月度趋势</Text>
                 <View className="flex items-end gap-2 overflow-x-auto pb-2">
                   {statistics.monthlyTrend.map((item, index) => {
@@ -228,7 +228,7 @@ export default function RecycleDashboard() {
                           className="bg-cyan-500 rounded-t w-full"
                           style={{ height: `${Math.max(height, 4)}px` }}
                         />
-                        <Text className="block text-slate-500 text-xs mt-2 text-center">
+                        <Text className="block text-slate-400 text-xs mt-2 text-center">
                           {item.month.slice(5)}
                         </Text>
                         <Text className="block text-white text-xs text-center font-semibold">
@@ -242,11 +242,11 @@ export default function RecycleDashboard() {
             )}
 
             {/* 快捷入口 */}
-            <View className="bg-white rounded-xl p-4 mb-4">
+            <View className="bg-slate-800 rounded-xl p-4 mb-4">
               <Text className="block text-white text-base font-semibold mb-4">快捷操作</Text>
               <View className="grid grid-cols-2 gap-3">
                 <View
-                  className="bg-white rounded-lg p-3 flex items-center gap-3"
+                  className="bg-slate-800 rounded-lg p-3 flex items-center gap-3"
                   onClick={() => Taro.navigateTo({ url: '/pages/recycle/edit' })}
                 >
                   <View className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
@@ -254,12 +254,12 @@ export default function RecycleDashboard() {
                   </View>
                   <View>
                     <Text className="block text-white text-sm font-medium">新增门店</Text>
-                    <Text className="block text-slate-500 text-xs">添加回收目标</Text>
+                    <Text className="block text-slate-400 text-xs">添加回收目标</Text>
                   </View>
                 </View>
 
                 <View
-                  className="bg-white rounded-lg p-3 flex items-center gap-3"
+                  className="bg-slate-800 rounded-lg p-3 flex items-center gap-3"
                   onClick={() => Taro.navigateTo({ url: '/pages/recycle/index' })}
                 >
                   <View className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
@@ -267,7 +267,7 @@ export default function RecycleDashboard() {
                   </View>
                   <View>
                     <Text className="block text-white text-sm font-medium">门店列表</Text>
-                    <Text className="block text-slate-500 text-xs">查看所有门店</Text>
+                    <Text className="block text-slate-400 text-xs">查看所有门店</Text>
                   </View>
                 </View>
               </View>
@@ -278,7 +278,7 @@ export default function RecycleDashboard() {
 
       {/* 刷新按钮 */}
       <View
-        className="fixed bottom-24 right-4 w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg"
+        className="fixed bottom-24 right-4 w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center shadow-lg"
         onClick={loadStatistics}
       >
         <Activity size={24} color="#ffffff" />

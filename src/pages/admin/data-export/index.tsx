@@ -311,28 +311,28 @@ const DataExportPage: React.FC = () => {
   };
 
   return (
-    <View className="min-h-full bg-sky-50">
+    <View className="min-h-full bg-slate-900">
       {/* 顶部导航 */}
-      <View className="bg-white px-4 py-3 border-b border-slate-200">
+      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
         <Text className="block text-lg font-semibold text-white">数据导出</Text>
       </View>
 
       {/* 统计卡片 */}
       <View className="p-4">
         <View className="grid grid-cols-2 gap-3">
-          <View className="bg-white rounded-xl p-4 border border-slate-200">
+          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
             <Text className="block text-gray-400 text-sm mb-1">总任务数</Text>
             <Text className="block text-white text-2xl font-bold">{stats.totalTasks}</Text>
           </View>
-          <View className="bg-white rounded-xl p-4 border border-slate-200">
+          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
             <Text className="block text-gray-400 text-sm mb-1">已完成</Text>
             <Text className="block text-green-400 text-2xl font-bold">{stats.completedTasks}</Text>
           </View>
-          <View className="bg-white rounded-xl p-4 border border-slate-200">
+          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
             <Text className="block text-gray-400 text-sm mb-1">处理中</Text>
-            <Text className="block text-sky-600 text-2xl font-bold">{stats.pendingTasks}</Text>
+            <Text className="block text-blue-400 text-2xl font-bold">{stats.pendingTasks}</Text>
           </View>
-          <View className="bg-white rounded-xl p-4 border border-slate-200">
+          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
             <Text className="block text-gray-400 text-sm mb-1">失败</Text>
             <Text className="block text-red-400 text-2xl font-bold">{stats.failedTasks}</Text>
           </View>
@@ -340,7 +340,7 @@ const DataExportPage: React.FC = () => {
       </View>
 
       {/* Tab 切换 */}
-      <View className="flex border-b border-slate-200 bg-white">
+      <View className="flex border-b border-slate-700 bg-slate-800">
         <View
           className={`flex-1 text-center py-3 cursor-pointer ${
             activeTab === 'create' ? 'border-b-2 border-blue-400' : ''
@@ -349,7 +349,7 @@ const DataExportPage: React.FC = () => {
         >
           <Text
             className={`block ${
-              activeTab === 'create' ? 'text-sky-600' : 'text-gray-400'
+              activeTab === 'create' ? 'text-blue-400' : 'text-gray-400'
             }`}
           >
             创建导出
@@ -363,7 +363,7 @@ const DataExportPage: React.FC = () => {
         >
           <Text
             className={`block ${
-              activeTab === 'history' ? 'text-sky-600' : 'text-gray-400'
+              activeTab === 'history' ? 'text-blue-400' : 'text-gray-400'
             }`}
           >
             导出历史
@@ -382,18 +382,18 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-xl p-3 border cursor-pointer ${
                   config.dataType === 'all'
                     ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-200 bg-white'
+                    : 'border-slate-700 bg-slate-800'
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'all' })}
               >
-                <FileText className="w-5 h-5 text-sky-600 mb-2" />
+                <FileText className="w-5 h-5 text-blue-400 mb-2" />
                 <Text className="block text-white text-sm font-medium">全部数据</Text>
               </View>
               <View
                 className={`rounded-xl p-3 border cursor-pointer ${
                   config.dataType === 'users'
                     ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-200 bg-white'
+                    : 'border-slate-700 bg-slate-800'
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'users' })}
               >
@@ -404,7 +404,7 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-xl p-3 border cursor-pointer ${
                   config.dataType === 'lexicons'
                     ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-200 bg-white'
+                    : 'border-slate-700 bg-slate-800'
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'lexicons' })}
               >
@@ -415,7 +415,7 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-xl p-3 border cursor-pointer ${
                   config.dataType === 'logs'
                     ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-200 bg-white'
+                    : 'border-slate-700 bg-slate-800'
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'logs' })}
               >
@@ -433,13 +433,13 @@ const DataExportPage: React.FC = () => {
                 className={`flex-1 rounded-xl p-3 border cursor-pointer ${
                   config.format === 'json'
                     ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-200 bg-white'
+                    : 'border-slate-700 bg-slate-800'
                 }`}
                 onClick={() => setConfig({ ...config, format: 'json' })}
               >
                 <Text
                   className={`block text-center ${
-                    config.format === 'json' ? 'text-sky-600' : 'text-gray-400'
+                    config.format === 'json' ? 'text-blue-400' : 'text-gray-400'
                   } text-sm`}
                 >
                   JSON
@@ -449,13 +449,13 @@ const DataExportPage: React.FC = () => {
                 className={`flex-1 rounded-xl p-3 border cursor-pointer ${
                   config.format === 'csv'
                     ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-200 bg-white'
+                    : 'border-slate-700 bg-slate-800'
                 }`}
                 onClick={() => setConfig({ ...config, format: 'csv' })}
               >
                 <Text
                   className={`block text-center ${
-                    config.format === 'csv' ? 'text-sky-600' : 'text-gray-400'
+                    config.format === 'csv' ? 'text-blue-400' : 'text-gray-400'
                   } text-sm`}
                 >
                   CSV
@@ -474,7 +474,7 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-lg p-2 text-center cursor-pointer ${
                   timeRangeType === 'all'
                     ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-400 border border-slate-200'
+                    : 'bg-slate-800 text-gray-400 border border-slate-700'
                 }`}
                 onClick={() => handleTimeRangeTypeChange('all')}
               >
@@ -484,7 +484,7 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-lg p-2 text-center cursor-pointer ${
                   timeRangeType === '7days'
                     ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-400 border border-slate-200'
+                    : 'bg-slate-800 text-gray-400 border border-slate-700'
                 }`}
                 onClick={() => handleTimeRangeTypeChange('7days')}
               >
@@ -494,7 +494,7 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-lg p-2 text-center cursor-pointer ${
                   timeRangeType === '30days'
                     ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-400 border border-slate-200'
+                    : 'bg-slate-800 text-gray-400 border border-slate-700'
                 }`}
                 onClick={() => handleTimeRangeTypeChange('30days')}
               >
@@ -504,7 +504,7 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-lg p-2 text-center cursor-pointer ${
                   timeRangeType === 'month'
                     ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-400 border border-slate-200'
+                    : 'bg-slate-800 text-gray-400 border border-slate-700'
                 }`}
                 onClick={() => handleTimeRangeTypeChange('month')}
               >
@@ -514,7 +514,7 @@ const DataExportPage: React.FC = () => {
                 className={`rounded-lg p-2 text-center cursor-pointer ${
                   timeRangeType === 'custom'
                     ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-400 border border-slate-200'
+                    : 'bg-slate-800 text-gray-400 border border-slate-700'
                 }`}
                 onClick={() => handleTimeRangeTypeChange('custom')}
               >
@@ -524,7 +524,7 @@ const DataExportPage: React.FC = () => {
 
             {/* 自定义日期选择 */}
             {timeRangeType === 'custom' && (
-              <View className="bg-white rounded-xl p-4 border border-slate-200">
+              <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
                 <View className="mb-3">
                   <Text className="block text-gray-400 text-xs mb-2">开始日期</Text>
                   <Picker
@@ -532,7 +532,7 @@ const DataExportPage: React.FC = () => {
                     value={config.timeRange?.startDate || ''}
                     onChange={handleStartDateChange}
                   >
-                    <View className="flex items-center justify-between bg-white rounded-lg px-3 py-2">
+                    <View className="flex items-center justify-between bg-slate-800 rounded-lg px-3 py-2">
                       <Text className="block text-white text-sm">
                         {config.timeRange?.startDate || '选择开始日期'}
                       </Text>
@@ -547,7 +547,7 @@ const DataExportPage: React.FC = () => {
                     value={config.timeRange?.endDate || ''}
                     onChange={handleEndDateChange}
                   >
-                    <View className="flex items-center justify-between bg-white rounded-lg px-3 py-2">
+                    <View className="flex items-center justify-between bg-slate-800 rounded-lg px-3 py-2">
                       <Text className="block text-white text-sm">
                         {config.timeRange?.endDate || '选择结束日期'}
                       </Text>
@@ -560,7 +560,7 @@ const DataExportPage: React.FC = () => {
 
             {/* 显示当前选择的时间范围 */}
             {config.timeRange && (
-              <View className="mt-2 bg-white/50 rounded-lg px-3 py-2">
+              <View className="mt-2 bg-slate-800/50 rounded-lg px-3 py-2">
                 <Text className="block text-gray-400 text-xs">
                   {config.timeRange.startDate} 至 {config.timeRange.endDate}
                 </Text>
@@ -589,13 +589,13 @@ const DataExportPage: React.FC = () => {
               className="flex items-center gap-1 cursor-pointer"
               onClick={() => loadHistory()}
             >
-              <Text className="block text-sky-600 text-sm">刷新</Text>
+              <Text className="block text-blue-400 text-sm">刷新</Text>
             </View>
           </View>
 
           {loading ? (
             <View className="flex items-center justify-center py-8">
-              <Loader className="w-6 h-6 text-sky-600 animate-spin" />
+              <Loader className="w-6 h-6 text-blue-400 animate-spin" />
             </View>
           ) : tasks.length === 0 ? (
             <View className="flex flex-col items-center justify-center py-16">
@@ -606,7 +606,7 @@ const DataExportPage: React.FC = () => {
             tasks.map((task) => (
               <View
                 key={task.id}
-                className="bg-white rounded-xl p-4 mb-3 border border-slate-200"
+                className="bg-slate-800 rounded-xl p-4 mb-3 border border-slate-700"
               >
                 {/* 任务头部 */}
                 <View className="flex items-center justify-between mb-2">
@@ -626,8 +626,8 @@ const DataExportPage: React.FC = () => {
                       className="flex items-center gap-1 cursor-pointer"
                       onClick={() => refreshTaskStatus(task.id)}
                     >
-                      <Loader className="w-4 h-4 text-sky-600 animate-spin" />
-                      <Text className="block text-sky-600 text-xs">刷新</Text>
+                      <Loader className="w-4 h-4 text-blue-400 animate-spin" />
+                      <Text className="block text-blue-400 text-xs">刷新</Text>
                     </View>
                   )}
                 </View>

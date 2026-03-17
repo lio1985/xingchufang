@@ -392,18 +392,18 @@ export default function AdminKnowledgeSharePage() {
   };
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* 顶部导航 */}
-      <View className="sticky top-0 z-50 bg-white border-b border-slate-200">
+      <View className="sticky top-0 z-50 bg-slate-800 border-b border-slate-700">
         <View className="flex flex-row">
           <View
-            className={`flex-1 py-4 text-center cursor-pointer ${activeTab === 'manage' ? 'text-sky-600 border-b-2 border-blue-400' : 'text-gray-400'}`}
+            className={`flex-1 py-4 text-center cursor-pointer ${activeTab === 'manage' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400'}`}
             onClick={() => setActiveTab('manage')}
           >
             <Text className="block font-semibold">知识分享管理</Text>
           </View>
           <View
-            className={`flex-1 py-4 text-center cursor-pointer ${activeTab === 'stats' ? 'text-sky-600 border-b-2 border-blue-400' : 'text-gray-400'}`}
+            className={`flex-1 py-4 text-center cursor-pointer ${activeTab === 'stats' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400'}`}
             onClick={() => setActiveTab('stats')}
           >
             <Text className="block font-semibold">统计分析</Text>
@@ -414,10 +414,10 @@ export default function AdminKnowledgeSharePage() {
       {activeTab === 'manage' ? (
         <>
           {/* 搜索和筛选栏 */}
-          <View className="p-4 bg-white">
+          <View className="p-4 bg-slate-800">
             <View style={{ display: 'flex', flexDirection: 'row', gap: '8px', marginBottom: '12px' }}>
               <View style={{ flex: 1 }}>
-                <View className="bg-white rounded-xl px-4 py-3">
+                <View className="bg-slate-800 rounded-xl px-4 py-3">
                   <Input
                     className="w-full bg-transparent text-white"
                     placeholder="搜索标题或内容..."
@@ -446,7 +446,7 @@ export default function AdminKnowledgeSharePage() {
                 }
               })}
               >
-                <View className="bg-white px-4 py-3 rounded-xl flex items-center justify-center">
+                <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
                   <Funnel color="#94a3b8" size={16} />
                   <Text className="text-gray-300 ml-2">{filters.category || '分类'}</Text>
                 </View>
@@ -460,7 +460,7 @@ export default function AdminKnowledgeSharePage() {
                 }
               })}
               >
-                <View className="bg-white px-4 py-3 rounded-xl flex items-center justify-center">
+                <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
                   <FileText color="#94a3b8" size={16} />
                   <Text className="text-gray-300 ml-2">{filters.status === 'published' ? '已发布' : filters.status === 'draft' ? '草稿' : '状态'}</Text>
                 </View>
@@ -489,7 +489,7 @@ export default function AdminKnowledgeSharePage() {
                 }
               })}
               >
-                <View className="bg-white px-4 py-3 rounded-xl flex items-center justify-center">
+                <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
                   <Calendar color="#94a3b8" size={16} />
                   <Text className="text-gray-300 ml-2">{filters.startDate ? '时间范围' : '全部时间'}</Text>
                 </View>
@@ -503,7 +503,7 @@ export default function AdminKnowledgeSharePage() {
                 }
               })}
               >
-                <View className="bg-white px-4 py-3 rounded-xl flex items-center justify-center">
+                <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
                   <File color="#94a3b8" size={16} />
                   <Text className="text-gray-300 ml-2">
                     {filters.attachmentType === 'image' ? '有图片' :
@@ -542,7 +542,7 @@ export default function AdminKnowledgeSharePage() {
                 }
               })}
               >
-                <View className="bg-white px-4 py-3 rounded-xl flex items-center justify-center">
+                <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
                   <Text className="text-gray-300 text-sm">
                     {filters.sortBy === 'createdAt' ? '按创建时间' :
                      filters.sortBy === 'viewCount' ? '按浏览量' :
@@ -559,7 +559,7 @@ export default function AdminKnowledgeSharePage() {
                 loadList(1);
               }}
               >
-                <View className="bg-white px-4 py-3 rounded-xl flex items-center justify-center">
+                <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
                   <Text className="text-gray-300 text-sm">切换排序</Text>
                 </View>
               </View>
@@ -585,7 +585,7 @@ export default function AdminKnowledgeSharePage() {
                       sortOrder: 'desc'
                     });
                     loadList(1);
-                  }} className="text-sky-600 text-sm"
+                  }} className="text-blue-400 text-sm"
                   >
                     清空筛选
                   </Text>
@@ -603,7 +603,7 @@ export default function AdminKnowledgeSharePage() {
               </View>
             ) : (
               items.map((item) => (
-                <View key={item.id} className="bg-white rounded-xl p-4 mb-3 border border-slate-200" onClick={() => handleViewDetail(item.id)}>
+                <View key={item.id} className="bg-slate-800 rounded-xl p-4 mb-3 border border-slate-700" onClick={() => handleViewDetail(item.id)}>
                   <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                     <View style={{ marginTop: '4px' }} onClick={(e) => { e.stopPropagation(); toggleSelect(item.id); }}>
                       <View className={`w-5 h-5 rounded border-2 ${selectedItems.has(item.id) ? 'bg-blue-500 border-blue-500' : 'border-gray-600'}`} />
@@ -640,7 +640,7 @@ export default function AdminKnowledgeSharePage() {
                         {item.tags.length > 0 && (
                           <>
                             <Text className="text-gray-500 text-xs">•</Text>
-                            <Text className="text-sky-600 text-xs">{item.tags[0]}</Text>
+                            <Text className="text-blue-400 text-xs">{item.tags[0]}</Text>
                           </>
                         )}
                       </View>
@@ -678,7 +678,7 @@ export default function AdminKnowledgeSharePage() {
               <Text className="block text-white font-semibold text-lg">统计分析</Text>
               <View onClick={handleExportReport} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Download color="#60a5fa" size={16} />
-                <Text className="text-sky-600 text-sm">导出报告</Text>
+                <Text className="text-blue-400 text-sm">导出报告</Text>
               </View>
             </View>
 
@@ -716,16 +716,16 @@ export default function AdminKnowledgeSharePage() {
                 }
               })}
               >
-                <Text className="text-sky-600 text-sm">
+                <Text className="text-blue-400 text-sm">
                   {trendDays === 7 ? '最近7天' : trendDays === 15 ? '最近15天' : '最近30天'} ▼
                 </Text>
               </View>
             </View>
             {trend?.daily && (
-              <View className="bg-white rounded-xl p-4 mb-6">
+              <View className="bg-slate-800 rounded-xl p-4 mb-6">
                 <View className="flex items-center justify-between mb-4">
                   <Text className="text-gray-400 text-sm">新增知识分享数</Text>
-                  <Text className="text-sky-600 font-semibold">总计 {trend.total}</Text>
+                  <Text className="text-blue-400 font-semibold">总计 {trend.total}</Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: '120px' }}>
                   {trend.daily.map((day: any, index: number) => {
@@ -765,13 +765,13 @@ export default function AdminKnowledgeSharePage() {
                 }
               })}
               >
-                <Text className="text-sky-600 text-sm">
+                <Text className="text-blue-400 text-sm">
                   {timeAnalysisDays === 30 ? '最近30天' : timeAnalysisDays === 60 ? '最近60天' : '最近90天'} ▼
                 </Text>
               </View>
             </View>
             {timeAnalysis && (
-              <View className="bg-white rounded-xl p-4 mb-6">
+              <View className="bg-slate-800 rounded-xl p-4 mb-6">
                 <Text className="text-white text-sm font-semibold mb-3">按小时分布</Text>
                 <View style={{ display: 'flex', flexDirection: 'row', gap: '2px', marginBottom: '12px', height: '60px' }}>
                   {timeAnalysis.hourly.map((hour: any, index: number) => {
@@ -818,10 +818,10 @@ export default function AdminKnowledgeSharePage() {
             {/* 热门排行 */}
             <Text className="block text-white font-semibold text-lg mb-4">热门知识分享</Text>
             {topItems?.items && topItems.items.length > 0 && (
-              <View className="bg-white rounded-xl p-4 mb-6">
+              <View className="bg-slate-800 rounded-xl p-4 mb-6">
                 {topItems.items.map((item: any, index: number) => (
-                  <View key={item.id} className="flex items-center py-3 border-b border-slate-200 last:border-0" onClick={() => handleViewDetail(item.id)}>
-                    <View className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${index < 3 ? 'bg-yellow-500' : 'bg-white'}`}>
+                  <View key={item.id} className="flex items-center py-3 border-b border-slate-700 last:border-0" onClick={() => handleViewDetail(item.id)}>
+                    <View className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${index < 3 ? 'bg-yellow-500' : 'bg-slate-800'}`}>
                       <Text className="text-white text-xs font-bold">{index + 1}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -846,10 +846,10 @@ export default function AdminKnowledgeSharePage() {
             {/* 活跃作者排行 */}
             <Text className="block text-white font-semibold text-lg mb-4">活跃作者排行</Text>
             {topAuthors?.items && topAuthors.items.length > 0 && (
-              <View className="bg-white rounded-xl p-4 mb-6">
+              <View className="bg-slate-800 rounded-xl p-4 mb-6">
                 {topAuthors.items.map((author: any, index: number) => (
-                  <View key={author.id} className="flex items-center py-3 border-b border-slate-200 last:border-0">
-                    <View className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${index < 3 ? 'bg-yellow-500' : 'bg-white'}`}>
+                  <View key={author.id} className="flex items-center py-3 border-b border-slate-700 last:border-0">
+                    <View className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${index < 3 ? 'bg-yellow-500' : 'bg-slate-800'}`}>
                       <Text className="text-white text-xs font-bold">{index + 1}</Text>
                     </View>
                     <Image
@@ -862,7 +862,7 @@ export default function AdminKnowledgeSharePage() {
                       <Text className="text-gray-400 text-xs">发布 {author.shareCount} 条</Text>
                     </View>
                     <View className="text-right">
-                      <Text className="text-sky-600 text-sm">{author.totalViewCount} 浏览</Text>
+                      <Text className="text-blue-400 text-sm">{author.totalViewCount} 浏览</Text>
                     </View>
                   </View>
                 ))}
@@ -873,7 +873,7 @@ export default function AdminKnowledgeSharePage() {
             {stats?.categoryStats && Object.keys(stats.categoryStats).length > 0 && (
               <>
                 <Text className="block text-white font-semibold text-lg mb-4">分类分布</Text>
-                <View className="bg-white rounded-xl p-4 mb-6">
+                <View className="bg-slate-800 rounded-xl p-4 mb-6">
                   {Object.entries(stats.categoryStats).map(([category, count]: [string, any]) => {
                     const maxCount = Math.max(...Object.values(stats.categoryStats) as number[]);
                     const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
@@ -881,9 +881,9 @@ export default function AdminKnowledgeSharePage() {
                       <View key={category} className="mb-3 last:mb-0">
                         <View className="flex items-center justify-between mb-1">
                           <Text className="text-gray-300 text-sm">{category}</Text>
-                          <Text className="text-sky-600 text-sm">{count}</Text>
+                          <Text className="text-blue-400 text-sm">{count}</Text>
                         </View>
-                        <View className="bg-white rounded-full h-2 overflow-hidden">
+                        <View className="bg-slate-800 rounded-full h-2 overflow-hidden">
                           <View
                             className="bg-blue-500 h-full rounded-full"
                             style={{ width: `${percentage}%` }}
@@ -900,30 +900,30 @@ export default function AdminKnowledgeSharePage() {
             {stats?.attachmentStats && (
               <>
                 <Text className="block text-white font-semibold text-lg mb-4">附件类型分布</Text>
-                <View className="bg-white rounded-xl p-4 mb-6">
+                <View className="bg-slate-800 rounded-xl p-4 mb-6">
                   <View className="grid grid-cols-2 gap-4">
-                    <View className="bg-white rounded-lg p-3 text-center">
+                    <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
                         <ImageIcon color="#60a5fa" size={24} />
                       </View>
                       <Text className="text-white font-bold text-xl">{stats.attachmentStats.withImage}</Text>
                       <Text className="text-gray-400 text-xs">有图片</Text>
                     </View>
-                    <View className="bg-white rounded-lg p-3 text-center">
+                    <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
                         <File color="#10b981" size={24} />
                       </View>
                       <Text className="text-white font-bold text-xl">{stats.attachmentStats.withFile}</Text>
                       <Text className="text-gray-400 text-xs">有文件</Text>
                     </View>
-                    <View className="bg-white rounded-lg p-3 text-center">
+                    <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
                         <File color="#f59e0b" size={24} />
                       </View>
                       <Text className="text-white font-bold text-xl">{stats.attachmentStats.withAudio}</Text>
                       <Text className="text-gray-400 text-xs">有录音</Text>
                     </View>
-                    <View className="bg-white rounded-lg p-3 text-center">
+                    <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
                         <File color="#6b7280" size={24} />
                       </View>
@@ -939,7 +939,7 @@ export default function AdminKnowledgeSharePage() {
             {stats?.attachmentCountStats && Object.keys(stats.attachmentCountStats).length > 0 && (
               <>
                 <Text className="block text-white font-semibold text-lg mb-4">附件数量分布</Text>
-                <View className="bg-white rounded-xl p-4 mb-6">
+                <View className="bg-slate-800 rounded-xl p-4 mb-6">
                   {Object.entries(stats.attachmentCountStats).map(([range, count]: [string, any]) => {
                     const maxCount = Math.max(...Object.values(stats.attachmentCountStats) as number[]);
                     const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
@@ -947,9 +947,9 @@ export default function AdminKnowledgeSharePage() {
                       <View key={range} className="mb-3 last:mb-0">
                         <View className="flex items-center justify-between mb-1">
                           <Text className="text-gray-300 text-sm">{range} 个附件</Text>
-                          <Text className="text-sky-600 text-sm">{count}</Text>
+                          <Text className="text-blue-400 text-sm">{count}</Text>
                         </View>
-                        <View className="bg-white rounded-full h-2 overflow-hidden">
+                        <View className="bg-slate-800 rounded-full h-2 overflow-hidden">
                           <View
                             className="bg-blue-500 h-full rounded-full"
                             style={{ width: `${percentage}%` }}

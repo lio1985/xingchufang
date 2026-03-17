@@ -437,16 +437,16 @@ const KnowledgeShareEditPage = () => {
 
   if (pageLoading) {
     return (
-      <View className="min-h-screen bg-sky-50 flex items-center justify-center">
-        <Text className="block text-slate-500">加载中...</Text>
+      <View className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Text className="block text-slate-400">加载中...</Text>
       </View>
     );
   }
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* 顶部导航栏 */}
-      <View className="bg-white px-4 py-4 flex items-center justify-between border-b border-slate-200">
+      <View className="bg-slate-800 px-4 py-4 flex items-center justify-between border-b border-slate-700">
         <View
           className="flex items-center gap-2"
           onClick={() => Taro.navigateBack()}
@@ -458,7 +458,7 @@ const KnowledgeShareEditPage = () => {
           <Text className="block text-lg font-bold text-white">编辑知识分享</Text>
         </View>
         <View
-          className={`px-4 py-2 rounded-lg flex items-center gap-1.5 ${loading || uploading ? 'bg-slate-100 opacity-50' : 'bg-blue-500'}`}
+          className={`px-4 py-2 rounded-lg flex items-center gap-1.5 ${loading || uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
           onClick={handleSave}
         >
           <Save size={18} color="white" />
@@ -472,9 +472,9 @@ const KnowledgeShareEditPage = () => {
       <ScrollView className="flex-1" scrollY>
         <View className="p-4">
           {/* 标题输入 */}
-          <View className="bg-white rounded-xl border border-slate-200 p-4 mb-4">
+          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
             <Text className="block text-sm font-semibold text-white mb-3">标题</Text>
-            <View className="bg-white rounded-lg px-4 py-3">
+            <View className="bg-slate-800 rounded-lg px-4 py-3">
               <input
                 className="w-full bg-transparent text-white text-base placeholder-slate-400 outline-none"
                 placeholder="请输入知识分享标题"
@@ -483,13 +483,13 @@ const KnowledgeShareEditPage = () => {
                 onInput={(e) => setTitle((e.target as HTMLInputElement).value)}
               />
             </View>
-            <Text className="block text-xs text-slate-500 mt-2 text-right">{title.length}/100</Text>
+            <Text className="block text-xs text-slate-400 mt-2 text-right">{title.length}/100</Text>
           </View>
 
           {/* 分类输入 */}
-          <View className="bg-white rounded-xl border border-slate-200 p-4 mb-4">
+          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
             <Text className="block text-sm font-semibold text-white mb-3">分类</Text>
-            <View className="bg-white rounded-lg px-4 py-3">
+            <View className="bg-slate-800 rounded-lg px-4 py-3">
               <input
                 className="w-full bg-transparent text-white text-base placeholder-slate-400 outline-none"
                 placeholder="如：运营技巧、内容创作等"
@@ -501,14 +501,14 @@ const KnowledgeShareEditPage = () => {
           </View>
 
           {/* 标签输入 */}
-          <View className="bg-white rounded-xl border border-slate-200 p-4 mb-4">
+          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
             <Text className="block text-sm font-semibold text-white mb-3">标签（最多5个）</Text>
             {tags.length > 0 && (
               <View className="flex flex-wrap gap-2 mb-3">
                 {tags.map((tag, index) => (
                   <View
                     key={index}
-                    className="bg-sky-500/20 border border-sky-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+                    className="bg-slate-9000/20 border border-sky-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5"
                   >
                     <Text className="block text-sm text-blue-300">{tag}</Text>
                     <View
@@ -521,7 +521,7 @@ const KnowledgeShareEditPage = () => {
                 ))}
               </View>
             )}
-            <View className="bg-white rounded-lg px-4 py-3 flex items-center gap-2">
+            <View className="bg-slate-800 rounded-lg px-4 py-3 flex items-center gap-2">
               <input
                 className="flex-1 bg-transparent text-white text-sm placeholder-slate-400 outline-none"
                 placeholder="输入标签后按回车添加"
@@ -535,7 +535,7 @@ const KnowledgeShareEditPage = () => {
                 }}
               />
               <View
-                className={`px-3 py-1.5 rounded-lg ${tagInput.trim() ? 'bg-blue-500' : 'bg-slate-100'}`}
+                className={`px-3 py-1.5 rounded-lg ${tagInput.trim() ? 'bg-blue-500' : 'bg-slate-700'}`}
                 onClick={handleAddTag}
               >
                 <Text className="block text-xs text-white">添加</Text>
@@ -544,10 +544,10 @@ const KnowledgeShareEditPage = () => {
           </View>
 
           {/* 附件上传 */}
-          <View className="bg-white rounded-xl border border-slate-200 p-4 mb-4">
+          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
             <View className="flex items-center justify-between mb-3">
               <Text className="block text-sm font-semibold text-white">附件</Text>
-              <Text className="block text-xs text-slate-500">
+              <Text className="block text-xs text-slate-400">
                 {attachments.length}/20
               </Text>
             </View>
@@ -555,14 +555,14 @@ const KnowledgeShareEditPage = () => {
             {/* 上传按钮 */}
             <View className="flex flex-wrap gap-2 mb-3">
               <View
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-100 opacity-50' : 'bg-blue-500'}`}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
                 onClick={handleChooseImage}
               >
                 <ImageIcon size={18} color="white" />
                 <Text className="block text-sm text-white">图片</Text>
               </View>
               <View
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-100 opacity-50' : 'bg-blue-500'}`}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
                 onClick={handleChooseFile}
               >
                 <FileText size={18} color="white" />
@@ -570,7 +570,7 @@ const KnowledgeShareEditPage = () => {
               </View>
               {isWeapp && (
                 <View
-                  className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-100 opacity-50' : 'bg-blue-500'}`}
+                  className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
                   onClick={isRecording ? handleStopRecord : handleStartRecord}
                 >
                   {isRecording ? (
@@ -590,20 +590,20 @@ const KnowledgeShareEditPage = () => {
 
             {/* 录音预览 */}
             {audioPath && (
-              <View className="bg-white rounded-lg p-3 mb-3">
+              <View className="bg-slate-800 rounded-lg p-3 mb-3">
                 <View className="flex items-center justify-between">
                   <View className="flex items-center gap-2">
                     <Text className="block text-sm text-blue-300">录音已就绪</Text>
                   </View>
                   <View className="flex items-center gap-2">
                     <View
-                      className={`px-3 py-1.5 rounded-lg ${uploading ? 'bg-slate-100 opacity-50' : 'bg-blue-500'}`}
+                      className={`px-3 py-1.5 rounded-lg ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
                       onClick={handleUploadAudio}
                     >
                       <Text className="block text-xs text-white">上传</Text>
                     </View>
                     <View
-                      className="p-1.5 rounded-lg bg-slate-100"
+                      className="p-1.5 rounded-lg bg-slate-700"
                       onClick={handleRemoveAudio}
                     >
                       <X size={14} color="#94a3b8" />
@@ -619,7 +619,7 @@ const KnowledgeShareEditPage = () => {
                 {attachments.map((attachment, index) => (
                   <View
                     key={index}
-                    className="bg-white rounded-lg p-3 flex items-center gap-3"
+                    className="bg-slate-800 rounded-lg p-3 flex items-center gap-3"
                   >
                     {attachment.fileType === 'image' ? (
                       <Image
@@ -628,11 +628,11 @@ const KnowledgeShareEditPage = () => {
                         mode="aspectFill"
                       />
                     ) : attachment.fileType === 'audio' ? (
-                      <View className="w-12 h-12 rounded bg-slate-100 flex items-center justify-center">
+                      <View className="w-12 h-12 rounded bg-slate-700 flex items-center justify-center">
                         <Mic size={20} color="#94a3b8" />
                       </View>
                     ) : (
-                      <View className="w-12 h-12 rounded bg-slate-100 flex items-center justify-center">
+                      <View className="w-12 h-12 rounded bg-slate-700 flex items-center justify-center">
                         <FileText size={20} color="#94a3b8" />
                       </View>
                     )}
@@ -640,12 +640,12 @@ const KnowledgeShareEditPage = () => {
                       <Text className="block text-sm text-white truncate">
                         {attachment.fileName}
                       </Text>
-                      <Text className="block text-xs text-slate-500">
+                      <Text className="block text-xs text-slate-400">
                         {formatFileSize(attachment.fileSize)}
                       </Text>
                     </View>
                     <View
-                      className="p-1.5 rounded-lg bg-slate-100"
+                      className="p-1.5 rounded-lg bg-slate-700"
                       onClick={() => handleRemoveAttachment(index)}
                     >
                       <Trash2 size={14} color="#ef4444" />
@@ -657,16 +657,16 @@ const KnowledgeShareEditPage = () => {
 
             {/* 提示文本 */}
             {attachments.length === 0 && !audioPath && !isRecording && (
-              <Text className="block text-xs text-slate-500 text-center py-4">
+              <Text className="block text-xs text-slate-400 text-center py-4">
                 支持上传图片、文档等文件，小程序支持录音
               </Text>
             )}
           </View>
 
           {/* 内容输入 */}
-          <View className="bg-white rounded-xl border border-slate-200 p-4 mb-4">
+          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
             <Text className="block text-sm font-semibold text-white mb-3">内容</Text>
-            <View className="bg-white rounded-lg p-4">
+            <View className="bg-slate-800 rounded-lg p-4">
               <textarea
                 className="w-full min-h-[300px] bg-transparent text-white text-base placeholder-slate-400 outline-none leading-relaxed"
                 placeholder="请详细描述您的知识分享内容..."
@@ -675,7 +675,7 @@ const KnowledgeShareEditPage = () => {
                 onInput={(e) => setContent((e.target as HTMLTextAreaElement).value)}
               />
             </View>
-            <Text className="block text-xs text-slate-500 mt-2 text-right">{content.length}/5000</Text>
+            <Text className="block text-xs text-slate-400 mt-2 text-right">{content.length}/5000</Text>
           </View>
         </View>
       </ScrollView>

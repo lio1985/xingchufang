@@ -44,7 +44,7 @@ const statusMap = {
 };
 
 const orderStatusMap = {
-  in_progress: { label: '进行中', color: 'text-sky-600' },
+  in_progress: { label: '进行中', color: 'text-blue-400' },
   completed: { label: '已成交', color: 'text-emerald-400' }
 };
 
@@ -170,8 +170,8 @@ export default function CustomerDetail() {
 
   if (!customer) {
     return (
-      <View className="min-h-screen bg-sky-50 items-center justify-center">
-        <Text className="block text-slate-500">加载中...</Text>
+      <View className="min-h-screen bg-slate-900 items-center justify-center">
+        <Text className="block text-slate-400">加载中...</Text>
       </View>
     );
   }
@@ -180,9 +180,9 @@ export default function CustomerDetail() {
   const orderConfig = orderStatusMap[customer.order_status];
 
   return (
-    <View className="min-h-screen bg-sky-50">
+    <View className="min-h-screen bg-slate-900">
       {/* 头部 */}
-      <View className="px-4 pt-12 pb-4 bg-white/50">
+      <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center" onClick={goBack}>
             <ArrowLeft size={24} color="#ffffff" />
@@ -211,25 +211,25 @@ export default function CustomerDetail() {
 
       <ScrollView className="px-4 pb-24" scrollY style={{ height: 'calc(100vh - 160px)' }}>
         {/* 关键信息 */}
-        <View className="bg-white rounded-xl p-4 mb-4">
+        <View className="bg-slate-800 rounded-xl p-4 mb-4">
           <View className="flex justify-between mb-4">
             <View className="items-center">
               <Text className="block text-2xl font-bold text-emerald-400">
                 ¥{(customer.estimated_amount || 0).toFixed(0)}万
               </Text>
-              <Text className="block text-slate-500 text-xs mt-1">预计金额</Text>
+              <Text className="block text-slate-400 text-xs mt-1">预计金额</Text>
             </View>
             <View className="items-center">
               <Text className="block text-lg font-semibold text-white">
                 {customer.order_belonging || '未分配'}
               </Text>
-              <Text className="block text-slate-500 text-xs mt-1">订单归属</Text>
+              <Text className="block text-slate-400 text-xs mt-1">订单归属</Text>
             </View>
           </View>
 
-          <View className="border-t border-slate-200 pt-4">
+          <View className="border-t border-slate-700 pt-4">
             <View className="flex items-center mb-3" onClick={makePhoneCall}>
-              <Phone size={16} className="text-sky-600 mr-3" />
+              <Phone size={16} className="text-blue-400 mr-3" />
               <Text className="block text-white text-sm">{customer.phone || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
@@ -249,29 +249,29 @@ export default function CustomerDetail() {
               <Text className="block text-white text-sm flex-1">
                 {customer.city || ''} {customer.location?.address || '未填写位置'}
               </Text>
-              {customer.location && <Navigation size={16} className="text-sky-600" />}
+              {customer.location && <Navigation size={16} className="text-blue-400" />}
             </View>
           </View>
         </View>
 
         {/* 业务信息 */}
-        <View className="bg-white rounded-xl p-4 mb-4">
+        <View className="bg-slate-800 rounded-xl p-4 mb-4">
           <Text className="block text-white text-base font-semibold mb-4">业务信息</Text>
           <View className="grid grid-cols-2 gap-4">
             <View>
-              <Text className="block text-slate-500 text-xs mb-1">客户来源</Text>
+              <Text className="block text-slate-400 text-xs mb-1">客户来源</Text>
               <Text className="block text-white text-sm">{customer.source || '未填写'}</Text>
             </View>
             <View>
-              <Text className="block text-slate-500 text-xs mb-1">客户类别</Text>
+              <Text className="block text-slate-400 text-xs mb-1">客户类别</Text>
               <Text className="block text-white text-sm">{customer.customer_type || '未填写'}</Text>
             </View>
             <View>
-              <Text className="block text-slate-500 text-xs mb-1">餐饮类别</Text>
+              <Text className="block text-slate-400 text-xs mb-1">餐饮类别</Text>
               <Text className="block text-white text-sm">{customer.category || '未填写'}</Text>
             </View>
             <View>
-              <Text className="block text-slate-500 text-xs mb-1">负责人</Text>
+              <Text className="block text-slate-400 text-xs mb-1">负责人</Text>
               <Text className="block text-white text-sm">{customer.users?.name || '未分配'}</Text>
             </View>
           </View>
@@ -279,14 +279,14 @@ export default function CustomerDetail() {
 
         {/* 客户需求 */}
         {customer.requirements && (
-          <View className="bg-white rounded-xl p-4 mb-4">
+          <View className="bg-slate-800 rounded-xl p-4 mb-4">
             <Text className="block text-white text-base font-semibold mb-2">客户需求</Text>
-            <Text className="block text-slate-600 text-sm leading-relaxed">{customer.requirements}</Text>
+            <Text className="block text-slate-300 text-sm leading-relaxed">{customer.requirements}</Text>
           </View>
         )}
 
         {/* 跟进记录 */}
-        <View className="bg-white rounded-xl p-4 mb-4">
+        <View className="bg-slate-800 rounded-xl p-4 mb-4">
           <View className="flex justify-between items-center mb-4">
             <Text className="block text-white text-base font-semibold">跟进记录</Text>
             <View
@@ -300,7 +300,7 @@ export default function CustomerDetail() {
 
           {followUps.length === 0 ? (
             <View className="py-6 items-center">
-              <Text className="block text-slate-500 text-sm">暂无跟进记录</Text>
+              <Text className="block text-slate-400 text-sm">暂无跟进记录</Text>
             </View>
           ) : (
             <View>
@@ -308,25 +308,25 @@ export default function CustomerDetail() {
                 <View key={followUp.id} className="relative pl-6 pb-6 last:pb-0">
                   {/* 时间线 */}
                   {index < followUps.length - 1 && (
-                    <View className="absolute left-2 top-3 bottom-0 w-0.5 bg-white" />
+                    <View className="absolute left-2 top-3 bottom-0 w-0.5 bg-slate-800" />
                   )}
                   <View className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-blue-500 border-2 border-slate-800" />
 
-                  <View className="bg-slate-50 rounded-lg p-3">
+                  <View className="bg-slate-800 rounded-lg p-3">
                     <View className="flex justify-between items-start mb-2">
-                      <Text className="block text-slate-500 text-xs">
+                      <Text className="block text-slate-400 text-xs">
                         {new Date(followUp.follow_up_time).toLocaleString('zh-CN')}
                       </Text>
                       {followUp.follow_up_method && (
-                        <View className="bg-slate-100 px-2 py-0.5 rounded">
-                          <Text className="block text-slate-600 text-xs">{followUp.follow_up_method}</Text>
+                        <View className="bg-slate-700 px-2 py-0.5 rounded">
+                          <Text className="block text-slate-300 text-xs">{followUp.follow_up_method}</Text>
                         </View>
                       )}
                     </View>
                     <Text className="block text-white text-sm">{followUp.content}</Text>
                     {followUp.next_follow_up_plan && (
-                      <View className="mt-2 pt-2 border-t border-slate-200">
-                        <Text className="block text-sky-600 text-xs">下次计划：{followUp.next_follow_up_plan}</Text>
+                      <View className="mt-2 pt-2 border-t border-slate-700">
+                        <Text className="block text-blue-400 text-xs">下次计划：{followUp.next_follow_up_plan}</Text>
                       </View>
                     )}
                   </View>
@@ -338,7 +338,7 @@ export default function CustomerDetail() {
 
         {/* 最后更新时间 */}
         <View className="items-center py-4">
-          <Text className="block text-slate-500 text-xs">
+          <Text className="block text-slate-400 text-xs">
             最后更新：{new Date(customer.updated_at).toLocaleString('zh-CN')}
           </Text>
         </View>
@@ -350,16 +350,16 @@ export default function CustomerDetail() {
           className="fixed inset-0 bg-black/70 items-center justify-center px-6"
           style={{ zIndex: 200 }}
         >
-          <View className="bg-white rounded-2xl p-5 w-full max-w-sm">
+          <View className="bg-slate-800 rounded-2xl p-5 w-full max-w-sm">
             <Text className="block text-white text-lg font-semibold mb-4">添加跟进记录</Text>
 
             <View className="mb-4">
-              <Text className="block text-slate-500 text-sm mb-2">跟进方式</Text>
+              <Text className="block text-slate-400 text-sm mb-2">跟进方式</Text>
               <View className="flex gap-2">
                 {['电话', '微信', '面谈', '其他'].map((method) => (
                   <View
                     key={method}
-                    className={`px-3 py-1.5 rounded-full ${followUpMethod === method ? 'bg-blue-600' : 'bg-white'}`}
+                    className={`px-3 py-1.5 rounded-full ${followUpMethod === method ? 'bg-blue-600' : 'bg-slate-800'}`}
                     onClick={() => setFollowUpMethod(method)}
                   >
                     <Text className="block text-white text-xs">{method}</Text>
@@ -369,8 +369,8 @@ export default function CustomerDetail() {
             </View>
 
             <View className="mb-4">
-              <Text className="block text-slate-500 text-sm mb-2">跟进内容</Text>
-              <View className="bg-white rounded-lg p-3">
+              <Text className="block text-slate-400 text-sm mb-2">跟进内容</Text>
+              <View className="bg-slate-800 rounded-lg p-3">
                 <Textarea
                   className="w-full h-24 text-white text-sm bg-transparent"
                   placeholder="请输入跟进内容..."
@@ -383,7 +383,7 @@ export default function CustomerDetail() {
 
             <View className="flex gap-3">
               <View
-                className="flex-1 bg-white py-3 rounded-xl items-center"
+                className="flex-1 bg-slate-800 py-3 rounded-xl items-center"
                 onClick={() => setShowAddFollowUp(false)}
               >
                 <Text className="block text-white text-sm">取消</Text>

@@ -1,6 +1,6 @@
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #BAE6FD 100%);
+  background: linear-gradient(135deg, #0c1929 0%, #6a11cb 50%, #2575fc 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,11 +18,11 @@
   border-radius: 28px;
   padding: 56px 48px;
   box-shadow:
-    0 24px 72px rgba(14, 165, 233, 0.15),
-    0 12px 32px rgba(14, 165, 233, 0.1),
+    0 24px 72px rgba(0, 0, 0, 0.35),
+    0 12px 32px rgba(0, 0, 0, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(14, 165, 233, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* 表单标题 */
@@ -34,7 +34,7 @@
 .title-text {
   font-size: 48px;
   font-weight: 800;
-  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -46,7 +46,7 @@
 
 .title-subtitle {
   font-size: 16px;
-  color: #0EA5E9;
+  color: #6a11cb;
   letter-spacing: 3px;
   line-height: 1.2;
   font-weight: 600;
@@ -66,17 +66,17 @@
   width: 100%;
   height: 60px;
   padding: 0 24px;
-  background: #F8FAFC;
+  background: #f8f9fa;
   border: 2px solid transparent;
   border-radius: 18px;
   font-size: 17px;
-  color: #1E3A5F;
+  color: #1a1a1a;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .input::placeholder {
-  color: #94A3B8;
+  color: #9ca3af;
   font-weight: 400;
   font-size: 16px;
 }
@@ -84,16 +84,16 @@
 .input:focus {
   outline: none;
   background: #fff;
-  border-color: #0EA5E9;
+  border-color: #6a11cb;
   box-shadow:
-    0 0 0 4px rgba(14, 165, 233, 0.12),
-    0 6px 16px rgba(14, 165, 233, 0.2),
+    0 0 0 4px rgba(106, 17, 203, 0.12),
+    0 6px 16px rgba(106, 17, 203, 0.2),
     inset 0 1px 2px rgba(0, 0, 0, 0.02);
   transform: translateY(-2px);
 }
 
 .input-placeholder {
-  color: #94A3B8;
+  color: #9ca3af;
 }
 
 .password-group {
@@ -106,26 +106,26 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
-  color: #0EA5E9;
+  color: #6a11cb;
   font-weight: 600;
   cursor: pointer;
   z-index: 10;
   padding: 6px 12px;
   border-radius: 10px;
   transition: all 0.2s;
-  background: rgba(14, 165, 233, 0.08);
+  background: rgba(106, 17, 203, 0.08);
 }
 
 .show-password:hover {
-  background: rgba(14, 165, 233, 0.15);
-  color: #0284C7;
+  background: rgba(106, 17, 203, 0.15);
+  color: #5a0fb3;
 }
 
 /* 登录按钮 */
 .login-button {
   width: 100%;
   height: 60px;
-  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 50%, #0EA5E9 100%);
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 50%, #6a11cb 100%);
   background-size: 200% 200%;
   color: #fff;
   font-size: 19px;
@@ -134,8 +134,8 @@
   border: none;
   margin-top: 16px;
   box-shadow:
-    0 10px 28px rgba(14, 165, 233, 0.45),
-    0 6px 16px rgba(2, 132, 199, 0.35),
+    0 10px 28px rgba(106, 17, 203, 0.45),
+    0 6px 16px rgba(37, 117, 252, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: gradient-shift 3s ease infinite;
@@ -154,7 +154,7 @@
 .login-button:active {
   transform: scale(0.97);
   box-shadow:
-    0 6px 16px rgba(14, 165, 233, 0.35),
+    0 6px 16px rgba(106, 17, 203, 0.35),
     inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -175,12 +175,12 @@
   margin-top: 40px;
   gap: 20px;
   padding-top: 32px;
-  border-top: 1px solid rgba(14, 165, 233, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .footer-link {
   font-size: 16px;
-  color: #0EA5E9;
+  color: #6a11cb;
   font-weight: 600;
   line-height: 1.2;
   position: relative;
@@ -190,8 +190,8 @@
 }
 
 .footer-link:hover {
-  color: #0284C7;
-  background: rgba(14, 165, 233, 0.1);
+  color: #5a0fb3;
+  background: rgba(106, 17, 203, 0.1);
   transform: translateY(-1px);
 }
 
@@ -202,7 +202,7 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #0EA5E9, #0284C7);
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
   transition: all 0.3s;
   transform: translateX(-50%);
 }
@@ -213,7 +213,7 @@
 
 .footer-divider {
   font-size: 16px;
-  color: #CBD5E1;
+  color: #d1d5db;
   font-weight: 400;
   line-height: 1.2;
   padding: 0 8px;
