@@ -74,12 +74,18 @@ const HotspotPage = () => {
 
       // 适配后端返回格式 {success: true, data: { platforms: [...] }}
       const responseData = response.data;
+      console.log('responseData.success:', responseData?.success);
+      console.log('responseData.data.platforms:', responseData?.data?.platforms);
+      
       if (response.statusCode === 200 && responseData && responseData.success === true && responseData.data && Array.isArray(responseData.data.platforms)) {
         // 合并所有平台的热点数据
         const allPlatforms = responseData.data.platforms;
+        console.log('平台数量:', allPlatforms.length);
+        
         const mergedList: any[] = [];
         
-        allPlatforms.forEach((platform: any) => {
+        allPlatforms.forEach((platform: any, pIndex: number) => {
+          console.log(`平台[${pIndex}]:`, platform.platform, '列表数量:', platform.list?.length || 0);
           if (platform.list && Array.isArray(platform.list)) {
             platform.list.forEach((item: any) => {
               mergedList.push({
@@ -89,6 +95,8 @@ const HotspotPage = () => {
             });
           }
         });
+        
+        console.log('合并后的总数据量:', mergedList.length);
 
         // 转换为前端需要的格式
         const mergedKeywords: HotKeyword[] = mergedList.map((item: any, index: number) => ({
@@ -104,6 +112,8 @@ const HotspotPage = () => {
           isBursting: item.isBursting || false,
           platform: item.platform || '综合'
         }));
+        
+        console.log('转换后的关键词数量:', mergedKeywords.length);
 
         // 按热度排序（尝试解析热度值）
         mergedKeywords.sort((a, b) => {
@@ -203,14 +213,22 @@ const HotspotPage = () => {
 
       console.log('=== 刷新响应 ===');
       console.log('响应状态码:', response.statusCode);
+      console.log('响应数据:', JSON.stringify(response.data, null, 2));
 
       const responseData = response.data;
+      console.log('responseData.success:', responseData?.success);
+      console.log('responseData.data:', responseData?.data);
+      console.log('responseData.data.platforms:', responseData?.data?.platforms);
+      
       if (response.statusCode === 200 && responseData && responseData.success === true && responseData.data && Array.isArray(responseData.data.platforms)) {
         // 合并所有平台的热点数据
         const allPlatforms = responseData.data.platforms;
+        console.log('平台数量:', allPlatforms.length);
+        
         const mergedList: any[] = [];
         
-        allPlatforms.forEach((platform: any) => {
+        allPlatforms.forEach((platform: any, pIndex: number) => {
+          console.log(`平台[${pIndex}]:`, platform.platform, '列表数量:', platform.list?.length || 0);
           if (platform.list && Array.isArray(platform.list)) {
             platform.list.forEach((item: any) => {
               mergedList.push({
@@ -220,6 +238,8 @@ const HotspotPage = () => {
             });
           }
         });
+        
+        console.log('合并后的总数据量:', mergedList.length);
 
         // 转换为前端需要的格式
         const mergedKeywords: HotKeyword[] = mergedList.map((item: any, index: number) => ({
@@ -235,6 +255,8 @@ const HotspotPage = () => {
           isBursting: item.isBursting || false,
           platform: item.platform || '综合'
         }));
+        
+        console.log('转换后的关键词数量:', mergedKeywords.length);
 
         // 按热度排序
         mergedKeywords.sort((a, b) => {
