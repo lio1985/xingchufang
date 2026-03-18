@@ -86,8 +86,13 @@ const AiChatPage = () => {
       if (response.statusCode === 200 && response.data) {
         setConversations(response.data);
       }
-    } catch (error) {
-      console.error('加载对话列表失败:', error);
+    } catch (error: any) {
+      // 静默处理 404 错误，后端接口未部署时不影响核心功能
+      if (error.statusCode === 404) {
+        console.log('对话列表接口暂未部署');
+      } else {
+        console.error('加载对话列表失败:', error);
+      }
     }
   }, []);
 
@@ -106,8 +111,13 @@ const AiChatPage = () => {
       } else {
         setLexicons([])
       }
-    } catch (error) {
-      console.error('加载语料列表失败:', error);
+    } catch (error: any) {
+      // 静默处理 404 错误
+      if (error.statusCode === 404) {
+        console.log('语料库接口暂未部署');
+      } else {
+        console.error('加载语料列表失败:', error);
+      }
       setLexicons([])
     }
   };

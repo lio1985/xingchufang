@@ -264,8 +264,13 @@ const IndexPage = () => {
         if (response.data?.success) {
           setUnreadCount(response.data.data.count);
         }
-      } catch (error) {
-        console.error('获取未读消息失败:', error);
+      } catch (error: any) {
+        // 静默处理 404 错误
+        if (error.statusCode === 404) {
+          console.log('通知接口暂未部署');
+        } else {
+          console.error('获取未读消息失败:', error);
+        }
       }
     };
 
