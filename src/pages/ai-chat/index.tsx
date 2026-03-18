@@ -1100,7 +1100,7 @@ const AiChatPage = () => {
         )}
 
         {/* 输入框主体 */}
-        <View style={{ padding: '12px 16px 16px' }}>
+        <View style={{ padding: '12px 16px 16px', position: 'relative', zIndex: 5 }}>
           <View style={{ 
             display: 'flex', 
             flexDirection: 'row', 
@@ -1110,7 +1110,9 @@ const AiChatPage = () => {
             borderRadius: '20px',
             padding: '6px',
             border: '1px solid rgba(148, 163, 184, 0.15)',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+            position: 'relative',
+            zIndex: 5
           }}
           >
             {/* 语音按钮 */}
@@ -1128,6 +1130,8 @@ const AiChatPage = () => {
                   justifyContent: 'center',
                   touchAction: 'none',
                   cursor: 'pointer',
+                  position: 'relative',
+                  zIndex: 10,
                   boxShadow: isRecording 
                     ? '0 4px 15px rgba(239, 68, 68, 0.4)' 
                     : '0 2px 8px rgba(0, 0, 0, 0.2)',
@@ -1181,10 +1185,11 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 touchAction: 'none',
                 cursor: 'pointer',
+                position: 'relative',
+                zIndex: 10,
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
               }}
               onTap={handleSelectFile}
-              onClick={handleSelectFile}
             >
               <Paperclip size={18} color="#94a3b8" />
             </View>
@@ -1203,13 +1208,14 @@ const AiChatPage = () => {
                 justifyContent: 'center',
                 touchAction: 'none',
                 cursor: loading || (!inputText.trim() && attachments.length === 0) ? 'not-allowed' : 'pointer',
+                position: 'relative',
+                zIndex: 10,
                 boxShadow: loading || (!inputText.trim() && attachments.length === 0)
                   ? 'none'
                   : '0 4px 15px rgba(59, 130, 246, 0.4)',
                 transition: 'all 0.2s ease'
               }}
               onTap={() => !loading && handleSend()}
-              onClick={() => !loading && handleSend()}
             >
               <Send size={18} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
             </View>
