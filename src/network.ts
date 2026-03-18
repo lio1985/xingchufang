@@ -60,16 +60,16 @@ const createUrl = (url: string): string => {
             return `${projectDomain}${url}`;
         }
         
-        // 如果没有配置 HTTPS 域名，在控制台给出警告
+        // 如果是 HTTP 协议，在小程序中无法使用，改用相对路径
         if (projectDomain && projectDomain.startsWith('http://')) {
-            console.warn('[Network] 警告：PROJECT_DOMAIN 使用 HTTP 协议，小程序要求 HTTPS。请在微信开发者工具中勾选"不校验合法域名"进行开发测试。');
-            // 仍然返回，但可能无法正常工作
-            return `${projectDomain}${url}`;
+            console.warn('[Network] 警告：PROJECT_DOMAIN 使用 HTTP 协议，小程序要求 HTTPS。已自动切换为相对路径，请在微信开发者工具中勾选"不校验合法域名、web-view（业务域名）、TLS版本以及HTTPS证书"进行开发测试。');
+            // 使用相对路径，依赖开发者工具的代理设置
+            return url;
         }
         
         // 没有配置域名，使用相对路径
         // 注意：这需要小程序开发工具配置代理或在开发者工具中设置不校验域名
-        console.warn('[Network] 警告：未配置 PROJECT_DOMAIN，请确保在微信开发者工具中勾选"不校验合法域名"');
+        console.warn('[Network] 警告：未配置有效的 PROJECT_DOMAIN（需 HTTPS），请确保在微信开发者工具中勾选"不校验合法域名"');
         return url;
     }
 
