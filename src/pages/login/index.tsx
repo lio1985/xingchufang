@@ -54,8 +54,8 @@ const LoginPage = () => {
 
       console.log('[登录] 响应数据:', responseData);
 
-      // 统一成功判断：检查 success 和 code 字段
-      if (!responseData.success || responseData.code !== 200) {
+      // 统一成功判断：检查 code 字段
+      if (responseData.code !== 200) {
         throw new Error(responseData.msg || responseData.message || '登录失败');
       }
 
