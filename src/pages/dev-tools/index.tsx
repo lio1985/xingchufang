@@ -228,7 +228,7 @@ const DevToolsPage = () => {
           </Text>
           <Button
             className="w-full bg-blue-600 text-white rounded-xl py-3 font-semibold"
-            onClick={() => Taro.reLaunch({ url: '/pages/login/index' })}
+            onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}
           >
             重新登录
           </Button>

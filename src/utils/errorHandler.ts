@@ -174,7 +174,7 @@ export function handleError(
     Taro.removeStorageSync('user');
 
     setTimeout(() => {
-      Taro.reLaunch({ url: '/pages/login/index' });
+      Taro.redirectTo({ url: '/pages/login/index' });
     }, 1500);
   }
 }

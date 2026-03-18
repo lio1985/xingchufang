@@ -144,7 +144,7 @@ const IndexPage = () => {
   };
 
   const handleLogin = () => {
-    Taro.reLaunch({ url: '/pages/login/index' });
+    Taro.navigateTo({ url: '/pages/login/index' });
   };
 
   const handleTitleClick = () => {

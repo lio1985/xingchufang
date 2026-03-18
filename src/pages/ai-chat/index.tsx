@@ -223,7 +223,7 @@ const AiChatPage = () => {
         content: '使用助手功能需要登录账号，是否立即登录？',
         success: (res) => {
           if (res.confirm) {
-            Taro.reLaunch({ url: '/pages/login/index' });
+            Taro.navigateTo({ url: '/pages/login/index' });
           } else {
             Taro.switchTab({ url: '/pages/index/index' });
           }

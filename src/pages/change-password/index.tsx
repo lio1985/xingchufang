@@ -101,7 +101,7 @@ const ChangePasswordPage = () => {
         showToast({ title: '修改成功，请重新登录', icon: 'success' })
         // 跳转到登录页
         setTimeout(() => {
-          Taro.reLaunch({ url: '/pages/login/index' })
+          Taro.navigateTo({ url: '/pages/login/index' })
         }, 1500)
       } else {
         throw new Error(response.data?.msg || '修改密码失败')

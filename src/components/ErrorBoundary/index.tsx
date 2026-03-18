@@ -32,7 +32,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   handleReset = () => {
     this.setState({ hasError: false, error: undefined });
-    Taro.reLaunch({ url: '/pages/index/index' });
+    Taro.switchTab({ url: '/pages/index/index' });
   };
 
   render() {
