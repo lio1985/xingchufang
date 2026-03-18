@@ -80,7 +80,7 @@ const IndexPage = () => {
     console.log('跳转到:', url);
 
     // 热力图和新闻页面不需要登录
-    if (url === '/pages/heatmap/index' || url === '/pages/news/index') {
+    if (url === '/pages/hotspot/index' || url === '/pages/news/index') {
       Taro.navigateTo({ url });
       return;
     }

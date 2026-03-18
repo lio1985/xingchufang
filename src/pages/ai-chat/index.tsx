@@ -991,23 +991,37 @@ const AiChatPage = () => {
         )}
       </ScrollView>
 
-      {/* 底部区域 */}
-      <View style={{ position: 'fixed', bottom: 50, left: 0, right: 0, backgroundColor: 'rgba(255, 255, 255, 0.98)', borderTop: '1px solid #E2E8F0', zIndex: 40 }}>
-        {/* 输入框 */}
-        <View style={{ padding: '8px 16px 16px 16px' }}>
-          {/* 附件预览 */}
-          {attachments.length > 0 && (
-            <View style={{ marginBottom: '8px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      {/* 底部输入区域 - 美化版 */}
+      <View style={{ 
+        position: 'fixed', 
+        bottom: 50, 
+        left: 0, 
+        right: 0, 
+        background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%)', 
+        borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+        backdropFilter: 'blur(20px)',
+        zIndex: 40,
+        paddingBottom: 'env(safe-area-inset-bottom)'
+      }}>
+        {/* 附件预览区 */}
+        {attachments.length > 0 && (
+          <View style={{ 
+            padding: '12px 16px 8px',
+            borderBottom: '1px solid rgba(148, 163, 184, 0.1)'
+          }}>
+            <View style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
               {attachments.map((att, index) => (
                 <View
                   key={att.id}
                   style={{
                     position: 'relative',
-                    width: '80px',
-                    height: '80px',
-                    borderRadius: '8px',
+                    width: '72px',
+                    height: '72px',
+                    borderRadius: '12px',
                     overflow: 'hidden',
-                    backgroundColor: '#F1F5F9',
+                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
                   }}
                 >
                   {att.type === 'image' && (
@@ -1018,15 +1032,16 @@ const AiChatPage = () => {
                     />
                   )}
                   {att.type === 'video' && (
-                    <View className="w-full h-full flex items-center justify-center">
-                      <Video size={32} color="#60a5fa" />
+                    <View className="w-full h-full flex items-center justify-center bg-slate-800">
+                      <Video size={28} color="#60a5fa" />
                     </View>
                   )}
                   {att.type === 'document' && (
-                    <View className="w-full h-full flex items-center justify-center">
-                      <FileText size={32} color="#60a5fa" />
+                    <View className="w-full h-full flex items-center justify-center bg-slate-800">
+                      <FileText size={28} color="#60a5fa" />
                     </View>
                   )}
+                  {/* 删除按钮 */}
                   <View
                     style={{
                       position: 'absolute',
@@ -1035,12 +1050,13 @@ const AiChatPage = () => {
                       width: '20px',
                       height: '20px',
                       borderRadius: '50%',
-                      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                      background: 'rgba(239, 68, 68, 0.9)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       touchAction: 'none',
                       zIndex: 10,
+                      cursor: 'pointer'
                     }}
                     onClick={() => handleRemoveAttachment(index)}
                     onTap={() => handleRemoveAttachment(index)}
@@ -1050,63 +1066,97 @@ const AiChatPage = () => {
                 </View>
               ))}
             </View>
-          )}
+          </View>
+        )}
 
-          {/* 录音状态显示 */}
-          {isRecording && (
+        {/* 录音状态 */}
+        {isRecording && (
+          <View style={{
+            margin: '8px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '10px 14px',
+            background: 'linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%)',
+            borderRadius: '12px',
+            border: '1px solid rgba(239, 68, 68, 0.3)'
+          }}>
             <View style={{
-              marginBottom: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 12px',
-              backgroundColor: 'rgba(239, 68, 68, 0.2)',
-              borderRadius: '8px',
-              border: '1px solid rgba(239, 68, 68, 0.3)'
-            }}
-            >
-              <View style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                backgroundColor: '#ef4444',
-                animation: 'pulse 1s infinite'
-              }}
-              />
-              <Text style={{ fontSize: '13px', color: '#ef4444' }}>
-                录音中 {Math.floor(recordingDuration / 60)}:{(recordingDuration % 60).toString().padStart(2, '0')}
-              </Text>
-            </View>
-          )}
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              backgroundColor: '#ef4444',
+              boxShadow: '0 0 10px #ef4444',
+              animation: 'pulse 1s infinite'
+            }} />
+            <Text style={{ fontSize: '14px', color: '#fca5a5', fontWeight: 500 }}>
+              正在录音 {Math.floor(recordingDuration / 60)}:{(recordingDuration % 60).toString().padStart(2, '0')}
+            </Text>
+            <Text style={{ fontSize: '12px', color: '#94a3b8', marginLeft: 'auto' }}>
+              点击麦克风停止
+            </Text>
+          </View>
+        )}
 
-          {/* 输入框和按钮 */}
-          <View style={{ display: 'flex', flexDirection: 'row', gap: '12px', alignItems: 'flex-end' }}>
+        {/* 输入框主体 */}
+        <View style={{ padding: '12px 16px 16px' }}>
+          <View style={{ 
+            display: 'flex', 
+            flexDirection: 'row', 
+            gap: '10px', 
+            alignItems: 'flex-end',
+            background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%)',
+            borderRadius: '20px',
+            padding: '6px',
+            border: '1px solid rgba(148, 163, 184, 0.15)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+          }}>
             {/* 语音按钮 */}
             {Taro.getEnv() === Taro.ENV_TYPE.WEAPP && (
               <View
                 style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '12px',
-                  backgroundColor: isRecording ? '#ef4444' : '#334155',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '14px',
+                  background: isRecording 
+                    ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' 
+                    : 'linear-gradient(135deg, #475569 0%, #334155 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   touchAction: 'none',
-                  position: 'relative',
-                  zIndex: 10
+                  cursor: 'pointer',
+                  boxShadow: isRecording 
+                    ? '0 4px 15px rgba(239, 68, 68, 0.4)' 
+                    : '0 2px 8px rgba(0, 0, 0, 0.2)',
+                  transition: 'all 0.2s ease'
                 }}
                 onTap={isRecording ? stopRecording : startRecording}
               >
-                <Mic size={20} color="white" />
+                <Mic size={18} color="white" />
               </View>
             )}
 
             {/* 输入框 */}
-            <View style={{ flex: 1, backgroundColor: '#1e293b', borderRadius: '16px', padding: '12px', position: 'relative' }}>
+            <View style={{ 
+              flex: 1, 
+              backgroundColor: 'rgba(15, 23, 42, 0.6)', 
+              borderRadius: '14px', 
+              padding: '10px 14px',
+              border: '1px solid rgba(148, 163, 184, 0.1)'
+            }}>
               <Textarea
-                style={{ width: '100%', minHeight: '40px', maxHeight: '120px', backgroundColor: 'transparent', color: '#fff', fontSize: '14px' }}
+                style={{ 
+                  width: '100%', 
+                  minHeight: '36px', 
+                  maxHeight: '100px', 
+                  backgroundColor: 'transparent', 
+                  color: '#f1f5f9', 
+                  fontSize: '15px',
+                  lineHeight: '20px'
+                }}
                 placeholder="输入消息..."
+                placeholderStyle={{ color: '#64748b' }}
                 value={inputText}
                 onInput={(e) => setInputText(e.detail.value)}
                 maxlength={2000}
@@ -1114,87 +1164,56 @@ const AiChatPage = () => {
                 confirmType="send"
                 onConfirm={() => !loading && handleSend()}
               />
-              {/* H5 回车发送支持 */}
-              {typeof window !== 'undefined' && (
-                <input
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey && !loading) {
-                      e.preventDefault();
-                      handleSend();
-                    }
-                  }}
-                  placeholder="输入消息..."
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'transparent',
-                    color: '#fff',
-                    fontSize: '14px',
-                    border: 'none',
-                    outline: 'none',
-                    padding: '12px',
-                    opacity: 0,
-                    zIndex: 1,
-                  }}
-                />
-              )}
             </View>
 
-            {/* 文件上传按钮 */}
+            {/* 附件按钮 */}
             <View
               style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '12px',
-                backgroundColor: '#334155',
+                width: '40px',
+                height: '40px',
+                borderRadius: '14px',
+                background: 'linear-gradient(135deg, #475569 0%, #334155 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 touchAction: 'none',
-                position: 'relative',
-                zIndex: 10,
                 cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
               }}
               onTap={handleSelectFile}
               onClick={handleSelectFile}
             >
-              <Paperclip size={20} color="#94a3b8" />
+              <Paperclip size={18} color="#94a3b8" />
             </View>
 
             {/* 发送按钮 */}
             <View
               style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '12px',
+                width: '44px',
+                height: '44px',
+                borderRadius: '14px',
                 background: loading || (!inputText.trim() && attachments.length === 0)
-                  ? '#334155'
-                  : '#3b82f6',
+                  ? 'linear-gradient(135deg, #475569 0%, #334155 100%)'
+                  : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 touchAction: 'none',
-                position: 'relative',
-                zIndex: 10,
                 cursor: loading || (!inputText.trim() && attachments.length === 0) ? 'not-allowed' : 'pointer',
+                boxShadow: loading || (!inputText.trim() && attachments.length === 0)
+                  ? 'none'
+                  : '0 4px 15px rgba(59, 130, 246, 0.4)',
+                transition: 'all 0.2s ease'
               }}
               onTap={() => !loading && handleSend()}
               onClick={() => !loading && handleSend()}
             >
-              <Send size={20} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
+              <Send size={18} color={loading || (!inputText.trim() && attachments.length === 0) ? '#64748b' : 'white'} />
             </View>
           </View>
         </View>
 
-        {/* 操作菜单 */}
+        {/* 操作菜单 - 美化版 */}
         {showActionSheet && (
           <View
             style={{
@@ -1203,7 +1222,8 @@ const AiChatPage = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              backdropFilter: 'blur(4px)',
               zIndex: 100,
               display: 'flex',
               alignItems: 'flex-end',
@@ -1215,70 +1235,145 @@ const AiChatPage = () => {
             <View
               style={{
                 width: '100%',
-                backgroundColor: '#1e293b',
-                borderTopLeftRadius: '20px',
-                borderTopRightRadius: '20px',
-                padding: '16px',
+                background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+                borderTopLeftRadius: '24px',
+                borderTopRightRadius: '24px',
+                padding: '20px',
+                boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.5)'
               }}
             >
-              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#fff', marginBottom: '16px', textAlign: 'center' }}>
+              {/* 拖动指示器 */}
+              <View style={{
+                width: '40px',
+                height: '4px',
+                backgroundColor: 'rgba(148, 163, 184, 0.3)',
+                borderRadius: '2px',
+                margin: '0 auto 20px'
+              }} />
+              
+              <Text style={{ 
+                fontSize: '18px', 
+                fontWeight: '600', 
+                color: '#f8fafc', 
+                marginBottom: '20px', 
+                textAlign: 'center' 
+              }}>
                 选择文件类型
               </Text>
-              <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              
+              <View style={{ display: 'flex', flexDirection: 'row', gap: '12px', justifyContent: 'center' }}>
+                {/* 图片选项 */}
                 <View
                   style={{
+                    flex: 1,
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '12px',
-                    padding: '16px',
-                    backgroundColor: '#334155',
-                    borderRadius: '12px',
-                    flexShrink: 0,
+                    gap: '10px',
+                    padding: '20px 16px',
+                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(96, 165, 250, 0.2)',
                     touchAction: 'none',
-                    position: 'relative',
-                    zIndex: 10
+                    cursor: 'pointer'
                   }}
                   onTap={handleSelectImage}
                 >
-                  <ImageIcon size={24} color="#60a5fa" />
-                  <Text style={{ fontSize: '15px', color: '#fff' }}>图片</Text>
-                </View>
-                <View
-                  style={{
+                  <View style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '14px',
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
-                    padding: '16px',
-                    backgroundColor: '#334155',
-                    borderRadius: '12px',
-                    flexShrink: 0,
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
+                  }}>
+                    <ImageIcon size={24} color="white" />
+                  </View>
+                  <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>图片</Text>
+                </View>
+
+                {/* 视频选项 */}
+                <View
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '20px 16px',
+                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(168, 85, 247, 0.2)',
                     touchAction: 'none',
-                    position: 'relative',
-                    zIndex: 10
+                    cursor: 'pointer'
                   }}
                   onTap={handleSelectVideo}
                 >
-                  <Video size={24} color="#60a5fa" />
-                  <Text style={{ fontSize: '15px', color: '#fff' }}>视频</Text>
-                </View>
-                <View
-                  style={{
+                  <View style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '14px',
+                    background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
-                    padding: '16px',
-                    backgroundColor: '#334155',
-                    borderRadius: '12px',
-                    flexShrink: 0,
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)'
+                  }}>
+                    <Video size={24} color="white" />
+                  </View>
+                  <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>视频</Text>
+                </View>
+
+                {/* 文档选项 */}
+                <View
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '20px 16px',
+                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(34, 197, 94, 0.2)',
                     touchAction: 'none',
-                    position: 'relative',
-                    zIndex: 10
+                    cursor: 'pointer'
                   }}
                   onTap={handleSelectDocument}
                 >
-                  <FileText size={24} color="#60a5fa" />
-                  <Text style={{ fontSize: '15px', color: '#fff' }}>文档</Text>
+                  <View style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '14px',
+                    background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 15px rgba(34, 197, 94, 0.3)'
+                  }}>
+                    <FileText size={24} color="white" />
+                  </View>
+                  <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>文档</Text>
                 </View>
+              </View>
+
+              {/* 取消按钮 */}
+              <View
+                style={{
+                  marginTop: '16px',
+                  padding: '14px',
+                  background: 'rgba(71, 85, 105, 0.5)',
+                  borderRadius: '12px',
+                  touchAction: 'none',
+                  cursor: 'pointer'
+                }}
+                onTap={() => setShowActionSheet(false)}
+              >
+                <Text style={{ fontSize: '16px', color: '#94a3b8', textAlign: 'center', fontWeight: 500 }}>
+                  取消
+                </Text>
               </View>
             </View>
           </View>
