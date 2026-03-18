@@ -92,7 +92,7 @@ const IndexPage = () => {
         content: '使用该功能需要登录账号，是否立即登录？',
         success: (res) => {
           if (res.confirm) {
-            Taro.reLaunch({ url: '/pages/login/index' });
+            Taro.navigateTo({ url: '/pages/login/index' });
           }
         }
       });
