@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "共享统计",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}

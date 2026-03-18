@@ -650,7 +650,7 @@ const AiChatPage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900 flex flex-col">
+    <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col">
       {/* 对话列表侧边栏 */}
       {showConversationList && (
         <View className="fixed inset-0 z-50 bg-slate-900/95">
@@ -1002,13 +1002,15 @@ const AiChatPage = () => {
         backdropFilter: 'blur(20px)',
         zIndex: 40,
         paddingBottom: 'env(safe-area-inset-bottom)'
-      }}>
+      }}
+      >
         {/* 附件预览区 */}
         {attachments.length > 0 && (
           <View style={{ 
             padding: '12px 16px 8px',
             borderBottom: '1px solid rgba(148, 163, 184, 0.1)'
-          }}>
+          }}
+          >
             <View style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
               {attachments.map((att, index) => (
                 <View
@@ -1080,7 +1082,8 @@ const AiChatPage = () => {
             background: 'linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%)',
             borderRadius: '12px',
             border: '1px solid rgba(239, 68, 68, 0.3)'
-          }}>
+          }}
+          >
             <View style={{
               width: '10px',
               height: '10px',
@@ -1088,7 +1091,8 @@ const AiChatPage = () => {
               backgroundColor: '#ef4444',
               boxShadow: '0 0 10px #ef4444',
               animation: 'pulse 1s infinite'
-            }} />
+            }}
+            />
             <Text style={{ fontSize: '14px', color: '#fca5a5', fontWeight: 500 }}>
               正在录音 {Math.floor(recordingDuration / 60)}:{(recordingDuration % 60).toString().padStart(2, '0')}
             </Text>
@@ -1110,7 +1114,8 @@ const AiChatPage = () => {
             padding: '6px',
             border: '1px solid rgba(148, 163, 184, 0.15)',
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-          }}>
+          }}
+          >
             {/* 语音按钮 */}
             {Taro.getEnv() === Taro.ENV_TYPE.WEAPP && (
               <View
@@ -1144,7 +1149,8 @@ const AiChatPage = () => {
               borderRadius: '14px', 
               padding: '10px 14px',
               border: '1px solid rgba(148, 163, 184, 0.1)'
-            }}>
+            }}
+            >
               <Textarea
                 style={{ 
                   width: '100%', 
@@ -1156,7 +1162,7 @@ const AiChatPage = () => {
                   lineHeight: '20px'
                 }}
                 placeholder="输入消息..."
-                placeholderStyle={{ color: '#64748b' }}
+                placeholderStyle="color: #64748b"
                 value={inputText}
                 onInput={(e) => setInputText(e.detail.value)}
                 maxlength={2000}
@@ -1249,7 +1255,8 @@ const AiChatPage = () => {
                 backgroundColor: 'rgba(148, 163, 184, 0.3)',
                 borderRadius: '2px',
                 margin: '0 auto 20px'
-              }} />
+              }}
+              />
               
               <Text style={{ 
                 fontSize: '18px', 
@@ -1257,7 +1264,8 @@ const AiChatPage = () => {
                 color: '#f8fafc', 
                 marginBottom: '20px', 
                 textAlign: 'center' 
-              }}>
+              }}
+              >
                 选择文件类型
               </Text>
               
@@ -1288,7 +1296,8 @@ const AiChatPage = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
-                  }}>
+                  }}
+                  >
                     <ImageIcon size={24} color="white" />
                   </View>
                   <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>图片</Text>
@@ -1320,7 +1329,8 @@ const AiChatPage = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)'
-                  }}>
+                  }}
+                  >
                     <Video size={24} color="white" />
                   </View>
                   <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>视频</Text>
@@ -1352,7 +1362,8 @@ const AiChatPage = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     boxShadow: '0 4px 15px rgba(34, 197, 94, 0.3)'
-                  }}>
+                  }}
+                  >
                     <FileText size={24} color="white" />
                   </View>
                   <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>文档</Text>

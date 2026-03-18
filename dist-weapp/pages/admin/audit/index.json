@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "审计日志",
-  "navigationBarBackgroundColor": "#0f172a",
-  "navigationBarTextStyle": "white",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}

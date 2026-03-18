@@ -272,9 +272,9 @@ const IndexPage = () => {
   }, [isLoggedIn]);
 
   return (
-    <View className="h-screen bg-slate-900 flex flex-col overflow-hidden">
+    <View className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col overflow-hidden">
       {/* 标题区 */}
-      <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 pt-12 pb-8 flex justify-between items-center">
+      <View className="bg-transparent px-6 pt-12 pb-8 flex justify-between items-center">
         <View className="flex flex-col justify-center gap-2">
           <View
             className="block text-3xl font-bold text-white tracking-tight leading-tight"

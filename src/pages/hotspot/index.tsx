@@ -304,7 +304,7 @@ const HotspotPage = () => {
   // 渲染状态
   if (loadStatus === 'loading') {
     return (
-      <View className="min-h-screen bg-slate-900 flex items-center justify-center">
+      <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <View className="text-center">
           <View className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <Text className="block text-slate-300 text-base">加载中...</Text>
@@ -315,7 +315,7 @@ const HotspotPage = () => {
 
   if (loadStatus === 'error') {
     return (
-      <View className="min-h-screen bg-slate-900 flex items-center justify-center px-6">
+      <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6">
         <View className="text-center">
           <Text className="block text-red-400 text-lg mb-3">加载失败</Text>
           <Text className="block text-slate-400 text-sm mb-4">{errorMessage}</Text>
@@ -333,7 +333,7 @@ const HotspotPage = () => {
 
   if (loadStatus === 'empty') {
     return (
-      <View className="min-h-screen bg-slate-900 flex items-center justify-center px-6">
+      <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6">
         <View className="text-center">
           <FlameIcon size={48} color="#64748b" strokeWidth={1} />
           <Text className="block text-slate-400 text-lg mt-4">暂无热点数据</Text>
@@ -344,9 +344,9 @@ const HotspotPage = () => {
   }
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* 标题区 */}
-      <View className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 pt-8 pb-5 border-b border-slate-700">
+      <View className="bg-transparent px-4 pt-8 pb-5 border-b border-slate-700">
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-3">
             <View className="w-14 h-14 bg-gradient-to-br from-amber-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20 border border-orange-500/20">

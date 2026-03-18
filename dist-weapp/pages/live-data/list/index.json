@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "直播记录",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}

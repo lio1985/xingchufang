@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "数据看板",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}

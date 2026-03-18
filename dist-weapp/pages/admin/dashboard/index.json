@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "数据监控",
-  "navigationBarBackgroundColor": "#0f172a",
-  "navigationBarTextStyle": "white",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}

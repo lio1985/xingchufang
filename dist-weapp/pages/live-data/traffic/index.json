@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "流量数据",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}

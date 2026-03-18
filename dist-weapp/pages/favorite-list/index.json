@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "待拍清单",
-  "navigationBarBackgroundColor": "#ffffff",
-  "navigationBarTextStyle": "black",
-  "usingComponents": {
-    "comp": "../../comp"
-  }
-}

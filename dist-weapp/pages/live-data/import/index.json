@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "导入直播数据",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}
