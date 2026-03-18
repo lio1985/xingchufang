@@ -72,40 +72,32 @@ const HotspotPage = () => {
       console.log('响应状态码:', response.statusCode);
       console.log('响应数据:', JSON.stringify(response.data, null, 2));
 
-      if (response.statusCode === 200 && response.data && response.data.success && response.data.data && response.data.data.platforms) {
-        const platforms = Array.isArray(response.data.data.platforms) ? response.data.data.platforms : [];
+      // 适配后端返回格式 {code: 200, msg: "success", data: [...]}
+      const responseData = response.data;
+      if (response.statusCode === 200 && responseData && responseData.code === 200 && Array.isArray(responseData.data)) {
+        const hotList = responseData.data;
 
-        // 合并所有平台的热点到一个列表
-        const mergedKeywords: HotKeyword[] = [];
-        platforms.forEach((platform: any) => {
-          if (platform.list && Array.isArray(platform.list)) {
-            platform.list.forEach((item: HotKeyword) => {
-              mergedKeywords.push({
-                ...item,
-                platform: platform.platform
-              });
-            });
-          }
-        });
+        // 转换为前端需要的格式
+        const mergedKeywords: HotKeyword[] = hotList.map((item: any, index: number) => ({
+          id: item.id?.toString() || `hot_${index}`,
+          rank: index + 1,
+          title: item.title || '',
+          hot: item.heat ? item.heat.toString() : '0',
+          url: item.url || '',
+          summary: item.summary || '',
+          category: item.category || item.source || '',
+          trend: 'stable',
+          trendChange: 0,
+          isBursting: false,
+          platform: item.source || '综合'
+        }));
 
         // 按热度排序（尝试解析热度值）
         mergedKeywords.sort((a, b) => {
           const parseHotValue = (hot: string): number => {
-            // 尝试提取数字
-            const match = hot.match(/[\d.]+/);
-            if (match) {
-              const num = parseFloat(match[0]);
-              // 处理单位
-              if (hot.includes('万')) {
-                return num * 10000;
-              } else if (hot.includes('亿')) {
-                return num * 100000000;
-              }
-              return num;
-            }
-            return 0;
+            const num = parseInt(hot, 10);
+            return isNaN(num) ? 0 : num;
           };
-
           const hotA = parseHotValue(a.hot);
           const hotB = parseHotValue(b.hot);
           return hotB - hotA; // 降序排列
@@ -119,7 +111,6 @@ const HotspotPage = () => {
         const endIdx = Math.min(startIdx + PAGE_SIZE, limitedKeywords.length);
         const displayKeywords = limitedKeywords.slice(startIdx, endIdx);
 
-        console.log('解析后的平台数量:', platforms.length);
         console.log('合并后的热点数量:', mergedKeywords.length);
         console.log('限制后的热点数量:', limitedKeywords.length);
         console.log('当前页:', currentPage);
@@ -200,38 +191,31 @@ const HotspotPage = () => {
       console.log('=== 刷新响应 ===');
       console.log('响应状态码:', response.statusCode);
 
-      if (response.statusCode === 200 && response.data && response.data.success && response.data.data && response.data.data.platforms) {
-        const platforms = Array.isArray(response.data.data.platforms) ? response.data.data.platforms : [];
+      const responseData = response.data;
+      if (response.statusCode === 200 && responseData && responseData.code === 200 && Array.isArray(responseData.data)) {
+        const hotList = responseData.data;
 
-        // 合并所有平台的热点到一个列表
-        const mergedKeywords: HotKeyword[] = [];
-        platforms.forEach((platform: any) => {
-          if (platform.list && Array.isArray(platform.list)) {
-            platform.list.forEach((item: HotKeyword) => {
-              mergedKeywords.push({
-                ...item,
-                platform: platform.platform
-              });
-            });
-          }
-        });
+        // 转换为前端需要的格式
+        const mergedKeywords: HotKeyword[] = hotList.map((item: any, index: number) => ({
+          id: item.id?.toString() || `hot_${index}`,
+          rank: index + 1,
+          title: item.title || '',
+          hot: item.heat ? item.heat.toString() : '0',
+          url: item.url || '',
+          summary: item.summary || '',
+          category: item.category || item.source || '',
+          trend: 'stable',
+          trendChange: 0,
+          isBursting: false,
+          platform: item.source || '综合'
+        }));
 
         // 按热度排序
         mergedKeywords.sort((a, b) => {
           const parseHotValue = (hot: string): number => {
-            const match = hot.match(/[\d.]+/);
-            if (match) {
-              const num = parseFloat(match[0]);
-              if (hot.includes('万')) {
-                return num * 10000;
-              } else if (hot.includes('亿')) {
-                return num * 100000000;
-              }
-              return num;
-            }
-            return 0;
+            const num = parseInt(hot, 10);
+            return isNaN(num) ? 0 : num;
           };
-
           const hotA = parseHotValue(a.hot);
           const hotB = parseHotValue(b.hot);
           return hotB - hotA;
