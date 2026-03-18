@@ -278,18 +278,18 @@ const InputSourcesPage = () => {
       if (res.data.code === 200) {
         // 将生成的选题保存到 Taro 存储
         Taro.setStorageSync('generatedTopics', res.data.data);
-        Taro.showToast({ title: '生成成功', icon: 'success' });
+        Taro.showToast({ title: '创建成功', icon: 'success' });
         setTimeout(() => {
           Taro.navigateTo({
             url: '/pages/systems/index?type=topic&hasGenerated=true'
           });
         }, 1000);
       } else {
-        Taro.showToast({ title: '生成失败', icon: 'error' });
+        Taro.showToast({ title: '创建失败', icon: 'error' });
       }
     } catch (error) {
       console.error('生成选题库失败', error);
-      Taro.showToast({ title: '生成失败', icon: 'error' });
+      Taro.showToast({ title: '创建失败', icon: 'error' });
     }
   };
 

@@ -889,7 +889,7 @@ export default function LexiconManagePage() {
     } catch (error) {
       console.error('生成 IP 画像失败:', error)
       setIsAnalyzing(false)
-      showToast({ title: '生成失败', icon: 'none' })
+      showToast({ title: '创建失败', icon: 'none' })
     }
   }
 

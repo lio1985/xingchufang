@@ -58,14 +58,14 @@ const LiveAnalysisPage = () => {
       });
 
       if (response.data?.success) {
-        showToast({ title: '生成成功', icon: 'success' });
+        showToast({ title: '创建成功', icon: 'success' });
         // 跳转到详情页查看分析结果
         navigateTo({ url: `/pages/live-data/detail/index?id=${liveId}` });
       } else {
-        throw new Error(response.data?.message || '生成失败');
+        throw new Error(response.data?.message || '创建失败');
       }
     } catch (error: any) {
-      showToast({ title: error.message || '生成失败', icon: 'none' });
+      showToast({ title: error.message || '创建失败', icon: 'none' });
     } finally {
       setGenerating(null);
       hideLoading();
@@ -82,7 +82,7 @@ const LiveAnalysisPage = () => {
       <View className="header">
         <Sparkles size={32} color="#FFB800" />
         <Text className="title">直播复盘</Text>
-        <Text className="subtitle">智能分析直播数据，生成专业复盘报告</Text>
+        <Text className="subtitle">深度分析直播数据，输出专业复盘报告</Text>
       </View>
 
       <ScrollView className="list-container" scrollY>

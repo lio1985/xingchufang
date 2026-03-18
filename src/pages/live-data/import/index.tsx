@@ -204,7 +204,7 @@ const LiveDataImportPage = () => {
   const methodTabs: { key: ImportMethod; label: string; icon: React.ReactNode; desc: string }[] = [
     { key: 'manual', label: '手动填写', icon: <Keyboard size={20} />, desc: '逐条输入直播数据' },
     { key: 'excel', label: 'Excel导入', icon: <FileSpreadsheet size={20} />, desc: '批量上传数据表格' },
-    { key: 'screenshot', label: '截图识别', icon: <ScanLine size={20} />, desc: '智能识别复盘截图' },
+    { key: 'screenshot', label: '截图识别', icon: <ScanLine size={20} />, desc: '识别复盘截图信息' },
   ];
 
   const InputField = ({ 

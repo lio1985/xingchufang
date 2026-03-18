@@ -236,9 +236,9 @@ export default function ViralRemixPage() {
 
       if (response.data?.code === 200) {
         setGeneratedSchemes(response.data.data.schemes || [])
-        showToast({ title: '生成成功', icon: 'success' })
+        showToast({ title: '创建成功', icon: 'success' })
       } else {
-        showToast({ title: response.data?.msg || '生成失败', icon: 'none' })
+        showToast({ title: response.data?.msg || '创建失败', icon: 'none' })
       }
     } catch (error) {
       console.error('生成二创内容失败:', error)
