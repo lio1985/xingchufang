@@ -72,24 +72,37 @@ const HotspotPage = () => {
       console.log('响应状态码:', response.statusCode);
       console.log('响应数据:', JSON.stringify(response.data, null, 2));
 
-      // 适配后端返回格式 {code: 200, msg: "success", data: [...]}
+      // 适配后端返回格式 {success: true, data: { platforms: [...] }}
       const responseData = response.data;
-      if (response.statusCode === 200 && responseData && responseData.code === 200 && Array.isArray(responseData.data)) {
-        const hotList = responseData.data;
+      if (response.statusCode === 200 && responseData && responseData.success === true && responseData.data && Array.isArray(responseData.data.platforms)) {
+        // 合并所有平台的热点数据
+        const allPlatforms = responseData.data.platforms;
+        const mergedList: any[] = [];
+        
+        allPlatforms.forEach((platform: any) => {
+          if (platform.list && Array.isArray(platform.list)) {
+            platform.list.forEach((item: any) => {
+              mergedList.push({
+                ...item,
+                platform: platform.platform || item.source || '综合'
+              });
+            });
+          }
+        });
 
         // 转换为前端需要的格式
-        const mergedKeywords: HotKeyword[] = hotList.map((item: any, index: number) => ({
+        const mergedKeywords: HotKeyword[] = mergedList.map((item: any, index: number) => ({
           id: item.id?.toString() || `hot_${index}`,
           rank: index + 1,
           title: item.title || '',
-          hot: item.heat ? item.heat.toString() : '0',
+          hot: item.hot ? item.hot.toString() : (item.heat ? item.heat.toString() : '0'),
           url: item.url || '',
           summary: item.summary || '',
-          category: item.category || item.source || '',
-          trend: 'stable',
-          trendChange: 0,
-          isBursting: false,
-          platform: item.source || '综合'
+          category: item.category || item.platform || '综合',
+          trend: item.trend || 'stable',
+          trendChange: item.trendChange || 0,
+          isBursting: item.isBursting || false,
+          platform: item.platform || '综合'
         }));
 
         // 按热度排序（尝试解析热度值）
@@ -192,22 +205,35 @@ const HotspotPage = () => {
       console.log('响应状态码:', response.statusCode);
 
       const responseData = response.data;
-      if (response.statusCode === 200 && responseData && responseData.code === 200 && Array.isArray(responseData.data)) {
-        const hotList = responseData.data;
+      if (response.statusCode === 200 && responseData && responseData.success === true && responseData.data && Array.isArray(responseData.data.platforms)) {
+        // 合并所有平台的热点数据
+        const allPlatforms = responseData.data.platforms;
+        const mergedList: any[] = [];
+        
+        allPlatforms.forEach((platform: any) => {
+          if (platform.list && Array.isArray(platform.list)) {
+            platform.list.forEach((item: any) => {
+              mergedList.push({
+                ...item,
+                platform: platform.platform || item.source || '综合'
+              });
+            });
+          }
+        });
 
         // 转换为前端需要的格式
-        const mergedKeywords: HotKeyword[] = hotList.map((item: any, index: number) => ({
+        const mergedKeywords: HotKeyword[] = mergedList.map((item: any, index: number) => ({
           id: item.id?.toString() || `hot_${index}`,
           rank: index + 1,
           title: item.title || '',
-          hot: item.heat ? item.heat.toString() : '0',
+          hot: item.hot ? item.hot.toString() : (item.heat ? item.heat.toString() : '0'),
           url: item.url || '',
           summary: item.summary || '',
-          category: item.category || item.source || '',
-          trend: 'stable',
-          trendChange: 0,
-          isBursting: false,
-          platform: item.source || '综合'
+          category: item.category || item.platform || '综合',
+          trend: item.trend || 'stable',
+          trendChange: item.trendChange || 0,
+          isBursting: item.isBursting || false,
+          platform: item.platform || '综合'
         }));
 
         // 按热度排序
