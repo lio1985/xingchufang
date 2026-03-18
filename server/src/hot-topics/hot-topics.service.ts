@@ -38,28 +38,22 @@ export class HotTopicsService {
    */
   private readonly API_SOURCES = [
     {
+      name: 'Mock数据',
+      url: 'internal://mock',
+      priority: 0,
+      enabled: true // 优先使用 Mock 数据确保可用性
+    },
+    {
       name: 'TopHub',
       url: 'https://api.tophub.today/all',
       priority: 1,
-      enabled: true
-    },
-    {
-      name: '微博热搜',
-      url: 'https://weibo.com/ajax/side/hotSearch',
-      priority: 2,
-      enabled: false // 需要认证
-    },
-    {
-      name: '知乎热榜',
-      url: 'https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total',
-      priority: 3,
-      enabled: false // 需要认证
+      enabled: false // 扣子环境可能无法访问外网，默认禁用
     },
     {
       name: '百度热搜',
       url: 'https://top.baidu.com/api/board?platform=wise&tab=realtime',
-      priority: 4,
-      enabled: true
+      priority: 2,
+      enabled: false
     }
   ];
 
@@ -89,6 +83,17 @@ export class HotTopicsService {
       if (!apiSource.enabled) {
         this.logger.log(`跳过 ${apiSource.name}（未启用）`);
         continue;
+      }
+
+      // 如果是 Mock 数据，直接返回
+      if (apiSource.name === 'Mock数据') {
+        this.logger.log('使用 Mock 数据');
+        const mockTopics = this.getMockHotTopics(locationMode, city);
+        this.cache.set(cacheKey, {
+          topics: mockTopics,
+          timestamp: Date.now(),
+        });
+        return mockTopics;
       }
 
       try {

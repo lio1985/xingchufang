@@ -888,6 +888,7 @@ export class UserService {
 
   /**
    * 账号密码登录（支持注册用户）
+   * 如果数据库为空，支持默认管理员账号 admin/admin123
    */
   async loginWithPassword(username: string, password: string): Promise<{ user: any; token: string }> {
     this.logger.log(`账号密码登录: ${username}`);
@@ -920,6 +921,11 @@ export class UserService {
       }
 
       if (!usersByOpenid || usersByOpenid.length === 0) {
+        // 检查是否是默认管理员账号
+        if (username === 'admin' && password === 'admin123') {
+          this.logger.log('创建默认管理员账号');
+          return await this.createDefaultAdmin();
+        }
         throw new HttpException('账号不存在', HttpStatus.UNAUTHORIZED);
       }
 
@@ -981,6 +987,73 @@ export class UserService {
         avatarUrl: user.avatar_url,
         role: user.role,
         status: user.status,
+      },
+      token,
+    };
+  }
+
+  /**
+   * 创建默认管理员账号
+   */
+  private async createDefaultAdmin(): Promise<{ user: any; token: string }> {
+    const now = new Date().toISOString();
+    const employeeId = await this.generateUniqueEmployeeId();
+    
+    // 加密默认密码
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+    
+    const newUser = {
+      openid: 'pwd_admin',
+      employee_id: employeeId,
+      nickname: 'admin',
+      password: hashedPassword,
+      role: 'admin',
+      status: 'active',
+      created_at: now,
+      updated_at: now,
+    };
+
+    const { data: createdUser, error: createError } = await this.client
+      .from('users')
+      .insert(newUser)
+      .select()
+      .single();
+
+    if (createError) {
+      this.logger.error('创建默认管理员失败:', createError);
+      throw new HttpException('创建管理员账号失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 创建用户档案
+    await this.client
+      .from('user_profiles')
+      .insert({
+        user_id: createdUser.id,
+        real_name: '系统管理员',
+        created_at: now,
+        updated_at: now,
+      });
+
+    this.logger.log(`默认管理员创建成功，ID: ${createdUser.id}`);
+
+    // 生成 token
+    const tokenPayload: Omit<TokenPayload, 'sub'> = {
+      userId: createdUser.id,
+      openid: createdUser.openid,
+      role: createdUser.role,
+      status: createdUser.status,
+    };
+    const token = JwtUtil.generateToken(tokenPayload);
+
+    return {
+      user: {
+        id: createdUser.id,
+        openid: createdUser.openid,
+        employeeId: createdUser.employee_id,
+        nickname: createdUser.nickname,
+        avatarUrl: createdUser.avatar_url,
+        role: createdUser.role,
+        status: createdUser.status,
       },
       token,
     };
