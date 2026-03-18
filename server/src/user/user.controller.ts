@@ -684,4 +684,46 @@ export class UserController {
       };
     }
   }
+
+  /**
+   * 初始化预设账号（管理员和测试账号）
+   * POST /api/user/init-default-accounts
+   * 用于系统首次部署时创建默认账号
+   */
+  @Post('init-default-accounts')
+  async initDefaultAccounts() {
+    console.log('收到初始化预设账号请求');
+
+    try {
+      const result = await this.userService.initDefaultAccounts();
+
+      return {
+        success: true,
+        code: 200,
+        msg: '预设账号初始化成功',
+        data: {
+          admin: {
+            username: 'admin',
+            password: 'Admin@2025!Secure',
+            role: result.admin.role,
+            status: result.admin.status,
+          },
+          test: {
+            username: 'test2026',
+            password: 'test123456',
+            role: result.test.role,
+            status: result.test.status,
+          },
+        }
+      };
+    } catch (error) {
+      console.error('初始化预设账号失败:', error);
+      return {
+        success: false,
+        code: 500,
+        msg: error.message || '初始化预设账号失败',
+        data: null
+      };
+    }
+  }
 }

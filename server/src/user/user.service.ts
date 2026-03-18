@@ -1295,4 +1295,163 @@ export class UserService {
 
     this.logger.log(`用户审核完成: ${userId} -> ${status}`);
   }
+
+  /**
+   * 初始化预设账号（管理员和测试账号）
+   * 用于系统首次部署时创建默认账号
+   */
+  async initDefaultAccounts(): Promise<{ admin: any; test: any }> {
+    this.logger.log('=== 开始初始化预设账号 ===');
+    const now = new Date().toISOString();
+    
+    // 创建/更新管理员账号
+    const adminPassword = await bcrypt.hash('Admin@2025!Secure', 10);
+    let adminUser: any;
+    
+    // 检查管理员账号是否已存在
+    const { data: existingAdmin } = await this.client
+      .from('users')
+      .select('*')
+      .eq('nickname', 'admin')
+      .limit(1);
+
+    if (existingAdmin && existingAdmin.length > 0) {
+      // 更新现有管理员账号
+      const { data: updatedAdmin, error: updateError } = await this.client
+        .from('users')
+        .update({
+          password: adminPassword,
+          role: 'admin',
+          status: 'active',
+          updated_at: now,
+        })
+        .eq('id', existingAdmin[0].id)
+        .select()
+        .single();
+
+      if (updateError) {
+        this.logger.error('更新管理员账号失败:', updateError);
+        throw new HttpException('更新管理员账号失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      adminUser = updatedAdmin;
+      this.logger.log('管理员账号已更新');
+    } else {
+      // 创建新管理员账号
+      const adminEmployeeId = await this.generateUniqueEmployeeId();
+      const { data: createdAdmin, error: createError } = await this.client
+        .from('users')
+        .insert({
+          openid: 'pwd_admin',
+          employee_id: adminEmployeeId,
+          nickname: 'admin',
+          password: adminPassword,
+          role: 'admin',
+          status: 'active',
+          created_at: now,
+          updated_at: now,
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        this.logger.error('创建管理员账号失败:', createError);
+        throw new HttpException('创建管理员账号失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      adminUser = createdAdmin;
+      this.logger.log(`管理员账号创建成功，ID: ${adminUser.id}`);
+
+      // 创建管理员档案
+      await this.client
+        .from('user_profiles')
+        .insert({
+          user_id: adminUser.id,
+          real_name: '系统管理员',
+          created_at: now,
+          updated_at: now,
+        });
+    }
+
+    // 创建/更新测试账号
+    const testPassword = await bcrypt.hash('test123456', 10);
+    let testUser: any;
+
+    // 检查测试账号是否已存在
+    const { data: existingTest } = await this.client
+      .from('users')
+      .select('*')
+      .eq('nickname', 'test2026')
+      .limit(1);
+
+    if (existingTest && existingTest.length > 0) {
+      // 更新现有测试账号
+      const { data: updatedTest, error: updateError } = await this.client
+        .from('users')
+        .update({
+          password: testPassword,
+          role: 'user',
+          status: 'active',
+          updated_at: now,
+        })
+        .eq('id', existingTest[0].id)
+        .select()
+        .single();
+
+      if (updateError) {
+        this.logger.error('更新测试账号失败:', updateError);
+        throw new HttpException('更新测试账号失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      testUser = updatedTest;
+      this.logger.log('测试账号已更新');
+    } else {
+      // 创建新测试账号
+      const testEmployeeId = await this.generateUniqueEmployeeId();
+      const { data: createdTest, error: createError } = await this.client
+        .from('users')
+        .insert({
+          openid: 'pwd_test2026',
+          employee_id: testEmployeeId,
+          nickname: 'test2026',
+          password: testPassword,
+          role: 'user',
+          status: 'active',
+          created_at: now,
+          updated_at: now,
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        this.logger.error('创建测试账号失败:', createError);
+        throw new HttpException('创建测试账号失败', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      testUser = createdTest;
+      this.logger.log(`测试账号创建成功，ID: ${testUser.id}`);
+
+      // 创建测试账号档案
+      await this.client
+        .from('user_profiles')
+        .insert({
+          user_id: testUser.id,
+          real_name: '测试用户',
+          created_at: now,
+          updated_at: now,
+        });
+    }
+
+    this.logger.log('=== 预设账号初始化完成 ===');
+    return {
+      admin: {
+        id: adminUser.id,
+        nickname: adminUser.nickname,
+        role: adminUser.role,
+        status: adminUser.status,
+      },
+      test: {
+        id: testUser.id,
+        nickname: testUser.nickname,
+        role: testUser.role,
+        status: testUser.status,
+      },
+    };
+  }
 }
