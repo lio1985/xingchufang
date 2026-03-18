@@ -921,10 +921,15 @@ export class UserService {
       }
 
       if (!usersByOpenid || usersByOpenid.length === 0) {
-        // 检查是否是默认管理员账号
-        if (username === 'admin' && password === 'admin123') {
-          this.logger.log('创建默认管理员账号');
-          return await this.createDefaultAdmin();
+        // 检查是否是预设的管理员账号
+        if (username === 'admin' && password === 'Admin@2025!Secure') {
+          this.logger.log('创建预设管理员账号');
+          return await this.createDefaultAccounts();
+        }
+        // 检查是否是预设的测试账号
+        if (username === 'test2026' && password === 'test123456') {
+          this.logger.log('创建预设测试账号');
+          return await this.createDefaultAccounts();
         }
         throw new HttpException('账号不存在', HttpStatus.UNAUTHORIZED);
       }
@@ -993,67 +998,104 @@ export class UserService {
   }
 
   /**
-   * 创建默认管理员账号
+   * 创建预设账号（管理员和测试账号）
    */
-  private async createDefaultAdmin(): Promise<{ user: any; token: string }> {
+  private async createDefaultAccounts(): Promise<{ user: any; token: string }> {
     const now = new Date().toISOString();
-    const employeeId = await this.generateUniqueEmployeeId();
     
-    // 加密默认密码
-    const hashedPassword = await bcrypt.hash('admin123', 10);
+    // 创建管理员账号
+    const adminEmployeeId = await this.generateUniqueEmployeeId();
+    const adminHashedPassword = await bcrypt.hash('Admin@2025!Secure', 10);
     
-    const newUser = {
+    const adminUser = {
       openid: 'pwd_admin',
-      employee_id: employeeId,
+      employee_id: adminEmployeeId,
       nickname: 'admin',
-      password: hashedPassword,
+      password: adminHashedPassword,
       role: 'admin',
       status: 'active',
       created_at: now,
       updated_at: now,
     };
 
-    const { data: createdUser, error: createError } = await this.client
+    const { data: createdAdmin, error: adminError } = await this.client
       .from('users')
-      .insert(newUser)
+      .insert(adminUser)
       .select()
       .single();
 
-    if (createError) {
-      this.logger.error('创建默认管理员失败:', createError);
+    if (adminError) {
+      this.logger.error('创建管理员账号失败:', adminError);
       throw new HttpException('创建管理员账号失败', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // 创建用户档案
+    // 创建管理员档案
     await this.client
       .from('user_profiles')
       .insert({
-        user_id: createdUser.id,
+        user_id: createdAdmin.id,
         real_name: '系统管理员',
         created_at: now,
         updated_at: now,
       });
 
-    this.logger.log(`默认管理员创建成功，ID: ${createdUser.id}`);
+    this.logger.log(`管理员账号创建成功，ID: ${createdAdmin.id}`);
 
-    // 生成 token
+    // 创建测试账号
+    const testEmployeeId = await this.generateUniqueEmployeeId();
+    const testHashedPassword = await bcrypt.hash('test123456', 10);
+    
+    const testUser = {
+      openid: 'pwd_test2026',
+      employee_id: testEmployeeId,
+      nickname: 'test2026',
+      password: testHashedPassword,
+      role: 'user',
+      status: 'active',
+      created_at: now,
+      updated_at: now,
+    };
+
+    const { data: createdTest, error: testError } = await this.client
+      .from('users')
+      .insert(testUser)
+      .select()
+      .single();
+
+    if (testError) {
+      this.logger.error('创建测试账号失败:', testError);
+      // 测试账号创建失败不影响管理员账号的返回
+    } else {
+      // 创建测试账号档案
+      await this.client
+        .from('user_profiles')
+        .insert({
+          user_id: createdTest.id,
+          real_name: '测试用户',
+          created_at: now,
+          updated_at: now,
+        });
+      this.logger.log(`测试账号创建成功，ID: ${createdTest.id}`);
+    }
+
+    // 返回管理员账号信息（因为是用 admin 登录的）
     const tokenPayload: Omit<TokenPayload, 'sub'> = {
-      userId: createdUser.id,
-      openid: createdUser.openid,
-      role: createdUser.role,
-      status: createdUser.status,
+      userId: createdAdmin.id,
+      openid: createdAdmin.openid,
+      role: createdAdmin.role,
+      status: createdAdmin.status,
     };
     const token = JwtUtil.generateToken(tokenPayload);
 
     return {
       user: {
-        id: createdUser.id,
-        openid: createdUser.openid,
-        employeeId: createdUser.employee_id,
-        nickname: createdUser.nickname,
-        avatarUrl: createdUser.avatar_url,
-        role: createdUser.role,
-        status: createdUser.status,
+        id: createdAdmin.id,
+        openid: createdAdmin.openid,
+        employeeId: createdAdmin.employee_id,
+        nickname: createdAdmin.nickname,
+        avatarUrl: createdAdmin.avatar_url,
+        role: createdAdmin.role,
+        status: createdAdmin.status,
       },
       token,
     };
