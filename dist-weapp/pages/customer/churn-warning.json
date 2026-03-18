@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "客户流失预警",
+  "navigationBarBackgroundColor": "#0f172a",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#0f172a",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

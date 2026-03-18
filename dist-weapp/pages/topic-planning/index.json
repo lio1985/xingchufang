@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "选题策划",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

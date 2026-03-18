@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "开发者工具",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

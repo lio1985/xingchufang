@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "脚本创作",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "二创改写",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

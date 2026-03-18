@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "知识分享",
+  "navigationBarBackgroundColor": "#1e293b",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

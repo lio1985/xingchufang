@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "星小帮",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

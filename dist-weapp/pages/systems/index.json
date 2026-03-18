@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "工具箱",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

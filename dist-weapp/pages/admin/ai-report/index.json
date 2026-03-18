@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "运营报告",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+}

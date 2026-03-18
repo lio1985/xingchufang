@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "创建团队",
+  "navigationBarBackgroundColor": "#0f172a",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#020617",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+}

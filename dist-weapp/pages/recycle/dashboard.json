@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "回收统计",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

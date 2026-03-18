@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "互动数据",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+}

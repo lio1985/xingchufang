@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "知识分享详情",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}

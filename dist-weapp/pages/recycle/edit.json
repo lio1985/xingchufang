@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "编辑门店",
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+}
