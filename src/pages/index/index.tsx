@@ -174,8 +174,13 @@ const IndexPage = () => {
         if (response.statusCode === 200 && response.data) {
           setWelcomeMessages(response.data);
         }
-      } catch (error) {
-        console.error('加载欢迎数据失败:', error);
+      } catch (error: any) {
+        // 静默处理404错误，接口不存在时不显示错误
+        if (error.statusCode === 404) {
+          console.log('欢迎接口暂不可用');
+        } else {
+          console.error('加载欢迎数据失败:', error);
+        }
       }
     };
 
