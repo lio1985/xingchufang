@@ -28,17 +28,23 @@ const createUrl = (url: string): string => {
         // Taro.getEnv() 可能出错
     }
 
+    // 从环境变量获取项目域名（通过 defineConstants 注入）
+    const projectDomain = typeof PROJECT_DOMAIN !== 'undefined' 
+        ? PROJECT_DOMAIN 
+        : '';
+
+    // 小程序环境（微信小程序）- 优先判断
+    if (env === Taro.ENV_TYPE.WEAPP) {
+        // 使用 HTTPS 域名
+        return `https://api.xingchufang.cn${url}`;
+    }
+
     // H5/Web 环境判断：
     const isH5 = (
         (env && env !== Taro.ENV_TYPE.WEAPP && isBrowser) ||
         (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') ||
         isBrowser
     );
-
-    // 从环境变量获取项目域名（通过 defineConstants 注入）
-    const projectDomain = typeof PROJECT_DOMAIN !== 'undefined' 
-        ? PROJECT_DOMAIN 
-        : '';
 
     if (isH5) {
         // 检查是否在 Coze 在线预览环境
@@ -51,12 +57,6 @@ const createUrl = (url: string): string => {
 
         // 本地 H5 开发环境：直接访问后端 API 端口 3000
         return `http://localhost:3000${url}`;
-    }
-
-    // 小程序环境（微信小程序）
-    if (env === Taro.ENV_TYPE.WEAPP) {
-        // 使用 HTTPS 域名
-        return `https://api.xingchufang.cn${url}`;
     }
 
     // 其他环境，默认使用环境变量或相对路径
