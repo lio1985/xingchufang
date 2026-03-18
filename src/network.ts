@@ -55,8 +55,8 @@ const createUrl = (url: string): string => {
 
     // 小程序环境（微信小程序）
     if (env === Taro.ENV_TYPE.WEAPP) {
-        // 使用火山引擎服务器
-        return `http://14.103.111.91${url}`;
+        // 使用 HTTPS 域名
+        return `https://api.xingchufang.cn${url}`;
     }
 
     // 其他环境，默认使用环境变量或相对路径
