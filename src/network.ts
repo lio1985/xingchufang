@@ -1,5 +1,8 @@
 import Taro from '@tarojs/taro'
 
+// 全局环境变量声明（由 defineConstants 注入）
+declare const PROJECT_DOMAIN: string;
+
 /**
  * 网络请求模块
  * 封装 Taro.request、Taro.uploadFile、Taro.downloadFile，自动添加项目域名前缀
@@ -26,14 +29,16 @@ const createUrl = (url: string): string => {
     }
 
     // H5/Web 环境判断：
-    // 1. Taro.getEnv() 返回非 WEAPP 的值，且在浏览器环境中
-    // 2. 或者通过 process.env.TARO_ENV 判断
-    // 3. 或者直接检测浏览器环境
     const isH5 = (
         (env && env !== Taro.ENV_TYPE.WEAPP && isBrowser) ||
         (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') ||
         isBrowser
     );
+
+    // 从环境变量获取项目域名（通过 defineConstants 注入）
+    const projectDomain = typeof PROJECT_DOMAIN !== 'undefined' 
+        ? PROJECT_DOMAIN 
+        : '';
 
     if (isH5) {
         // 检查是否在 Coze 在线预览环境
@@ -50,12 +55,26 @@ const createUrl = (url: string): string => {
 
     // 小程序环境（微信小程序）
     if (env === Taro.ENV_TYPE.WEAPP) {
-        // 小程序环境：使用部署的服务器
-        return `https://api.xingchufang.cn${url}`;
+        // 检查 projectDomain 是否为有效的 HTTPS 域名
+        if (projectDomain && projectDomain.startsWith('https://')) {
+            return `${projectDomain}${url}`;
+        }
+        
+        // 如果没有配置 HTTPS 域名，在控制台给出警告
+        if (projectDomain && projectDomain.startsWith('http://')) {
+            console.warn('[Network] 警告：PROJECT_DOMAIN 使用 HTTP 协议，小程序要求 HTTPS。请在微信开发者工具中勾选"不校验合法域名"进行开发测试。');
+            // 仍然返回，但可能无法正常工作
+            return `${projectDomain}${url}`;
+        }
+        
+        // 没有配置域名，使用相对路径
+        // 注意：这需要小程序开发工具配置代理或在开发者工具中设置不校验域名
+        console.warn('[Network] 警告：未配置 PROJECT_DOMAIN，请确保在微信开发者工具中勾选"不校验合法域名"');
+        return url;
     }
 
-    // 其他环境，默认使用生产服务器
-    return `https://api.xingchufang.cn${url}`;
+    // 其他环境，默认使用环境变量或相对路径
+    return projectDomain ? `${projectDomain}${url}` : url;
 }
 
 export const request: typeof Taro.request = option => {
