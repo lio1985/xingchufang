@@ -192,7 +192,7 @@ export default function ViralRemixPage() {
     }
   }
 
-  // 生成二创内容
+  // 创建二创内容
   const handleGenerate = async () => {
     if (!analysis) {
       showToast({ title: '缺少分析数据', icon: 'none' })
@@ -208,7 +208,7 @@ export default function ViralRemixPage() {
     setGeneratedSchemes([])
 
     try {
-      console.log('🚀 开始生成二创内容:', {
+      console.log('🚀 开始创建二创内容:', {
         transcriptLength: analysis.transcript.length,
         ideaLength: remixIdea.length,
         selectedLexiconsCount: selectedLexicons.length,
@@ -241,7 +241,7 @@ export default function ViralRemixPage() {
         showToast({ title: response.data?.msg || '创建失败', icon: 'none' })
       }
     } catch (error) {
-      console.error('生成二创内容失败:', error)
+      console.error('创建二创内容失败:', error)
       showToast({ title: '网络错误，请重试', icon: 'none' })
     } finally {
       setIsGenerating(false)
@@ -584,7 +584,7 @@ export default function ViralRemixPage() {
           </View>
         </View>
 
-        {/* 生成按钮 */}
+        {/* 创建按钮 */}
         <View
           className={`py-4 rounded-xl text-center transition-all ${
             isGenerating || !remixIdea.trim()
@@ -596,21 +596,21 @@ export default function ViralRemixPage() {
           {isGenerating ? (
             <View className="flex items-center justify-center gap-2">
               <RefreshCw size={18} className="animate-spin" />
-              <Text>生成2个方案中...</Text>
+              <Text>创建2个方案中...</Text>
             </View>
           ) : (
             <View className="flex items-center justify-center gap-2">
               <Sparkles size={18} />
-              <Text>生成二创方案</Text>
+              <Text>创建二创方案</Text>
             </View>
           )}
         </View>
 
-        {/* 生成结果 - 2个方案 */}
+        {/* 创建结果 - 2个方案 */}
         {generatedSchemes.length > 0 && (
           <View className="flex flex-col gap-6">
             <Text className="block text-lg font-bold text-white text-center">
-              生成结果
+              创建结果
             </Text>
             
             {generatedSchemes.map((scheme, idx) => (
@@ -677,7 +677,7 @@ export default function ViralRemixPage() {
               </View>
             ))}
 
-            {/* 重新生成 */}
+            {/* 重新创建 */}
             <View
               className={`py-3 rounded-xl text-center transition-all ${
                 isGenerating
@@ -688,7 +688,7 @@ export default function ViralRemixPage() {
             >
               <View className="flex items-center justify-center gap-2">
                 <RefreshCw size={16} color="#94a3b8" />
-                <Text className="text-sm">重新生成</Text>
+                <Text className="text-sm">重新创建</Text>
               </View>
             </View>
           </View>

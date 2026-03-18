@@ -316,7 +316,7 @@ const QuickNotePage = () => {
     setTagInput('');
   };
 
-  // 生成标签（新建笔记）
+  // 创建标签（新建笔记）
   const generateTagsForNewNote = async () => {
     if (!newNoteContent.trim()) {
       Taro.showToast({ title: '请先输入内容', icon: 'none' });
@@ -337,13 +337,13 @@ const QuickNotePage = () => {
       if (res.data.code === 200 && res.data.data.tags) {
         const newTags = res.data.data.tags;
         setNewNoteTags(prev => [...new Set([...prev, ...newTags])]);
-        Taro.showToast({ title: `已生成 ${newTags.length} 个标签`, icon: 'success' });
+        Taro.showToast({ title: `已创建 ${newTags.length} 个标签`, icon: 'success' });
       } else {
-        Taro.showToast({ title: '生成失败', icon: 'error' });
+        Taro.showToast({ title: '创建失败', icon: 'error' });
       }
     } catch (error) {
-      console.error('生成标签失败', error);
-      Taro.showToast({ title: '生成失败', icon: 'error' });
+      console.error('创建标签失败', error);
+      Taro.showToast({ title: '创建失败', icon: 'error' });
     } finally {
       setIsGeneratingNewTags(false);
     }
@@ -354,7 +354,7 @@ const QuickNotePage = () => {
     setNewNoteTags(prev => prev.filter(t => t !== tag));
   };
 
-  // 生成标题
+  // 创建标题
   const generateTitle = async () => {
     if (!newNoteContent.trim()) {
       Taro.showToast({ title: '请先输入内容', icon: 'none' });
@@ -374,13 +374,13 @@ const QuickNotePage = () => {
 
       if (res.data.code === 200 && res.data.data.title) {
         setNewNoteTitle(res.data.data.title);
-        Taro.showToast({ title: '标题生成成功', icon: 'success' });
+        Taro.showToast({ title: '标题创建成功', icon: 'success' });
       } else {
-        Taro.showToast({ title: '生成失败', icon: 'error' });
+        Taro.showToast({ title: '创建失败', icon: 'error' });
       }
     } catch (error) {
-      console.error('生成标题失败', error);
-      Taro.showToast({ title: '生成失败', icon: 'error' });
+      console.error('创建标题失败', error);
+      Taro.showToast({ title: '创建失败', icon: 'error' });
     } finally {
       setIsGeneratingTitle(false);
     }
@@ -732,7 +732,7 @@ const QuickNotePage = () => {
                 ))}
               </View>
             )}
-            {/* 生成标签按钮 */}
+            {/* 创建标签按钮 */}
             <View
               className={`w-full py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all ${
                 isGeneratingNewTags
@@ -743,12 +743,12 @@ const QuickNotePage = () => {
             >
               {isGeneratingNewTags ? (
                 <>
-                  <Text className="block text-sm text-amber-300 font-medium">正在生成标签...</Text>
+                  <Text className="block text-sm text-amber-300 font-medium">正在创建标签...</Text>
                 </>
               ) : (
                 <>
                   <Sparkles size={16} color="#fbbf24" />
-                  <Text className="block text-sm text-amber-300 font-medium">生成标签</Text>
+                  <Text className="block text-sm text-amber-300 font-medium">创建标签</Text>
                 </>
               )}
             </View>

@@ -250,7 +250,7 @@ export default function ViralSystemPage() {
                   <View className="flex items-center gap-2">
                     <Loader size={18} color="#60a5fa" className="animate-spin" />
                     <Text className="text-sm font-medium text-white">
-                      正在使用豆包大模型分析文案结构
+                      正在使用豆包系统分析文案结构
                     </Text>
                   </View>
                   <Text className="text-sm text-blue-400 font-bold">

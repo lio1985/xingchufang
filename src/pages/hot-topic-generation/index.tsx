@@ -139,7 +139,7 @@ export default function HotTopicGenerationPage() {
           </View>
         )}
 
-        {/* 生成按钮 */}
+        {/* 创建按钮 */}
         <View className="px-4 mt-4">
           <Button
             className={`w-full bg-purple-500 text-white border-none ${loading ? 'opacity-50' : ''}`}
@@ -251,7 +251,7 @@ export default function HotTopicGenerationPage() {
                         onClick={() => handleSelectTopic(topic)}
                       >
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
-                          <Text>生成脚本</Text>
+                          <Text>创建脚本</Text>
                           <ArrowRight size={14} />
                         </View>
                       </Button>

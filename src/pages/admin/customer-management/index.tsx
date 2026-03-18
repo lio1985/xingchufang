@@ -227,7 +227,7 @@ export default function AdminCustomerManagement() {
   // 导出数据
   const handleExport = async () => {
     try {
-      Taro.showLoading({ title: '生成报表中...' });
+      Taro.showLoading({ title: '创建报表中...' });
       const res = await Network.request({
         url: '/api/admin/customers/export',
         method: 'POST',
@@ -242,7 +242,7 @@ export default function AdminCustomerManagement() {
       if (res.data.code === 200 && res.data.data?.downloadUrl) {
         Taro.showModal({
           title: '导出成功',
-          content: '报表已生成，是否立即下载？',
+          content: '报表已创建，是否立即下载？',
           success: (m) => {
             if (m.confirm && res.data.data?.downloadUrl) {
               Taro.showToast({ title: '开始下载...', icon: 'none' });

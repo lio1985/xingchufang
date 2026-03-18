@@ -38,7 +38,7 @@ export default function AdminAIReportPage() {
     }
   };
 
-  // 生成新报告
+  // 创建新报告
   const generateReport = async () => {
     setGenerating(true);
     try {
@@ -51,16 +51,16 @@ export default function AdminAIReportPage() {
       if (res.data && res.data.code === 200) {
         setReportData(res.data.data.sections || []);
         Taro.showToast({
-          title: '报告生成成功',
+          title: '报告创建成功',
           icon: 'success',
         });
       } else {
-        throw new Error(res.data?.msg || '生成失败');
+        throw new Error(res.data?.msg || '创建失败');
       }
     } catch (error: any) {
-      console.error('生成报告失败:', error);
+      console.error('创建报告失败:', error);
       Taro.showToast({
-        title: error.message || '生成失败',
+        title: error.message || '创建失败',
         icon: 'none',
       });
     } finally {
@@ -117,7 +117,7 @@ export default function AdminAIReportPage() {
           {/* 操作卡片 */}
           <View className="bg-slate-800 rounded-2xl p-4 mb-6">
             <Text className="block text-white text-base font-semibold mb-4">
-              生成设置
+              创建设置
             </Text>
 
             <View className="mb-4">
@@ -174,7 +174,7 @@ export default function AdminAIReportPage() {
                 className={generating ? 'animate-spin' : ''}
               />
               <Text className="text-white font-semibold text-base">
-                {generating ? '生成中...' : '一键生成报告'}
+                {generating ? '创建中...' : '一键创建报告'}
               </Text>
             </View>
           </View>
@@ -196,7 +196,7 @@ export default function AdminAIReportPage() {
                   </View>
                 </View>
                 <Text className="block text-slate-400 text-sm">
-                  生成时间: {new Date().toLocaleString('zh-CN')}
+                  创建时间: {new Date().toLocaleString('zh-CN')}
                 </Text>
               </View>
 
@@ -271,7 +271,7 @@ export default function AdminAIReportPage() {
                 暂无报告数据
               </Text>
               <Text className="block text-slate-400 text-sm">
-                点击上方&quot;一键生成报告&quot;按钮，系统将为您生成运营分析报告
+                点击上方&quot;一键创建报告&quot;按钮，系统将为您创建运营分析报告
               </Text>
             </View>
           )}

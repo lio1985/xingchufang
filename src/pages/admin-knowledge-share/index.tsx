@@ -292,7 +292,7 @@ export default function AdminKnowledgeSharePage() {
   // 导出统计报告
   const handleExportReport = async () => {
     try {
-      Taro.showLoading({ title: '生成中...', mask: true });
+      Taro.showLoading({ title: '创建中...', mask: true });
 
       const res = await Network.request({
         url: '/api/admin/knowledge-shares/export-report',

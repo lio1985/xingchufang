@@ -99,8 +99,8 @@ const TopicPlanningPage = () => {
 
       Taro.showToast({ title: '已选择选题', icon: 'success' });
     } catch (error) {
-      console.error('生成失败', error);
-      Taro.showToast({ title: '生成失败', icon: 'error' });
+      console.error('创建失败', error);
+      Taro.showToast({ title: '创建失败', icon: 'error' });
     } finally {
       setIsGenerating(false);
     }
@@ -286,13 +286,13 @@ const TopicPlanningPage = () => {
           {isGenerating ? (
             <>
               <RefreshCw size={20} color="white" className="animate-spin" />
-              <Text className="block text-base font-medium text-white">生成中...</Text>
+              <Text className="block text-base font-medium text-white">创建中...</Text>
             </>
           ) : (
             <>
               <Sparkles size={20} color="white" />
               <Text className="block text-base font-medium text-white">
-                {selectedTopics.length === 0 ? '请选择选题' : `生成内容 (${selectedTopics.length})`}
+                {selectedTopics.length === 0 ? '请选择选题' : `创建内容 (${selectedTopics.length})`}
               </Text>
             </>
           )}

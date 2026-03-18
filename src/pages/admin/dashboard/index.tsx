@@ -194,7 +194,7 @@ export default function AdminDashboardPage() {
         onRefresherRefresh={handleRefresh}
       >
         <View className="px-4 py-3 space-y-4">
-          {/* AI报告卡片 */}
+          {/* 系统报告卡片 */}
           <View
             onClick={() => Taro.navigateTo({ url: '/pages/admin/ai-report/index' })}
             className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 relative overflow-hidden"
@@ -209,11 +209,11 @@ export default function AdminDashboardPage() {
                 <Text className="text-white text-base font-semibold">运营报告</Text>
               </View>
               <Text className="text-white text-opacity-80 text-xs mb-3">
-                分析用户行为与系统运营数据，一键生成专业运营报告
+                分析用户行为与系统运营数据，一键创建专业运营报告
               </Text>
               <View className="flex items-center gap-2">
                 <Activity size={16} className="text-white" />
-                <Text className="text-white text-xs">点击生成报告</Text>
+                <Text className="text-white text-xs">点击创建报告</Text>
               </View>
             </View>
           </View>

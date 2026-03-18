@@ -60,7 +60,7 @@ const ContentSystemPage = () => {
           style: '标准版',
           length: 'medium'
         },
-        timeout: 120000 // 120秒超时，内容生成需要较长时间
+        timeout: 120000 // 120秒超时，内容创建需要较长时间
       });
 
       if (res.data.code === 200) {
@@ -70,9 +70,9 @@ const ContentSystemPage = () => {
         Taro.showToast({ title: res.data.msg || '创建失败', icon: 'error' });
       }
     } catch (error: any) {
-      console.error('生成内容失败', error);
+      console.error('创建内容失败', error);
       if (error.errMsg?.includes('abort') || error.message?.includes('abort')) {
-        Taro.showToast({ title: '生成超时，请重试', icon: 'error' });
+        Taro.showToast({ title: '创建超时，请重试', icon: 'error' });
       } else {
         Taro.showToast({ title: '创建失败', icon: 'error' });
       }
@@ -293,13 +293,13 @@ const ContentSystemPage = () => {
                 </View>
               )}
 
-              {/* 生成中 */}
+              {/* 创建中 */}
               {isGenerating && (
                 <View className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl border border-sky-500/30 p-6">
                   <View className="flex flex-col items-center gap-3">
                     <RefreshCw size={32} color="#60a5fa" className="animate-spin" />
                     <Text className="block text-white font-medium">
-                      正在生成 AB 方案...
+                      正在创建 AB 方案...
                     </Text>
                     <Text className="block text-slate-400 text-sm">
                       请稍候，这可能需要几秒钟
@@ -308,7 +308,7 @@ const ContentSystemPage = () => {
                 </View>
               )}
 
-              {/* 生成的内容 */}
+              {/* 创建的内容 */}
               {!isGenerating && generatedContents.length > 0 && (
                 <View className="flex flex-col gap-6">
                   {generatedContents
@@ -428,7 +428,7 @@ const ContentSystemPage = () => {
                 <View className="bg-slate-800 rounded-xl border border-slate-700 p-6 text-center">
                   <PenTool size={48} color="#475569" />
                   <Text className="block text-slate-400 text-base mt-4 mb-2">
-                    暂无生成的内容
+                    暂无创建的内容
                   </Text>
                   <Text className="block text-slate-300 text-sm">
                     请在选题策划页面选择选题并确认
@@ -436,7 +436,7 @@ const ContentSystemPage = () => {
                 </View>
               )}
 
-              {/* 重新生成按钮 */}
+              {/* 重新创建按钮 */}
               {!isGenerating && generatedContents.length > 0 && (
                 <View className="flex gap-3">
                   <View
@@ -444,7 +444,7 @@ const ContentSystemPage = () => {
                     onClick={handleRegenerate}
                   >
                     <RefreshCw size={18} />
-                    <Text className="block">重新生成</Text>
+                    <Text className="block">重新创建</Text>
                   </View>
                 </View>
               )}
@@ -509,7 +509,7 @@ const ContentSystemPage = () => {
                   )}
                 </View>
 
-                {/* 生成按钮 */}
+                {/* 创建按钮 */}
                 <View
                   className={`mt-4 py-3 rounded-xl text-center font-medium flex items-center justify-center gap-2 transition-all ${
                     isFreestyleGenerating
@@ -521,7 +521,7 @@ const ContentSystemPage = () => {
                   {isFreestyleGenerating ? (
                     <>
                       <RefreshCw size={18} className="animate-spin" />
-                      <Text className="block">生成中...</Text>
+                      <Text className="block">创建中...</Text>
                     </>
                   ) : (
                     <>
@@ -532,10 +532,10 @@ const ContentSystemPage = () => {
                 </View>
               </View>
 
-              {/* 生成结果 */}
+              {/* 创建结果 */}
               {freestyleResult && (
                 <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
-                  <Text className="block text-base font-semibold text-white mb-4">生成结果</Text>
+                  <Text className="block text-base font-semibold text-white mb-4">创建结果</Text>
 
                   {/* 内容展示 */}
                   <View className="bg-slate-900/50 rounded-lg p-4 mb-4">
@@ -566,7 +566,7 @@ const ContentSystemPage = () => {
         </View>
       </ScrollView>
 
-      {/* AI改写对话框 */}
+      {/* 系统改写对话框 */}
       {showRewriteModal && (
         <View className="fixed inset-0 bg-black/80 z-50 flex flex-col justify-end">
           <View className="bg-slate-800 rounded-t-3xl p-6 border-t border-slate-700" style={{ maxHeight: '80vh' }}>

@@ -177,7 +177,7 @@ export default function HotspotDetailPage() {
     setPublishTime(decodedPublishTime);
     setCategory(decodedCategory);
 
-    // 生成详细内容
+    // 创建详细内容
     generateContent(decodedKeyword, decodedPlatform, decodedCategory);
 
     // 加载创作角度
@@ -278,7 +278,7 @@ export default function HotspotDetailPage() {
         }
       });
 
-      // 如果没有争议点，根据分类生成通用争议点
+      // 如果没有争议点，根据分类创建通用争议点
       if (controversies.length === 0 && (negativeCount > 0 || positiveCount > 0)) {
         if (categoryName === '科技' || categoryName === '财经') {
           controversies.push('影响范围和实际效果存在分歧');
@@ -303,7 +303,7 @@ export default function HotspotDetailPage() {
     }
   };
 
-  // 生成详细内容（调用后端 API）
+  // 创建详细内容（调用后端 API）
   const generateContent = async (topicKeyword: string, platformName: string, categoryName: string) => {
     setLoadingContent(true);
 
@@ -333,7 +333,7 @@ export default function HotspotDetailPage() {
     } catch (error) {
       console.error('获取热点详情内容失败:', error);
 
-      // Fallback: 使用前端模板生成
+      // Fallback: 使用前端模板创建
       console.log('使用前端 fallback 模板');
       const templates = [
         `${topicKeyword}

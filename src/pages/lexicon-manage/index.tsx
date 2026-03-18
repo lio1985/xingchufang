@@ -114,7 +114,7 @@ export default function LexiconManagePage() {
     viewer_count: ''
   })
 
-  // AI 分析相关
+  // 系统 分析相关
   const [showProfileModal, setShowProfileModal] = useState(false)
   const [aiProfile, setAiProfile] = useState<AIProfile | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -600,7 +600,7 @@ export default function LexiconManagePage() {
     })
   }
 
-  // AI分析直播话术
+  // 系统分析直播话术
   const handleAnalyzeLiveScript = async (script: LiveScript) => {
     try {
       setAnalyzingScriptId(script.id)
@@ -871,7 +871,7 @@ export default function LexiconManagePage() {
     showToast({ title: '已应用校正', icon: 'success' })
   }
 
-  // 生成 IP 画像
+  // 创建 IP 画像
   const handleGenerateProfile = async () => {
     try {
       setIsAnalyzing(true)
@@ -887,7 +887,7 @@ export default function LexiconManagePage() {
       }
       setIsAnalyzing(false)
     } catch (error) {
-      console.error('生成 IP 画像失败:', error)
+      console.error('创建 IP 画像失败:', error)
       setIsAnalyzing(false)
       showToast({ title: '创建失败', icon: 'none' })
     }
@@ -1094,7 +1094,7 @@ export default function LexiconManagePage() {
           </Button>
         </View>
 
-        {/* 生成画像按钮 */}
+        {/* 创建画像按钮 */}
         {currentType !== 'product' && (
           <Button
             className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 rounded-xl flex items-center justify-center gap-2"
@@ -1104,7 +1104,7 @@ export default function LexiconManagePage() {
             {isAnalyzing ? '分析中...' : (
               <>
                 <Brain size={18} />
-                <Text className="block">{currentType === 'enterprise' ? '生成企业画像' : '生成 IP 画像'}</Text>
+                <Text className="block">{currentType === 'enterprise' ? '创建企业画像' : '创建 IP 画像'}</Text>
               </>
             )}
           </Button>

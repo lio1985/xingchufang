@@ -183,7 +183,7 @@ export default function HotScriptGenerationPage() {
           </View>
         )}
 
-        {/* 生成按钮 */}
+        {/* 创建按钮 */}
         <View className="px-4 mt-4">
           <Button
             className={`w-full bg-pink-500 text-white border-none ${loading ? 'opacity-50' : ''}`}

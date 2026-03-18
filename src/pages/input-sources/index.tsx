@@ -276,7 +276,7 @@ const InputSourcesPage = () => {
       });
 
       if (res.data.code === 200) {
-        // 将生成的选题保存到 Taro 存储
+        // 将创建的选题保存到 Taro 存储
         Taro.setStorageSync('generatedTopics', res.data.data);
         Taro.showToast({ title: '创建成功', icon: 'success' });
         setTimeout(() => {
@@ -288,7 +288,7 @@ const InputSourcesPage = () => {
         Taro.showToast({ title: '创建失败', icon: 'error' });
       }
     } catch (error) {
-      console.error('生成选题库失败', error);
+      console.error('创建选题库失败', error);
       Taro.showToast({ title: '创建失败', icon: 'error' });
     }
   };
@@ -318,7 +318,7 @@ const InputSourcesPage = () => {
       {/* 头部说明 */}
       <View className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-b border-blue-500/20 p-4">
         <Text className="block text-lg font-semibold text-white mb-1">选择创作素材来源</Text>
-        <Text className="block text-sm text-slate-400">点击卡片选择素材，生成专属选题库</Text>
+        <Text className="block text-sm text-slate-400">点击卡片选择素材，创建专属选题库</Text>
       </View>
 
       {/* 1. 星标笔记入口 */}

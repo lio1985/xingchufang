@@ -50,7 +50,7 @@ const LiveAnalysisPage = () => {
     showLoading({ title: '分析中...' });
 
     try {
-      // 调用后端生成分析接口
+      // 调用后端创建分析接口
       const response = await Network.request({
         url: '/api/live-data/generate-analysis',
         method: 'POST',
@@ -89,7 +89,7 @@ const LiveAnalysisPage = () => {
         {liveList.length === 0 && !loading ? (
           <View className="empty-state">
             <Text className="empty-text">暂无直播记录</Text>
-            <Text className="empty-tips">导入数据后可生成复盘分析</Text>
+            <Text className="empty-tips">导入数据后可创建复盘分析</Text>
           </View>
         ) : (
           <>
@@ -127,7 +127,7 @@ const LiveAnalysisPage = () => {
                       onClick={() => generateAnalysis(item.id)}
                     >
                       <Sparkles size={16} />
-                      <Text>{generating === item.id ? '分析中...' : '生成复盘'}</Text>
+                      <Text>{generating === item.id ? '分析中...' : '创建复盘'}</Text>
                     </View>
                   )}
                 </View>
@@ -158,7 +158,7 @@ const LiveAnalysisPage = () => {
           <View className="feature-item">
             <Lightbulb size={20} color="#1890ff" />
             <View>
-              <Text className="name">优化建议生成</Text>
+              <Text className="name">优化建议创建</Text>
               <Text className="desc">提供针对性的改进方案</Text>
             </View>
           </View>
