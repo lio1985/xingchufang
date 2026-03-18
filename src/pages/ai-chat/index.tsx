@@ -50,7 +50,7 @@ const AiChatPage = () => {
   const [recordingDuration, setRecordingDuration] = useState(0); // 录音时长（秒）
   const [attachments, setAttachments] = useState<MessageAttachment[]>([]); // 待发送的附件
   const [showActionSheet, setShowActionSheet] = useState(false); // 显示操作菜单
-  const scrollViewRef = useRef<any>(null);
+  const [scrollTop, setScrollTop] = useState(0); // 滚动位置
   const recorderManagerRef = useRef<Taro.RecorderManager | null>(null);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -261,12 +261,8 @@ const AiChatPage = () => {
 
   // 滚动到底部
   useEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({
-        scrollTop: 99999,
-        duration: 300
-      });
-    }
+    // 使用 scrollTop 状态控制滚动位置，微信小程序 ScrollView 不支持 ref.scrollTo
+    setScrollTop(prev => prev + 100000);
   }, [messages]);
 
   // 开始录音
@@ -887,7 +883,8 @@ const AiChatPage = () => {
       <ScrollView
         scrollY
         className="flex-1 px-4 py-4"
-        ref={scrollViewRef}
+        scrollTop={scrollTop}
+        scrollWithAnimation
       >
         {messages.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20">
