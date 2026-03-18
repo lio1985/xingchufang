@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 /*
- * 星厨房主题 CSS 变量 - 深色科技风
+ * 星厨房主题 CSS 变量
  */
 :root, page {
-  /* 背景色 */
+  /* 背景色 - 深蓝渐变 */
   --background: #0f172a;
+  --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
   --background-secondary: #1e293b;
   --card-background: rgba(30, 41, 59, 0.8);
   
@@ -39,10 +40,11 @@ html {
   font-size: 4vw !important;
 }
 
-/* 全局背景色 */
+/* 全局背景色 - 深蓝渐变 */
 html, body, page {
-  background-color: var(--background) !important;
+  background: var(--background-gradient) !important;
   color: var(--text-primary);
+  background-attachment: fixed;
 }
 
 /* 小程序页面容器高度设置，确保垂直居中生效 */
