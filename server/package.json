@@ -10,6 +10,9 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@nestjs/core", "bcrypt", "sharp"]
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.958.0",
     "@aws-sdk/lib-storage": "^3.958.0",
