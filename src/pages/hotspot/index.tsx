@@ -119,7 +119,7 @@ const HotspotPage = () => {
         mergedKeywords.sort((a, b) => {
           const parseHotValue = (hot: string): number => {
             const num = parseInt(hot, 10);
-            return isNaN(num) ? 0 : num;
+            return Number.isNaN(num) ? 0 : num;
           };
           const hotA = parseHotValue(a.hot);
           const hotB = parseHotValue(b.hot);
@@ -262,7 +262,7 @@ const HotspotPage = () => {
         mergedKeywords.sort((a, b) => {
           const parseHotValue = (hot: string): number => {
             const num = parseInt(hot, 10);
-            return isNaN(num) ? 0 : num;
+            return Number.isNaN(num) ? 0 : num;
           };
           const hotA = parseHotValue(a.hot);
           const hotB = parseHotValue(b.hot);
