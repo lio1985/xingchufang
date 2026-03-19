@@ -2,7 +2,7 @@
   "miniprogramRoot": "./dist-weapp",
   "projectname": "星厨房创作助手",
   "description": "基于Taro的高效内容创作工具",
-  "appid": "wx073136fc152cedd9",
+  "appid": "wxd05d1af0d41fb46b",
   "setting": {
     "urlCheck": true,
     "es6": true,
