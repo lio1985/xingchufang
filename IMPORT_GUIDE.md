@@ -42,7 +42,7 @@ API域名: https://api.xingchufang.cn
 1. 打开微信开发者工具
 2. 点击 **「导入项目」**
 3. 选择 **`dist-weapp`** 文件夹（不是压缩包）
-4. AppID: `wxd05d1af0d41fb46b`
+4. AppID: `wx073136fc152cedd9`
 5. 点击 **「确定」**
 
 ### 步骤 3：验证版本
