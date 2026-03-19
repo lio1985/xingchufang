@@ -235,8 +235,13 @@ const IndexPage = () => {
               setIsAdmin(latestUser.role === 'admin');
               setUserStatus(latestUser.status || 'active');
             }
-          } catch (error) {
-            console.error('获取最新用户信息失败:', error);
+          } catch (error: any) {
+            // 静默处理 404 错误，后端接口未部署时不影响核心功能
+            if (error.statusCode === 404) {
+              console.log('用户资料接口暂未部署');
+            } else {
+              console.error('获取最新用户信息失败:', error);
+            }
           }
         } else {
           setIsLoggedIn(false);
