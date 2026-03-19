@@ -123,7 +123,7 @@ const AiChatPage = () => {
   };
 
   // 创建新对话
-  const createConversation = async (title: string) => {
+  const createConversation = async (title: string): Promise<string | null> => {
     try {
       const userId = getUserId();
       const response = await Network.request({
@@ -139,10 +139,12 @@ const AiChatPage = () => {
       if (response.statusCode === 200 && response.data) {
         setCurrentConversationId(response.data.id);
         await loadConversations();
+        return response.data.id;
       }
     } catch (error) {
       console.error('创建对话失败:', error);
     }
+    return null;
   };
 
   // 加载对话详情
@@ -167,15 +169,16 @@ const AiChatPage = () => {
   };
 
   // 保存消息到数据库
-  const saveMessage = async (role: string, content: string) => {
-    if (!currentConversationId) return;
+  const saveMessage = async (role: string, content: string, convId?: string) => {
+    const targetConversationId = convId || currentConversationId;
+    if (!targetConversationId) return;
 
     try {
       await Network.request({
         url: '/api/conversation/message',
         method: 'POST',
         data: {
-          conversationId: currentConversationId,
+          conversationId: targetConversationId,
           role,
           content,
         },
@@ -491,9 +494,15 @@ const AiChatPage = () => {
     }
 
     // 如果没有当前对话，创建一个新对话
-    if (!currentConversationId) {
+    let conversationId = currentConversationId;
+    if (!conversationId) {
       const title = inputText.trim().substring(0, 30) + (inputText.trim().length > 30 ? '...' : '') || '新对话';
-      await createConversation(title);
+      const newConversationId = await createConversation(title);
+      if (!newConversationId) {
+        Taro.showToast({ title: '创建对话失败', icon: 'none' });
+        return;
+      }
+      conversationId = newConversationId;
     }
 
     const userMessage: Message = {
@@ -511,7 +520,7 @@ const AiChatPage = () => {
 
     try {
       // 保存用户消息
-      await saveMessage('user', userMessage.content);
+      await saveMessage('user', userMessage.content, conversationId);
 
       // 构建消息内容（包含附件信息）
       let messageContent = userMessage.content;
@@ -528,7 +537,7 @@ const AiChatPage = () => {
       console.log('Body:', {
         message: messageContent,
         userId: getUserId(),
-        conversationId: currentConversationId,
+        conversationId,
         model
       });
 
@@ -538,7 +547,7 @@ const AiChatPage = () => {
         data: {
           message: messageContent,
           userId: getUserId(),
-          conversationId: currentConversationId,
+          conversationId,
           model
         },
         timeout: 60000 // 60秒超时，防止长时间无响应
@@ -557,7 +566,7 @@ const AiChatPage = () => {
         setMessages(prev => [...prev, aiMessage]);
 
         // 保存AI消息
-        await saveMessage('assistant', aiMessage.content);
+        await saveMessage('assistant', aiMessage.content, conversationId);
 
         // 如果有推荐模型，自动切换
         if (responseData.recommendedModel && responseData.recommendedModel !== model) {
