@@ -228,23 +228,7 @@ const AiChatPage = () => {
 
   // 初始化 - 只在组件挂载时运行
   useEffect(() => {
-    // 检查登录状态
-    const token = Taro.getStorageSync('token');
-    if (!token) {
-      Taro.showModal({
-        title: '请先登录',
-        content: '使用助手功能需要登录账号，是否立即登录？',
-        success: (res) => {
-          if (res.confirm) {
-            Taro.navigateTo({ url: '/pages/login/index' });
-          } else {
-            Taro.switchTab({ url: '/pages/index/index' });
-          }
-        }
-      });
-      return;
-    }
-
+    // 游客模式也允许使用基础功能
     loadConversations();
     loadLexicons();
 

@@ -30,14 +30,7 @@ export default function ViralSystemPage() {
   const [progress, setProgress] = useState(0)
 
   useLoad((options) => {
-    // 检查登录状态
-    const token = Taro.getStorageSync('token')
-    if (!token) {
-      showToast({ title: '请先登录', icon: 'none' })
-      Taro.navigateBack()
-      return
-    }
-
+    // 游客模式也允许浏览
     // 检查是否有传入的内容（从语料优化系统跳转过来）
     if (options.content) {
       console.log('接收到内容:', options.content)

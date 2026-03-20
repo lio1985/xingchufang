@@ -13,23 +13,7 @@ const SystemsPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 检查登录状态
-    const token = Taro.getStorageSync('token');
-    if (!token) {
-      Taro.showModal({
-        title: '请先登录',
-        content: '使用创作系统功能需要登录账号，是否立即登录？',
-        success: (res) => {
-          if (res.confirm) {
-            Taro.navigateTo({ url: '/pages/login/index' });
-          } else {
-            Taro.navigateBack();
-          }
-        }
-      });
-      return;
-    }
-
+    // 游客模式也允许浏览
     const type = router.params.type || 'topic';
     setActiveType(type);
 

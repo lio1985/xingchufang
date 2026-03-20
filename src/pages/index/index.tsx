@@ -76,20 +76,32 @@ const IndexPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const handleNavigateTo = (url: string, requireLogin: boolean = true) => {
+  const handleNavigateTo = (url: string, requireLogin: boolean = false) => {
     console.log('跳转到:', url);
 
-    // 热力图和新闻页面不需要登录
-    if (url === '/pages/hotspot/index' || url === '/pages/news/index') {
+    // 以下页面游客也可浏览
+    const publicPages = [
+      '/pages/hotspot/index',      // 全网热点
+      '/pages/news/index',         // 资讯搜索
+      '/pages/index/index',        // 首页
+    ];
+
+    // 检查是否是公开页面
+    const isPublicPage = publicPages.some(page => url.startsWith(page));
+    
+    // 公开页面不需要登录
+    if (isPublicPage) {
       Taro.navigateTo({ url });
       return;
     }
 
-    // 如果需要登录但未登录，提示登录
+    // 如果需要登录但未登录，提示登录（但不强制）
     if (requireLogin && !isLoggedIn) {
       Taro.showModal({
-        title: '请先登录',
-        content: '使用该功能需要登录账号，是否立即登录？',
+        title: '提示',
+        content: '登录后可保存您的数据，是否立即登录？',
+        cancelText: '暂不登录',
+        confirmText: '去登录',
         success: (res) => {
           if (res.confirm) {
             Taro.navigateTo({ url: '/pages/login/index' });
@@ -415,7 +427,7 @@ const IndexPage = () => {
       <View className="px-4 mt-6 mb-6">
         <View
           className="bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500 rounded-3xl p-5 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-orange-500/20"
-          onClick={() => handleNavigateTo('/pages/quick-note/index', true)}
+          onClick={() => handleNavigateTo('/pages/quick-note/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -434,8 +446,8 @@ const IndexPage = () => {
         {/* 客资管理 */}
         <View
           className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-cyan-500/20"
-          onClick={() => handleNavigateTo('/pages/customer/index', true)}
-          onTap={() => handleNavigateTo('/pages/customer/index', true)}
+          onClick={() => handleNavigateTo('/pages/customer/index', false)}
+          onTap={() => handleNavigateTo('/pages/customer/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -451,8 +463,8 @@ const IndexPage = () => {
         {/* 厨具回收 */}
         <View
           className="bg-gradient-to-br from-green-500 via-emerald-600 to-teal-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-green-500/20"
-          onClick={() => handleNavigateTo('/pages/recycle/index', true)}
-          onTap={() => handleNavigateTo('/pages/recycle/index', true)}
+          onClick={() => handleNavigateTo('/pages/recycle/index', false)}
+          onTap={() => handleNavigateTo('/pages/recycle/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -468,8 +480,8 @@ const IndexPage = () => {
         {/* 知识分享 */}
         <View
           className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/knowledge-share/index', true)}
-          onTap={() => handleNavigateTo('/pages/knowledge-share/index', true)}
+          onClick={() => handleNavigateTo('/pages/knowledge-share/index', false)}
+          onTap={() => handleNavigateTo('/pages/knowledge-share/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -503,8 +515,8 @@ const IndexPage = () => {
         {/* 内容创作 */}
         <View
           className="bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-purple-500/20"
-          onClick={() => handleNavigateTo('/pages/content-system/index', true)}
-          onTap={() => handleNavigateTo('/pages/content-system/index', true)}
+          onClick={() => handleNavigateTo('/pages/content-system/index', false)}
+          onTap={() => handleNavigateTo('/pages/content-system/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -520,8 +532,8 @@ const IndexPage = () => {
         {/* 语料优化系统 */}
         <View
           className="bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-emerald-500/20"
-          onClick={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
-          onTap={() => handleNavigateTo('/pages/lexicon-manage/index', true)}
+          onClick={() => handleNavigateTo('/pages/lexicon-manage/index', false)}
+          onTap={() => handleNavigateTo('/pages/lexicon-manage/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -537,8 +549,8 @@ const IndexPage = () => {
         {/* 爆款复刻系统 */}
         <View
           className="bg-gradient-to-br from-pink-500 via-rose-600 to-red-500 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-pink-500/20"
-          onClick={() => handleNavigateTo('/pages/viral-system/index', true)}
-          onTap={() => handleNavigateTo('/pages/viral-system/index', true)}
+          onClick={() => handleNavigateTo('/pages/viral-system/index', false)}
+          onTap={() => handleNavigateTo('/pages/viral-system/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
@@ -554,8 +566,8 @@ const IndexPage = () => {
         {/* 直播数据统计 */}
         <View
           className="bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 rounded-3xl p-5 mb-4 active:scale-[0.98] transition-transform cursor-pointer shadow-xl shadow-rose-500/20"
-          onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
-          onTap={() => handleNavigateTo('/pages/live-data/dashboard/index', true)}
+          onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', false)}
+          onTap={() => handleNavigateTo('/pages/live-data/dashboard/index', false)}
         >
           <View className="flex items-center gap-4">
             <View className="w-16 h-16 bg-slate-800/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">

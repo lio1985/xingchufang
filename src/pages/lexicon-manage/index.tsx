@@ -213,14 +213,9 @@ export default function LexiconManagePage() {
     }
   }, [])
 
-  // 初始化：检查登录状态
+  // 初始化：游客模式也允许浏览
   useEffect(() => {
-    const token = Taro.getStorageSync('token')
-    if (!token) {
-      showToast({ title: '请先登录', icon: 'none' })
-      Taro.navigateBack()
-      return
-    }
+    // 游客模式不需要强制登录
   }, [])
 
   useEffect(() => {
