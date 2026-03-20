@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
 import { CustomerManagementService } from './customer-management.service';
 import { ActiveUserGuard } from '../guards/active-user.guard';
+import { OptionalAuthGuard } from '../guards/optional-auth.guard';
 import { AdminGuard } from '../guards/admin.guard';
 import { CreateCustomerDto, UpdateCustomerDto, CreateFollowUpDto, CustomerQueryDto } from './customer-management.dto';
 
 @Controller('customers')
-@UseGuards(ActiveUserGuard)
+@UseGuards(OptionalAuthGuard)
 export class CustomerManagementController {
   constructor(private readonly customerService: CustomerManagementService) {}
 
@@ -17,6 +18,22 @@ export class CustomerManagementController {
     @Query() query: CustomerQueryDto
   ) {
     console.log('[CustomerController] Get customers, query:', JSON.stringify(query));
+    
+    // 游客模式返回空数据
+    if (!req.user) {
+      return { 
+        code: 200, 
+        msg: 'success', 
+        data: {
+          data: [],
+          total: 0,
+          page: query.page || 1,
+          pageSize: query.pageSize || 10,
+          totalPages: 0
+        }
+      };
+    }
+    
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
     const result = await this.customerService.getCustomers(userId, isAdmin, query);
@@ -27,6 +44,12 @@ export class CustomerManagementController {
   @Get(':id')
   async getCustomerDetail(@Param('id') id: string, @Request() req) {
     console.log('[CustomerController] Get customer detail:', id);
+    
+    // 游客模式返回空数据
+    if (!req.user) {
+      return { code: 200, msg: 'success', data: null };
+    }
+    
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
     const customer = await this.customerService.getCustomerDetail(id, userId, isAdmin);
@@ -35,6 +58,7 @@ export class CustomerManagementController {
   }
 
   @Post()
+  @UseGuards(ActiveUserGuard)
   async createCustomer(
     @Body() dto: CreateCustomerDto,
     @Request() req
@@ -47,6 +71,7 @@ export class CustomerManagementController {
   }
 
   @Put(':id')
+  @UseGuards(ActiveUserGuard)
   async updateCustomer(
     @Param('id') id: string,
     @Body() dto: UpdateCustomerDto,
@@ -61,6 +86,7 @@ export class CustomerManagementController {
   }
 
   @Delete(':id')
+  @UseGuards(ActiveUserGuard)
   async deleteCustomer(@Param('id') id: string, @Request() req) {
     console.log('[CustomerController] Delete customer:', id);
     const userId = req.user?.id;
@@ -73,6 +99,7 @@ export class CustomerManagementController {
   // ========== 跟进记录接口 ==========
 
   @Post(':id/follow-ups')
+  @UseGuards(ActiveUserGuard)
   async createFollowUp(
     @Param('id') customerId: string,
     @Body() dto: CreateFollowUpDto,
@@ -89,6 +116,12 @@ export class CustomerManagementController {
   @Get(':id/follow-ups')
   async getFollowUps(@Param('id') customerId: string, @Request() req) {
     console.log('[CustomerController] Get follow-ups for customer:', customerId);
+    
+    // 游客模式返回空数据
+    if (!req.user) {
+      return { code: 200, msg: 'success', data: [] };
+    }
+    
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
     const followUps = await this.customerService.getFollowUps(customerId, userId, isAdmin);
@@ -101,6 +134,22 @@ export class CustomerManagementController {
   @Get('statistics/overview')
   async getStatistics(@Request() req) {
     console.log('[CustomerController] Get statistics');
+    
+    // 游客模式返回示例数据
+    if (!req.user) {
+      return { 
+        code: 200, 
+        msg: 'success', 
+        data: {
+          total: 0,
+          active: 0,
+          inactive: 0,
+          todayFollowUp: 0,
+          pendingFollowUp: 0
+        }
+      };
+    }
+    
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
     const stats = await this.customerService.getStatistics(userId, isAdmin);
@@ -111,6 +160,12 @@ export class CustomerManagementController {
   @Get('statistics/weekly')
   async getWeeklyStatistics(@Request() req) {
     console.log('[CustomerController] Get weekly statistics');
+    
+    // 游客模式返回空数据
+    if (!req.user) {
+      return { code: 200, msg: 'success', data: [] };
+    }
+    
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
     const stats = await this.customerService.getWeeklyStatistics(userId, isAdmin);
@@ -121,6 +176,12 @@ export class CustomerManagementController {
   @Get('statistics/monthly')
   async getMonthlyStatistics(@Request() req) {
     console.log('[CustomerController] Get monthly statistics');
+    
+    // 游客模式返回空数据
+    if (!req.user) {
+      return { code: 200, msg: 'success', data: [] };
+    }
+    
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
     const stats = await this.customerService.getMonthlyStatistics(userId, isAdmin);

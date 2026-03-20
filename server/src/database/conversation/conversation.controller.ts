@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Delete, Body, Param, UseGuards, Req, Query, BadRequestException } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { ActiveUserGuard } from '../../guards/active-user.guard';
+import { OptionalAuthGuard } from '../../guards/optional-auth.guard';
 import { parseOptionalUUID } from '../../utils/uuid.util';
 
 @Controller('conversation')
-@UseGuards(ActiveUserGuard)
+@UseGuards(OptionalAuthGuard)
 export class ConversationController {
   constructor(private readonly conversationService: ConversationService) {}
 
@@ -14,9 +15,11 @@ export class ConversationController {
     @Query('userId') targetUserId?: string,
   ) {
     try {
+      // 游客模式返回空数据
       if (!req.user?.id) {
-        return { code: 400, msg: '用户ID不能为空', data: null };
+        return { code: 200, msg: 'success', data: [] };
       }
+      
       // 验证 targetUserId 参数
       const validatedTargetUserId = parseOptionalUUID(targetUserId);
       const data = await this.conversationService.getList(req.user.id, validatedTargetUserId);
@@ -35,9 +38,11 @@ export class ConversationController {
     @Req() req: any,
   ) {
     try {
+      // 游客模式返回空数据
       if (!req.user?.id) {
-        return { code: 400, msg: '用户ID不能为空', data: null };
+        return { code: 200, msg: 'success', data: null };
       }
+      
       const data = await this.conversationService.getDetail(conversationId, req.user.id);
       return { code: 200, msg: 'success', data };
     } catch (error: any) {
@@ -46,6 +51,7 @@ export class ConversationController {
   }
 
   @Post()
+  @UseGuards(ActiveUserGuard)
   async create(
     @Req() req: any,
     @Body() body: { title: string; model: string },
@@ -66,6 +72,7 @@ export class ConversationController {
   }
 
   @Post('message')
+  @UseGuards(ActiveUserGuard)
   async addMessage(@Body() body: { conversationId: string; role: string; content: string; metadata?: any }) {
     try {
       const data = await this.conversationService.addMessage(body);
@@ -76,6 +83,7 @@ export class ConversationController {
   }
 
   @Delete(':conversationId')
+  @UseGuards(ActiveUserGuard)
   async delete(
     @Param('conversationId') conversationId: string,
     @Req() req: any,

@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
 import { QuickNotesService } from './quick-notes.service';
 import { ActiveUserGuard } from '../guards/active-user.guard';
+import { OptionalAuthGuard } from '../guards/optional-auth.guard';
 import { AdminGuard } from '../guards/admin.guard';
 import {
   QuickNote,
@@ -14,10 +15,10 @@ export class QuickNotesController {
   constructor(private readonly quickNotesService: QuickNotesService) {}
 
   /**
-   * 获取当前用户的笔记
+   * 获取当前用户的笔记 - 支持游客模式（返回空数据）
    */
   @Get()
-  @UseGuards(ActiveUserGuard)
+  @UseGuards(OptionalAuthGuard)
   async getAll(
     @Request() req,
     @Query('page') page?: number,
@@ -27,6 +28,23 @@ export class QuickNotesController {
     @Query('showStarredOnly') showStarredOnly?: string,
   ) {
     try {
+      // 游客模式返回空数据
+      if (!req.user) {
+        return { 
+          code: 200, 
+          msg: 'success', 
+          data: {
+            list: [],
+            pagination: {
+              page: page || 1,
+              pageSize: pageSize || 20,
+              total: 0,
+              totalPages: 0,
+            }
+          } 
+        };
+      }
+      
       const userId = req.user.sub;
       const data = await this.quickNotesService.getByUserId(
         userId,
@@ -91,12 +109,21 @@ export class QuickNotesController {
   }
 
   /**
-   * 获取笔记详情
+   * 获取笔记详情 - 支持游客模式
    */
   @Get(':id')
-  @UseGuards(ActiveUserGuard)
+  @UseGuards(OptionalAuthGuard)
   async getById(@Request() req, @Param('id') id: string) {
     try {
+      // 游客模式返回空数据
+      if (!req.user) {
+        return { 
+          code: 200, 
+          msg: 'success', 
+          data: null 
+        };
+      }
+      
       const userId = req.user.sub;
       const data = await this.quickNotesService.getById(userId, id);
       return { code: 200, msg: 'success', data };

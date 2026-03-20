@@ -2,19 +2,35 @@ import { Controller, Get, Post, Put, Delete, Query, Body, Param, Request, UseGua
 import { RecycleManagementService } from './recycle-management.service';
 import { CreateRecycleStoreDto, UpdateRecycleStoreDto, CreateFollowUpDto, RecycleStoreQueryDto } from './recycle-management.dto';
 import { ActiveUserGuard } from '../guards/active-user.guard';
+import { OptionalAuthGuard } from '../guards/optional-auth.guard';
 
 @Controller('recycle')
-@UseGuards(ActiveUserGuard)
+@UseGuards(OptionalAuthGuard)
 export class RecycleManagementController {
   constructor(private readonly recycleService: RecycleManagementService) {}
 
   // ========== 回收门店管理 ==========
 
   /**
-   * 获取回收门店列表
+   * 获取回收门店列表 - 游客返回空数据
    */
   @Get('stores')
   async getStores(@Request() req, @Query() query: RecycleStoreQueryDto) {
+    // 游客模式返回空数据
+    if (!req.user) {
+      return {
+        code: 200,
+        msg: '获取成功',
+        data: {
+          data: [],
+          total: 0,
+          page: query.page || 1,
+          pageSize: query.pageSize || 10,
+          totalPages: 0
+        }
+      };
+    }
+
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
 
@@ -30,10 +46,19 @@ export class RecycleManagementController {
   }
 
   /**
-   * 获取回收门店详情
+   * 获取回收门店详情 - 游客返回空数据
    */
   @Get('stores/:id')
   async getStoreDetail(@Request() req, @Param('id') id: string) {
+    // 游客模式返回空数据
+    if (!req.user) {
+      return {
+        code: 200,
+        msg: '获取成功',
+        data: null
+      };
+    }
+
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
 
@@ -47,9 +72,10 @@ export class RecycleManagementController {
   }
 
   /**
-   * 创建回收门店
+   * 创建回收门店 - 需要登录
    */
   @Post('stores')
+  @UseGuards(ActiveUserGuard)
   async createStore(@Request() req, @Body() dto: CreateRecycleStoreDto) {
     const userId = req.user?.id;
 
@@ -65,9 +91,10 @@ export class RecycleManagementController {
   }
 
   /**
-   * 更新回收门店
+   * 更新回收门店 - 需要登录
    */
   @Put('stores/:id')
+  @UseGuards(ActiveUserGuard)
   async updateStore(
     @Request() req,
     @Param('id') id: string,
@@ -88,9 +115,10 @@ export class RecycleManagementController {
   }
 
   /**
-   * 删除回收门店
+   * 删除回收门店 - 需要登录
    */
   @Delete('stores/:id')
+  @UseGuards(ActiveUserGuard)
   async deleteStore(@Request() req, @Param('id') id: string) {
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
@@ -107,10 +135,19 @@ export class RecycleManagementController {
   // ========== 跟进记录 ==========
 
   /**
-   * 获取门店跟进记录
+   * 获取门店跟进记录 - 游客返回空数据
    */
   @Get('stores/:id/follow-ups')
   async getStoreFollowUps(@Request() req, @Param('id') id: string) {
+    // 游客模式返回空数据
+    if (!req.user) {
+      return {
+        code: 200,
+        msg: '获取成功',
+        data: []
+      };
+    }
+
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
 
@@ -124,9 +161,10 @@ export class RecycleManagementController {
   }
 
   /**
-   * 创建跟进记录
+   * 创建跟进记录 - 需要登录
    */
   @Post('stores/:id/follow-ups')
+  @UseGuards(ActiveUserGuard)
   async createStoreFollowUp(
     @Request() req,
     @Param('id') id: string,
@@ -149,10 +187,31 @@ export class RecycleManagementController {
   // ========== 统计数据 ==========
 
   /**
-   * 获取回收总览统计
+   * 获取回收总览统计 - 游客返回示例数据
    */
   @Get('statistics/overview')
   async getOverviewStatistics(@Request() req) {
+    // 游客模式返回示例数据
+    if (!req.user) {
+      return {
+        code: 200,
+        msg: '获取成功',
+        data: {
+          total: 0,
+          pending: 0,
+          negotiating: 0,
+          deal: 0,
+          recycling: 0,
+          completed: 0,
+          cancelled: 0,
+          totalEstimatedValue: 0,
+          monthlyGrowth: 0,
+          statusDistribution: {},
+          businessTypeDistribution: {}
+        }
+      };
+    }
+
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
 
@@ -166,10 +225,35 @@ export class RecycleManagementController {
   }
 
   /**
-   * 获取回收详细统计面板
+   * 获取回收详细统计面板 - 游客返回示例数据
    */
   @Get('statistics/dashboard')
   async getDashboardStatistics(@Request() req) {
+    // 游客模式返回示例数据
+    if (!req.user) {
+      return {
+        code: 200,
+        msg: '获取成功',
+        data: {
+          overview: {
+            totalStores: 0,
+            totalEstimatedValue: 0,
+            completedRecycles: 0,
+            inProgressRecycles: 0,
+            totalCost: 0
+          },
+          statusDistribution: {},
+          businessTypeDistribution: {},
+          recentGrowth: {
+            thisWeek: 0,
+            lastWeek: 0,
+            growthRate: 0
+          },
+          monthlyTrend: []
+        }
+      };
+    }
+
     const userId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
 

@@ -2,12 +2,13 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request, UseInt
 import { FileInterceptor } from '@nestjs/platform-express';
 import { LexiconService } from './lexicon.service';
 import { ActiveUserGuard } from '../../guards/active-user.guard';
+import { OptionalAuthGuard } from '../../guards/optional-auth.guard';
 import { AdminGuard } from '../../guards/admin.guard';
 import { ShareLexiconRequest } from '../../share/types';
 import { parseOptionalUUID } from '../../utils/uuid.util';
 
 @Controller('lexicon')
-@UseGuards(ActiveUserGuard)
+@UseGuards(OptionalAuthGuard)
 export class LexiconController {
   constructor(private readonly lexiconService: LexiconService) {}
 
@@ -24,6 +25,23 @@ export class LexiconController {
     @Query('viewAll') viewAll?: string,
   ) {
     try {
+      // 游客模式返回空数据
+      if (!req.user) {
+        return { 
+          code: 200, 
+          msg: 'success', 
+          data: {
+            list: [],
+            pagination: {
+              page: page || 1,
+              pageSize: pageSize || 20,
+              total: 0,
+              totalPages: 0,
+            }
+          }
+        };
+      }
+
       const currentUserId = req.user.sub;
       // 验证 targetUserId 参数（如果是非法字符串会抛出 400 错误）
       const validatedTargetUserId = parseOptionalUUID(targetUserId, 'userId');
@@ -49,6 +67,11 @@ export class LexiconController {
   @Get(':id')
   async getById(@Request() req, @Param('id') id: string) {
     try {
+      // 游客模式返回空数据
+      if (!req.user) {
+        return { code: 200, msg: 'success', data: null };
+      }
+
       const currentUserId = req.user.sub;
       const data = await this.lexiconService.getById(currentUserId, id);
       return { code: 200, msg: 'success', data };
@@ -59,6 +82,7 @@ export class LexiconController {
   }
 
   @Post()
+  @UseGuards(ActiveUserGuard)
   async create(
     @Request() req,
     @Body() body: { title: string; content: string; category: string; type?: string; product_id?: string; tags?: string[] },
@@ -74,6 +98,7 @@ export class LexiconController {
   }
 
   @Put(':id')
+  @UseGuards(ActiveUserGuard)
   async update(
     @Request() req,
     @Param('id') id: string,
@@ -90,6 +115,7 @@ export class LexiconController {
   }
 
   @Delete(':id')
+  @UseGuards(ActiveUserGuard)
   async delete(@Request() req, @Param('id') id: string) {
     try {
       const userId = req.user.sub;
@@ -102,6 +128,7 @@ export class LexiconController {
   }
 
   @Post('upload-file')
+  @UseGuards(ActiveUserGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@Request() req, @UploadedFile() file: Express.Multer.File) {
     try {
@@ -115,6 +142,7 @@ export class LexiconController {
   }
 
   @Post('speech-to-text')
+  @UseGuards(ActiveUserGuard)
   async speechToText(@Request() req, @Body() body: { audioUrl: string }) {
     try {
       const userId = req.user.sub;
