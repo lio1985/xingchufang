@@ -192,12 +192,6 @@ const LoginPage = () => {
               修改密码
             </Text>
           </View>
-
-          {/* 测试账号提示 */}
-          <View className="test-account-hint">
-            <Text className="block test-account-text">测试账号：test2026</Text>
-            <Text className="block test-account-text">密码：test123456</Text>
-          </View>
         </View>
       </View>
     </View>
