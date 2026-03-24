@@ -145,4 +145,30 @@ function getSupabaseClient(token?: string): SupabaseClient {
   });
 }
 
-export { loadEnv, getSupabaseCredentials, getSupabaseClient };
+/**
+ * 获取管理员 Supabase 客户端（使用 Service Role Key 绕过 RLS）
+ * 用于需要直接访问数据库的场景
+ */
+function getSupabaseAdminClient(): SupabaseClient {
+  loadEnv();
+
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.COZE_SUPABASE_SERVICE_ROLE_KEY;
+  const url = process.env.COZE_SUPABASE_URL || process.env.SUPABASE_URL;
+
+  if (!serviceRoleKey || !url) {
+    console.warn('⚠️  Service role key not configured. Falling back to regular client.');
+    return getSupabaseClient();
+  }
+
+  return createClient(url, serviceRoleKey, {
+    db: {
+      timeout: 60000,
+    },
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
+
+export { loadEnv, getSupabaseCredentials, getSupabaseClient, getSupabaseAdminClient };
