@@ -1,9 +1,9 @@
-import { Component, PropsWithChildren, ErrorInfo } from 'react';
 import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { Component, ReactNode, PropsWithChildren } from 'react';
 
 interface Props extends PropsWithChildren {
-  fallback?: React.ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -25,9 +25,8 @@ export class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: any) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    // 可以在这里上报错误到监控系统
   }
 
   handleReset = () => {
@@ -55,7 +54,7 @@ export class ErrorBoundary extends Component<Props, State> {
               className="bg-blue-500 text-white px-6 py-3 rounded-xl"
               onClick={this.handleReset}
             >
-              返回首页
+              <Text className="text-white">返回首页</Text>
             </Button>
           </View>
         </View>

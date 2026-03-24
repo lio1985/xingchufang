@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Input, Button } from '@tarojs/components';
 import Taro, { showToast } from '@tarojs/taro';
 import { Network } from '@/network';
-import { Share2, Users, Globe, Check, X, RefreshCw, Search, History, Info, TrendingUp } from 'lucide-react-taro';
 
 interface ShareRecord {
   lexiconId: string;
@@ -258,7 +257,7 @@ export default function AdminShareManagePage() {
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl flex items-center justify-center">
-              <Share2 size={24} color="#60a5fa" strokeWidth={2.5} />
+              <Text>U</Text>
             </View>
             <Text className="block text-xl font-bold text-white">共享管理</Text>
           </View>
@@ -267,13 +266,13 @@ export default function AdminShareManagePage() {
               className="p-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
               onClick={() => Taro.navigateTo({ url: '/pages/admin/share-stats/index' })}
             >
-              <TrendingUp size={20} className="text-slate-400" />
+              <Text>^</Text>
             </View>
             <View
               className="p-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
               onClick={loadShareRecords}
             >
-              <RefreshCw size={20} className={`text-slate-400 ${loading ? 'animate-spin' : ''}`} />
+              <Text>🔄</Text>
             </View>
           </View>
         </View>
@@ -285,7 +284,7 @@ export default function AdminShareManagePage() {
           <View className="grid grid-cols-2 gap-3 mb-6">
             <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700">
               <View className="flex items-center gap-2 mb-2">
-                <Share2 size={20} color="#60a5fa" />
+                <Text>U</Text>
                 <Text className="block text-sm text-slate-400">用户共享</Text>
               </View>
               <Text className="block text-2xl font-bold text-white">
@@ -294,7 +293,7 @@ export default function AdminShareManagePage() {
             </View>
             <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700">
               <View className="flex items-center gap-2 mb-2">
-                <Globe size={20} color="#34d399" />
+                <Text>🌐</Text>
                 <Text className="block text-sm text-slate-400">全局共享</Text>
               </View>
               <Text className="block text-2xl font-bold text-white">
@@ -306,7 +305,7 @@ export default function AdminShareManagePage() {
           {/* 搜索框 */}
           <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700 mb-4">
             <View className="bg-slate-800 rounded-xl px-4 py-3 flex items-center gap-3">
-              <Search size={20} color="#94a3b8" />
+              <Text>?</Text>
               <Input
                 className="flex-1 bg-transparent text-white text-sm"
                 placeholder="搜索语料名称或用户..."
@@ -346,7 +345,7 @@ export default function AdminShareManagePage() {
           {/* 共享记录列表 */}
           {filteredRecords.length === 0 ? (
             <View className="flex flex-col items-center justify-center py-12">
-              <Info size={48} color="#334155" strokeWidth={1.5} />
+              <Text>ℹ️</Text>
               <Text className="block text-sm text-slate-400 mt-3">
                 {searchKeyword ? '未找到匹配的共享记录' : '暂无共享记录'}
               </Text>
@@ -368,13 +367,13 @@ export default function AdminShareManagePage() {
                           <View className="flex items-center gap-2 mb-2">
                             {record.isGloballyShared && (
                               <View className="px-2 py-0.5 bg-emerald-500/20 rounded flex items-center gap-1">
-                                <Globe size={12} color="#34d399" />
+                                <Text>🌐</Text>
                                 <Text className="block text-xs text-emerald-400">全局共享</Text>
                               </View>
                             )}
                             {record.isShared && !record.isGloballyShared && (
                               <View className={`px-2 py-0.5 ${scopeInfo.bg} rounded flex items-center gap-1`}>
-                                <Users size={12} color={scopeInfo.color.replace('text-', '#')} />
+                                <Text>👥</Text>
                                 <Text className={`block text-xs ${scopeInfo.color}`}>
                                   {scopeInfo.label}
                                 </Text>
@@ -467,7 +466,7 @@ export default function AdminShareManagePage() {
                 className="p-1 bg-slate-800 rounded-full"
                 onClick={() => setShowHistory(false)}
               >
-                <X size={18} color="#94a3b8" />
+                <Text>✕</Text>
               </View>
             </View>
 
@@ -478,11 +477,11 @@ export default function AdminShareManagePage() {
             >
               {historyLoading ? (
                 <View className="flex items-center justify-center py-8">
-                  <RefreshCw size={24} color="#60a5fa" className="animate-spin" />
+                  <Text>🔄</Text>
                 </View>
               ) : historyRecords.length === 0 ? (
                 <View className="flex flex-col items-center justify-center py-16">
-                  <History size={48} color="#64748b" />
+                  <Text>📜</Text>
                   <Text className="block text-slate-400 text-sm mt-3">暂无历史记录</Text>
                 </View>
               ) : (
@@ -499,7 +498,7 @@ export default function AdminShareManagePage() {
                       <View
                         style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}
                       >
-                        <Share2 size={14} color="#60a5fa" />
+                        <Text>U</Text>
                         <Text className="block text-white text-sm">{record.operatorName}</Text>
                       </View>
                       <Text className="block text-slate-400 text-xs">
@@ -511,14 +510,14 @@ export default function AdminShareManagePage() {
                     <View className="mb-2">
                       {record.action === 'share' ? (
                         <View className="flex items-center gap-1">
-                          <Check size={14} color="#34d399" />
+                          <Text>✓</Text>
                           <Text className="block text-emerald-400 text-xs">
                             {record.shareType === 'user_share' ? '用户共享' : '管理员全局共享'}
                           </Text>
                         </View>
                       ) : (
                         <View className="flex items-center gap-1">
-                          <X size={14} color="#f87171" />
+                          <Text>✕</Text>
                           <Text className="block text-red-400 text-xs">取消共享</Text>
                         </View>
                       )}
@@ -527,7 +526,7 @@ export default function AdminShareManagePage() {
                     {/* 共享范围 */}
                     {record.shareScope && record.shareScope !== 'global' && (
                       <View className="flex items-center gap-1 mb-2">
-                        <Users size={12} color="#94a3b8" />
+                        <Text>👤</Text>
                         <Text className="block text-slate-400 text-xs">
                           范围: {record.shareScope === 'custom' ? '指定用户' : record.shareScope === 'all' ? '所有人' : '同部门'}
                         </Text>

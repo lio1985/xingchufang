@@ -1,11 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, Input, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
-import {
-  ArrowLeft, Search, Star, StarOff, Pin, Trash2, Mic, X, Check,
-  Square, FileText, Sparkles, User, Clock, Tag
-} from 'lucide-react-taro';
+// Emoji 图标常量
 
 const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
 
@@ -282,10 +278,10 @@ export default function AdminQuickNoteManagePage() {
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View onClick={() => Taro.navigateBack()}>
-              <ArrowLeft size={24} color="#94a3b8" />
+              <Text>←</Text>
             </View>
             <View className="flex items-center gap-2">
-              <Sparkles size={24} color="#fbbf24" />
+              <Text>✨</Text>
               <Text className="text-white font-semibold text-lg">灵感速记管理</Text>
             </View>
           </View>
@@ -295,7 +291,7 @@ export default function AdminQuickNoteManagePage() {
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/20"
                 onClick={handleBatchDelete}
               >
-                <Trash2 size={16} color="#ef4444" />
+                <Text>🗑️</Text>
                 <Text className="text-red-400 text-sm">删除 {selectedNoteIds.length}</Text>
               </View>
             ) : (
@@ -319,7 +315,7 @@ export default function AdminQuickNoteManagePage() {
       {/* 搜索栏 */}
       <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
         <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2">
-          <Search size={18} color="#94a3b8" />
+          <Text>?</Text>
           <Input
             className="flex-1 bg-transparent text-white"
             placeholder="搜索笔记..."
@@ -328,7 +324,7 @@ export default function AdminQuickNoteManagePage() {
           />
           {searchKeyword && (
             <View onClick={() => setSearchKeyword('')}>
-              <X size={18} color="#94a3b8" />
+              <Text>✕</Text>
             </View>
           )}
         </View>
@@ -354,7 +350,7 @@ export default function AdminQuickNoteManagePage() {
                   className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${activeTag === tag ? 'bg-amber-500' : 'bg-slate-800'}`}
                   onClick={() => setActiveTag(tag)}
                 >
-                  <Tag size={14} />
+                  <Text>🏷️</Text>
                   <Text className={activeTag === tag ? 'text-white' : 'text-slate-300'}>{tag}</Text>
                 </View>
               ))}
@@ -389,9 +385,9 @@ export default function AdminQuickNoteManagePage() {
                     onClick={() => toggleSelect(note.id)}
                   >
                     {selectedNoteIds.includes(note.id) ? (
-                      <Check size={20} color="#60a5fa" />
+                      <Text>✓</Text>
                     ) : (
-                      <Square size={20} color="#94a3b8" />
+                      <Text>⬜</Text>
                     )}
                   </View>
                 )}
@@ -409,20 +405,20 @@ export default function AdminQuickNoteManagePage() {
                     {!isBatchMode && (
                       <View className="flex items-center gap-1 ml-2">
                         {note.isPinned && (
-                          <Pin size={18} color="#fbbf24" />
+                          <Text>📌</Text>
                         )}
                         <View onClick={() => toggleStar(note.id)}>
                           {note.isStarred ? (
-                            <Star size={18} color="#fbbf24" />
+                            <Text>*</Text>
                           ) : (
-                            <StarOff size={18} color="#94a3b8" />
+                            <Text>*</Text>
                           )}
                         </View>
                         <View onClick={() => togglePin(note.id)}>
-                          <Pin size={18} color="#94a3b8" />
+                          <Text>📌</Text>
                         </View>
                         <View onClick={() => handleDelete(note.id)}>
-                          <Trash2 size={18} color="#ef4444" />
+                          <Text>🗑️</Text>
                         </View>
                       </View>
                     )}
@@ -431,7 +427,7 @@ export default function AdminQuickNoteManagePage() {
                   {/* 用户信息 */}
                   {note.userNickname && (
                     <View className="flex items-center gap-1 mb-2">
-                      <User size={14} color="#94a3b8" />
+                      <Text>👤</Text>
                       <Text className="text-slate-400 text-xs">{note.userNickname}</Text>
                     </View>
                   )}
@@ -468,12 +464,12 @@ export default function AdminQuickNoteManagePage() {
                   {/* 底部信息 */}
                   <View className="flex items-center justify-between">
                     <View className="flex items-center gap-1">
-                      <Clock size={14} color="#94a3b8" />
+                      <Text>🕐</Text>
                       <Text className="text-slate-400 text-xs">{formatDate(note.updatedAt)}</Text>
                     </View>
                     {note.tags && note.tags.length > 0 && (
                       <View className="flex items-center gap-1">
-                        <Tag size={14} color="#94a3b8" />
+                        <Text>🏷️</Text>
                         <Text className="text-slate-400 text-xs">{note.tags.join(', ')}</Text>
                       </View>
                     )}
@@ -485,7 +481,7 @@ export default function AdminQuickNoteManagePage() {
 
           {!loading && filteredNotes.length === 0 && (
             <View className="text-center py-12">
-              <FileText size={48} color="#475569" />
+              <Text>📄</Text>
               <Text className="text-slate-400 mt-2">
                 {searchKeyword || activeTag ? '未找到匹配的笔记' : '暂无笔记'}
               </Text>
@@ -505,10 +501,10 @@ export default function AdminQuickNoteManagePage() {
               <View className="flex items-center justify-between">
                 <View className="flex items-center gap-2 flex-1 min-w-0">
                   {selectedNote.isPinned && (
-                    <Pin size={20} color="#fbbf24" />
+                    <Text>📌</Text>
                   )}
                   {selectedNote.isStarred && (
-                    <Star size={20} color="#fbbf24" />
+                    <Text>*</Text>
                   )}
                   <Text className="text-white font-semibold text-lg truncate">{selectedNote.title}</Text>
                 </View>
@@ -519,9 +515,9 @@ export default function AdminQuickNoteManagePage() {
                   }}
                   >
                     {selectedNote.isStarred ? (
-                      <Star size={24} color="#fbbf24" />
+                      <Text>*</Text>
                     ) : (
-                      <StarOff size={24} color="#94a3b8" />
+                      <Text>*</Text>
                     )}
                   </View>
                   <View onClick={() => {
@@ -529,10 +525,10 @@ export default function AdminQuickNoteManagePage() {
                     setSelectedNote({ ...selectedNote, isPinned: !selectedNote.isPinned });
                   }}
                   >
-                    <Pin size={24} color="#94a3b8" />
+                    <Text>📌</Text>
                   </View>
                   <View onClick={() => setShowDetailDialog(false)}>
-                    <X size={24} color="#94a3b8" />
+                    <Text>✕</Text>
                   </View>
                 </View>
               </View>
@@ -542,7 +538,7 @@ export default function AdminQuickNoteManagePage() {
               {/* 用户信息 */}
               {selectedNote.userNickname && (
                 <View className="flex items-center gap-2">
-                  <User size={16} color="#94a3b8" />
+                  <Text>👤</Text>
                   <Text className="text-slate-400 text-sm">{selectedNote.userNickname}</Text>
                 </View>
               )}
@@ -578,7 +574,7 @@ export default function AdminQuickNoteManagePage() {
                 <View>
                   <Text className="text-white font-semibold text-base block mb-2">语音</Text>
                   <View className="bg-slate-800 rounded-xl p-3 flex items-center gap-2">
-                    <Mic size={24} color="#fbbf24" />
+                    <Text>🎤</Text>
                     <Text className="text-slate-300 text-sm flex-1">语音记录</Text>
                     {isWeapp && (
                       <View

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { getCurrentInstance, showToast, showLoading, hideLoading } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { Calendar, Clock, Eye, Users, Heart, MessageCircle, TrendingUp, Star, Info, Lightbulb } from 'lucide-react-taro';
 import './index.less';
 
 interface LiveDetail {
@@ -78,11 +77,11 @@ const LiveDataDetailPage = () => {
         <View className="header-card">
           <Text className="title">{detail.title}</Text>
           <View className="time-row">
-            <Calendar size={14} />
+            <Text>D</Text>
             <Text>{formatDate(detail.startTime)} - {formatDate(detail.endTime)}</Text>
           </View>
           <View className="duration-badge">
-            <Clock size={12} />
+            <Text>🕐</Text>
             <Text>{formatDuration(detail.durationSeconds)}</Text>
           </View>
         </View>
@@ -90,22 +89,22 @@ const LiveDataDetailPage = () => {
         {/* 核心数据 */}
         <View className="stats-grid">
           <View className="stat-card primary">
-            <Eye size={20} />
+            <Text>👁️</Text>
             <Text className="value">{detail.totalViews.toLocaleString()}</Text>
             <Text className="label">观看人数</Text>
           </View>
           <View className="stat-card">
-            <Users size={20} />
+            <Text>👤</Text>
             <Text className="value">{detail.peakOnline.toLocaleString()}</Text>
             <Text className="label">最高在线</Text>
           </View>
           <View className="stat-card">
-            <TrendingUp size={20} />
+            <Text>^</Text>
             <Text className="value">¥{detail.gmv.toFixed(2)}</Text>
             <Text className="label">成交金额</Text>
           </View>
           <View className="stat-card">
-            <Heart size={20} />
+            <Text>❤️</Text>
             <Text className="value">{detail.totalLikes.toLocaleString()}</Text>
             <Text className="label">点赞数</Text>
           </View>
@@ -116,17 +115,17 @@ const LiveDataDetailPage = () => {
           <Text className="section-title">互动数据</Text>
           <View className="interaction-stats">
             <View className="interaction-item">
-              <MessageCircle size={16} />
+              <Text>💬</Text>
               <Text className="value">{detail.totalComments.toLocaleString()}</Text>
               <Text className="label">评论数</Text>
             </View>
             <View className="interaction-item">
-              <Users size={16} />
+              <Text>👤</Text>
               <Text className="value">{detail.newFollowers.toLocaleString()}</Text>
               <Text className="label">新增粉丝</Text>
             </View>
             <View className="interaction-item">
-              <TrendingUp size={16} />
+              <Text>^</Text>
               <Text className="value">{detail.ordersCount}</Text>
               <Text className="label">订单数</Text>
             </View>
@@ -158,7 +157,7 @@ const LiveDataDetailPage = () => {
         {detail.analysis && (
           <View className="analysis-card">
             <View className="analysis-header">
-              <Star size={20} color="#FFB800" />
+              <Text>*</Text>
               <Text className="title">直播复盘</Text>
               <View className="score-badge">
                 <Text>{detail.analysis.overallScore}分</Text>
@@ -167,7 +166,7 @@ const LiveDataDetailPage = () => {
 
             <View className="analysis-section">
               <Text className="subtitle success">
-                <Star size={14} /> 直播亮点
+                <Text>*</Text> 直播亮点
               </Text>
               {detail.analysis.highlights.map((item, idx) => (
                 <Text key={idx} className="analysis-item">• {item}</Text>
@@ -176,7 +175,7 @@ const LiveDataDetailPage = () => {
 
             <View className="analysis-section">
               <Text className="subtitle warning">
-                <Info size={14} /> 待改进点
+                <Text>ℹ️</Text> 待改进点
               </Text>
               {detail.analysis.issues.map((item, idx) => (
                 <Text key={idx} className="analysis-item">• {item}</Text>
@@ -185,7 +184,7 @@ const LiveDataDetailPage = () => {
 
             <View className="analysis-section">
               <Text className="subtitle info">
-                <Lightbulb size={14} /> 优化建议
+                <Text>I</Text> 优化建议
               </Text>
               {detail.analysis.suggestions.map((item, idx) => (
                 <Text key={idx} className="analysis-item">• {item}</Text>

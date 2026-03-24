@@ -1,7 +1,6 @@
 import { View, Text, Button, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { Lightbulb, Sparkles, User, Clock, TrendingUp, ArrowRight, Copy, Loader } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface Topic {
@@ -105,7 +104,7 @@ export default function HotTopicGenerationPage() {
       <View className="bg-gradient-to-br from-sky-50 via-slate-800 to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
         <View className="flex items-center gap-3">
           <View className="w-12 h-12 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
-            <Lightbulb size={24} color="#a855f7" strokeWidth={2.5} />
+            <Text>I</Text>
           </View>
           <View>
             <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">选题推荐</Text>
@@ -148,7 +147,7 @@ export default function HotTopicGenerationPage() {
           >
             {loading ? (
               <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
-                <Loader size={16} color="white" className="animate-spin" />
+                <Text>⏳</Text>
                 <Text>处理中...</Text>
               </View>
             ) : topics.length > 0 ? (
@@ -163,7 +162,7 @@ export default function HotTopicGenerationPage() {
         {topics.length > 0 && (
           <View className="px-4 mt-6">
             <View className="flex items-center gap-2 mb-4">
-              <Sparkles size={20} color="#a855f7" strokeWidth={2} />
+              <Text>✨</Text>
               <Text className="block text-lg font-bold text-white">推荐选题</Text>
             </View>
 
@@ -204,14 +203,14 @@ export default function HotTopicGenerationPage() {
 
                     {/* 适合账号 */}
                     <View className="flex items-center gap-2">
-                      <User size={16} color="#60a5fa" strokeWidth={2} />
+                      <Text>👤</Text>
                       <Text className="block text-xs text-slate-400">适合账号：</Text>
                       <Text className="block text-xs text-blue-400">{topic.suitableAccount}</Text>
                     </View>
 
                     {/* 适合形式 */}
                     <View className="flex items-center gap-2">
-                      <Clock size={16} color="#34d399" strokeWidth={2} />
+                      <Text>🕐</Text>
                       <Text className="block text-xs text-slate-400">适合形式：</Text>
                       <Text className={`block text-xs ${topic.format === 'short' ? 'text-green-400' : 'text-orange-400'}`}>
                         {topic.format === 'short' ? '短视频' : '直播'}
@@ -220,7 +219,7 @@ export default function HotTopicGenerationPage() {
 
                     {/* 爆点关键词 */}
                     <View className="flex items-start gap-2">
-                      <TrendingUp size={16} color="#fbbf24" strokeWidth={2} />
+                      <Text>^</Text>
                       <Text className="block text-xs text-slate-400">爆点关键词：</Text>
                       <View className="flex-1 flex flex-wrap gap-1">
                         {topic.keywords.map((keyword, kIndex) => (
@@ -237,7 +236,7 @@ export default function HotTopicGenerationPage() {
                     {/* 建议发布时间 */}
                     {topic.suggestedTime && (
                       <View className="flex items-center gap-2">
-                        <Clock size={16} color="#f472b6" strokeWidth={2} />
+                        <Text>🕐</Text>
                         <Text className="block text-xs text-slate-400">建议发布时间：</Text>
                         <Text className="block text-xs text-pink-400">{topic.suggestedTime}</Text>
                       </View>
@@ -252,7 +251,7 @@ export default function HotTopicGenerationPage() {
                       >
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
                           <Text>创建脚本</Text>
-                          <ArrowRight size={14} />
+                          <Text>→</Text>
                         </View>
                       </Button>
                       <Button
@@ -261,7 +260,7 @@ export default function HotTopicGenerationPage() {
                         onClick={() => handleCopyTopic(topic)}
                       >
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
-                          <Copy size={14} />
+                          <Text>📋</Text>
                           <Text>复制</Text>
                         </View>
                       </Button>

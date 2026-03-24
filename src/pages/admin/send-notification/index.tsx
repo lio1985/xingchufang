@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { showToast } from '@tarojs/taro';
-import { View, Text, Textarea, Input, Radio } from '@tarojs/components';
 import { Network } from '@/network';
-import {
-  Send, User, Globe, Bell, Sparkles, Gift, Info
-} from 'lucide-react-taro';
 import './index.less';
 
 type NotificationType = 'system' | 'activity' | 'update';
@@ -15,7 +11,6 @@ const notificationTypes = [
     value: 'system' as const,
     label: '系统通知',
     desc: '重要系统公告',
-    icon: Bell,
     iconColor: '#3b82f6',
     bgColor: '#dbeafe',
   },
@@ -23,7 +18,6 @@ const notificationTypes = [
     value: 'activity' as const,
     label: '活动通知',
     desc: '推广活动信息',
-    icon: Sparkles,
     iconColor: '#ec4899',
     bgColor: '#fce7f3',
   },
@@ -31,7 +25,6 @@ const notificationTypes = [
     value: 'update' as const,
     label: '更新通知',
     desc: '版本更新说明',
-    icon: Gift,
     iconColor: '#f59e0b',
     bgColor: '#fef3c7',
   },
@@ -42,7 +35,6 @@ const targetTypes = [
     value: 'all' as const,
     label: '全部用户',
     desc: '发送给所有用户',
-    icon: Globe,
     iconColor: '#10b981',
     bgColor: '#d1fae5',
   },
@@ -50,7 +42,6 @@ const targetTypes = [
     value: 'single' as const,
     label: '指定用户',
     desc: '发送给特定用户',
-    icon: User,
     iconColor: '#6366f1',
     bgColor: '#e0e7ff',
   },
@@ -182,7 +173,7 @@ const SendNotificationPage = () => {
                     className="radio-icon system"
                     style={{ backgroundColor: item.bgColor }}
                   >
-                    <Icon size={24} color={item.iconColor} />
+                    <Text>●</Text>
                   </View>
                   <View className="radio-content">
                     <Text className="radio-title">{item.label}</Text>
@@ -212,7 +203,7 @@ const SendNotificationPage = () => {
                     className="radio-icon all"
                     style={{ backgroundColor: item.bgColor }}
                   >
-                    <Icon size={24} color={item.iconColor} />
+                    <Text>●</Text>
                   </View>
                   <View className="radio-content">
                     <Text className="radio-title">{item.label}</Text>
@@ -249,7 +240,7 @@ const SendNotificationPage = () => {
           className={`send-btn ${sending ? 'disabled' : ''}`}
           onClick={!sending ? handleSend : undefined}
         >
-          <Send size={26} color="#fff" />
+          <Text>U</Text>
           <Text className="send-text">{sending ? '发送中...' : '发送通知'}</Text>
         </View>
       </View>
@@ -257,7 +248,7 @@ const SendNotificationPage = () => {
       {/* 使用说明 */}
       <View className="tips-section">
         <View className="tips-header">
-          <Info size={22} color="#047857" />
+          <Text>ℹ️</Text>
           <Text className="tips-title">使用说明</Text>
         </View>
         <View className="tips-list">

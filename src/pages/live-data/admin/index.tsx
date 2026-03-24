@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading } from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Picker } from '@tarojs/components';
 import { Network } from '@/network';
-import {
-  Search, Users, Calendar, TrendingUp, Download, SlidersHorizontal,
-  Eye, ShoppingCart, Heart, Clock, ChevronDown,
-  RefreshCw, FileSpreadsheet
-} from 'lucide-react-taro';
 import './index.less';
 
 interface LiveStreamAdmin {
@@ -344,7 +339,7 @@ const LiveDataAdminPage = () => {
           <Text className="title">数据管理后台</Text>
           <View className="header-actions">
             <View className="icon-btn" onClick={handleRefresh}>
-              <RefreshCw size={18} color="#fff" />
+              <Text>🔄</Text>
             </View>
           </View>
         </View>
@@ -368,14 +363,14 @@ const LiveDataAdminPage = () => {
             <View className="date-row">
               <Picker mode="date" value={customDateRange.startDate} onChange={(e) => setCustomDateRange(prev => ({ ...prev, startDate: e.detail.value }))}>
                 <View className="date-input">
-                  <Calendar size={14} />
+                  <Text>D</Text>
                   <Text>{customDateRange.startDate || '开始日期'}</Text>
                 </View>
               </Picker>
               <Text className="date-separator">至</Text>
               <Picker mode="date" value={customDateRange.endDate} onChange={(e) => setCustomDateRange(prev => ({ ...prev, endDate: e.detail.value }))}>
                 <View className="date-input">
-                  <Calendar size={14} />
+                  <Text>D</Text>
                   <Text>{customDateRange.endDate || '结束日期'}</Text>
                 </View>
               </Picker>
@@ -395,42 +390,42 @@ const LiveDataAdminPage = () => {
           {/* 流量数据板块 */}
           <View className="stat-card primary">
             <View className="stat-icon">
-              <TrendingUp size={20} color="#fff" />
+              <Text>^</Text>
             </View>
             <Text className="value">{stats.totalStreams.toLocaleString()}</Text>
             <Text className="label">直播场次</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon purple">
-              <Eye size={20} color="#722ed1" />
+              <Text>👁️</Text>
             </View>
             <Text className="value">{(stats.exposureCount / 10000).toFixed(2)}万</Text>
             <Text className="label">曝光人数</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon blue">
-              <Users size={20} color="#1890ff" />
+              <Text>👤</Text>
             </View>
             <Text className="value">{(stats.enterRoomCount / 10000).toFixed(2)}万</Text>
             <Text className="label">进入直播间</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon cyan">
-              <TrendingUp size={20} color="#13c2c2" />
+              <Text>^</Text>
             </View>
             <Text className="value">{stats.enterRoomRate.toFixed(1)}%</Text>
             <Text className="label">进房率</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon orange">
-              <TrendingUp size={20} color="#fa8c16" />
+              <Text>^</Text>
             </View>
             <Text className="value">{stats.onlinePeak}</Text>
             <Text className="label">在线峰值</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon pink">
-              <Users size={20} color="#eb2f96" />
+              <Text>👤</Text>
             </View>
             <Text className="value">{stats.avgOnline}</Text>
             <Text className="label">平均在线</Text>
@@ -439,28 +434,28 @@ const LiveDataAdminPage = () => {
           {/* 互动数据板块 */}
           <View className="stat-card">
             <View className="stat-icon blue">
-              <Heart size={20} color="#1890ff" />
+              <Text>❤️</Text>
             </View>
             <Text className="value">{stats.interactionCount.toLocaleString()}</Text>
             <Text className="label">互动人数</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon cyan">
-              <TrendingUp size={20} color="#13c2c2" />
+              <Text>^</Text>
             </View>
             <Text className="value">{stats.privateMessageCount.toLocaleString()}</Text>
             <Text className="label">私信人数</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon red">
-              <Heart size={20} color="#f5222d" />
+              <Text>❤️</Text>
             </View>
             <Text className="value">{stats.newFollowers.toLocaleString()}</Text>
             <Text className="label">新增粉丝</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon pink">
-              <Heart size={20} color="#eb2f96" />
+              <Text>❤️</Text>
             </View>
             <Text className="value">{stats.interactionRate.toFixed(1)}%</Text>
             <Text className="label">互动率</Text>
@@ -469,35 +464,35 @@ const LiveDataAdminPage = () => {
           {/* 转化数据板块 */}
           <View className="stat-card">
             <View className="stat-icon green">
-              <TrendingUp size={20} color="#52c41a" />
+              <Text>^</Text>
             </View>
             <Text className="value">¥{(stats.totalGMV / 10000).toFixed(2)}万</Text>
             <Text className="label">总GMV</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon orange">
-              <ShoppingCart size={20} color="#fa8c16" />
+              <Text>🛒</Text>
             </View>
             <Text className="value">{stats.totalOrders.toLocaleString()}</Text>
             <Text className="label">订单数</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon cyan">
-              <Clock size={20} color="#13c2c2" />
+              <Text>🕐</Text>
             </View>
             <Text className="value">{stats.avgWatchDuration}秒</Text>
             <Text className="label">人均观看</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon red">
-              <TrendingUp size={20} color="#f5222d" />
+              <Text>^</Text>
             </View>
             <Text className="value">{stats.conversionRate.toFixed(1)}%</Text>
             <Text className="label">转化率</Text>
           </View>
           <View className="stat-card">
             <View className="stat-icon purple">
-              <Users size={20} color="#722ed1" />
+              <Text>👤</Text>
             </View>
             <Text className="value">{stats.totalUsers}</Text>
             <Text className="label">主播数</Text>
@@ -522,14 +517,14 @@ const LiveDataAdminPage = () => {
                 <Text className="dropdown-text">
                   {selectedUser === 'all' ? '全部主播' : userOptions.find(u => u.userId === selectedUser)?.nickname || '选择主播'}
                 </Text>
-                <ChevronDown size={14} color="#666" />
+                <Text>⌄</Text>
               </View>
             </Picker>
           </View>
 
           {/* 展开筛选 */}
           <View className="filter-btn" onClick={() => setShowFilters(!showFilters)}>
-            <SlidersHorizontal size={16} />
+            <Text>⚙️</Text>
             <Text>筛选</Text>
           </View>
         </View>
@@ -538,7 +533,7 @@ const LiveDataAdminPage = () => {
         <View className="export-dropdown">
           <Picker mode="selector" range={['导出CSV', '导出JSON']} onChange={(e) => handleExport(e.detail.value === 0 ? 'csv' : 'json')}>
             <View className="export-btn">
-              <Download size={16} />
+              <Text>⬇️</Text>
               <Text>导出</Text>
             </View>
           </Picker>
@@ -548,7 +543,7 @@ const LiveDataAdminPage = () => {
       {/* 搜索 */}
       <View className="search-section">
         <View className="search-input-wrapper">
-          <Search size={18} color="#999" />
+          <Text>?</Text>
           <Input
             className="search-input"
             placeholder="搜索直播标题或主播..."
@@ -605,7 +600,7 @@ const LiveDataAdminPage = () => {
       <ScrollView className="list-container" scrollY onScrollToLower={handleLoadMore}>
         {sortedList.length === 0 ? (
           <View className="empty-state">
-            <FileSpreadsheet size={48} color="#ddd" />
+            <Text>📁</Text>
             <Text className="empty-text">暂无数据</Text>
             <Text className="empty-tips">尝试调整筛选条件</Text>
           </View>
@@ -622,7 +617,7 @@ const LiveDataAdminPage = () => {
                 {/* 主播信息 */}
                 <View className="card-user">
                   <View className="user-avatar">
-                    <Users size={14} color="#10b981" />
+                    <Text>👤</Text>
                   </View>
                   <Text className="user-name">{item.nickname || '未知主播'}</Text>
                 </View>

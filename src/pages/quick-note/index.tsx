@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Input, Image, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import {
-  Plus, Search, Star, StarOff, Pin, Pencil, Trash2,
-  Image as ImageIcon, Mic, X, Check, Square, FileText, Sparkles
-} from 'lucide-react-taro';
 import { Network } from '@/network';
 
 // 笔记数据结构
@@ -435,7 +430,7 @@ const QuickNotePage = () => {
             className="px-4 py-2 bg-slate-800 rounded-xl flex items-center gap-2 active:scale-95 transition-all"
             onClick={() => setIsBatchMode(!isBatchMode)}
           >
-            <Check size={18} color={isBatchMode ? '#60a5fa' : '#94a3b8'} />
+            <Text>✓</Text>
             <Text className="block text-sm text-slate-300">
               {isBatchMode ? '取消' : '批量管理'}
             </Text>
@@ -444,13 +439,13 @@ const QuickNotePage = () => {
             className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20 active:scale-95 transition-all"
             onClick={() => setShowQuickNoteDialog(true)}
           >
-            <Plus size={22} color="white" strokeWidth={2.5} />
+            <Text>➕</Text>
           </View>
         </View>
 
         {/* 搜索框 */}
         <View style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <Search size={18} color="#94a3b8" style={{ position: 'absolute', left: '16px', zIndex: 1 }} />
+          <Text>?</Text>
           <View style={{ width: '100%', backgroundColor: '#1e293b', borderRadius: '12px', paddingLeft: '44px', paddingRight: '16px', paddingTop: '12px', paddingBottom: '12px' }}>
             <Input
               style={{ width: '100%', backgroundColor: 'transparent', color: '#fff', fontSize: '16px' }}
@@ -521,7 +516,7 @@ const QuickNotePage = () => {
         {filteredNotes.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20">
             <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-              <FileText size={40} color="#475569" />
+              <Text>📄</Text>
             </View>
             <Text className="block text-base text-slate-400 mb-2">暂无笔记</Text>
             <Text className="block text-sm text-slate-300">点击右上角 + 创建第一条笔记</Text>
@@ -558,9 +553,9 @@ const QuickNotePage = () => {
                       }}
                     >
                       {selectedNoteIds.includes(note.id) ? (
-                        <Check size={20} color="#60a5fa" />
+                        <Text>✓</Text>
                       ) : (
-                        <Square size={20} color="#64748b" />
+                        <Text>⬜</Text>
                       )}
                     </View>
                   </View>
@@ -569,7 +564,7 @@ const QuickNotePage = () => {
                 {/* 置顶标记 */}
                 {note.isPinned && (
                   <View className="flex items-center gap-1 mb-2">
-                    <Pin size={14} color="#f59e0b" />
+                    <Text>📌</Text>
                     <Text className="block text-xs text-amber-400">置顶</Text>
                   </View>
                 )}
@@ -603,7 +598,7 @@ const QuickNotePage = () => {
                 {/* 音频 */}
                 {note.audio && (
                   <View className="flex items-center gap-2 mb-3 bg-slate-800/60 rounded-xl px-3 py-2">
-                    <Mic size={16} color="#60a5fa" />
+                    <Text>🎤</Text>
                     <Text className="block text-xs text-slate-400">录音</Text>
                   </View>
                 )}
@@ -631,12 +626,12 @@ const QuickNotePage = () => {
                   <Text className="block text-xs text-slate-400">{formatTime(note.updatedAt)}</Text>
                   <View className="flex items-center gap-3">
                     {note.isStarred ? (
-                      <Star size={18} color="#f59e0b" onClick={(e) => { e.stopPropagation(); toggleStar(note.id); }} />
+                      <Text className="text-yellow-400" onClick={(e) => { e.stopPropagation(); toggleStar(note.id); }}>⭐</Text>
                     ) : (
-                      <StarOff size={18} color="#64748b" onClick={(e) => { e.stopPropagation(); toggleStar(note.id); }} />
+                      <Text className="text-gray-400" onClick={(e) => { e.stopPropagation(); toggleStar(note.id); }}>☆</Text>
                     )}
-                    <Pencil size={18} color="#64748b" onClick={(e) => { e.stopPropagation(); openEditDialog(note); }} />
-                    <Trash2 size={18} color="#64748b" onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }} />
+                    <Text className="text-gray-400" onClick={(e) => { e.stopPropagation(); openEditDialog(note); }}>✏️</Text>
+                    <Text className="text-gray-400" onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }}>🗑️</Text>
                   </View>
                 </View>
               </View>
@@ -660,7 +655,7 @@ const QuickNotePage = () => {
           <View className="flex items-center justify-between mb-6">
             <View className="flex items-center gap-3">
               <View className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-                <FileText size={20} color="white" />
+                <Text>📄</Text>
               </View>
               <View>
                 <Text className="block text-xl font-bold text-white">新建笔记</Text>
@@ -671,7 +666,7 @@ const QuickNotePage = () => {
               className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800/60 active:opacity-70"
               onClick={() => setShowQuickNoteDialog(false)}
             >
-              <X size={22} color="#94a3b8" />
+              <Text>✕</Text>
             </View>
           </View>
 
@@ -693,9 +688,9 @@ const QuickNotePage = () => {
                 onClick={isGeneratingTitle ? undefined : generateTitle}
               >
                 {isGeneratingTitle ? (
-                  <Sparkles size={18} color="#fbbf24" className="animate-spin" />
+                  <Text>✨</Text>
                 ) : (
-                  <Sparkles size={18} color="#fbbf24" />
+                  <Text>✨</Text>
                 )}
               </View>
             </View>
@@ -727,7 +722,7 @@ const QuickNotePage = () => {
                 {newNoteTags.map(tag => (
                   <View key={tag} className="px-3 py-1.5 bg-amber-500/20 border border-amber-500/30 rounded-xl flex items-center gap-2">
                     <Text className="block text-xs text-amber-300">#{tag}</Text>
-                    <X size={12} color="#fbbf24" onClick={() => removeNewNoteTag(tag)} />
+                    <Text>✕</Text>
                   </View>
                 ))}
               </View>
@@ -747,7 +742,7 @@ const QuickNotePage = () => {
                 </>
               ) : (
                 <>
-                  <Sparkles size={16} color="#fbbf24" />
+                  <Text>✨</Text>
                   <Text className="block text-sm text-amber-300 font-medium">创建标签</Text>
                 </>
               )}
@@ -765,7 +760,7 @@ const QuickNotePage = () => {
                       className="absolute top-2 right-2 w-6 h-6 bg-black/70 rounded-full flex items-center justify-center active:bg-black/90"
                       onClick={() => handleRemoveImage(index)}
                     >
-                      <X size={12} color="white" />
+                      <Text>✕</Text>
                     </View>
                   </View>
                 ))}
@@ -773,7 +768,7 @@ const QuickNotePage = () => {
                   className="w-24 h-24 bg-slate-900/60 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 border-dashed border-slate-700"
                   onClick={handleChooseImages}
                 >
-                  <ImageIcon size={28} color="#60a5fa" />
+                  <Text>🖼️</Text>
                 </View>
               </View>
             </ScrollView>
@@ -783,7 +778,7 @@ const QuickNotePage = () => {
           {newNoteAudio && (
             <View className="mb-5 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl border border-blue-500/20 px-4 py-4 flex items-center gap-3">
               <View className="w-10 h-10 bg-slate-9000/20 rounded-full flex items-center justify-center">
-                <Mic size={20} color="#60a5fa" />
+                <Text>🎤</Text>
               </View>
               <Text className="block text-sm text-slate-300 flex-1">录音已完成</Text>
               <View
@@ -801,7 +796,7 @@ const QuickNotePage = () => {
               className="flex-1 py-3.5 bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-700/50 active:bg-slate-800/70 transition-all"
               onClick={handleChooseImages}
             >
-              <ImageIcon size={20} color="#60a5fa" />
+              <Text>🖼️</Text>
               <Text className="block text-sm text-slate-300 ml-2 font-medium">图片</Text>
             </View>
             {isWeapp && (
@@ -813,7 +808,7 @@ const QuickNotePage = () => {
                 }`}
                 onClick={isRecording ? handleStopRecord : handleStartRecord}
               >
-                <Mic size={20} color={isRecording ? '#f87171' : '#60a5fa'} />
+                <Text>🎤</Text>
                 <Text className={`block text-sm ml-2 font-medium ${isRecording ? 'text-red-300' : 'text-slate-300'}`}>
                   {isRecording ? '停止录音' : '语音'}
                 </Text>
@@ -851,7 +846,7 @@ const QuickNotePage = () => {
           <View className="flex items-center justify-between mb-6">
             <View className="flex items-center gap-3">
               <View className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <Pencil size={20} color="white" />
+                <Text>✏️</Text>
               </View>
               <View>
                 <Text className="block text-xl font-bold text-white">编辑笔记</Text>
@@ -862,7 +857,7 @@ const QuickNotePage = () => {
               className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800/60 active:opacity-70"
               onClick={() => setShowEditDialog(false)}
             >
-              <X size={22} color="#94a3b8" />
+              <Text>✕</Text>
             </View>
           </View>
 
@@ -903,7 +898,7 @@ const QuickNotePage = () => {
                 {editingNote.tags.map(tag => (
                   <View key={tag} className="px-3 py-1.5 bg-slate-9000/20 border border-sky-500/30 rounded-xl flex items-center gap-2">
                     <Text className="block text-xs text-blue-300">#{tag}</Text>
-                    <X size={12} color="#60a5fa" onClick={() => removeTag(tag)} />
+                    <Text>✕</Text>
                   </View>
                 ))}
               </View>

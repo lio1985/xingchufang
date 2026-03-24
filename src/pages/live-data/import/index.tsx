@@ -1,11 +1,5 @@
 import { useState } from 'react';
-import { showToast, showLoading, hideLoading, chooseImage, navigateBack } from '@tarojs/taro';
-import { View, Text, Input, ScrollView, Image } from '@tarojs/components';
 import { Network } from '@/network';
-import { 
-  Keyboard, Camera, ChevronDown, ChevronUp, 
-  FileSpreadsheet, ScanLine, Save, X, Check
-} from 'lucide-react-taro';
 import './index.less';
 
 type ImportMethod = 'manual' | 'excel' | 'screenshot';
@@ -202,9 +196,6 @@ const LiveDataImportPage = () => {
   };
 
   const methodTabs: { key: ImportMethod; label: string; icon: React.ReactNode; desc: string }[] = [
-    { key: 'manual', label: '手动填写', icon: <Keyboard size={20} />, desc: '逐条输入直播数据' },
-    { key: 'excel', label: 'Excel导入', icon: <FileSpreadsheet size={20} />, desc: '批量上传数据表格' },
-    { key: 'screenshot', label: '截图识别', icon: <ScanLine size={20} />, desc: '识别复盘截图信息' },
   ];
 
   const InputField = ({ 
@@ -254,7 +245,7 @@ const LiveDataImportPage = () => {
           <View className="accordion-icon">{icon}</View>
           <Text className="accordion-title">{title}</Text>
         </View>
-        {expanded === id ? <ChevronUp size={20} color="#94a3b8" /> : <ChevronDown size={20} color="#94a3b8" />}
+        {expanded === id ? <Text>⌃</Text> : <Text>⌄</Text>}
       </View>
       {expanded === id && (
         <View className="accordion-content">
@@ -413,7 +404,7 @@ const LiveDataImportPage = () => {
           <View className="upload-section">
             <View className="upload-card" onClick={handleExcelUpload}>
               <View className="upload-icon-large">
-                <FileSpreadsheet size={48} color="#10b981" />
+                <Text>📁</Text>
               </View>
               <Text className="upload-title">点击上传 Excel 文件</Text>
               <Text className="upload-desc">支持 .xlsx, .xls 格式</Text>
@@ -423,7 +414,7 @@ const LiveDataImportPage = () => {
             <View className="template-section">
               <Text className="template-title">下载导入模板</Text>
               <View className="template-card">
-                <FileSpreadsheet size={24} color="#3b82f6" />
+                <Text>📁</Text>
                 <View className="template-info">
                   <Text className="template-name">直播数据导入模板.xlsx</Text>
                   <Text className="template-size">12 KB</Text>
@@ -442,7 +433,7 @@ const LiveDataImportPage = () => {
             {!screenshotUrl ? (
               <View className="upload-card" onClick={handleScreenshotUpload}>
                 <View className="upload-icon-large">
-                  <Camera size={48} color="#8b5cf6" />
+                  <Text>C</Text>
                 </View>
                 <Text className="upload-title">点击上传截图</Text>
                 <Text className="upload-desc">支持抖音直播复盘数据截图</Text>
@@ -453,7 +444,7 @@ const LiveDataImportPage = () => {
                 <Image className="screenshot-image" src={screenshotUrl} mode="aspectFit" />
                 <View className="screenshot-actions">
                   <View className="screenshot-btn secondary" onClick={() => { setScreenshotUrl(''); setFormData({ ...defaultFormData }); }}>
-                    <X size={16} />
+                    <Text>✕</Text>
                     <Text>重新上传</Text>
                   </View>
                   {isAnalyzing ? (
@@ -462,7 +453,7 @@ const LiveDataImportPage = () => {
                     </View>
                   ) : (
                     <View className="screenshot-btn success">
-                      <Check size={16} />
+                      <Text>✓</Text>
                       <Text>识别完成</Text>
                     </View>
                   )}
@@ -508,7 +499,7 @@ const LiveDataImportPage = () => {
           <Text>取消</Text>
         </View>
         <View className="btn-primary" onClick={handleSubmit}>
-          <Save size={18} color="#fff" />
+          <Text>💾</Text>
           <Text className="btn-primary-text">保存数据</Text>
         </View>
       </View>

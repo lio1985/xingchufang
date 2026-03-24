@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateBack, getCurrentInstance } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { ArrowLeft, Heart, MessageCircle, Users, MessageSquare, Sparkles } from 'lucide-react-taro';
 import './index.less';
 
 interface InteractionStats {
@@ -98,7 +97,7 @@ const InteractionPage = () => {
       <View className="interaction-page">
         <View className="header">
           <View className="back-btn" onClick={() => navigateBack()}>
-            <ArrowLeft size={20} color="#333" />
+            <Text>←</Text>
           </View>
           <Text className="title">互动数据</Text>
           <View className="placeholder" />
@@ -118,7 +117,7 @@ const InteractionPage = () => {
     <View className="interaction-page">
       <View className="header">
         <View className="back-btn" onClick={() => navigateBack()}>
-          <ArrowLeft size={20} color="#333" />
+          <Text>←</Text>
         </View>
         <View className="header-center">
           <Text className="title">互动数据</Text>
@@ -132,7 +131,7 @@ const InteractionPage = () => {
         <View className="section-card rate-card">
           <View className="rate-header">
             <View className="rate-icon">
-              <Sparkles size={24} color="#fff" />
+              <Text>✨</Text>
             </View>
             <View className="rate-info">
               <Text className="rate-label">互动率</Text>
@@ -152,7 +151,7 @@ const InteractionPage = () => {
           <View className="interaction-grid">
             <View className="interaction-item main">
               <View className="interaction-icon orange">
-                <Users size={22} color="#fff" />
+                <Text>👤</Text>
               </View>
               <View className="interaction-info">
                 <Text className="interaction-value">{stats.interactionCount.toLocaleString()}</Text>
@@ -162,7 +161,7 @@ const InteractionPage = () => {
 
             <View className="interaction-item">
               <View className="interaction-icon pink">
-                <MessageSquare size={18} color="#fff" />
+                <Text>💬</Text>
               </View>
               <View className="interaction-info">
                 <Text className="interaction-value">{stats.privateMessageCount.toLocaleString()}</Text>
@@ -179,7 +178,7 @@ const InteractionPage = () => {
             <View className="detail-item">
               <View className="detail-left">
                 <View className="detail-icon red">
-                  <Heart size={18} color="#fff" />
+                  <Text>❤️</Text>
                 </View>
                 <View className="detail-info">
                   <Text className="detail-label">点赞数</Text>
@@ -194,7 +193,7 @@ const InteractionPage = () => {
             <View className="detail-item">
               <View className="detail-left">
                 <View className="detail-icon blue">
-                  <MessageCircle size={18} color="#fff" />
+                  <Text>💬</Text>
                 </View>
                 <View className="detail-info">
                   <Text className="detail-label">评论数</Text>
@@ -209,7 +208,7 @@ const InteractionPage = () => {
             <View className="detail-item">
               <View className="detail-left">
                 <View className="detail-icon purple">
-                  <Users size={18} color="#fff" />
+                  <Text>👤</Text>
                 </View>
                 <View className="detail-info">
                   <Text className="detail-label">新增粉丝</Text>

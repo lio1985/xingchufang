@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { Store, TrendingUp, DollarSign, Check, Activity, Target } from 'lucide-react-taro';
 
 interface RecycleStatistics {
   overview: {
@@ -91,7 +90,7 @@ export default function RecycleDashboard() {
       <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center">
-            <Activity size={24} color="#ffffff" />
+            <Text>#</Text>
             <Text className="block text-white text-lg font-semibold ml-2">回收统计</Text>
           </View>
         </View>
@@ -100,7 +99,7 @@ export default function RecycleDashboard() {
       <ScrollView className="px-4 pb-24" scrollY style={{ height: 'calc(100vh - 100px)' }}>
         {!statistics ? (
           <View className="flex flex-col items-center justify-center py-20">
-            <Activity size={48} color="#64748b" />
+            <Text>#</Text>
             <Text className="block text-slate-400 text-sm mt-3">
               {loading ? '加载中...' : '暂无数据'}
             </Text>
@@ -110,7 +109,7 @@ export default function RecycleDashboard() {
             {/* 总览卡片 */}
             <View className="grid grid-cols-2 gap-3 mb-4">
               <View className="bg-gradient-to-br from-cyan-600 to-cyan-700 rounded-xl p-4">
-                <Store size={20} color="#ffffff" className="mb-2" />
+                <Text>🏪</Text>
                 <Text className="block text-2xl font-bold text-white">
                   {statistics.overview.totalStores}
                 </Text>
@@ -118,7 +117,7 @@ export default function RecycleDashboard() {
               </View>
 
               <View className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl p-4">
-                <Check size={20} color="#ffffff" className="mb-2" />
+                <Text>✓</Text>
                 <Text className="block text-2xl font-bold text-white">
                   {statistics.overview.completedRecycles}
                 </Text>
@@ -126,7 +125,7 @@ export default function RecycleDashboard() {
               </View>
 
               <View className="bg-gradient-to-br from-amber-600 to-amber-700 rounded-xl p-4">
-                <TrendingUp size={20} color="#ffffff" className="mb-2" />
+                <Text>^</Text>
                 <Text className="block text-xl font-bold text-white">
                   ¥{(statistics.overview.totalEstimatedValue / 10000).toFixed(1)}万
                 </Text>
@@ -134,7 +133,7 @@ export default function RecycleDashboard() {
               </View>
 
               <View className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-4">
-                <DollarSign size={20} color="#ffffff" className="mb-2" />
+                <Text>💵</Text>
                 <Text className="block text-xl font-bold text-white">
                   ¥{(statistics.overview.totalCost / 10000).toFixed(1)}万
                 </Text>
@@ -250,7 +249,7 @@ export default function RecycleDashboard() {
                   onClick={() => Taro.navigateTo({ url: '/pages/recycle/edit' })}
                 >
                   <View className="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
-                    <Target size={20} color="#06b6d4" />
+                    <Text>@</Text>
                   </View>
                   <View>
                     <Text className="block text-white text-sm font-medium">新增门店</Text>
@@ -263,7 +262,7 @@ export default function RecycleDashboard() {
                   onClick={() => Taro.navigateTo({ url: '/pages/recycle/index' })}
                 >
                   <View className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                    <Store size={20} color="#10b981" />
+                    <Text>🏪</Text>
                   </View>
                   <View>
                     <Text className="block text-white text-sm font-medium">门店列表</Text>
@@ -281,7 +280,7 @@ export default function RecycleDashboard() {
         className="fixed bottom-24 right-4 w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center shadow-lg"
         onClick={loadStatistics}
       >
-        <Activity size={24} color="#ffffff" />
+        <Text>#</Text>
       </View>
     </View>
   );

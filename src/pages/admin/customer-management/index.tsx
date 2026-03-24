@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
-import {
-  Users, Search, ChevronRight, Phone, MapPin, TrendingUp,
-  Download, Calendar, DollarSign, Target, Award, ChevronDown,
-  FileText, Activity, User, ShieldAlert, ShieldX
-} from 'lucide-react-taro';
 
 interface Customer {
   id: string;
@@ -306,7 +301,7 @@ export default function AdminCustomerManagement() {
           onClick={() => drillDownToCustomers({})}
         >
           <View className="flex items-center gap-2 mb-2">
-            <Users size={20} className="text-blue-400" />
+            <Text>👤</Text>
             <Text className="text-slate-300 text-xs">总客户数</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{overview.totalCustomers}</Text>
@@ -320,7 +315,7 @@ export default function AdminCustomerManagement() {
           onClick={() => drillDownToCustomers({})}
         >
           <View className="flex items-center gap-2 mb-2">
-            <DollarSign size={20} className="text-emerald-400" />
+            <Text>💵</Text>
             <Text className="text-slate-300 text-xs">预估总额</Text>
           </View>
           <Text className="text-white text-2xl font-bold">
@@ -336,7 +331,7 @@ export default function AdminCustomerManagement() {
           onClick={() => drillDownToCustomers({ orderStatus: 'completed' })}
         >
           <View className="flex items-center gap-2 mb-2">
-            <Target size={20} className="text-purple-400" />
+            <Text>@</Text>
             <Text className="text-slate-300 text-xs">成交客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{overview.completedOrders}</Text>
@@ -351,7 +346,7 @@ export default function AdminCustomerManagement() {
           className="bg-gradient-to-br from-amber-600/30 to-amber-800/30 rounded-xl p-4 border border-amber-500/30"
         >
           <View className="flex items-center gap-2 mb-2">
-            <TrendingUp size={20} className="text-amber-400" />
+            <Text>^</Text>
             <Text className="text-slate-300 text-xs">增长率</Text>
           </View>
           <Text className={`text-2xl font-bold ${globalStats.recentGrowth.growthRate >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -373,7 +368,7 @@ export default function AdminCustomerManagement() {
       <View className="grid grid-cols-2 gap-3 mb-4">
         <View className="bg-gradient-to-br from-red-600/30 to-red-800/30 rounded-xl p-4 border border-red-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <ShieldX size={20} className="text-red-400" />
+            <Text>🛡️</Text>
             <Text className="text-slate-300 text-xs">高危客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{churnStats.red}</Text>
@@ -384,7 +379,7 @@ export default function AdminCustomerManagement() {
 
         <View className="bg-gradient-to-br from-amber-600/30 to-amber-800/30 rounded-xl p-4 border border-amber-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <ShieldAlert size={20} className="text-amber-400" />
+            <Text>🛡️</Text>
             <Text className="text-slate-300 text-xs">中危客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{churnStats.orange}</Text>
@@ -395,7 +390,7 @@ export default function AdminCustomerManagement() {
 
         <View className="bg-gradient-to-br from-yellow-600/30 to-yellow-800/30 rounded-xl p-4 border border-yellow-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <ShieldAlert size={20} className="text-yellow-400" />
+            <Text>🛡️</Text>
             <Text className="text-slate-300 text-xs">低危客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{churnStats.yellow}</Text>
@@ -406,7 +401,7 @@ export default function AdminCustomerManagement() {
 
         <View className="bg-gradient-to-br from-purple-600/30 to-purple-800/30 rounded-xl p-4 border border-purple-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <DollarSign size={20} className="text-purple-400" />
+            <Text>💵</Text>
             <Text className="text-slate-300 text-xs">风险金额</Text>
           </View>
           <Text className="text-white text-2xl font-bold">
@@ -423,9 +418,8 @@ export default function AdminCustomerManagement() {
   // 渲染流失预警列表
   const renderChurnRiskList = () => {
     const riskLevelMap = {
-      red: { label: '高危', color: 'text-red-400', bg: 'bg-red-500/20', border: 'border-red-500/30', icon: ShieldX },
-      orange: { label: '中危', color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30', icon: ShieldAlert },
-      yellow: { label: '低危', color: 'text-yellow-400', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', icon: ShieldAlert }
+      orange: { label: '中危', color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30', icon: 'D W' },
+      yellow: { label: '低危', color: 'text-yellow-400', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', icon: 'D W' }
     };
 
     return (
@@ -462,7 +456,7 @@ export default function AdminCustomerManagement() {
         {/* 预警列表 */}
         {churnRisks.length === 0 ? (
           <View className="py-12 text-center">
-            <Activity size={48} className="text-slate-300 mx-auto mb-4" />
+            <Text>#</Text>
             <Text className="text-slate-400 text-sm">暂无流失预警客户</Text>
             <Text className="text-slate-400 text-xs mt-2">客户跟进情况良好</Text>
           </View>
@@ -486,7 +480,7 @@ export default function AdminCustomerManagement() {
                     </Text>
                   </View>
                   <View className={`flex items-center gap-1 px-2 py-1 rounded-full ${levelInfo.bg} ${levelInfo.border} border`}>
-                    <IconComponent size={12} className={levelInfo.color} />
+                    <Text>●</Text>
                     <Text className={`text-xs font-medium ${levelInfo.color}`}>
                       {levelInfo.label}
                     </Text>
@@ -496,14 +490,14 @@ export default function AdminCustomerManagement() {
                 {/* 风险信息 */}
                 <View className="flex items-center gap-4 mb-3">
                   <View className="flex items-center gap-1">
-                    <TrendingUp size={12} className="text-slate-400" />
+                    <Text>^</Text>
                     <Text className="text-slate-400 text-xs">
                       {risk.daysSinceLastFollowUp}天未跟进
                     </Text>
                   </View>
                   {risk.estimatedAmount && (
                     <View className="flex items-center gap-1">
-                      <DollarSign size={12} className="text-emerald-500" />
+                      <Text>💵</Text>
                       <Text className="text-emerald-400 text-xs">
                         ¥{(risk.estimatedAmount / 10000).toFixed(1)}万
                       </Text>
@@ -554,7 +548,7 @@ export default function AdminCustomerManagement() {
     return (
       <View className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 mb-4">
         <View className="flex items-center gap-2 mb-4">
-          <FileText size={18} className="text-blue-400" />
+          <Text>📄</Text>
           <Text className="text-white font-semibold">客户状态分布</Text>
         </View>
 
@@ -621,7 +615,7 @@ export default function AdminCustomerManagement() {
       <View className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 mb-4">
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-2">
-            <Award size={18} className="text-amber-400" />
+            <Text>🏆</Text>
             <Text className="text-white font-semibold">销售业绩排行 TOP5</Text>
           </View>
           <Text className="text-slate-400 text-xs" onClick={() => setActiveTab('sales')}>
@@ -668,7 +662,7 @@ export default function AdminCustomerManagement() {
         {/* 筛选栏 */}
         <View className="bg-slate-800/50 rounded-xl p-3 border border-slate-700">
           <View className="flex items-center gap-2 mb-3">
-            <Search size={16} className="text-slate-400" />
+            <Text>?</Text>
             <Input
               className="flex-1 text-white text-sm bg-transparent"
               placeholder="搜索客户名称、电话..."
@@ -692,11 +686,11 @@ export default function AdminCustomerManagement() {
                   : 'bg-slate-800 border-slate-700'
               }`}
             >
-              <TrendingUp size={14} className={statusFilter ? 'text-blue-400' : 'text-slate-400'} />
+              <Text>^</Text>
               <Text className={`text-xs ${statusFilter ? 'text-blue-400' : 'text-slate-400'}`}>
                 {statusFilter ? statusMap[statusFilter as keyof typeof statusMap]?.label : '全部状态'}
               </Text>
-              <ChevronDown size={12} className="text-slate-400" />
+              <Text>⌄</Text>
             </View>
 
             {/* 销售筛选 */}
@@ -713,13 +707,13 @@ export default function AdminCustomerManagement() {
                     : 'bg-slate-800 border-slate-700'
                 }`}
               >
-                <User size={14} className={salesFilter ? 'text-purple-400' : 'text-slate-400'} />
+                <Text>👤</Text>
                 <Text className={`text-xs ${salesFilter ? 'text-purple-400' : 'text-slate-400'}`}>
                   {salesFilter
                     ? salesList.find(s => s.user_id === salesFilter)?.name || '销售'
                     : '全部销售'}
                 </Text>
-                <ChevronDown size={12} className="text-slate-400" />
+                <Text>⌄</Text>
               </View>
             )}
 
@@ -728,7 +722,7 @@ export default function AdminCustomerManagement() {
               onClick={handleExport}
               className="flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/50"
             >
-              <Download size={14} className="text-emerald-400" />
+              <Text>⬇️</Text>
               <Text className="text-xs text-emerald-400">导出</Text>
             </View>
           </View>
@@ -758,18 +752,18 @@ export default function AdminCustomerManagement() {
             <View className="flex items-center gap-4 mb-3">
               {customer.phone && (
                 <View className="flex items-center gap-1">
-                  <Phone size={12} className="text-slate-400" />
+                  <Text>📞</Text>
                   <Text className="text-slate-400 text-xs">{customer.phone}</Text>
                 </View>
               )}
               {customer.city && (
                 <View className="flex items-center gap-1">
-                  <MapPin size={12} className="text-slate-400" />
+                  <Text>📍</Text>
                   <Text className="text-slate-400 text-xs">{customer.city}</Text>
                 </View>
               )}
               <View className="flex items-center gap-1">
-                <Calendar size={12} className="text-slate-400" />
+                <Text>D</Text>
                 <Text className="text-slate-400 text-xs">
                   {new Date(customer.created_at).toLocaleDateString()}
                 </Text>
@@ -885,7 +879,7 @@ export default function AdminCustomerManagement() {
               onClick={() => Taro.navigateBack()}
               className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
             >
-              <ChevronRight size={18} className="text-slate-400 rotate-180" />
+              <Text>›</Text>
             </View>
             <Text className="text-white text-xl font-bold">客户管理看板</Text>
           </View>
@@ -898,10 +892,7 @@ export default function AdminCustomerManagement() {
         {/* Tab 切换 */}
         <View className="flex gap-2">
           {[
-            { key: 'dashboard', label: '数据看板', icon: Activity },
-            { key: 'customers', label: '客户列表', icon: Users },
-            { key: 'sales', label: '业绩排行', icon: Award },
-            { key: 'churn', label: '流失预警', icon: ShieldAlert }
+            { key: 'churn', label: '流失预警', icon: 'D W' }
           ].map((tab) => (
             <View
               key={tab.key}

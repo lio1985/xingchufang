@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
-import { User, Users, Search, ListFilter, ChevronDown } from 'lucide-react-taro';
 
 interface UserInfo {
   id: string;
@@ -306,7 +305,7 @@ export default function AdminUsersPage() {
       <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700">
         <View className="flex items-center gap-3">
           <View className="flex-1 bg-slate-800 rounded-lg px-4 py-2 flex items-center gap-2">
-            <Search size={16} className="text-slate-400" />
+            <Text>?</Text>
             <Input
               className="flex-1 text-white bg-transparent placeholder-slate-400"
               placeholder="搜索用户名、姓名、员工ID..."
@@ -318,7 +317,7 @@ export default function AdminUsersPage() {
             className="bg-slate-800 rounded-lg px-3 py-2"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <ListFilter size={20} className="text-slate-300" />
+            <Text>📋</Text>
           </View>
         </View>
 
@@ -439,7 +438,7 @@ export default function AdminUsersPage() {
             >
               <View className="flex items-start gap-3">
                 <View className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                  <User size={24} className="text-white" />
+                  <Text>👤</Text>
                 </View>
                 <View className="flex-1 min-w-0">
                   <View className="flex items-center gap-2 mb-1">
@@ -466,7 +465,7 @@ export default function AdminUsersPage() {
                     注册于 {new Date(user.createdAt).toLocaleDateString('zh-CN')}
                   </Text>
                 </View>
-                <ChevronDown size={20} className="text-slate-400 flex-shrink-0" />
+                <Text>⌄</Text>
               </View>
 
               {/* 用户统计 */}
@@ -497,7 +496,7 @@ export default function AdminUsersPage() {
 
           {!loading && users.length === 0 && (
             <View className="text-center py-12">
-              <Users size={48} className="text-slate-300 mx-auto mb-3" />
+              <Text>👤</Text>
               <Text className="text-slate-400 block">暂无用户数据</Text>
             </View>
           )}
@@ -565,7 +564,7 @@ export default function AdminUsersPage() {
             <View className="mb-4">
               <View className="flex items-center gap-3 mb-3">
                 <View className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <User size={32} className="text-white" />
+                  <Text>👤</Text>
                 </View>
                 <View className="flex-1">
                   {editingNickname ? (

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { Search, Clock, Globe, ExternalLink, Sparkles } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface SearchResult {
@@ -90,7 +89,7 @@ const NewsPage = () => {
 
         {/* 搜索框 */}
         <View className="relative mb-4">
-          <Search size={18} color="#94a3b8" className="absolute left-4 top-1/2 -translate-y-1/2" />
+          <Text>?</Text>
           <Input
             className="w-full bg-slate-800 rounded-xl pl-12 pr-4 py-3 text-white text-base"
             placeholder="搜索热点资讯..."
@@ -147,7 +146,7 @@ const NewsPage = () => {
         {aiSummary && (
           <View className="mb-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl border border-sky-500/30 p-5">
             <View className="flex items-center gap-2 mb-3">
-              <Sparkles size={18} color="#60a5fa" />
+              <Text>✨</Text>
               <Text className="block text-base font-bold text-blue-300">摘要</Text>
             </View>
             <Text className="block text-sm text-slate-300 leading-relaxed">
@@ -160,7 +159,7 @@ const NewsPage = () => {
         {results.length === 0 && !loading && keyword === '' && (
           <View className="flex flex-col items-center justify-center py-20">
             <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-              <Search size={40} color="#475569" />
+              <Text>?</Text>
             </View>
             <Text className="block text-base text-slate-400 mb-2">搜索热点资讯</Text>
             <Text className="block text-sm text-slate-300">输入关键词，发现最新动态</Text>
@@ -170,7 +169,7 @@ const NewsPage = () => {
         {results.length === 0 && !loading && keyword !== '' && (
           <View className="flex flex-col items-center justify-center py-20">
             <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-              <Globe size={40} color="#475569" />
+              <Text>🌐</Text>
             </View>
             <Text className="block text-base text-slate-400 mb-2">未找到相关资讯</Text>
             <Text className="block text-sm text-slate-300">试试其他关键词</Text>
@@ -196,13 +195,13 @@ const NewsPage = () => {
                 <View className="flex items-center gap-3 mb-3">
                   {item.siteName && (
                     <View className="flex items-center gap-1">
-                      <Globe size={14} color="#60a5fa" />
+                      <Text>🌐</Text>
                       <Text className="block text-xs text-blue-300">{item.siteName}</Text>
                     </View>
                   )}
                   {item.publishTime && (
                     <View className="flex items-center gap-1">
-                      <Clock size={14} color="#64748b" />
+                      <Text>🕐</Text>
                       <Text className="block text-xs text-slate-400">{formatTime(item.publishTime)}</Text>
                     </View>
                   )}
@@ -218,7 +217,7 @@ const NewsPage = () => {
                   className="flex items-center gap-2 px-4 py-2 bg-slate-800/60 rounded-xl self-start active:scale-95 transition-all"
                   onClick={() => openUrl(item.url)}
                 >
-                  <ExternalLink size={14} color="#60a5fa" />
+                  <Text>🔗</Text>
                   <Text className="block text-xs text-blue-300">查看原文</Text>
                 </View>
               </View>

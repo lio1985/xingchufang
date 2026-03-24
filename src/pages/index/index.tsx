@@ -4,41 +4,18 @@ import { useState, useEffect } from 'react';
 import { Network } from '@/network';
 import './index.css';
 
-// 图标路径配置
-const iconPath = '/static/icons';
-
-// 图标组件封装 - 使用本地 PNG
-const IconLightbulb = () => (
-  <Image src={`${iconPath}/lightbulb.png`} className="icon" mode="aspectFit" />
-);
-const IconUsers = () => (
-  <Image src={`${iconPath}/users.png`} className="icon" mode="aspectFit" />
-);
-const IconRecycle = () => (
-  <Image src={`${iconPath}/recycle.png`} className="icon" mode="aspectFit" />
-);
-const IconBookOpen = () => (
-  <Image src={`${iconPath}/book.png`} className="icon" mode="aspectFit" />
-);
-const IconSparkles = () => (
-  <Image src={`${iconPath}/sparkles.png`} className="icon" mode="aspectFit" />
-);
-const IconPenTool = () => (
-  <Image src={`${iconPath}/pentool.png`} className="icon" mode="aspectFit" />
-);
-const IconTrendingUp = () => (
-  <Image src={`${iconPath}/trending.png`} className="icon" mode="aspectFit" />
-);
-const IconVideo = () => (
-  <Image src={`${iconPath}/video.png`} className="icon" mode="aspectFit" />
-);
-const IconBell = () => (
-  <Image src={`${iconPath}/bell.png`} className="icon-sm" mode="aspectFit" />
-);
-const IconUser = () => (
-  <Image src={`${iconPath}/user.png`} className="icon-sm" mode="aspectFit" />
-);
-
+// 功能列表数据
+const FEATURES = [
+  { id: 'quick-note', title: '灵感速记', desc: '快速记录创作灵感', icon: '💡', color: 'blue', path: '/pages/quick-note/index' },
+  { id: 'customer', title: '客资管理', desc: '客户资料管理与跟进', icon: '👥', color: 'green', path: '/pages/customer/index' },
+  { id: 'recycle', title: '厨具回收', desc: '厨具设备回收管理', icon: '♻️', color: 'green', path: '/pages/recycle/index' },
+  { id: 'knowledge', title: '知识分享', desc: '分享创作经验和技巧', icon: '📚', color: 'purple', path: '/pages/knowledge-share/index' },
+  { id: 'topic', title: '选题策划', desc: '快速发现优质选题', icon: '✨', color: 'cyan', path: '/pages/topic-planning/index' },
+  { id: 'content', title: '内容创作', desc: '高效创作优质内容', icon: '✏️', color: 'indigo', path: '/pages/content-system/index' },
+  { id: 'lexicon', title: '语料优化', desc: '管理优化语料库', icon: '📈', color: 'teal', path: '/pages/lexicon-manage/index' },
+  { id: 'viral', title: '爆款复刻', desc: '解析爆款内容', icon: '🔥', color: 'pink', path: '/pages/viral-system/index' },
+  { id: 'live', title: '直播数据统计', desc: '抖音直播数据分析', icon: '📊', color: 'rose', path: '/pages/live-data/dashboard/index' },
+];
 
 const IndexPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -165,7 +142,7 @@ const IndexPage = () => {
           {isLoggedIn ? (
             <>
               <View className="header-btn" onClick={() => handleNavigateTo('/pages/notification/index')}>
-                <IconBell />
+                <Text className="icon-emoji">🔔</Text>
                 {unreadCount > 0 && (
                   <View className="badge">
                     <Text className="badge-text">{unreadCount > 99 ? '99+' : unreadCount}</Text>
@@ -180,7 +157,7 @@ const IndexPage = () => {
             </>
           ) : (
             <View className="header-btn login" onClick={() => handleNavigateTo('/pages/login/index')}>
-              <IconUser />
+              <Text className="icon-emoji">👤</Text>
               <Text className="btn-text">登录</Text>
             </View>
           )}
@@ -194,121 +171,27 @@ const IndexPage = () => {
         scrollWithAnimation
         enableBackToTop
       >
-        {/* 快捷入口区域 */}
+        {/* 功能列表 */}
         <View className="section">
-          <Text className="section-title">快捷入口</Text>
-          <View className="quick-entry" onClick={() => handleNavigateTo('/pages/quick-note/index', false)}>
-            <View className="quick-icon">
-              <IconLightbulb />
-            </View>
-            <View className="quick-content">
-              <Text className="quick-title">灵感速记</Text>
-              <Text className="quick-desc">快速记录创作灵感</Text>
-            </View>
-            <Text className="arrow-text">›</Text>
-          </View>
-        </View>
-
-        {/* 核心功能区域 */}
-        <View className="section">
-          <Text className="section-title">核心功能</Text>
+          <Text className="section-title">功能列表</Text>
           
           <View className="feature-list">
-            {/* 客资管理 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/customer/index', false)}>
-              <View className="feature-icon blue">
-                <IconUsers />
+            {FEATURES.map((item) => (
+              <View 
+                key={item.id} 
+                className="feature-item" 
+                onClick={() => handleNavigateTo(item.path, false)}
+              >
+                <View className={`feature-icon ${item.color}`}>
+                  <Text className="feature-emoji">{item.icon}</Text>
+                </View>
+                <View className="feature-content">
+                  <Text className="feature-title">{item.title}</Text>
+                  <Text className="feature-desc">{item.desc}</Text>
+                </View>
+                <Text className="arrow-text">›</Text>
               </View>
-              <View className="feature-content">
-                <Text className="feature-title">客资管理</Text>
-                <Text className="feature-desc">客户资料管理与跟进</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 厨具回收 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/recycle/index', false)}>
-              <View className="feature-icon green">
-                <IconRecycle />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">厨具回收</Text>
-                <Text className="feature-desc">厨具设备回收管理</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 知识分享 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/knowledge-share/index', false)}>
-              <View className="feature-icon purple">
-                <IconBookOpen />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">知识分享</Text>
-                <Text className="feature-desc">分享创作经验和技巧</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 选题策划 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/topic-planning/index', false)}>
-              <View className="feature-icon cyan">
-                <IconSparkles />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">选题策划</Text>
-                <Text className="feature-desc">快速发现优质选题</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 内容创作 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/content-system/index', false)}>
-              <View className="feature-icon indigo">
-                <IconPenTool />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">内容创作</Text>
-                <Text className="feature-desc">高效创作优质内容</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 语料优化 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/lexicon-manage/index', false)}>
-              <View className="feature-icon teal">
-                <IconTrendingUp />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">语料优化</Text>
-                <Text className="feature-desc">管理优化语料库</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 爆款复刻 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/viral-system/index', false)}>
-              <View className="feature-icon pink">
-                <IconSparkles />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">爆款复刻</Text>
-                <Text className="feature-desc">解析爆款内容</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 直播数据 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', false)}>
-              <View className="feature-icon rose">
-                <IconVideo />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">直播数据统计</Text>
-                <Text className="feature-desc">抖音直播数据分析</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
+            ))}
           </View>
         </View>
 

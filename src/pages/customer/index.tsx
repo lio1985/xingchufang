@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
-import { UserPlus, Search, ChevronRight, Phone, MapPin, TrendingUp, Check, Target, Activity } from 'lucide-react-taro';
 
 interface Customer {
   id: string;
@@ -24,8 +23,6 @@ interface Statistics {
 }
 
 const statusMap = {
-  normal: { label: '正常', color: 'text-emerald-400', bg: 'bg-emerald-500/20', icon: Check },
-  at_risk: { label: '有风险', color: 'text-amber-400', bg: 'bg-amber-500/20', icon: TrendingUp },
   lost: { label: '已流失', color: 'text-red-400', bg: 'bg-red-500/20', icon: TrendingUp }
 };
 
@@ -192,7 +189,7 @@ export default function CustomerList() {
             onClick={goToSalesTarget}
           >
             <View className="w-10 h-10 bg-slate-9000/20 rounded-full flex items-center justify-center">
-              <Target size={20} color="#60a5fa" />
+              <Text>@</Text>
             </View>
             <View>
               <Text className="block text-white text-sm font-medium">业绩目标</Text>
@@ -204,7 +201,7 @@ export default function CustomerList() {
             onClick={goToSalesDashboard}
           >
             <View className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
-              <Activity size={20} color="#34d399" />
+              <Text>#</Text>
             </View>
             <View>
               <Text className="block text-white text-sm font-medium">业绩看板</Text>
@@ -234,7 +231,7 @@ export default function CustomerList() {
         {/* 搜索栏 */}
         <View className="flex gap-2 mb-4">
           <View className="flex-1 bg-slate-800 rounded-xl px-3 py-2 flex items-center">
-            <Search size={18} className="text-slate-400 mr-2" />
+            <Text>?</Text>
             <Input
               className="flex-1 text-white text-sm bg-transparent"
               placeholder="搜索客户姓名/电话"
@@ -275,19 +272,19 @@ export default function CustomerList() {
                     <Text className={`block text-xs ${statusConfig.color}`}>{statusConfig.label}</Text>
                   </View>
                 </View>
-                <ChevronRight size={18} className="text-slate-400" />
+                <Text>›</Text>
               </View>
 
               <View className="flex flex-wrap gap-y-2 mb-3">
                 {customer.phone && (
                   <View className="flex items-center mr-4">
-                    <Phone size={14} className="text-slate-400 mr-1" />
+                    <Text>📞</Text>
                     <Text className="block text-slate-300 text-sm">{customer.phone}</Text>
                   </View>
                 )}
                 {customer.city && (
                   <View className="flex items-center mr-4">
-                    <MapPin size={14} className="text-slate-400 mr-1" />
+                    <Text>📍</Text>
                     <Text className="block text-slate-300 text-sm">{customer.city}</Text>
                   </View>
                 )}
@@ -332,7 +329,7 @@ export default function CustomerList() {
         style={{ zIndex: 100 }}
         onClick={goToCreate}
       >
-        <UserPlus size={24} color="#ffffff" />
+        <Text>👤</Text>
       </View>
     </View>
   );

@@ -1,10 +1,6 @@
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import {
-  Lightbulb, ArrowLeft, Sparkles, Check, Trash2, Settings,
-  TrendingUp, SlidersHorizontal, RefreshCw
-} from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface TopicQuestion {
@@ -120,7 +116,7 @@ const TopicPlanningPage = () => {
             className="flex items-center justify-center w-10 h-10 bg-slate-800 rounded-xl active:scale-95 transition-all"
             onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
           >
-            <ArrowLeft size={20} color="#94a3b8" />
+            <Text>←</Text>
           </View>
 
           {/* 标题 */}
@@ -131,7 +127,7 @@ const TopicPlanningPage = () => {
             className="flex items-center justify-center w-10 h-10 bg-slate-800 rounded-xl active:scale-95 transition-all"
             onClick={handleRefresh}
           >
-            <RefreshCw size={20} color="#94a3b8" />
+            <Text>🔄</Text>
           </View>
 
           {/* 筛选按钮 */}
@@ -139,7 +135,7 @@ const TopicPlanningPage = () => {
             className="flex items-center justify-center w-10 h-10 bg-slate-800 rounded-xl active:scale-95 transition-all"
             onClick={() => Taro.navigateTo({ url: '/pages/input-sources/index' })}
           >
-            <SlidersHorizontal size={20} color="#94a3b8" />
+            <Text>⚙️</Text>
           </View>
         </View>
 
@@ -179,7 +175,7 @@ const TopicPlanningPage = () => {
         {inputSources && (
           <View className="px-4 py-3 bg-slate-800/50 border-b border-slate-700">
             <View className="flex items-center gap-2 text-sm text-slate-400">
-              <Settings size={16} color="#60a5fa" />
+              <Text>⚙️</Text>
               <Text>来源配置：</Text>
               {inputSources.platforms?.length > 0 ? (
                 <Text className="text-emerald-400">
@@ -199,7 +195,7 @@ const TopicPlanningPage = () => {
           </View>
         ) : topicQuestions.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20 px-4">
-            <Lightbulb size={48} color="#475569" />
+            <Text>I</Text>
             <Text className="block text-slate-400 mt-4 text-center">
               暂无选题
             </Text>
@@ -227,7 +223,7 @@ const TopicPlanningPage = () => {
                   <View className="flex items-start gap-3">
                     <View className="flex items-center justify-center w-5 h-5 border-2 border-slate-700 rounded mt-0.5">
                       {selectedTopics.includes(topic.question) && (
-                        <Check size={14} color="#60a5fa" />
+                        <Text>✓</Text>
                       )}
                     </View>
                     <View className="flex-1">
@@ -240,7 +236,7 @@ const TopicPlanningPage = () => {
                   {/* 选题信息 */}
                   <View className="flex items-center gap-3 mt-3 ml-8">
                     <View className="flex items-center gap-1">
-                      <TrendingUp size={14} color={topic.hotScore > 80 ? '#f87171' : '#94a3b8'} />
+                      <Text>^</Text>
                       <Text className={`text-xs ${topic.hotScore > 80 ? 'text-red-400' : 'text-slate-400'}`}>
                         热度 {topic.hotScore}
                       </Text>
@@ -264,7 +260,7 @@ const TopicPlanningPage = () => {
                     handleDeleteTopic(topic.question);
                   }}
                 >
-                  <Trash2 size={14} color="#94a3b8" />
+                  <Text>🗑️</Text>
                   <Text className="block text-xs text-slate-400 ml-1">删除</Text>
                 </View>
               </View>
@@ -285,12 +281,12 @@ const TopicPlanningPage = () => {
         >
           {isGenerating ? (
             <>
-              <RefreshCw size={20} color="white" className="animate-spin" />
+              <Text>🔄</Text>
               <Text className="block text-base font-medium text-white">创建中...</Text>
             </>
           ) : (
             <>
-              <Sparkles size={20} color="white" />
+              <Text>✨</Text>
               <Text className="block text-base font-medium text-white">
                 {selectedTopics.length === 0 ? '请选择选题' : `创建内容 (${selectedTopics.length})`}
               </Text>

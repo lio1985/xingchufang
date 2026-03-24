@@ -2,10 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
-import {
-  ArrowLeft, Pencil, Phone, MapPin, MessageCircle, User,
-  Plus, Navigation, Check, TrendingUp, Trash2, Store, Target, Activity
-} from 'lucide-react-taro';
 
 interface RecycleStore {
   id: string;
@@ -45,13 +41,6 @@ interface FollowUp {
 }
 
 const statusMap = {
-  pending: { label: '待接触', color: 'text-slate-400', bg: 'bg-slate-8000/20', icon: Target },
-  contacted: { label: '已接触', color: 'text-blue-400', bg: 'bg-slate-9000/20', icon: Activity },
-  assessing: { label: '评估中', color: 'text-purple-400', bg: 'bg-purple-500/20', icon: Activity },
-  negotiating: { label: '谈判中', color: 'text-amber-400', bg: 'bg-amber-500/20', icon: TrendingUp },
-  deal: { label: '已签约', color: 'text-emerald-400', bg: 'bg-emerald-500/20', icon: Check },
-  recycling: { label: '回收中', color: 'text-cyan-400', bg: 'bg-cyan-500/20', icon: Store },
-  completed: { label: '已完成', color: 'text-green-400', bg: 'bg-green-500/20', icon: Check },
   cancelled: { label: '已取消', color: 'text-red-400', bg: 'bg-red-500/20', icon: TrendingUp }
 };
 
@@ -69,7 +58,6 @@ export default function RecycleStoreDetail() {
     if (!id) return;
     try {
       const [storeRes, followUpsRes] = await Promise.all([
-        Network.request({ url: `/api/recycle/stores/${id}` }),
         Network.request({ url: `/api/recycle/stores/${id}/follow-ups` })
       ]);
 
@@ -195,21 +183,21 @@ export default function RecycleStoreDetail() {
       <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center" onClick={goBack}>
-            <ArrowLeft size={24} color="#ffffff" />
+            <Text>←</Text>
           </View>
           <View className="flex items-center gap-3">
             <View onClick={goEdit}>
-              <Pencil size={20} color="#3b82f6" />
+              <Text>✏️</Text>
             </View>
             <View onClick={handleDelete}>
-              <Trash2 size={20} color="#ef4444" />
+              <Text>🗑️</Text>
             </View>
           </View>
         </View>
 
         <View className="mt-4">
           <View className="flex items-center mb-2">
-            <Store size={20} color="#06b6d4" className="mr-2" />
+            <Text>🏪</Text>
             <Text className="block text-white text-xl font-bold">{store.store_name}</Text>
           </View>
           <View className={`${statusConfig.bg} px-3 py-1 rounded-full inline-flex items-center w-fit`}>
@@ -241,27 +229,27 @@ export default function RecycleStoreDetail() {
 
           <View className="border-t border-slate-700 pt-4">
             <View className="flex items-center mb-3" onClick={makePhoneCall}>
-              <Phone size={16} className="text-blue-400 mr-3" />
+              <Text>📞</Text>
               <Text className="block text-white text-sm">{store.phone || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
-              <MessageCircle size={16} className="text-green-400 mr-3" />
+              <Text>💬</Text>
               <Text className="block text-white text-sm">{store.wechat || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
-              <User size={16} className="text-pink-400 mr-3" />
+              <Text>👤</Text>
               <Text className="block text-white text-sm">{store.xiaohongshu || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
-              <User size={16} className="text-cyan-400 mr-3" />
+              <Text>👤</Text>
               <Text className="block text-white text-sm">{store.douyin || '未填写'}</Text>
             </View>
             <View className="flex items-center" onClick={openLocation}>
-              <MapPin size={16} className="text-amber-400 mr-3" />
+              <Text>📍</Text>
               <Text className="block text-white text-sm flex-1">
                 {store.city || ''} {store.address || '未填写地址'}
               </Text>
-              {store.location && <Navigation size={16} className="text-blue-400" />}
+              {store.location && <Text>🧭</Text>}
             </View>
           </View>
         </View>
@@ -335,7 +323,7 @@ export default function RecycleStoreDetail() {
               onClick={() => setShowAddFollowUp(true)}
             >
               <Text className="block text-white text-xs flex items-center">
-                <Plus size={12} className="mr-1" />新增
+                <Text>➕</Text>新增
               </Text>
             </View>
           </View>

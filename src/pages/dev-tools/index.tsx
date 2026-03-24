@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { Network } from '@/network'
-import { Store, User, Database, Sparkles, TrendingUp, ClipboardList, BookOpen, Shield } from 'lucide-react-taro'
 
 const DevToolsPage = () => {
   const [user, setUser] = useState<any>(null)
@@ -114,7 +113,7 @@ const DevToolsPage = () => {
       {/* 当前用户信息 */}
       <View className="bg-slate-800 rounded-2xl p-6 mb-6">
         <View className="flex items-center gap-3 mb-4">
-          <User size={24} color="#94a3b8" />
+          <Text>👤</Text>
           <Text className="block text-lg font-semibold text-white">
             当前用户
           </Text>
@@ -145,7 +144,7 @@ const DevToolsPage = () => {
                       })
                     }}
                   >
-                    <ClipboardList size={14} color="#94a3b8" />
+                    <Text>📋</Text>
                   </View>
                 )}
               </View>
@@ -172,7 +171,7 @@ const DevToolsPage = () => {
                   {user.role === 'admin' ? '管理员' : '普通用户'}
                 </Text>
                 {user.role === 'admin' && (
-                  <Shield size={16} color="#10b981" />
+                  <Text>🛡️</Text>
                 )}
               </View>
             </View>
@@ -239,7 +238,7 @@ const DevToolsPage = () => {
       {user && token && user.role !== 'admin' && (
         <View className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl p-6 border border-sky-500/30">
           <View className="flex items-center gap-3 mb-4">
-            <Shield size={24} color="#60a5fa" />
+            <Text>🛡️</Text>
             <Text className="block text-lg font-semibold text-blue-400">
               管理员权限
             </Text>
@@ -268,7 +267,7 @@ const DevToolsPage = () => {
         <>
           <View className="bg-emerald-600/20 rounded-2xl p-6 border border-emerald-500/30 mb-6">
             <View className="flex items-center justify-center gap-3 mb-4">
-              <Shield size={24} color="#10b981" />
+              <Text>🛡️</Text>
               <Text className="block text-lg font-semibold text-emerald-400">
                 已是管理员
               </Text>
@@ -291,7 +290,7 @@ const DevToolsPage = () => {
               onClick={() => Taro.navigateTo({ url: '/pages/admin/users/index' })}
             >
               <View className="flex items-center gap-3">
-                <User size={20} color="#60a5fa" />
+                <Text>👤</Text>
                 <Text className="block text-white font-medium">用户管理</Text>
               </View>
               <Text className="block text-xs text-slate-400">管理用户、角色、状态</Text>
@@ -303,7 +302,7 @@ const DevToolsPage = () => {
               onClick={() => Taro.navigateTo({ url: '/pages/admin/lexicon-manage/index' })}
             >
               <View className="flex items-center gap-3">
-                <Database size={20} color="#60a5fa" />
+                <Text>🗄️</Text>
                 <Text className="block text-white font-medium">语料库管理</Text>
               </View>
               <Text className="block text-xs text-slate-400">企业语料、个人IP、产品知识</Text>
@@ -315,7 +314,7 @@ const DevToolsPage = () => {
               onClick={() => Taro.navigateTo({ url: '/pages/admin/quick-note-manage/index' })}
             >
               <View className="flex items-center gap-3">
-                <Sparkles size={20} color="#fbbf24" />
+                <Text>✨</Text>
                 <Text className="block text-white font-medium">灵感速记管理</Text>
               </View>
               <Text className="block text-xs text-slate-400">查看所有用户的灵感记录</Text>
@@ -327,7 +326,7 @@ const DevToolsPage = () => {
               onClick={() => Taro.navigateTo({ url: '/pages/admin-knowledge-share/index' })}
             >
               <View className="flex items-center gap-3">
-                <BookOpen size={20} color="#60a5fa" />
+                <Text>📖</Text>
                 <Text className="block text-white font-medium">知识分享管理</Text>
               </View>
               <Text className="block text-xs text-slate-400">审核、导出、统计分析</Text>
@@ -339,7 +338,7 @@ const DevToolsPage = () => {
               onClick={() => Taro.navigateTo({ url: '/pages/admin/recycle-management/index' })}
             >
               <View className="flex items-center gap-3">
-                <Store size={20} color="#06b6d4" />
+                <Text>🏪</Text>
                 <Text className="block text-white font-medium">回收门店管理</Text>
               </View>
               <Text className="block text-xs text-slate-400">全局统计、回收排行、风险预警</Text>
@@ -351,7 +350,7 @@ const DevToolsPage = () => {
               onClick={() => Taro.navigateTo({ url: '/pages/admin/dashboard/index' })}
             >
               <View className="flex items-center gap-3">
-                <TrendingUp size={20} color="#10b981" />
+                <Text>^</Text>
                 <Text className="block text-white font-medium">数据监控</Text>
               </View>
               <Text className="block text-xs text-slate-400">全局统计、用户排行</Text>
@@ -363,7 +362,7 @@ const DevToolsPage = () => {
               onClick={() => Taro.navigateTo({ url: '/pages/admin/audit/index' })}
             >
               <View className="flex items-center gap-3">
-                <ClipboardList size={20} color="#f472b6" />
+                <Text>📋</Text>
                 <Text className="block text-white font-medium">审计日志</Text>
               </View>
               <Text className="block text-xs text-slate-400">操作记录、日志查询</Text>

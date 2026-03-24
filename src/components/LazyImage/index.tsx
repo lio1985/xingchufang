@@ -1,4 +1,3 @@
-import { Image } from '@tarojs/components';
 import type { ImageProps } from '@tarojs/components';
 import { useState } from 'react';
 
