@@ -1,0 +1,849 @@
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { ASRClient, LLMClient, Config } from 'coze-coding-dev-sdk';
+import { DatabaseService } from '../database/database.service';
+import axios from 'axios';
+
+@Injectable()
+export class ViralService {
+  private asrClient: ASRClient;
+  private llmClient: LLMClient;
+
+  constructor(private databaseService: DatabaseService) {
+    const config = new Config();
+    this.asrClient = new ASRClient(config);
+    this.llmClient = new LLMClient(config);
+  }
+
+  /**
+   * 解析抖音链接获取视频信息
+   * 使用多个备用解析服务，如果都失败则返回null让上层处理
+   */
+  async parseDouyinUrl(url: string): Promise<{ videoUrl: string; title: string; desc: string } | null> {
+    console.log('🔍 [viral] 解析抖音链接:', url);
+
+    if (!url || !url.includes('douyin.com')) {
+      return null;
+    }
+
+    // 尝试多个解析服务
+    const errors: string[] = [];
+
+    // 方案1: 尝试直接获取重定向后的链接
+    try {
+      console.log('🔍 [viral] 尝试获取重定向链接...');
+      const redirectRes = await axios.head(url, {
+        maxRedirects: 5,
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15'
+        }
+      });
+      
+      const realUrl = redirectRes.request?.res?.responseUrl || url;
+      console.log('🔍 [viral] 获取到真实链接:', realUrl.substring(0, 100));
+      
+      // 如果能获取到视频URL，直接返回
+      if (realUrl.includes('.mp4')) {
+        return { videoUrl: realUrl, title: '', desc: '' };
+      }
+    } catch (error) {
+      errors.push(`redirect: ${error.message}`);
+    }
+
+    // 方案2: 使用 douyin.wangluo.link API
+    try {
+      console.log('🔍 [viral] 尝试使用 douyin.wangluo.link 解析...');
+      const apiUrl = `https://api.douyin.wangluo.link/api/douyin?url=${encodeURIComponent(url)}`;
+      const response = await axios.get(apiUrl, { 
+        timeout: 30000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
+
+      if (response.data && response.data.code === 200 && response.data.data) {
+        const data = response.data.data;
+        const videoUrl = data.video?.no_watermark_url || data.video?.watermark_url || data.video_url;
+        const title = data.title || data.desc || '';
+        const desc = data.desc || '';
+
+        if (videoUrl) {
+          console.log('🔍 [viral] douyin.wangluo.link 解析成功');
+          return { videoUrl, title, desc };
+        }
+      }
+    } catch (error) {
+      errors.push(`wangluo.link: ${error.message}`);
+    }
+
+    // 所有方案都失败，返回null让上层处理
+    console.log('🔍 [viral] 所有解析方案失败:', errors);
+    return null;
+  }
+
+  /**
+   * 使用豆包大模型从分享文本中提取文案
+   * 智能识别各种分享格式，提取视频文案内容
+   */
+  async extractTextWithLLM(shareText: string): Promise<string> {
+    console.log('🤖 [viral] 使用豆包大模型提取文案:', shareText.substring(0, 100));
+
+    if (!shareText || shareText.trim().length === 0) {
+      return '';
+    }
+
+    try {
+      const systemPrompt = `你是一位专业的文本提取助手，擅长从抖音分享文本中提取视频文案内容。
+
+任务：从用户提供的抖音分享文本中，提取出视频的文案/口播内容。
+
+分享文本通常包含以下元素：
+- 时间戳（如"9.23"）
+- 操作提示（如"复制打开抖音"、"看看"）
+- 作者信息（如"【胡成的作品】"）
+- 视频文案/口播内容（这是需要提取的核心）
+- 话题标签（如"#国学智慧"）
+- 链接（如"https://v.douyin.com/xxxx"）
+- 其他无关信息（如日期、随机字符等）
+
+要求：
+1. 只提取视频的实际文案/口播内容
+2. 移除所有无关元素（时间戳、操作提示、作者信息、话题标签、链接、随机字符）
+3. 保持文案的原意和完整性
+4. 如果文案是口语化的，适当优化使其更通顺
+5. 如果无法确定文案内容，返回空字符串
+
+只返回提取到的文案内容，不要有任何解释或说明。`;
+
+      const messages = [
+        { role: 'system' as const, content: systemPrompt },
+        { role: 'user' as const, content: shareText }
+      ];
+
+      console.log('🤖 [viral] 调用豆包大模型提取文案');
+      const response = await this.llmClient.invoke(messages, {
+        model: 'doubao-seed-1-8-251228',
+        temperature: 0.1
+      });
+
+      const extractedText = response.content.trim();
+      console.log('🤖 [viral] 大模型提取结果:', extractedText.substring(0, 100));
+      
+      return extractedText;
+    } catch (error) {
+      console.error('🤖 [viral] 大模型提取失败:', error.message);
+      // 降级到正则提取
+      return this.extractTextFromShare(shareText);
+    }
+  }
+
+  /**
+   * 从抖音分享文本中提取文案（正则方式，作为降级方案）
+   * 支持格式："9.23 复制打开抖音，看看【胡成的作品】苦尽甘来... #话题"
+   */
+  extractTextFromShare(shareText: string): string {
+    console.log('📝 [viral] 尝试从分享文本提取文案:', shareText.substring(0, 100));
+    
+    if (!shareText) return '';
+    
+    // 抖音分享文本格式匹配
+    // 格式1: "9.23 复制打开抖音，看看【用户名】文案内容 #话题"
+    // 格式2: "文案内容 https://v.douyin.com/xxxxx"
+    // 格式3: "https://v.douyin.com/xxxxx 文案内容"
+    
+    let extractedText = '';
+    
+    // 尝试匹配【用户名】后的文案内容
+    const bracketMatch = shareText.match(/】(.+?)(?:#|$)/);
+    if (bracketMatch && bracketMatch[1]) {
+      extractedText = bracketMatch[1].trim();
+    }
+    
+    // 如果没匹配到，尝试移除链接和时间戳
+    if (!extractedText) {
+      extractedText = shareText
+        .replace(/https?:\/\/\S+/g, '') // 移除URL
+        .replace(/\d+\.\d+\s+/g, '') // 移除开头的时间戳如"9.23 "
+        .replace(/复制打开抖音[，,]?\s*/g, '') // 移除"复制打开抖音"
+        .replace(/看看【[^】]+】/g, '') // 移除"看看【用户名】"
+        .replace(/#[^\s#]+/g, '') // 移除话题标签
+        .replace(/\s+/g, ' ') // 规范化空格
+        .trim();
+    }
+    
+    console.log('📝 [viral] 提取的文案:', extractedText.substring(0, 100));
+    return extractedText;
+  }
+
+  /**
+   * 提取视频语音并转文字
+   */
+  async extractVideoAudioToText(videoUrl: string): Promise<string> {
+    console.log('🎤 [viral] 开始语音识别:', videoUrl);
+
+    if (!videoUrl) {
+      throw new BadRequestException('视频URL不能为空');
+    }
+
+    try {
+      // 使用ASR直接识别视频中的语音
+      // ASR支持视频格式，可以直接传入视频URL
+      const result = await this.asrClient.recognize({
+        uid: 'douyin_' + Date.now(),
+        url: videoUrl
+      });
+
+      console.log('🎤 [viral] 语音识别成功，文本长度:', result.text?.length || 0);
+      console.log('🎤 [viral] 识别结果预览:', result.text?.substring(0, 100));
+
+      return result.text || '';
+    } catch (error) {
+      console.error('🎤 [viral] 语音识别失败:', error.message);
+      throw new BadRequestException(
+        `语音识别失败: ${error.message || '请检查视频是否包含语音或链接是否有效'}`
+      );
+    }
+  }
+
+  async extractVideo(url: string) {
+    console.log('📥 [viral] 开始提取视频:', url);
+    throw new BadRequestException('请使用 analyzeDouyinContent 方法进行完整分析');
+  }
+
+  async transcribeAudio(audioUrl: string) {
+    console.log('🎤 [viral] 开始语音识别:', audioUrl);
+
+    if (!audioUrl) {
+      throw new BadRequestException('音频 URL 不能为空');
+    }
+
+    try {
+      // 使用真实的 ASR 技能进行语音识别
+      const result = await this.asrClient.recognize({
+        uid: 'user_' + Date.now(),
+        url: audioUrl
+      });
+
+      console.log('🎤 [viral] 语音识别成功，文本长度:', result.text.length);
+
+      return {
+        transcript: result.text,
+        duration: result.duration
+      };
+    } catch (error) {
+      console.error('🎤 [viral] 语音识别失败:', error);
+      throw new BadRequestException(
+        `语音识别失败: ${error.message || '请检查音频 URL 是否有效'}`
+      );
+    }
+  }
+
+  async transcribeAudioFromBase64(base64Audio: string) {
+    console.log('🎤 [viral] 开始语音识别（Base64）');
+
+    if (!base64Audio) {
+      throw new BadRequestException('音频数据不能为空');
+    }
+
+    try {
+      // 使用真实的 ASR 技能进行语音识别
+      const result = await this.asrClient.recognize({
+        uid: 'user_' + Date.now(),
+        base64Data: base64Audio
+      });
+
+      console.log('🎤 [viral] 语音识别成功，文本长度:', result.text.length);
+
+      return {
+        transcript: result.text,
+        duration: result.duration
+      };
+    } catch (error) {
+      console.error('🎤 [viral] 语音识别失败:', error);
+      throw new BadRequestException(
+        `语音识别失败: ${error.message || '请检查音频数据是否有效'}`
+      );
+    }
+  }
+
+  async analyzeContent(transcript: string, platform: string) {
+    console.log('🔍 [viral] 开始内容分析:', { platform, transcriptLength: transcript.length });
+
+    if (!transcript || transcript.trim().length === 0) {
+      throw new BadRequestException('分析内容不能为空');
+    }
+
+    try {
+      // 使用豆包大模型进行真实的爆款内容分析
+      const systemPrompt = `你是一位专业的短视频内容分析师，擅长分析爆款视频的内容结构和传播逻辑。
+
+请对用户提供的视频文字内容进行深入分析，输出以下结构化信息：
+
+1. **hook（钩子）**：提取视频开头的吸引人的话术或问题（前50字左右）
+2. **body（主体要点）**：提取3-5个核心观点或论点，每个要点用一句话概括
+3. **climax（高潮）**：提取视频中的情绪高潮或总结性段落
+4. **callToAction（行动号召）**：提取视频结尾的引导性话术或号召
+5. **framework（框架类型）**：判断内容使用的爆款框架类型（如痛点型、故事型、干货型、情绪型等）
+6. **frameworkDescription（框架描述）**：用一句话描述这个框架的特点
+7. **keyPoints（关键要点）**：列出3-5个这个内容的成功要素或技巧
+
+请严格按照以下JSON格式输出（不要输出其他内容）：
+{
+  "structure": {
+    "hook": "钩子内容",
+    "body": ["要点1", "要点2", "要点3"],
+    "climax": "高潮内容",
+    "callToAction": "行动号召"
+  },
+  "framework": {
+    "type": "框架类型",
+    "description": "框架描述",
+    "keyPoints": ["关键要点1", "关键要点2", "关键要点3"]
+  }
+}`;
+
+      const messages = [
+        { role: 'system' as const, content: systemPrompt },
+        { role: 'user' as const, content: transcript }
+      ];
+
+      console.log('🔍 [viral] 调用豆包大模型分析内容');
+      const response = await this.llmClient.invoke(messages, {
+        model: 'doubao-seed-1-8-251228',
+        temperature: 0.7
+      });
+
+      console.log('🔍 [viral] 豆包大模型返回结果:', response.content);
+
+      // 解析 JSON 响应
+      let analysisResult;
+      try {
+        // 提取 JSON 部分（可能包含在代码块中）
+        let jsonStr = response.content.trim();
+        
+        // 移除可能存在的 markdown 代码块标记
+        if (jsonStr.startsWith('```json')) {
+          jsonStr = jsonStr.substring(7);
+        }
+        if (jsonStr.startsWith('```')) {
+          jsonStr = jsonStr.substring(3);
+        }
+        if (jsonStr.endsWith('```')) {
+          jsonStr = jsonStr.substring(0, jsonStr.length - 3);
+        }
+        jsonStr = jsonStr.trim();
+
+        analysisResult = JSON.parse(jsonStr);
+      } catch (error) {
+        console.error('🔍 [viral] JSON 解析失败:', error);
+        console.log('🔍 [viral] 原始响应:', response.content);
+        throw new BadRequestException('内容分析失败，AI 返回格式错误');
+      }
+
+      // 验证返回的数据结构
+      if (!analysisResult.structure || !analysisResult.framework) {
+        throw new BadRequestException('内容分析失败，数据结构不完整');
+      }
+
+      console.log('🔍 [viral] 内容分析成功:', { 
+        frameworkType: analysisResult.framework.type,
+        hookLength: analysisResult.structure.hook?.length
+      });
+
+      return analysisResult;
+    } catch (error) {
+      console.error('🔍 [viral] 内容分析失败:', error);
+      throw new BadRequestException(
+        `内容分析失败: ${error.message || '请稍后重试'}`
+      );
+    }
+  }
+
+  async analyzeDouyinContent(shareText: string) {
+    console.log('📥 [viral] 开始分析抖音内容:', shareText.substring(0, 100));
+
+    if (!shareText || shareText.trim().length === 0) {
+      throw new BadRequestException('分享内容不能为空');
+    }
+
+    // 从分享文本中提取抖音链接
+    const urlMatch = shareText.match(/(https?:\/\/v\.douyin\.com\/\w+)/);
+    const url = urlMatch ? urlMatch[1] : '';
+
+    // 尝试解析链接获取视频
+    if (url) {
+      try {
+        console.log('📥 [viral] 尝试解析视频链接:', url);
+        const parseResult = await this.parseDouyinUrl(url);
+        
+        if (parseResult && parseResult.videoUrl) {
+          // 链接解析成功，使用 ASR 识别语音
+          console.log('📥 [viral] 链接解析成功，开始语音识别...');
+          const transcript = await this.extractVideoAudioToText(parseResult.videoUrl);
+          
+          if (transcript && transcript.trim().length > 0) {
+            console.log('📥 [viral] 语音识别成功，开始分析文案结构...');
+            const analysisResult = await this.analyzeTranscript(transcript, parseResult.title, parseResult.desc);
+            
+            console.log('📥 [viral] 视频分析完成:', {
+              transcriptLength: transcript.length,
+              frameworkType: analysisResult.framework?.type
+            });
+
+            return {
+              transcript,
+              structure: analysisResult.structure,
+              framework: analysisResult.framework,
+              source: 'asr' // 标记来源是ASR语音
+            };
+          }
+        }
+      } catch (error) {
+        console.log('📥 [viral] 视频链接解析失败，降级到文本分析:', error.message);
+      }
+    }
+
+    // 链接解析失败或没有链接，使用豆包大模型从分享文本中提取文案
+    console.log('📥 [viral] 使用豆包大模型从分享文本中提取文案...');
+    const extractedText = await this.extractTextWithLLM(shareText);
+    
+    if (!extractedText || extractedText.trim().length === 0) {
+      throw new BadRequestException(
+        '无法从分享内容中提取到文案，请:\n' +
+        '1. 确保分享内容完整（包含文案）\n' +
+        '2. 或直接粘贴视频文案进行分析'
+      );
+    }
+
+    console.log('📥 [viral] 提取到文案，开始分析...');
+    const analysisResult = await this.analyzeTranscript(extractedText, '', '');
+    
+    console.log('📥 [viral] 文本分析完成:', {
+      transcriptLength: extractedText.length,
+      frameworkType: analysisResult.framework?.type
+    });
+
+    return {
+      transcript: extractedText,
+      structure: analysisResult.structure,
+      framework: analysisResult.framework,
+      source: 'llm' // 标记来源是LLM提取
+    };
+  }
+
+  /**
+   * 分析转录的文案内容
+   */
+  private async analyzeTranscript(transcript: string, title: string, desc: string): Promise<any> {
+    const systemPrompt = `你是一位专业的短视频内容分析师，擅长分析抖音爆款文案的结构和框架。
+
+请对以下视频文案进行深入分析，输出：
+1. **structure（爆款结构）**：
+   - hook（钩子）：视频开头的吸引人的话术（前30-50字）
+   - body（主体要点）：3-5个核心观点或论点，每个一句话
+   - climax（高潮）：情绪高潮点或总结性段落
+   - callToAction（行动号召）：结尾的引导话术
+
+2. **framework（爆款框架）**：
+   - type：框架类型（痛点型、故事型、干货型、情绪型、对比型、悬念型等）
+   - description：用一句话描述这个框架的核心特点
+   - keyPoints：3-5个这个文案的成功要素或技巧
+
+请严格按照以下JSON格式输出：
+{
+  "structure": {
+    "hook": "钩子内容",
+    "body": ["要点1", "要点2", "要点3"],
+    "climax": "高潮内容",
+    "callToAction": "行动号召"
+  },
+  "framework": {
+    "type": "框架类型",
+    "description": "框架描述",
+    "keyPoints": ["要点1", "要点2", "要点3"]
+  }
+}`;
+
+    const content = `视频标题：${title || '无'}\n视频描述：${desc || '无'}\n\n视频文案内容：\n${transcript}`;
+
+    const messages = [
+      { role: 'system' as const, content: systemPrompt },
+      { role: 'user' as const, content }
+    ];
+
+    const response = await this.llmClient.invoke(messages, {
+      model: 'doubao-seed-1-8-251228',
+      temperature: 0.3
+    });
+
+    // 解析 JSON
+    let result;
+    try {
+      let jsonStr = response.content.trim();
+      if (jsonStr.startsWith('```json')) jsonStr = jsonStr.substring(7);
+      if (jsonStr.startsWith('```')) jsonStr = jsonStr.substring(3);
+      if (jsonStr.endsWith('```')) jsonStr = jsonStr.substring(0, jsonStr.length - 3);
+      jsonStr = jsonStr.trim();
+      result = JSON.parse(jsonStr);
+    } catch (e) {
+      console.error('JSON解析失败:', e);
+      // 返回默认结构
+      result = {
+        structure: {
+          hook: transcript.substring(0, 50),
+          body: ['内容要点1', '内容要点2', '内容要点3'],
+          climax: '高潮部分',
+          callToAction: '关注点赞'
+        },
+        framework: {
+          type: '干货型',
+          description: '提供有价值的内容',
+          keyPoints: ['内容实用', '结构清晰', '语言通俗']
+        }
+      };
+    }
+
+    return result;
+  }
+
+  // 收藏爆款框架
+  async favoriteFramework(userId: string | null | undefined, title: string, structure: any, framework: any) {
+    console.log('❤️ [viral] 收藏爆款框架:', { userId, title });
+
+    if (!title || !structure || !framework) {
+      throw new BadRequestException('收藏数据不完整');
+    }
+
+    try {
+      const client = this.databaseService.getClient();
+
+      // 生成 UUID
+      const id = crypto.randomUUID();
+
+      const { data, error } = await client
+        .from('viral_favorites')
+        .insert({
+          id,
+          user_id: userId,
+          title,
+          structure,
+          framework
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('❤️ [viral] 收藏失败:', error);
+        throw new BadRequestException(`收藏失败: ${error.message}`);
+      }
+
+      console.log('❤️ [viral] 收藏成功:', data.id);
+
+      return { id: data.id };
+    } catch (error) {
+      console.error('❤️ [viral] 收藏异常:', error);
+      throw new BadRequestException(
+        `收藏失败: ${error.message || '请稍后重试'}`
+      );
+    }
+  }
+
+  // 获取收藏列表
+  async getFavorites(userId: string | null | undefined) {
+    console.log('📋 [viral] 获取收藏列表:', { userId });
+
+    try {
+      const client = this.databaseService.getClient();
+
+      const { data, error } = await client
+        .from('viral_favorites')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('📋 [viral] 获取收藏列表失败:', error);
+        throw new BadRequestException(`获取失败: ${error.message}`);
+      }
+
+      console.log('📋 [viral] 收藏列表数量:', data?.length || 0);
+
+      return data || [];
+    } catch (error) {
+      console.error('📋 [viral] 获取收藏列表异常:', error);
+      throw new BadRequestException(
+        `获取失败: ${error.message || '请稍后重试'}`
+      );
+    }
+  }
+
+  // 二创改写 - 生成2个方案
+  async remixContent(data: {
+    transcript: string
+    structure: any
+    framework: any
+    remixIdea: string
+    lexiconContents: string
+    style?: 'douyin' | 'xiaohongshu' | 'shipinhao' | 'gongzhonghao' | 'pyq'
+  }) {
+    const { transcript, structure, framework, remixIdea, lexiconContents, style } = data
+
+    console.log('🚀 [viral] 开始二创改写:', {
+      transcriptLength: transcript.length,
+      frameworkType: framework.type,
+      ideaLength: remixIdea.length,
+      lexiconContentLength: lexiconContents?.length || 0,
+      style: style
+    });
+
+    if (!transcript || !structure || !framework || !remixIdea) {
+      throw new BadRequestException('二创改写数据不完整');
+    }
+
+    try {
+      // 结合语料库内容生成2个不同的二创方案
+      let lexiconContext = ''
+      if (lexiconContents && lexiconContents.trim()) {
+        lexiconContext = `\n\n【可参考的语料库内容】：\n${lexiconContents}`
+      }
+
+      // 风格映射
+      const styleMap: Record<string, string> = {
+        douyin: '抖音风格',
+        xiaohongshu: '小红书风格',
+        shipinhao: '视频号风格',
+        gongzhonghao: '公众号文章风格',
+        pyq: '微信朋友圈风格'
+      };
+
+      // 标题字数限制和特点
+      const titleConfigMap: Record<string, { min: number; max: number; tips: string }> = {
+        douyin: { 
+          min: 15, 
+          max: 25, 
+          tips: '抖音标题要简洁有力，使用悬念、数字、疑问句等吸引点击，避免过长被截断' 
+        },
+        xiaohongshu: { 
+          min: 15, 
+          max: 30, 
+          tips: '小红书标题要突出关键词，使用emoji表情，展示干货或价值，吸引点击收藏' 
+        },
+        shipinhao: { 
+          min: 10, 
+          max: 30, 
+          tips: '视频号标题要简洁明了，直接传达核心信息，适合中老年用户群体' 
+        },
+        gongzhonghao: { 
+          min: 20, 
+          max: 30, 
+          tips: '公众号标题要专业、有价值，避免标题党，体现文章核心观点，最多64字' 
+        },
+        pyq: { 
+          min: 20, 
+          max: 30, 
+          tips: '朋友圈没有严格标题，开头要吸引眼球，建议用一两句话作为"标题"吸引注意力' 
+        }
+      };
+
+      const selectedStyle = style ? styleMap[style] : '通用风格';
+      const titleConfig = style ? titleConfigMap[style] : { min: 10, max: 30, tips: '标题要简洁有力，吸引人注意' };
+
+      const systemPrompt = `你是一位专业的新媒体内容创作专家，擅长基于爆款内容进行二创改写。
+
+你的任务：基于提取的文案、爆款框架和改写想法，生成2个不同的二创方案。
+
+要求：
+1. 方案A和方案B要有明显区别，侧重不同角度或表达方式
+2. 方案A：保留原有情感基调，优化表达，增强感染力
+3. 方案B：采用新的角度或风格，创造新鲜感
+4. 两个方案都要符合改写想法的指导方向
+5. 适当融入语料库中的优质表达方式
+6. 保持爆款框架的核心逻辑结构
+7. 按照${selectedStyle}的写作特点进行创作
+8. 每个方案控制在300-500字之间
+9. 标题字数严格控制在${titleConfig.min}-${titleConfig.max}字之间
+10. ${selectedStyle}标题特点：${titleConfig.tips}
+
+输出格式（必须严格按照此格式输出，使用JSON）：
+{
+  "schemes": [
+    {
+      "title": "方案的吸引人标题（${titleConfig.min}-${titleConfig.max}字）",
+      "content": "方案的完整文案内容",
+      "tags": ["标签1", "标签2", "标签3"]
+    },
+    {
+      "title": "方案的吸引人标题（${titleConfig.min}-${titleConfig.max}字）",
+      "content": "方案的完整文案内容",
+      "tags": ["标签1", "标签2", "标签3"]
+    }
+  ]
+}
+
+注意：
+- 标题必须严格控制在${titleConfig.min}-${titleConfig.max}字之间，超出会被平台截断
+- ${selectedStyle}标题特点：${titleConfig.tips}
+- 内容要生动有趣，有感染力
+- 标签要准确概括内容特点，3-5个
+- 必须返回合法的JSON格式，不要有其他文字`;
+
+      const userPrompt = `【提取的文案】：
+${transcript}
+
+【爆款框架】：
+类型：${framework.type}
+描述：${framework.description}
+关键点：${framework.keyPoints?.join('、') || ''}
+
+【改写想法】：
+${remixIdea}${lexiconContext}
+
+请基于以上信息，生成2个二创方案。确保返回的是合法的JSON格式。`;
+
+      const messages = [
+        { role: 'system' as const, content: systemPrompt },
+        { role: 'user' as const, content: userPrompt }
+      ];
+
+      console.log('🚀 [viral] 调用豆包大模型生成二创内容');
+      const response = await this.llmClient.invoke(messages, {
+        model: 'doubao-seed-1-8-251228',
+        temperature: 0.8
+      });
+
+      console.log('🚀 [viral] 豆包大模型返回结果:', response.content);
+
+      // 解析返回的 JSON 格式方案
+      let parsedResponse;
+      try {
+        // 尝试直接解析 JSON
+        const content = response.content.trim();
+
+        // 尝试提取 JSON 部分（如果有 Markdown 代码块）
+        const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/```\s*([\s\S]*?)\s*```/);
+        const jsonString = jsonMatch ? jsonMatch[1] : content;
+
+        parsedResponse = JSON.parse(jsonString);
+
+        console.log('🚀 [viral] 方案解析成功:', parsedResponse);
+      } catch (error) {
+        console.error('🚀 [viral] JSON 解析失败:', error, response.content);
+
+        // 如果 JSON 解析失败，尝试从文本中提取方案（兼容旧格式）
+        const content = response.content.trim();
+        const schemeA = content.match(/【方案 A】([\s\S]*?)(?=【方案 B】|$)/)?.[1]?.trim() || '';
+        const schemeB = content.match(/【方案 B】([\s\S]*?)$/)?.[1]?.trim() || '';
+
+        if (!schemeA && !schemeB) {
+          throw new BadRequestException('二创内容解析失败');
+        }
+
+        parsedResponse = {
+          schemes: [
+            {
+              title: `方案 A`,
+              content: schemeA,
+              tags: ['二创', '改写']
+            },
+            {
+              title: `方案 B`,
+              content: schemeB,
+              tags: ['二创', '改写']
+            }
+          ]
+        };
+      }
+
+      if (!parsedResponse.schemes || !Array.isArray(parsedResponse.schemes)) {
+        throw new BadRequestException('二创内容格式错误');
+      }
+
+      console.log('🚀 [viral] 二创内容生成成功:', {
+        schemesCount: parsedResponse.schemes.length
+      });
+
+      return {
+        schemes: parsedResponse.schemes
+      };
+    } catch (error) {
+      console.error('🚀 [viral] 二创改写失败:', error);
+      throw new BadRequestException(
+        `二创改写失败: ${error.message || '请稍后重试'}`
+      );
+    }
+  }
+
+  // AI 优化改写想法表述
+  async optimizeIdea(idea: string, transcript?: string, style?: 'douyin' | 'xiaohongshu' | 'shipinhao' | 'gongzhonghao' | 'pyq') {
+    console.log('🪄 [viral] 开始优化改写想法:', { ideaLength: idea.length, transcriptLength: transcript?.length || 0, style });
+
+    if (!idea || idea.trim().length === 0) {
+      throw new BadRequestException('改写想法不能为空');
+    }
+
+    try {
+      // 风格映射
+      const styleMap: Record<string, string> = {
+        douyin: '抖音',
+        xiaohongshu: '小红书',
+        shipinhao: '视频号',
+        gongzhonghao: '公众号',
+        pyq: '朋友圈'
+      };
+
+      const selectedStyle = style ? styleMap[style] : null;
+
+      const systemPrompt = `你是一位专业的内容策划专家，擅长优化和润色改写想法的表述。
+
+你的任务：优化用户的改写想法，使其更加清晰、具体、可执行。
+
+要求：
+1. 保持原意，但表述更专业、更明确
+2. 增加具体的执行方向或角度
+3. 使用更精准的词汇和表达
+4. 优化后的想法要便于AI理解和执行
+5. 长度控制在100-200字之间
+${selectedStyle ? `6. 针对${selectedStyle}平台的特点进行优化\n7. 考虑${selectedStyle}用户的喜好和阅读习惯` : ''}
+
+直接输出优化后的想法（不需要其他说明）：`;
+
+      const userPrompt = `原始改写想法：${idea}
+${transcript ? `\n参考文案：\n${transcript.substring(0, 500)}...` : ''}
+${selectedStyle ? `\n目标平台风格：${selectedStyle}` : ''}
+
+请优化这个改写想法。`;
+
+      const messages = [
+        { role: 'system' as const, content: systemPrompt },
+        { role: 'user' as const, content: userPrompt }
+      ];
+
+      console.log('🪄 [viral] 调用豆包大模型优化改写想法');
+      const response = await this.llmClient.invoke(messages, {
+        model: 'doubao-seed-1-8-251228',
+        temperature: 0.3
+      });
+
+      console.log('🪄 [viral] 优化结果:', response.content);
+
+      // 清理返回的内容
+      let optimizedIdea = response.content.trim();
+      
+      // 移除可能存在的 markdown 代码块标记
+      if (optimizedIdea.startsWith('```')) {
+        const lines = optimizedIdea.split('\n');
+        lines.shift();
+        if (lines[lines.length - 1].trim() === '```') {
+          lines.pop();
+        }
+        optimizedIdea = lines.join('\n').trim();
+      }
+
+      return { optimizedIdea };
+    } catch (error) {
+      console.error('🪄 [viral] 优化改写想法失败:', error);
+      throw new BadRequestException(
+        `优化失败: ${error.message || '请稍后重试'}`
+      );
+    }
+  }
+}

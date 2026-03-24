@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/*
+ * 星厨房主题 CSS 变量
+ */
+:root, page {
+  /* 背景色 - 深蓝渐变 */
+  --background: #0f172a;
+  --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+  --background-secondary: #1e293b;
+  --card-background: rgba(30, 41, 59, 0.8);
+  
+  /* 主题色 */
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --primary-light: rgba(96, 165, 250, 0.2);
+  
+  /* 文字色 */
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-muted: #64748b;
+  
+  /* 边框色 */
+  --border: #334155;
+  --border-light: #475569;
+  
+  /* 功能色 */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --info: #60a5fa;
+}
+
+/*
+ * H5 端 rem 适配：与小程序 rpx 缩放一致
+ * 375px 屏幕：1rem = 16px，小程序 32rpx = 16px
+ */
+html {
+  font-size: 4vw !important;
+}
+
+/* 全局背景色 - 深蓝渐变 */
+html, body, page {
+  background: var(--background-gradient) !important;
+  color: var(--text-primary);
+  background-attachment: fixed;
+}
+
+/* 小程序页面容器高度设置，确保垂直居中生效 */
+/* stylelint-disable-next-line selector-type-no-unknown */
+page {
+  height: 100%;
+  background-color: var(--background);
+}
+
+/* H5 端组件默认样式修复 */
+taro-view-core {
+  display: block;
+}
+
+taro-text-core {
+  display: inline;
+}
+
+taro-input-core {
+  display: block;
+  width: 100%;
+}
+
+taro-input-core input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+}
+
+/* 全局按钮样式重置 */
+taro-button-core,
+button {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+taro-button-core::after,
+button::after {
+  border: none;
+}
+
+/* 禁用 body 滚动，防止双滚动条 */
+body {
+  overflow: hidden;
+  height: 100vh;
+  background-color: var(--background);
+  color: var(--text-primary);
+}
+
+/* 隐藏滚动条但保留滚动功能 */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* 确保所有 View 有默认背景 */
+view, .taro-view {
+  background-color: transparent;
+}
+
+/* 输入框 placeholder 颜色 */
+::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* 修复文本颜色继承 */
+text, .taro-text {
+  color: inherit;
+}
