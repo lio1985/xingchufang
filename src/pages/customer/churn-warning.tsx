@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
+import { ChevronRight, ShieldAlert, ShieldX, TrendingUp, DollarSign, Clock, Phone, MessageSquare, MapPin, Mail, CircleEllipsis, Activity, Check } from 'lucide-react-taro';
 
 interface ChurnRiskAssessment {
   customerId: string;
@@ -23,11 +24,16 @@ interface HandleForm {
 }
 
 const riskLevelMap = {
-  orange: { label: '中危', color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30', icon: 'D W', desc: '超过14天未跟进' },
-  yellow: { label: '低危', color: 'text-yellow-400', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', icon: 'D W', desc: '超过7天未跟进' }
+  red: { label: '高危', color: 'text-red-400', bg: 'bg-red-500/20', border: 'border-red-500/30', icon: ShieldX, desc: '超过30天未跟进' },
+  orange: { label: '中危', color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30', icon: ShieldAlert, desc: '超过14天未跟进' },
+  yellow: { label: '低危', color: 'text-yellow-400', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', icon: ShieldAlert, desc: '超过7天未跟进' }
 };
 
 const actionOptions = [
+  { key: 'phone', label: '电话回访', icon: Phone },
+  { key: 'visit', label: '上门拜访', icon: MapPin },
+  { key: 'message', label: '微信/短信', icon: MessageSquare },
+  { key: 'email', label: '邮件沟通', icon: Mail },
   { key: 'other', label: '其他方式', icon: CircleEllipsis },
 ];
 
@@ -173,7 +179,7 @@ export default function ChurnWarningList() {
               onClick={() => Taro.navigateBack()}
               className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
             >
-              <Text>›</Text>
+              <ChevronRight size={18} color="#94a3b8" />
             </View>
             <Text className="block text-white text-xl font-bold">客户流失预警</Text>
           </View>
@@ -182,7 +188,7 @@ export default function ChurnWarningList() {
               onClick={navigateToAnalysis}
               className="w-9 h-9 rounded-full bg-slate-9000/20 flex items-center justify-center active:scale-95 mr-2"
             >
-              <Text>#</Text>
+              <Activity size={18} color="#60a5fa" />
             </View>
             <View className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             <Text className="block text-red-400 text-xs">需跟进</Text>
@@ -252,7 +258,7 @@ export default function ChurnWarningList() {
         {churnRisks.length === 0 ? (
           <View className="py-20 text-center">
             <View className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Text>^</Text>
+              <TrendingUp size={40} color="#34d399" />
             </View>
             <Text className="block text-white text-lg font-semibold mb-2">暂无流失预警</Text>
             <Text className="block text-slate-400 text-sm">您的客户跟进情况良好，继续保持！</Text>
@@ -260,7 +266,7 @@ export default function ChurnWarningList() {
               onClick={navigateToAnalysis}
               className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-slate-9000/20 border border-sky-500/30 rounded-xl"
             >
-              <Text>#</Text>
+              <Activity size={16} color="#60a5fa" />
               <Text className="block text-blue-400 text-sm">查看效果分析</Text>
             </View>
           </View>
@@ -283,7 +289,7 @@ export default function ChurnWarningList() {
                       <Text className="block text-slate-400 text-xs mt-1">{levelInfo.desc}</Text>
                     </View>
                     <View className={`flex items-center gap-1 px-3 py-1.5 rounded-full ${levelInfo.bg} ${levelInfo.border} border`}>
-                      <Text>●</Text>
+                      <IconComponent size={14} color={risk.riskLevel === 'red' ? '#f87171' : risk.riskLevel === 'orange' ? '#fbbf24' : '#facc15'} />
                       <Text className={`block text-sm font-bold ${levelInfo.color}`}>{levelInfo.label}</Text>
                     </View>
                   </View>
@@ -291,7 +297,7 @@ export default function ChurnWarningList() {
                   {/* 关键信息 */}
                   <View className="flex items-center gap-4 mb-3">
                     <View className="flex items-center gap-1">
-                      <Text>🕐</Text>
+                      <Clock size={14} color="#64748b" />
                       <Text className="block text-slate-400 text-sm">
                         <Text className={risk.daysSinceLastFollowUp >= 30 ? 'text-red-400' : risk.daysSinceLastFollowUp >= 14 ? 'text-amber-400' : 'text-yellow-400'}>
                           {risk.daysSinceLastFollowUp}天
@@ -301,7 +307,7 @@ export default function ChurnWarningList() {
                     </View>
                     {risk.estimatedAmount && (
                       <View className="flex items-center gap-1">
-                        <Text>💵</Text>
+                        <DollarSign size={14} color="#10b981" />
                         <Text className="block text-emerald-400 text-sm">
                           ¥{(risk.estimatedAmount / 10000).toFixed(1)}万
                         </Text>
@@ -402,7 +408,7 @@ export default function ChurnWarningList() {
                             : 'bg-slate-800 border-slate-700'
                         }`}
                       >
-                        <Text>●</Text>
+                        <Icon size={14} color={handleForm.handle_action === action.key ? '#60a5fa' : '#94a3b8'} />
                         <Text className={`block text-sm ${handleForm.handle_action === action.key ? 'text-blue-400' : 'text-slate-400'}`}>
                           {action.label}
                         </Text>
@@ -430,12 +436,13 @@ export default function ChurnWarningList() {
                       }`}
                     >
                       {handleForm.handle_result === result.key && (
-                        <Text className={`text-sm ${
-                          result.key === 'success' ? 'text-emerald-400' :
-                          result.key === 'converted' ? 'text-blue-400' :
-                          result.key === 'pending' ? 'text-amber-400' :
-                          'text-gray-400'
-                        }`}>✓</Text>
+                        <Check size={14} color={
+                          result.key === 'success' ? '#34d399' :
+                          result.key === 'converted' ? '#60a5fa' :
+                          result.key === 'pending' ? '#fbbf24' :
+                          '#94a3b8'
+                        }
+                        />
                       )}
                       <Text className={`block text-sm ${
                         handleForm.handle_result === result.key

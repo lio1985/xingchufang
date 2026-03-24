@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { 
+  ArrowLeft, TrendingUp, Users, DollarSign, Target, 
+  Calendar, Activity
+} from 'lucide-react-taro';
 
 interface OverviewStats {
   total: number;
@@ -113,6 +117,9 @@ export default function CustomerStatistics() {
   };
 
   const tabs = [
+    { key: 'overview', label: '总览', icon: Users },
+    { key: 'weekly', label: '本周', icon: Calendar },
+    { key: 'monthly', label: '本月', icon: Activity },
     ...(isAdmin ? [{ key: 'sales', label: '销售排行', icon: Target }] : [])
   ];
 
@@ -121,7 +128,7 @@ export default function CustomerStatistics() {
       {/* 头部 */}
       <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center" onClick={goBack}>
-          <Text>←</Text>
+          <ArrowLeft size={24} color="#ffffff" />
           <Text className="block text-white text-lg font-semibold ml-2">客户统计</Text>
         </View>
       </View>
@@ -154,7 +161,7 @@ export default function CustomerStatistics() {
                 className="flex-1 min-w-[45%] bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-4 active:scale-95"
                 onClick={() => drillDown({})}
               >
-                <Text>👤</Text>
+                <Users size={24} color="#ffffff" className="mb-2" />
                 <Text className="block text-2xl font-bold text-white">{overview.total}</Text>
                 <Text className="block text-blue-200 text-xs">总客户数</Text>
               </View>
@@ -162,7 +169,7 @@ export default function CustomerStatistics() {
                 className="flex-1 min-w-[45%] bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl p-4 active:scale-95"
                 onClick={() => drillDown({ orderStatus: 'completed' })}
               >
-                <Text>💵</Text>
+                <DollarSign size={24} color="#ffffff" className="mb-2" />
                 <Text className="block text-2xl font-bold text-white">
                   ¥{(overview.totalEstimatedAmount || 0).toFixed(0)}万
                 </Text>
@@ -172,7 +179,7 @@ export default function CustomerStatistics() {
                 className="flex-1 min-w-[45%] bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-4 active:scale-95"
                 onClick={() => drillDown({ orderStatus: 'completed' })}
               >
-                <Text>@</Text>
+                <Target size={24} color="#ffffff" className="mb-2" />
                 <Text className="block text-2xl font-bold text-white">{overview.conversionRate}%</Text>
                 <Text className="block text-purple-200 text-xs">成交转化率</Text>
               </View>
@@ -180,7 +187,7 @@ export default function CustomerStatistics() {
                 className="flex-1 min-w-[45%] bg-gradient-to-br from-amber-600 to-amber-700 rounded-xl p-4 active:scale-95"
                 onClick={() => drillDown({ orderStatus: 'completed' })}
               >
-                <Text>^</Text>
+                <TrendingUp size={24} color="#ffffff" className="mb-2" />
                 <Text className="block text-2xl font-bold text-white">{overview.orderDistribution.completed}</Text>
                 <Text className="block text-amber-200 text-xs">已成交订单</Text>
               </View>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateBack, getCurrentInstance } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { ArrowLeft, TrendingUp, TrendingDown, Target, Users, Heart, ShoppingCart, ArrowUpRight } from 'lucide-react-taro';
 import './index.less';
 
 interface ConversionStats {
@@ -107,7 +108,7 @@ const ConversionPage = () => {
       <View className="conversion-page">
         <View className="header">
           <View className="back-btn" onClick={() => navigateBack()}>
-            <Text>←</Text>
+            <ArrowLeft size={20} color="#333" />
           </View>
           <Text className="title">转化数据</Text>
           <View className="placeholder" />
@@ -126,7 +127,7 @@ const ConversionPage = () => {
     <View className="conversion-page">
       <View className="header">
         <View className="back-btn" onClick={() => navigateBack()}>
-          <Text>←</Text>
+          <ArrowLeft size={20} color="#333" />
         </View>
         <View className="header-center">
           <Text className="title">转化数据</Text>
@@ -144,13 +145,13 @@ const ConversionPage = () => {
             <View className="funnel-level">
               <View className="funnel-bar view">
                 <View className="funnel-content">
-                  <Text>👤</Text>
+                  <Users size={18} color="#fff" />
                   <Text className="funnel-label">观看人数</Text>
                   <Text className="funnel-value">{stats.totalViews.toLocaleString()}</Text>
                 </View>
               </View>
               <View className="funnel-arrow">
-                <Text>↗</Text>
+                <ArrowUpRight size={14} color="#999" />
                 <Text className="funnel-rate">{stats.conversionRate.toFixed(2)}% 转化</Text>
               </View>
             </View>
@@ -159,7 +160,7 @@ const ConversionPage = () => {
             <View className="funnel-level">
               <View className="funnel-bar order">
                 <View className="funnel-content">
-                  <Text>🛒</Text>
+                  <ShoppingCart size={18} color="#fff" />
                   <Text className="funnel-label">成交订单</Text>
                   <Text className="funnel-value">{stats.ordersCount.toLocaleString()}</Text>
                 </View>
@@ -172,14 +173,15 @@ const ConversionPage = () => {
         <View className="section-card main-conversion">
           <View className="conversion-header">
             <View className="conversion-icon">
-              <Text>@</Text>
+              <Target size={24} color="#fff" />
             </View>
             <View className="conversion-info">
               <Text className="conversion-label">观看转化率</Text>
               <View className="conversion-row">
                 <Text className="conversion-value">{stats.conversionRate.toFixed(2)}%</Text>
                 <View className={`conversion-change ${conversionChange >= 0 ? 'up' : 'down'}`}>
-                  {conversionChange >= 0 ? <Text>+{formatChange(conversionChange)}</Text> : <Text>{formatChange(conversionChange)}</Text>}
+                  {conversionChange >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                  <Text>{formatChange(conversionChange)}</Text>
                 </View>
               </View>
             </View>
@@ -197,7 +199,7 @@ const ConversionPage = () => {
           <View className="conversion-grid">
             <View className="conversion-item">
               <View className="item-icon blue">
-                <Text>❤️</Text>
+                <Heart size={18} color="#fff" />
               </View>
               <View className="item-info">
                 <Text className="item-value">{stats.interactionRate.toFixed(2)}%</Text>
@@ -207,7 +209,7 @@ const ConversionPage = () => {
 
             <View className="conversion-item">
               <View className="item-icon purple">
-                <Text>👤</Text>
+                <Users size={18} color="#fff" />
               </View>
               <View className="item-info">
                 <Text className="item-value">{stats.followerConversionRate.toFixed(2)}%</Text>
@@ -222,7 +224,7 @@ const ConversionPage = () => {
 
             <View className="conversion-item">
               <View className="item-icon cyan">
-                <Text>^</Text>
+                <TrendingUp size={18} color="#fff" />
               </View>
               <View className="item-info">
                 <Text className="item-value">{stats.enterRoomRate.toFixed(1)}%</Text>

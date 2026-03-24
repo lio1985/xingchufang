@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, Textarea, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { Send, Bot, User, Trash2, Plus, Clock, ChevronLeft, ChevronDown, ChevronRight, Zap, Mic, Paperclip, X, Image as ImageIcon, FileText, Video } from 'lucide-react-taro';
 import { Network } from '@/network';
 import StarIcon from '@/components/StarIcon';
 
@@ -699,7 +701,7 @@ const AiChatPage = () => {
                 style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowConversationList(false)}
               >
-                <Text>‹</Text>
+                <ChevronLeft size={20} color="#94a3b8" />
               </View>
             </View>
 
@@ -708,7 +710,7 @@ const AiChatPage = () => {
               style={{ touchAction: 'none', zIndex: 10 }}
               onClick={handleNewConversation}
             >
-              <Text>➕</Text>
+              <Plus size={18} color="#60a5fa" />
               <Text className="block text-sm font-medium text-blue-300">新建对话</Text>
             </View>
 
@@ -743,11 +745,11 @@ const AiChatPage = () => {
                         onClick={(e) => handleDeleteConversation(conv.id, e)}
                         onTap={(e) => handleDeleteConversation(conv.id, e)}
                       >
-                        <Text>🗑️</Text>
+                        <Trash2 size={14} color="#64748b" />
                       </View>
                     </View>
                     <View className="flex items-center gap-1">
-                      <Text>🕐</Text>
+                      <Clock size={12} color="#64748b" />
                       <Text className="text-xs text-slate-400">
                         {new Date(conv.created_at).toLocaleDateString()}
                       </Text>
@@ -777,7 +779,7 @@ const AiChatPage = () => {
                 style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowLexiconList(false)}
               >
-                <Text>‹</Text>
+                <ChevronLeft size={20} color="#94a3b8" />
               </View>
             </View>
 
@@ -823,7 +825,7 @@ const AiChatPage = () => {
       <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 px-4 py-3">
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
-            <Text>*</Text>
+            <StarIcon size={32} />
             <Text className="block text-xl font-bold text-white">星小帮</Text>
           </View>
         </View>
@@ -846,7 +848,7 @@ const AiChatPage = () => {
             }}
           >
             <View className="flex items-center gap-2">
-              <Text>⚡</Text>
+              <Zap size={16} color="#fbbf24" />
               <Text className="text-sm font-medium text-slate-300">
                 {model === 'doubao-seed-2-0-pro-260215' && '豆包 Pro'}
                 {model === 'doubao-seed-2-0-lite-260215' && '豆包 Lite'}
@@ -861,9 +863,9 @@ const AiChatPage = () => {
             <View className="flex items-center gap-1">
               <Text className="text-xs text-slate-400">自动选择</Text>
               {modelExpanded ? (
-                <Text>⌄</Text>
+                <ChevronDown size={14} color="#94a3b8" />
               ) : (
-                <Text>›</Text>
+                <ChevronRight size={14} color="#94a3b8" />
               )}
             </View>
           </View>
@@ -930,7 +932,7 @@ const AiChatPage = () => {
         {messages.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20">
             <View className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mb-4">
-              <Text>🤖</Text>
+              <Bot size={40} color="#60a5fa" />
             </View>
             <Text className="block text-base text-slate-400 mb-2">开始对话</Text>
             <Text className="block text-sm text-slate-300">我是你的助手，随时为你服务</Text>
@@ -951,9 +953,9 @@ const AiChatPage = () => {
                     }`}
                   >
                     {msg.role === 'user' ? (
-                      <Text>👤</Text>
+                      <User size={20} color="#f59e0b" />
                     ) : (
-                      <Text>🤖</Text>
+                      <Bot size={20} color="#60a5fa" />
                     )}
                   </View>
 
@@ -988,12 +990,12 @@ const AiChatPage = () => {
                               )}
                               {att.type === 'video' && (
                                 <View className="w-full h-full flex items-center justify-center">
-                                  <Text>V</Text>
+                                  <Video size={32} color="white" />
                                 </View>
                               )}
                               {att.type === 'document' && (
                                 <View className="w-full h-full flex items-center justify-center">
-                                  <Text>📄</Text>
+                                  <FileText size={32} color="white" />
                                 </View>
                               )}
                             </View>
@@ -1017,7 +1019,7 @@ const AiChatPage = () => {
               <View className="flex justify-start">
                 <View className="flex gap-3 max-w-[85%]">
                   <View className="w-10 h-10 bg-slate-9000/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Text>🤖</Text>
+                    <Bot size={20} color="#60a5fa" />
                   </View>
                   <View className="bg-slate-800 px-4 py-3 rounded-2xl rounded-tl-none">
                     <Text className="block text-sm text-slate-400">思考中...</Text>
@@ -1073,12 +1075,12 @@ const AiChatPage = () => {
                   )}
                   {att.type === 'video' && (
                     <View className="w-full h-full flex items-center justify-center bg-slate-800">
-                      <Text>V</Text>
+                      <Video size={28} color="#60a5fa" />
                     </View>
                   )}
                   {att.type === 'document' && (
                     <View className="w-full h-full flex items-center justify-center bg-slate-800">
-                      <Text>📄</Text>
+                      <FileText size={28} color="#60a5fa" />
                     </View>
                   )}
                   {/* 删除按钮 */}
@@ -1101,7 +1103,7 @@ const AiChatPage = () => {
                     onClick={() => handleRemoveAttachment(index)}
                     onTap={() => handleRemoveAttachment(index)}
                   >
-                    <Text>✕</Text>
+                    <X size={12} color="white" />
                   </View>
                 </View>
               ))}
@@ -1181,7 +1183,7 @@ const AiChatPage = () => {
                 onClick={isRecording ? stopRecording : startRecording}
                 onTap={isRecording ? stopRecording : startRecording}
               >
-                <Text>🎤</Text>
+                <Mic size={18} color="white" />
               </View>
             )}
 
@@ -1234,7 +1236,7 @@ const AiChatPage = () => {
               onClick={handleSelectFile}
               onTap={handleSelectFile}
             >
-              <Text>📎</Text>
+              <Paperclip size={18} color="#94a3b8" />
             </View>
 
             {/* 发送按钮 */}
@@ -1345,7 +1347,7 @@ const AiChatPage = () => {
                     boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
                   }}
                   >
-                    <Text>🖼️</Text>
+                    <ImageIcon size={24} color="white" />
                   </View>
                   <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>图片</Text>
                 </View>
@@ -1378,7 +1380,7 @@ const AiChatPage = () => {
                     boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)'
                   }}
                   >
-                    <Text>V</Text>
+                    <Video size={24} color="white" />
                   </View>
                   <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>视频</Text>
                 </View>
@@ -1411,7 +1413,7 @@ const AiChatPage = () => {
                     boxShadow: '0 4px 15px rgba(34, 197, 94, 0.3)'
                   }}
                   >
-                    <Text>📄</Text>
+                    <FileText size={24} color="white" />
                   </View>
                   <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>文档</Text>
                 </View>

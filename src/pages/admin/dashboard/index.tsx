@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
+import { Users, MessageSquare, FileText, Award, RefreshCw, FileSpreadsheet, Activity, Share2, Globe, Download, Bell, Database, BookOpen, FileCheck, ClipboardList, TrendingUp, User, Store, UsersRound, Video } from 'lucide-react-taro';
 
 interface GlobalStatistics {
   totalUsers: number;
@@ -115,7 +116,7 @@ export default function AdminDashboardPage() {
     <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
       <View className="flex items-center gap-3 mb-2">
         <View className={`p-2 rounded-lg ${color}`}>
-          <Text>●</Text>
+          <Icon size={20} className="text-white" />
         </View>
         <Text className="text-slate-400 text-sm">{label}</Text>
       </View>
@@ -156,17 +157,17 @@ export default function AdminDashboardPage() {
 
         <View className="mt-3 pt-3 border-t border-slate-700 flex justify-between text-xs">
           <View className="flex items-center gap-1">
-            <Text>💬</Text>
+            <MessageSquare size={12} className="text-slate-400" />
             <Text className="text-slate-400">对话: </Text>
             <Text className="text-white">{ranking.statistics.conversationCount}</Text>
           </View>
           <View className="flex items-center gap-1">
-            <Text>💬</Text>
+            <MessageSquare size={12} className="text-slate-400" />
             <Text className="text-slate-400">消息: </Text>
             <Text className="text-white">{ranking.statistics.messageCount}</Text>
           </View>
           <View className="flex items-center gap-1">
-            <Text>📄</Text>
+            <FileText size={12} className="text-slate-400" />
             <Text className="text-slate-400">文件: </Text>
             <Text className="text-white">{ranking.statistics.fileCount}</Text>
           </View>
@@ -181,7 +182,7 @@ export default function AdminDashboardPage() {
       <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
         <Text className="text-white text-lg font-bold">数据监控</Text>
         <View className={`p-2 rounded-lg bg-slate-800 ${loading ? 'opacity-50' : ''}`} onClick={handleRefresh}>
-          <Text>🔄</Text>
+          <RefreshCw size={20} className={`text-slate-300 ${loading ? 'animate-spin' : ''}`} />
         </View>
       </View>
 
@@ -203,7 +204,7 @@ export default function AdminDashboardPage() {
             <View className="relative z-10">
               <View className="flex items-center gap-3 mb-2">
                 <View className="p-2 bg-slate-800 bg-opacity-20 rounded-lg">
-                  <Text>📁</Text>
+                  <FileSpreadsheet size={24} className="text-white" />
                 </View>
                 <Text className="text-white text-base font-semibold">运营报告</Text>
               </View>
@@ -211,7 +212,7 @@ export default function AdminDashboardPage() {
                 分析用户行为与系统运营数据，一键创建专业运营报告
               </Text>
               <View className="flex items-center gap-2">
-                <Text>#</Text>
+                <Activity size={16} className="text-white" />
                 <Text className="text-white text-xs">点击创建报告</Text>
               </View>
             </View>
@@ -227,7 +228,7 @@ export default function AdminDashboardPage() {
             <View className="relative z-10">
               <View className="flex items-center gap-3 mb-2">
                 <View className="p-2 bg-slate-800 bg-opacity-20 rounded-lg">
-                  <Text>U</Text>
+                  <Share2 size={24} className="text-white" />
                 </View>
                 <Text className="text-white text-base font-semibold">共享管理</Text>
               </View>
@@ -235,7 +236,7 @@ export default function AdminDashboardPage() {
                 管理语料库共享权限，支持用户共享和全局共享设置
               </Text>
               <View className="flex items-center gap-2">
-                <Text>🌐</Text>
+                <Globe size={16} className="text-white" />
                 <Text className="text-white text-xs">点击管理共享</Text>
               </View>
             </View>
@@ -251,7 +252,7 @@ export default function AdminDashboardPage() {
             <View className="relative z-10">
               <View className="flex items-center gap-3 mb-2">
                 <View className="p-2 bg-slate-800 bg-opacity-20 rounded-lg">
-                  <Text>⬇️</Text>
+                  <Download size={24} className="text-white" />
                 </View>
                 <Text className="text-white text-base font-semibold">数据导出</Text>
               </View>
@@ -259,7 +260,7 @@ export default function AdminDashboardPage() {
                 导出用户数据、语料库、操作日志等，支持 JSON 和 CSV 格式
               </Text>
               <View className="flex items-center gap-2">
-                <Text>#</Text>
+                <Activity size={16} className="text-white" />
                 <Text className="text-white text-xs">点击导出数据</Text>
               </View>
             </View>
@@ -276,7 +277,7 @@ export default function AdminDashboardPage() {
               <View className="relative z-10">
                 <View className="flex items-center gap-3 mb-2">
                   <View className="p-2 bg-slate-800 bg-opacity-20 rounded-lg">
-                    <Text>B</Text>
+                    <Bell size={24} className="text-white" />
                   </View>
                   <View className="flex-1">
                     <Text className="text-white text-base font-semibold block">待审核用户</Text>
@@ -292,7 +293,7 @@ export default function AdminDashboardPage() {
                   点击前往审核用户，批准或拒绝用户访问权限
                 </Text>
                 <View className="flex items-center gap-2">
-                  <Text>👤</Text>
+                  <Users size={16} className="text-white" />
                   <Text className="text-white text-xs">立即审核</Text>
                 </View>
               </View>
@@ -312,7 +313,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-slate-9000/20 rounded-lg">
-                      <Text>👤</Text>
+                      <Users size={18} className="text-blue-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">用户管理</Text>
                   </View>
@@ -329,7 +330,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-emerald-500/20 rounded-lg">
-                      <Text>📖</Text>
+                      <BookOpen size={18} className="text-emerald-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">语料库</Text>
                   </View>
@@ -346,7 +347,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-purple-500/20 rounded-lg">
-                      <Text>🗄️</Text>
+                      <Database size={18} className="text-purple-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">用户数据</Text>
                   </View>
@@ -363,7 +364,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-amber-500/20 rounded-lg">
-                      <Text>📁</Text>
+                      <FileCheck size={18} className="text-amber-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">快速笔记</Text>
                   </View>
@@ -380,7 +381,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-red-500/20 rounded-lg">
-                      <Text>📋</Text>
+                      <ClipboardList size={18} className="text-red-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">审计日志</Text>
                   </View>
@@ -397,7 +398,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-cyan-500/20 rounded-lg">
-                      <Text>^</Text>
+                      <TrendingUp size={18} className="text-cyan-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">共享统计</Text>
                   </View>
@@ -414,7 +415,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-pink-500/20 rounded-lg">
-                      <Text>💬</Text>
+                      <MessageSquare size={18} className="text-pink-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">发送通知</Text>
                   </View>
@@ -431,7 +432,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-indigo-500/20 rounded-lg">
-                      <Text>👤</Text>
+                      <User size={18} className="text-indigo-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">客户管理</Text>
                   </View>
@@ -448,7 +449,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-pink-500/20 rounded-lg">
-                      <Text>📖</Text>
+                      <BookOpen size={18} className="text-pink-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">知识分享</Text>
                   </View>
@@ -465,7 +466,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-cyan-500/20 rounded-lg">
-                      <Text>🏪</Text>
+                      <Store size={18} className="text-cyan-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">回收门店</Text>
                   </View>
@@ -482,7 +483,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-emerald-500/20 rounded-lg">
-                      <Text>👤</Text>
+                      <UsersRound size={18} className="text-emerald-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">团队管理</Text>
                   </View>
@@ -499,7 +500,7 @@ export default function AdminDashboardPage() {
                 <View className="relative z-10">
                   <View className="flex items-center gap-2 mb-2">
                     <View className="p-2 bg-rose-500/20 rounded-lg">
-                      <Text>V</Text>
+                      <Video size={18} className="text-rose-400" />
                     </View>
                     <Text className="text-white text-sm font-semibold">直播数据</Text>
                   </View>
@@ -578,7 +579,7 @@ export default function AdminDashboardPage() {
           <View>
             <View className="flex justify-between items-center mb-3">
               <View className="flex items-center gap-2">
-                <Text>🏆</Text>
+                <Award size={20} className="text-yellow-500" />
                 <Text className="text-white font-semibold">活跃用户排行</Text>
               </View>
               <Text className="text-slate-400 text-sm">Top {rankingLimit}</Text>
@@ -592,7 +593,7 @@ export default function AdminDashboardPage() {
               </View>
             ) : (
               <View className="bg-slate-800 rounded-lg p-8 text-center">
-                <Text>🏆</Text>
+                <Award size={48} className="text-slate-300 mx-auto mb-3" />
                 <Text className="text-slate-400 block">暂无排行数据</Text>
               </View>
             )}

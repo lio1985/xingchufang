@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { showToast, navigateTo } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { Calendar, ChevronRight, TrendingUp, Eye, Users } from 'lucide-react-taro';
 import './index.less';
 
 interface LiveStream {
@@ -86,7 +87,7 @@ const LiveDataListPage = () => {
       <ScrollView className="list-container" scrollY onScrollToLower={loadMore}>
         {liveList.length === 0 && !loading ? (
           <View className="empty-state">
-            <Text>D</Text>
+            <Calendar size={48} color="#999" />
             <Text className="empty-text">暂无直播记录</Text>
             <Text className="empty-tips">导入数据后即可查看</Text>
           </View>
@@ -101,17 +102,17 @@ const LiveDataListPage = () => {
 
                 <View className="stats-row">
                   <View className="stat-item">
-                    <Text>👁️</Text>
+                    <Eye size={14} color="#666" />
                     <Text className="value">{item.totalViews.toLocaleString()}</Text>
                     <Text className="label">观看</Text>
                   </View>
                   <View className="stat-item">
-                    <Text>👤</Text>
+                    <Users size={14} color="#666" />
                     <Text className="value">{item.peakOnline.toLocaleString()}</Text>
                     <Text className="label">最高在线</Text>
                   </View>
                   <View className="stat-item">
-                    <Text>^</Text>
+                    <TrendingUp size={14} color="#666" />
                     <Text className="value">¥{item.gmv.toFixed(2)}</Text>
                     <Text className="label">成交</Text>
                   </View>
@@ -120,7 +121,7 @@ const LiveDataListPage = () => {
                 <View className="card-footer">
                   <Text className="duration">时长: {formatDuration(item.durationSeconds)}</Text>
                   <Text className="orders">订单: {item.ordersCount}</Text>
-                  <Text>›</Text>
+                  <ChevronRight size={16} color="#999" />
                 </View>
               </View>
             ))}

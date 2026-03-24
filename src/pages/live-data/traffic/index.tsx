@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateBack, getCurrentInstance } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { ArrowLeft, Eye, Users, TrendingUp, MousePointer, Activity } from 'lucide-react-taro';
 import './index.less';
 
 interface TrafficStats {
@@ -97,7 +98,7 @@ const TrafficPage = () => {
       <View className="traffic-page">
         <View className="header">
           <View className="back-btn" onClick={() => navigateBack()}>
-            <Text>←</Text>
+            <ArrowLeft size={20} color="#333" />
           </View>
           <Text className="title">流量数据</Text>
           <View className="placeholder" />
@@ -117,7 +118,7 @@ const TrafficPage = () => {
     <View className="traffic-page">
       <View className="header">
         <View className="back-btn" onClick={() => navigateBack()}>
-          <Text>←</Text>
+          <ArrowLeft size={20} color="#333" />
         </View>
         <View className="header-center">
           <Text className="title">流量数据</Text>
@@ -133,7 +134,7 @@ const TrafficPage = () => {
           <View className="metric-cards">
             <View className="metric-card large">
               <View className="metric-icon blue">
-                <Text>👁️</Text>
+                <Eye size={24} color="#fff" />
               </View>
               <View className="metric-info">
                 <Text className="metric-value">{stats.exposureCount.toLocaleString()}</Text>
@@ -146,7 +147,7 @@ const TrafficPage = () => {
 
             <View className="metric-card large">
               <View className="metric-icon cyan">
-                <Text>🖱️</Text>
+                <MousePointer size={24} color="#fff" />
               </View>
               <View className="metric-info">
                 <Text className="metric-value">{stats.enterRoomCount.toLocaleString()}</Text>
@@ -163,7 +164,7 @@ const TrafficPage = () => {
         <View className="section-card conversion-card">
           <View className="conversion-header">
             <View className="conversion-icon">
-              <Text>^</Text>
+              <TrendingUp size={20} color="#fff" />
             </View>
             <View className="conversion-info">
               <Text className="conversion-label">进房率</Text>
@@ -189,7 +190,7 @@ const TrafficPage = () => {
           <View className="online-grid">
             <View className="online-item">
               <View className="online-icon purple">
-                <Text>#</Text>
+                <Activity size={18} color="#fff" />
               </View>
               <View className="online-info">
                 <Text className="online-value">{stats.onlinePeak.toLocaleString()}</Text>
@@ -199,7 +200,7 @@ const TrafficPage = () => {
 
             <View className="online-item">
               <View className="online-icon indigo">
-                <Text>👤</Text>
+                <Users size={18} color="#fff" />
               </View>
               <View className="online-info">
                 <Text className="online-value">{stats.avgOnline.toLocaleString()}</Text>
@@ -209,7 +210,7 @@ const TrafficPage = () => {
 
             <View className="online-item">
               <View className="online-icon pink">
-                <Text>#</Text>
+                <Activity size={18} color="#fff" />
               </View>
               <View className="online-info">
                 <Text className="online-value">{stats.totalViews.toLocaleString()}</Text>

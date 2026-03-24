@@ -1,6 +1,7 @@
 import { View, Text, Button, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
+import { FileText, Copy, Loader, Sparkles, Hash, MessageCircle, Video } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface GeneratedScript {
@@ -120,7 +121,7 @@ export default function HotScriptGenerationPage() {
       <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
         <View className="flex items-center justify-between mb-3">
           <View className="flex items-center gap-2">
-            <Text>V</Text>
+            <Video size={18} color="#a855f7" strokeWidth={2} />
             <Text className="block text-base font-bold text-white">
               {activeTab === '15s' ? '15秒快节奏' : activeTab === '30s' ? '30秒标准口播' : '60秒深度讲解'}
             </Text>
@@ -131,7 +132,7 @@ export default function HotScriptGenerationPage() {
             onClick={() => handleCopy(content, '脚本')}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
-              <Text>📋</Text>
+              <Copy size={14} />
               <Text>复制</Text>
             </View>
           </Button>
@@ -152,7 +153,7 @@ export default function HotScriptGenerationPage() {
       <View className="bg-gradient-to-br from-sky-50 via-slate-800 to-slate-900 px-6 pt-8 pb-6 border-b border-slate-800">
         <View className="flex items-center gap-3">
           <View className="w-12 h-12 bg-gradient-to-br from-pink-500/30 to-red-500/30 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/20">
-            <Text>📄</Text>
+            <FileText size={24} color="#ec4899" strokeWidth={2.5} />
           </View>
           <View>
             <Text className="block text-2xl font-bold text-white mb-1 tracking-tight">脚本创作</Text>
@@ -191,7 +192,7 @@ export default function HotScriptGenerationPage() {
           >
             {loading ? (
               <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
-                <Text>⏳</Text>
+                <Loader size={16} color="white" className="animate-spin" />
                 <Text>处理中...</Text>
               </View>
             ) : script !== null ? (
@@ -206,7 +207,7 @@ export default function HotScriptGenerationPage() {
         {script && (
           <View className="px-4 mt-6">
             <View className="flex items-center gap-2 mb-4">
-              <Text>✨</Text>
+              <Sparkles size={20} color="#ec4899" strokeWidth={2} />
               <Text className="block text-lg font-bold text-white">脚本内容</Text>
             </View>
 
@@ -250,7 +251,7 @@ export default function HotScriptGenerationPage() {
               <View className="mt-4">
                 <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
-                    <Text>📄</Text>
+                    <FileText size={18} color="#f472b6" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">抖音标题</Text>
                   </View>
                   <View className="space-y-2">
@@ -263,7 +264,7 @@ export default function HotScriptGenerationPage() {
                           className="bg-slate-800 text-slate-400 border border-slate-700"
                           onClick={() => handleCopy(t, '标题')}
                         >
-                          <Text>📋</Text>
+                          <Copy size={14} />
                         </Button>
                       </View>
                     ))}
@@ -277,7 +278,7 @@ export default function HotScriptGenerationPage() {
               <View className="mt-4">
                 <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
-                    <Text>💬</Text>
+                    <MessageCircle size={18} color="#34d399" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">评论区引导</Text>
                   </View>
                   <View className="space-y-2">
@@ -290,7 +291,7 @@ export default function HotScriptGenerationPage() {
                           className="bg-slate-800 text-slate-400 border border-slate-700"
                           onClick={() => handleCopy(c, '引导语')}
                         >
-                          <Text>📋</Text>
+                          <Copy size={14} />
                         </Button>
                       </View>
                     ))}
@@ -304,7 +305,7 @@ export default function HotScriptGenerationPage() {
               <View className="mt-4">
                 <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
-                    <Text>V</Text>
+                    <Video size={18} color="#fbbf24" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">直播间话题</Text>
                   </View>
                   <View className="space-y-2">
@@ -317,7 +318,7 @@ export default function HotScriptGenerationPage() {
                           className="bg-slate-800 text-slate-400 border border-slate-700"
                           onClick={() => handleCopy(l, '话题')}
                         >
-                          <Text>📋</Text>
+                          <Copy size={14} />
                         </Button>
                       </View>
                     ))}
@@ -331,7 +332,7 @@ export default function HotScriptGenerationPage() {
               <View className="mt-4">
                 <View className="bg-slate-800/60 rounded-xl border border-slate-700/80 p-4">
                   <View className="flex items-center gap-2 mb-3">
-                    <Text>#</Text>
+                    <Hash size={18} color="#60a5fa" strokeWidth={2} />
                     <Text className="block text-base font-bold text-white">推荐话题标签</Text>
                   </View>
                   <View className="flex flex-wrap gap-2">
@@ -355,7 +356,7 @@ export default function HotScriptGenerationPage() {
                 onClick={handleCopyAll}
               >
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
-                  <Text>📋</Text>
+                  <Copy size={18} />
                   <Text>复制全部内容</Text>
                 </View>
               </Button>

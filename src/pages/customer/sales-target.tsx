@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import { ChevronRight, Target, DollarSign, Users, CircleCheck, Plus, Trash2 } from 'lucide-react-taro';
 
 interface SalesTarget {
   id: string;
@@ -204,7 +205,7 @@ export default function SalesTargetPage() {
               onClick={() => Taro.navigateBack()}
               className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
             >
-              <Text>›</Text>
+              <ChevronRight size={18} color="#94a3b8" />
             </View>
             <Text className="block text-white text-xl font-bold">业绩目标</Text>
           </View>
@@ -212,7 +213,7 @@ export default function SalesTargetPage() {
             onClick={() => setShowCreateModal(true)}
             className="w-9 h-9 rounded-full bg-slate-9000/20 flex items-center justify-center active:scale-95"
           >
-            <Text>➕</Text>
+            <Plus size={20} color="#60a5fa" />
           </View>
         </View>
 
@@ -250,7 +251,7 @@ export default function SalesTargetPage() {
             {currentProgresses.length === 0 ? (
               <View className="py-20 text-center">
                 <View className="w-20 h-20 bg-slate-9000/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Text>@</Text>
+                  <Target size={40} color="#60a5fa" />
                 </View>
                 <Text className="block text-white text-lg font-semibold mb-2">暂无当前目标</Text>
                 <Text className="block text-slate-400 text-sm mb-4">设置业绩目标，追踪完成情况</Text>
@@ -258,7 +259,7 @@ export default function SalesTargetPage() {
                   onClick={() => setShowCreateModal(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-slate-9000/20 border border-sky-500/30 rounded-xl"
                 >
-                  <Text>➕</Text>
+                  <Plus size={16} color="#60a5fa" />
                   <Text className="block text-blue-400 text-sm">创建目标</Text>
                 </View>
               </View>
@@ -288,7 +289,7 @@ export default function SalesTargetPage() {
                   <View className="mb-4">
                     <View className="flex items-center justify-between mb-2">
                       <View className="flex items-center gap-2">
-                        <Text>💵</Text>
+                        <DollarSign size={16} color="#60a5fa" />
                         <Text className="block text-slate-300 text-sm">金额目标</Text>
                       </View>
                       <Text className="block text-white font-semibold">
@@ -312,7 +313,7 @@ export default function SalesTargetPage() {
                     {progress.target.target_deals > 0 && (
                       <View className="bg-slate-800 rounded-xl p-3">
                         <View className="flex items-center gap-2 mb-1">
-                          <Text>⭕✓</Text>
+                          <CircleCheck size={14} color="#94a3b8" />
                           <Text className="block text-slate-400 text-xs">成交单数</Text>
                         </View>
                         <Text className="block text-white font-semibold">{progress.currentDeals} / {progress.target.target_deals}</Text>
@@ -327,7 +328,7 @@ export default function SalesTargetPage() {
                     {progress.target.target_customers > 0 && (
                       <View className="bg-slate-800 rounded-xl p-3">
                         <View className="flex items-center gap-2 mb-1">
-                          <Text>👤</Text>
+                          <Users size={14} color="#94a3b8" />
                           <Text className="block text-slate-400 text-xs">客户数</Text>
                         </View>
                         <Text className="block text-white font-semibold">{progress.currentCustomers} / {progress.target.target_customers}</Text>
@@ -397,7 +398,7 @@ export default function SalesTargetPage() {
                         onClick={() => deleteTarget(target.id)}
                         className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center"
                       >
-                        <Text>🗑️</Text>
+                        <Trash2 size={16} color="#f87171" />
                       </View>
                     </View>
                   </View>

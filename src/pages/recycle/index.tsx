@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import { Store, Search, Plus, Phone, MapPin, TrendingUp, Check, Target, Activity } from 'lucide-react-taro';
 
 interface RecycleStore {
   id: string;
@@ -21,6 +22,13 @@ interface Statistics {
 }
 
 const statusMap = {
+  pending: { label: '待接触', color: 'text-slate-400', bg: 'bg-slate-8000/20', icon: Target },
+  contacted: { label: '已接触', color: 'text-blue-400', bg: 'bg-slate-9000/20', icon: Activity },
+  assessing: { label: '评估中', color: 'text-purple-400', bg: 'bg-purple-500/20', icon: Activity },
+  negotiating: { label: '谈判中', color: 'text-amber-400', bg: 'bg-amber-500/20', icon: TrendingUp },
+  deal: { label: '已签约', color: 'text-emerald-400', bg: 'bg-emerald-500/20', icon: Check },
+  recycling: { label: '回收中', color: 'text-cyan-400', bg: 'bg-cyan-500/20', icon: Store },
+  completed: { label: '已完成', color: 'text-green-400', bg: 'bg-green-500/20', icon: Check },
   cancelled: { label: '已取消', color: 'text-red-400', bg: 'bg-red-500/20', icon: TrendingUp }
 };
 
@@ -142,7 +150,7 @@ export default function RecycleStoreList() {
 
         {/* 搜索栏 */}
         <View className="bg-slate-800 rounded-xl p-3 mb-4 flex items-center gap-3">
-          <Text>?</Text>
+          <Search size={16} color="#94a3b8" />
           <Input
             className="flex-1 text-white text-sm bg-transparent"
             placeholder="搜索门店名称、电话、微信"
@@ -189,7 +197,7 @@ export default function RecycleStoreList() {
       <View className="px-4 pb-20">
         {stores.length === 0 && !loading ? (
           <View className="flex flex-col items-center justify-center py-20">
-            <Text>🏪</Text>
+            <Store size={48} color="#64748b" />
             <Text className="block text-slate-400 text-sm mt-3">暂无回收门店</Text>
             <View
               className="mt-4 bg-cyan-600 px-6 py-2 rounded-full"
@@ -226,11 +234,11 @@ export default function RecycleStoreList() {
                   </View>
 
                   <View className="flex items-center mt-3">
-                    <Text>📞</Text>
+                    <Phone size={14} className="text-slate-400 mr-2" />
                     <Text className="block text-slate-400 text-xs mr-4">
                       {store.phone || '未填写'}
                     </Text>
-                    <Text>📍</Text>
+                    <MapPin size={14} className="text-slate-400 mr-2" />
                     <Text className="block text-slate-400 text-xs">
                       {store.city || '未填写'}
                     </Text>
@@ -268,7 +276,7 @@ export default function RecycleStoreList() {
         className="fixed bottom-24 right-4 w-14 h-14 bg-cyan-600 rounded-full flex items-center justify-center shadow-lg"
         onClick={goToCreate}
       >
-        <Text>➕</Text>
+        <Plus size={24} color="#ffffff" />
       </View>
     </View>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Network } from '@/network'
+import { ArrowLeft, MessageSquare, FileText, Folder, Check, ClipboardList } from 'lucide-react-taro'
 
 export default function UserDataPage() {
   const router = useRouter()
@@ -15,30 +16,35 @@ export default function UserDataPage() {
       case 'conversations':
         return {
           title: '对话记录',
+          icon: <MessageSquare size={20} color="#60a5fa" />,
           api: `/api/conversation/list?userId=${userId}`,
           emptyText: '暂无对话记录'
         }
       case 'lexicons':
         return {
           title: '语料库',
+          icon: <FileText size={20} color="#34d399" />,
           api: `/api/lexicon?userId=${userId}`,
           emptyText: '暂无语料库'
         }
       case 'files':
         return {
           title: '文件上传',
+          icon: <Folder size={20} color="#fbbf24" />,
           api: `/api/multimedia/list?userId=${userId}`,
           emptyText: '暂无文件'
         }
       case 'tasks':
         return {
           title: '任务计划',
+          icon: <Check size={20} color="#f87171" />,
           api: `/api/work-plans?userId=${userId}`,
           emptyText: '暂无任务'
         }
       case 'audit':
         return {
           title: '操作日志',
+          icon: <ClipboardList size={20} color="#c084fc" />,
           api: `/api/user/operation-logs?userId=${userId}`,
           emptyText: '暂无操作日志'
         }
@@ -131,7 +137,7 @@ export default function UserDataPage() {
   const renderFileItem = (item: any) => (
     <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
       <View className="flex items-start gap-3 mb-2">
-        <Text>📁</Text>
+        <Folder size={24} color="#fbbf24" />
         <View className="flex-1 min-w-0">
           <Text className="text-white font-semibold block truncate">{item.name || item.title || '未命名文件'}</Text>
           <Text className="text-slate-400 text-xs block">
@@ -216,7 +222,7 @@ export default function UserDataPage() {
       <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
         <View className="flex items-center gap-3">
           <View onClick={() => Taro.navigateBack()}>
-            <Text>←</Text>
+            <ArrowLeft size={24} color="#94a3b8" />
           </View>
           <View className="flex items-center gap-2">
             {config.icon}

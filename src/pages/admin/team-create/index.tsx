@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, Input, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
+import { ChevronLeft, Users } from 'lucide-react-taro';
 
 export default function TeamCreate() {
   const [name, setName] = useState('');
@@ -52,7 +53,7 @@ export default function TeamCreate() {
               className="p-2 bg-slate-800 rounded-lg active:bg-slate-800 transition-colors"
               onClick={() => Taro.navigateBack()}
             >
-              <Text>‹</Text>
+              <ChevronLeft size={20} className="text-slate-300" />
             </View>
             <Text className="block text-lg font-semibold text-white">创建团队</Text>
           </View>
@@ -122,7 +123,7 @@ export default function TeamCreate() {
 
         {/* Tips */}
         <View className="flex items-start gap-2 p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-          <Text>👤</Text>
+          <Users size={18} className="text-blue-400 flex-shrink-0 mt-0.5" />
           <View>
             <Text className="block text-sm text-blue-400 font-medium mb-1">创建说明</Text>
             <Text className="block text-xs text-slate-400">创建团队后，您可以在团队详情页添加更多成员。团队成员可以共享客户数据和回收门店信息。</Text>

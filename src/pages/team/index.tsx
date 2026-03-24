@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { Users, Crown, TrendingUp, DollarSign, Target } from 'lucide-react-taro';
 
 interface TeamMember {
   id: string;
@@ -95,7 +96,7 @@ export default function MyTeam() {
   if (!team) {
     return (
       <View className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
-        <Text>👤</Text>
+        <Users size={64} className="text-slate-400 mb-4" />
         <Text className="block text-xl text-white font-semibold mb-2">尚未加入团队</Text>
         <Text className="block text-sm text-slate-400 text-center mb-6">
           您还没有加入任何团队，请联系管理员添加您到相应的销售团队
@@ -118,7 +119,7 @@ export default function MyTeam() {
           </View>
           {isLeader && (
             <View className="flex items-center gap-1 px-3 py-1 bg-yellow-500/30 rounded-full">
-              <Text>👑</Text>
+              <Crown size={14} className="text-yellow-300" />
               <Text className="block text-xs text-yellow-300">负责人</Text>
             </View>
           )}
@@ -136,28 +137,28 @@ export default function MyTeam() {
             <View className="grid grid-cols-2 gap-3">
               <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
-                  <Text>👤</Text>
+                  <Users size={16} className="text-blue-400" />
                   <Text className="block text-sm text-slate-400">团队成员</Text>
                 </View>
                 <Text className="block text-2xl font-bold text-white">{stats.memberCount}</Text>
               </View>
               <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
-                  <Text>@</Text>
+                  <Target size={16} className="text-emerald-400" />
                   <Text className="block text-sm text-slate-400">客户总数</Text>
                 </View>
                 <Text className="block text-2xl font-bold text-white">{stats.totalCustomers}</Text>
               </View>
               <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
-                  <Text>^</Text>
+                  <TrendingUp size={16} className="text-purple-400" />
                   <Text className="block text-sm text-slate-400">回收门店</Text>
                 </View>
                 <Text className="block text-2xl font-bold text-white">{stats.totalRecycleStores}</Text>
               </View>
               <View className="bg-slate-900 rounded-xl p-4 border border-slate-800">
                 <View className="flex items-center gap-2 mb-2">
-                  <Text>💵</Text>
+                  <DollarSign size={16} className="text-orange-400" />
                   <Text className="block text-sm text-slate-400">成交总额</Text>
                 </View>
                 <Text className="block text-2xl font-bold text-white">¥{(stats.totalDealValue / 10000).toFixed(1)}万</Text>
@@ -201,7 +202,7 @@ export default function MyTeam() {
                     <View className="flex items-center gap-2 mt-0.5">
                       {member.role === 'leader' ? (
                         <View className="flex items-center gap-1">
-                          <Text>👑</Text>
+                          <Crown size={12} className="text-yellow-400" />
                           <Text className="block text-xs text-yellow-400">负责人</Text>
                         </View>
                       ) : (
@@ -224,7 +225,7 @@ export default function MyTeam() {
             ))}
             {members.length === 0 && (
               <View className="flex flex-col items-center justify-center py-8">
-                <Text>👤</Text>
+                <Users size={32} className="text-slate-400 mb-2" />
                 <Text className="block text-slate-400">暂无成员</Text>
               </View>
             )}

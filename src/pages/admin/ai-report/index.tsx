@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
+import { ArrowLeft, FileText, TrendingUp, Users, Activity, Download, RefreshCw, Info } from 'lucide-react-taro';
 
 interface ReportSection {
   title: string;
@@ -98,11 +99,11 @@ export default function AdminAIReportPage() {
       >
         <View className="h-14 px-4 flex items-center gap-3">
           <View onClick={() => Taro.navigateBack()}>
-            <Text>←</Text>
+            <ArrowLeft size={24} color="#94a3b8" />
           </View>
           <Text className="text-white text-lg font-semibold flex-1">运营报告</Text>
           <View onClick={loadLatestReport}>
-            <Text>🔄</Text>
+            <RefreshCw size={20} color="#3b82f6" />
           </View>
         </View>
       </View>
@@ -185,13 +186,13 @@ export default function AdminAIReportPage() {
               <View className="bg-slate-800 rounded-2xl p-4 mb-6">
                 <View className="flex items-center justify-between mb-4">
                   <View className="flex items-center gap-2">
-                    <Text>📄</Text>
+                    <FileText size={20} color="#3b82f6" />
                     <Text className="text-white text-base font-semibold">
                       运营分析报告
                     </Text>
                   </View>
                   <View onClick={exportReport}>
-                    <Text>⬇️</Text>
+                    <Download size={20} color="#10b981" />
                   </View>
                 </View>
                 <Text className="block text-slate-400 text-sm">
@@ -224,7 +225,7 @@ export default function AdminAIReportPage() {
                 <View className="grid grid-cols-2 gap-4">
                   <View className="bg-slate-800 rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
-                      <Text>👤</Text>
+                      <Users size={18} color="#3b82f6" />
                       <Text className="text-slate-400 text-xs">活跃用户</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
@@ -233,7 +234,7 @@ export default function AdminAIReportPage() {
                   </View>
                   <View className="bg-slate-800 rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
-                      <Text>#</Text>
+                      <Activity size={18} color="#10b981" />
                       <Text className="text-slate-400 text-xs">使用频次</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
@@ -242,7 +243,7 @@ export default function AdminAIReportPage() {
                   </View>
                   <View className="bg-slate-800 rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
-                      <Text>📄</Text>
+                      <FileText size={18} color="#f59e0b" />
                       <Text className="text-slate-400 text-xs">对话数量</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
@@ -251,7 +252,7 @@ export default function AdminAIReportPage() {
                   </View>
                   <View className="bg-slate-800 rounded-xl p-4">
                     <View className="flex items-center gap-2 mb-2">
-                      <Text>^</Text>
+                      <TrendingUp size={18} color="#ec4899" />
                       <Text className="text-slate-400 text-xs">转化率</Text>
                     </View>
                     <Text className="text-white text-xl font-bold">
@@ -264,7 +265,7 @@ export default function AdminAIReportPage() {
           ) : (
             <View className="bg-slate-800 rounded-2xl p-8 text-center">
               <View className="flex justify-center mb-4">
-                <Text>ℹ️</Text>
+                <Info size={48} color="#64748b" />
               </View>
               <Text className="block text-slate-400 text-base mb-2">
                 暂无报告数据
@@ -306,7 +307,7 @@ export default function AdminAIReportPage() {
             gap: '8px',
           }}
         >
-          <Text>🔄</Text>
+          <RefreshCw size={20} color="#94a3b8" />
           <Text className="text-slate-300 font-semibold text-base">刷新</Text>
         </View>
         <View
@@ -323,7 +324,7 @@ export default function AdminAIReportPage() {
             gap: '8px',
           }}
         >
-          <Text>⬇️</Text>
+          <Download size={20} color="#ffffff" />
           <Text className="text-white font-semibold text-base">导出</Text>
         </View>
       </View>

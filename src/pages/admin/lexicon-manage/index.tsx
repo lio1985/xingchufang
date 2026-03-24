@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
+import { ArrowLeft, Search, Plus, FileText, Folder, Tag, Trash2, Pencil, Eye, List, ChevronDown, Building2, User, Package, Database, X } from 'lucide-react-taro';
 
 // 语料库数据结构
 interface Lexicon {
@@ -52,14 +53,17 @@ export default function AdminLexiconManagePage() {
   const typeConfig = {
     enterprise: {
       label: '企业语料库',
+      icon: <Building2 size={18} color="#60a5fa" />,
       color: 'bg-blue-500'
     },
     personal: {
       label: '个人IP语料库',
+      icon: <User size={18} color="#34d399" />,
       color: 'bg-emerald-500'
     },
     product: {
       label: '产品知识库',
+      icon: <Package size={18} color="#f59e0b" />,
       color: 'bg-amber-500'
     }
   };
@@ -313,10 +317,10 @@ export default function AdminLexiconManagePage() {
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View onClick={() => Taro.navigateBack()}>
-              <Text>←</Text>
+              <ArrowLeft size={24} color="#94a3b8" />
             </View>
             <View className="flex items-center gap-2">
-              <Text>🗄️</Text>
+              <Database size={24} color="#60a5fa" />
               <Text className="text-white font-semibold text-lg">语料库管理</Text>
             </View>
           </View>
@@ -329,7 +333,7 @@ export default function AdminLexiconManagePage() {
       {/* 搜索栏 */}
       <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
         <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2">
-          <Text>?</Text>
+          <Search size={18} color="#94a3b8" />
           <Input
             className="flex-1 bg-transparent text-white"
             placeholder="搜索语料库..."
@@ -338,7 +342,7 @@ export default function AdminLexiconManagePage() {
           />
           {searchKeyword && (
             <View onClick={() => setSearchKeyword('')}>
-              <Text>✕</Text>
+              <X size={18} color="#94a3b8" />
             </View>
           )}
         </View>
@@ -351,9 +355,9 @@ export default function AdminLexiconManagePage() {
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <Text>📋</Text>
+            <List size={16} color="#94a3b8" />
             <Text className="text-slate-300 text-sm">筛选</Text>
-            <Text>⌄</Text>
+            <ChevronDown size={16} color="#94a3b8" />
           </View>
 
           {typeFilter !== 'all' && (
@@ -362,7 +366,7 @@ export default function AdminLexiconManagePage() {
               onClick={() => setTypeFilter('all')}
             >
               <Text className="text-blue-400 text-sm">{typeConfig[typeFilter].label}</Text>
-              <Text>✕</Text>
+              <X size={14} color="#60a5fa" />
             </View>
           )}
 
@@ -372,7 +376,7 @@ export default function AdminLexiconManagePage() {
               onClick={() => setCategoryFilter('')}
             >
               <Text className="text-emerald-400 text-sm">{categoryFilter}</Text>
-              <Text>✕</Text>
+              <X size={14} color="#34d399" />
             </View>
           )}
         </View>
@@ -456,13 +460,13 @@ export default function AdminLexiconManagePage() {
                   </View>
                   <View className="flex items-center gap-1 ml-2">
                     <View onClick={() => openDetailDialog(item)}>
-                      <Text>👁️</Text>
+                      <Eye size={18} color="#94a3b8" />
                     </View>
                     <View onClick={() => openEditDialog(item)}>
-                      <Text>✏️</Text>
+                      <Pencil size={18} color="#94a3b8" />
                     </View>
                     <View onClick={() => handleDelete(item.id)}>
-                      <Text>🗑️</Text>
+                      <Trash2 size={18} color="#ef4444" />
                     </View>
                   </View>
                 </View>
@@ -475,12 +479,12 @@ export default function AdminLexiconManagePage() {
 
                 <View className="flex items-center justify-between">
                   <View className="flex items-center gap-1">
-                    <Text>📁</Text>
+                    <Folder size={14} color="#94a3b8" />
                     <Text className="text-slate-400 text-xs">{item.category}</Text>
                   </View>
                   {item.tags && item.tags.length > 0 && (
                     <View className="flex items-center gap-1">
-                      <Text>🏷️</Text>
+                      <Tag size={14} color="#94a3b8" />
                       <Text className="text-slate-400 text-xs">{item.tags.length} 标签</Text>
                     </View>
                   )}
@@ -491,7 +495,7 @@ export default function AdminLexiconManagePage() {
 
           {!loading && lexicons.length === 0 && (
             <View className="text-center py-12">
-              <Text>📄</Text>
+              <FileText size={48} color="#475569" />
               <Text className="text-slate-400 mt-2">暂无语料库</Text>
             </View>
           )}
@@ -510,7 +514,7 @@ export default function AdminLexiconManagePage() {
             setShowCreateDialog(true);
           }}
         >
-          <Text>➕</Text>
+          <Plus size={28} color="#ffffff" />
         </View>
       </View>
 
@@ -522,7 +526,7 @@ export default function AdminLexiconManagePage() {
               <View className="flex items-center justify-between">
                 <Text className="text-white font-semibold text-lg">新建语料库</Text>
                 <View onClick={() => setShowCreateDialog(false)}>
-                  <Text>✕</Text>
+                  <X size={24} color="#94a3b8" />
                 </View>
               </View>
             </View>
@@ -584,7 +588,7 @@ export default function AdminLexiconManagePage() {
               <View>
                 <Text className="text-slate-300 text-sm block mb-2">标签</Text>
                 <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
-                  <Text>🏷️</Text>
+                  <Tag size={18} color="#94a3b8" />
                   <Input
                     className="flex-1 bg-transparent text-white"
                     placeholder="输入标签后按回车"
@@ -593,7 +597,7 @@ export default function AdminLexiconManagePage() {
                     onConfirm={handleAddTag}
                   />
                   <View onClick={handleAddTag}>
-                    <Text>➕</Text>
+                    <Plus size={18} color="#60a5fa" />
                   </View>
                 </View>
                 {formTags.length > 0 && (
@@ -605,7 +609,7 @@ export default function AdminLexiconManagePage() {
                         onClick={() => handleRemoveTag(tag)}
                       >
                         <Text className="text-blue-400 text-sm">{tag}</Text>
-                        <Text>✕</Text>
+                        <X size={14} color="#60a5fa" />
                       </View>
                     ))}
                   </View>
@@ -640,7 +644,7 @@ export default function AdminLexiconManagePage() {
               <View className="flex items-center justify-between">
                 <Text className="text-white font-semibold text-lg">编辑语料库</Text>
                 <View onClick={() => setShowEditDialog(false)}>
-                  <Text>✕</Text>
+                  <X size={24} color="#94a3b8" />
                 </View>
               </View>
             </View>
@@ -702,7 +706,7 @@ export default function AdminLexiconManagePage() {
               <View>
                 <Text className="text-slate-300 text-sm block mb-2">标签</Text>
                 <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
-                  <Text>🏷️</Text>
+                  <Tag size={18} color="#94a3b8" />
                   <Input
                     className="flex-1 bg-transparent text-white"
                     placeholder="输入标签后按回车"
@@ -711,7 +715,7 @@ export default function AdminLexiconManagePage() {
                     onConfirm={handleAddTag}
                   />
                   <View onClick={handleAddTag}>
-                    <Text>➕</Text>
+                    <Plus size={18} color="#60a5fa" />
                   </View>
                 </View>
                 {formTags.length > 0 && (
@@ -723,7 +727,7 @@ export default function AdminLexiconManagePage() {
                         onClick={() => handleRemoveTag(tag)}
                       >
                         <Text className="text-blue-400 text-sm">{tag}</Text>
-                        <Text>✕</Text>
+                        <X size={14} color="#60a5fa" />
                       </View>
                     ))}
                   </View>
@@ -758,7 +762,7 @@ export default function AdminLexiconManagePage() {
               <View className="flex items-center justify-between">
                 <Text className="text-white font-semibold text-lg truncate">{selectedLexicon.title}</Text>
                 <View onClick={() => setShowDetailDialog(false)}>
-                  <Text>✕</Text>
+                  <X size={24} color="#94a3b8" />
                 </View>
               </View>
             </View>

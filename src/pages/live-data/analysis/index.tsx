@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateTo } from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { Sparkles, Star, Info, Lightbulb, ChevronRight } from 'lucide-react-taro';
 import './index.less';
 
 interface LiveStream {
@@ -79,7 +80,7 @@ const LiveAnalysisPage = () => {
   return (
     <View className="live-analysis-page">
       <View className="header">
-        <Text>✨</Text>
+        <Sparkles size={32} color="#FFB800" />
         <Text className="title">直播复盘</Text>
         <Text className="subtitle">深度分析直播数据，输出专业复盘报告</Text>
       </View>
@@ -101,7 +102,7 @@ const LiveAnalysisPage = () => {
                   </View>
                   {item.hasAnalysis ? (
                     <View className="status-badge done">
-                      <Text>*</Text>
+                      <Star size={12} />
                       <Text>已分析</Text>
                     </View>
                   ) : (
@@ -118,14 +119,14 @@ const LiveAnalysisPage = () => {
                       onClick={() => navigateTo({ url: `/pages/live-data/detail/index?id=${item.id}` })}
                     >
                       <Text>查看分析报告</Text>
-                      <Text>›</Text>
+                      <ChevronRight size={16} />
                     </View>
                   ) : (
                     <View
                       className={`action-btn ${generating === item.id ? 'loading' : ''}`}
                       onClick={() => generateAnalysis(item.id)}
                     >
-                      <Text>✨</Text>
+                      <Sparkles size={16} />
                       <Text>{generating === item.id ? '分析中...' : '创建复盘'}</Text>
                     </View>
                   )}
@@ -141,21 +142,21 @@ const LiveAnalysisPage = () => {
         <Text className="features-title">复盘能力</Text>
         <View className="feature-list">
           <View className="feature-item">
-            <Text>*</Text>
+            <Star size={20} color="#52c41a" />
             <View>
               <Text className="name">直播亮点识别</Text>
               <Text className="desc">自动识别直播中的优秀表现</Text>
             </View>
           </View>
           <View className="feature-item">
-            <Text>ℹ️</Text>
+            <Info size={20} color="#faad14" />
             <View>
               <Text className="name">问题诊断分析</Text>
               <Text className="desc">发现直播中的不足之处</Text>
             </View>
           </View>
           <View className="feature-item">
-            <Text>I</Text>
+            <Lightbulb size={20} color="#1890ff" />
             <View>
               <Text className="name">优化建议创建</Text>
               <Text className="desc">提供针对性的改进方案</Text>

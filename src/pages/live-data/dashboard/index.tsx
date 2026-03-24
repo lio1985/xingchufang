@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { showToast, showLoading, hideLoading, navigateTo } from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import { Calendar, TrendingUp, Eye, TrendingDown, Plus, List, Star, ArrowRight, MousePointer, MessageCircle, Activity } from 'lucide-react-taro';
 import './index.less';
-
-
 
 type TimeRange = 'day' | 'week' | 'month' | 'year' | 'custom';
 
@@ -239,7 +238,7 @@ const LiveDashboardPage = () => {
               </View>
             </View>
             <View className="selected-range">
-              <Text>D</Text>
+              <Calendar size={14} color="#fff" />
               <Text className="range-text">{formatDateRange()}</Text>
             </View>
           </View>
@@ -252,19 +251,19 @@ const LiveDashboardPage = () => {
           <View className="actions-row">
             <View className="action-item" onClick={() => navigateTo({ url: '/pages/live-data/import/index' })}>
               <View className="action-icon primary">
-                <Text>➕</Text>
+                <Plus size={20} color="#fff" />
               </View>
               <Text className="action-label">导入数据</Text>
             </View>
             <View className="action-item" onClick={() => navigateTo({ url: '/pages/live-data/list/index' })}>
               <View className="action-icon secondary">
-                <Text>📋</Text>
+                <List size={20} color="#667eea" />
               </View>
               <Text className="action-label">直播记录</Text>
             </View>
             <View className="action-item" onClick={() => navigateTo({ url: '/pages/live-data/analysis/index' })}>
               <View className="action-icon secondary">
-                <Text>*</Text>
+                <Star size={20} color="#667eea" />
               </View>
               <Text className="action-label">复盘分析</Text>
             </View>
@@ -274,7 +273,7 @@ const LiveDashboardPage = () => {
         {/* 空数据提示 */}
         {stats.streamCount === 0 && (
           <View className="empty-state">
-            <Text>D</Text>
+            <Calendar size={48} color="#ccc" />
             <Text className="empty-title">暂无直播数据</Text>
             <Text className="empty-desc">点击上方「导入数据」按钮添加您的第一场直播</Text>
           </View>
@@ -288,7 +287,8 @@ const LiveDashboardPage = () => {
               <Text className="label">成交金额</Text>
               <Text className="value">¥{(stats.gmv || 0).toFixed(0)}</Text>
               <View className={`change ${gmvChange >= 0 ? 'up' : 'down'}`}>
-                <Text>{gmvChange >= 0 ? '+' : ''}{formatChange(gmvChange)}</Text>
+                {gmvChange >= 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                <Text>{formatChange(gmvChange)}</Text>
               </View>
             </View>
 
@@ -322,7 +322,7 @@ const LiveDashboardPage = () => {
         <View className="section-card stream-overview">
           <View className="overview-content">
             <View className="overview-item">
-              <Text>D</Text>
+              <Calendar size={20} color="#667eea" />
               <View className="overview-info">
                 <Text className="overview-value">{stats.streamCount || 0}</Text>
                 <Text className="overview-label">直播场次</Text>
@@ -330,7 +330,7 @@ const LiveDashboardPage = () => {
             </View>
             <View className="divider" />
             <View className="overview-item">
-              <Text>👁️</Text>
+              <Eye size={20} color="#10b981" />
               <View className="overview-info">
                 <Text className="overview-value">{(stats.avgWatchDuration || 0).toFixed(0)}秒</Text>
                 <Text className="overview-label">平均观看时长</Text>
@@ -347,42 +347,42 @@ const LiveDashboardPage = () => {
             <View className="entry-item" onClick={() => navigateToDetail('traffic')}>
               <View className="entry-left">
                 <View className="entry-icon traffic">
-                  <Text>🖱️</Text>
+                  <MousePointer size={20} color="#fff" />
                 </View>
                 <View className="entry-info">
                   <Text className="entry-title">流量数据</Text>
                   <Text className="entry-desc">曝光 {stats.exposureCount?.toLocaleString() || 0} · 进房 {(stats.enterRoomRate || 0).toFixed(1)}%</Text>
                 </View>
               </View>
-              <Text>→</Text>
+              <ArrowRight size={18} color="#999" />
             </View>
 
             {/* 互动数据入口 */}
             <View className="entry-item" onClick={() => navigateToDetail('interaction')}>
               <View className="entry-left">
                 <View className="entry-icon interaction">
-                  <Text>💬</Text>
+                  <MessageCircle size={20} color="#fff" />
                 </View>
                 <View className="entry-info">
                   <Text className="entry-title">互动数据</Text>
                   <Text className="entry-desc">互动 {stats.interactionCount?.toLocaleString() || 0} · 点赞 {(stats.totalLikes || 0).toLocaleString()}</Text>
                 </View>
               </View>
-              <Text>→</Text>
+              <ArrowRight size={18} color="#999" />
             </View>
 
             {/* 转化数据入口 */}
             <View className="entry-item" onClick={() => navigateToDetail('conversion')}>
               <View className="entry-left">
                 <View className="entry-icon conversion">
-                  <Text>#</Text>
+                  <Activity size={20} color="#fff" />
                 </View>
                 <View className="entry-info">
                   <Text className="entry-title">转化数据</Text>
                   <Text className="entry-desc">观看转化 {(stats.conversionRate || 0).toFixed(2)}% · 互动 {(stats.interactionRate || 0).toFixed(2)}%</Text>
                 </View>
               </View>
-              <Text>→</Text>
+              <ArrowRight size={18} color="#999" />
             </View>
           </View>
         </View>

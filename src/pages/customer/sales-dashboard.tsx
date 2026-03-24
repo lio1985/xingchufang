@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { ChevronRight, TrendingUp, Users, Target, Award, Crown, TrendingDown, Minus } from 'lucide-react-taro';
 
 interface TeamStats {
   totalTargets: number;
@@ -135,7 +136,7 @@ export default function SalesDashboard() {
               onClick={() => Taro.navigateBack()}
               className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
             >
-              <Text>›</Text>
+              <ChevronRight size={18} color="#94a3b8" />
             </View>
             <Text className="block text-white text-xl font-bold">业绩看板</Text>
           </View>
@@ -199,7 +200,7 @@ export default function SalesDashboard() {
             <View className="grid grid-cols-2 gap-3">
               <View className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-2xl p-4 border border-sky-500/30">
                 <View className="flex items-center gap-2 mb-2">
-                  <Text>^</Text>
+                  <TrendingUp size={16} color="#60a5fa" />
                   <Text className="block text-slate-300 text-xs">完成进度</Text>
                 </View>
                 <View className="flex items-baseline gap-1">
@@ -208,9 +209,9 @@ export default function SalesDashboard() {
                   </Text>
                   {trend && (
                     <View className="flex items-center">
-                      {trend.direction === 'up' && <Text>^</Text>}
-                      {trend.direction === 'down' && <Text>v</Text>}
-                      {trend.direction === 'flat' && <Text>➖</Text>}
+                      {trend.direction === 'up' && <TrendingUp size={14} color="#34d399" />}
+                      {trend.direction === 'down' && <TrendingDown size={14} color="#f87171" />}
+                      {trend.direction === 'flat' && <Minus size={14} color="#94a3b8" />}
                       <Text className={`block text-xs ml-0.5 ${
                         trend.direction === 'up' ? 'text-emerald-400' :
                         trend.direction === 'down' ? 'text-red-400' :
@@ -227,7 +228,7 @@ export default function SalesDashboard() {
               
               <View className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-2xl p-4 border border-emerald-500/30">
                 <View className="flex items-center gap-2 mb-2">
-                  <Text>@</Text>
+                  <Target size={16} color="#34d399" />
                   <Text className="block text-slate-300 text-xs">目标状态</Text>
                 </View>
                 <Text className="block text-white text-3xl font-bold">
@@ -298,7 +299,7 @@ export default function SalesDashboard() {
                       }`}
                       >
                         {progress.amountProgress >= 100 ? (
-                          <Text>👑</Text>
+                          <Crown size={14} color="#34d399" />
                         ) : (
                           <Text className={`block text-xs font-bold ${
                             progress.amountProgress >= 60 ? 'text-blue-400' : 'text-amber-400'
@@ -380,7 +381,7 @@ export default function SalesDashboard() {
             {teamStats && teamStats.byMember.length > 0 && (
               <View className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
                 <View className="flex items-center gap-2 mb-4">
-                  <Text>🏆</Text>
+                  <Award size={18} color="#fbbf24" />
                   <Text className="block text-white font-semibold">业绩排行榜</Text>
                 </View>
                 <View className="space-y-3">
@@ -395,7 +396,12 @@ export default function SalesDashboard() {
                       }`}
                       >
                         {member.rank <= 3 ? (
-                          <Text className="text-yellow-400">{member.rank === 1 ? '🥇' : member.rank === 2 ? '🥈' : '🥉'}</Text>
+                          <Crown size={14} color={
+                            member.rank === 1 ? '#facc15' :
+                            member.rank === 2 ? '#cbd5e1' :
+                            '#d97706'
+                          }
+                          />
                         ) : (
                           <Text className="block text-slate-400 font-bold">{member.rank}</Text>
                         )}
@@ -431,7 +437,7 @@ export default function SalesDashboard() {
 
             {(!teamStats || teamStats.byMember.length === 0) && (
               <View className="py-20 text-center">
-                <Text>👤</Text>
+                <Users size={48} color="#475569" className="mx-auto mb-4" />
                 <Text className="block text-slate-400">暂无团队数据</Text>
                 <Text className="block text-slate-400 text-sm mt-2">团队成员设置目标后将显示排行</Text>
               </View>

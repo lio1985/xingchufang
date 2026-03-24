@@ -1,5 +1,6 @@
 import { View, Text, ScrollView } from '@tarojs/components';
 import { useState, useEffect } from 'react';
+import { Clock, TrendingUp } from 'lucide-react-taro';
 
 interface TimelineData {
   time: string;
@@ -35,6 +36,7 @@ export default function TimelineChart({ data }: TimelineChartProps) {
     return (
       <View className="bg-slate-800/50 rounded-2xl p-5 border border-slate-700/50">
         <View className="flex items-center gap-2 mb-4">
+          <Clock size={18} color="#06b6d4" strokeWidth={2} />
           <Text className="block text-base font-bold text-white">📈 热度时间轴</Text>
         </View>
         <View className="flex items-center justify-center h-40">
@@ -62,10 +64,10 @@ export default function TimelineChart({ data }: TimelineChartProps) {
   return (
     <View className="bg-slate-800/50 rounded-2xl p-5 border border-slate-700/50">
       <View className="flex items-center gap-2 mb-4">
-        <Text>🕐</Text>
+        <Clock size={18} color="#06b6d4" strokeWidth={2} />
         <Text className="block text-base font-bold text-white">📈 热度时间轴</Text>
         <View className="ml-auto flex items-center gap-1">
-          <Text style={{fontSize:12}}>📈</Text>
+          <TrendingUp size={12} color="#06b6d4" strokeWidth={2} />
           <Text className="text-xs text-cyan-400">趋势分析</Text>
         </View>
       </View>
@@ -152,7 +154,7 @@ export default function TimelineChart({ data }: TimelineChartProps) {
           >
             <Text className="text-xs text-slate-400 mb-1">{point.time}</Text>
             <View className="flex items-center gap-1 mb-1">
-              <Text style={{fontSize:10}}>📈</Text>
+              <TrendingUp size={10} color="#fbbf24" strokeWidth={2} />
               <Text className="text-sm text-amber-400 font-medium">
                 {formatHotness(point.hotness)}
               </Text>

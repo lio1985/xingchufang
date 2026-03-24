@@ -1,6 +1,7 @@
 import { View, Text } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
+import { Lightbulb, PenTool, Sparkles, TrendingUp, ArrowRight, Settings, Check, Trash2, StickyNote, BookOpen } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 const SystemsPage = () => {
@@ -137,7 +138,7 @@ const SystemsPage = () => {
         <View className="flex items-center justify-between mb-3">
           <View className="flex items-center gap-2">
             <Text className="block text-lg font-semibold text-white flex items-center gap-2">
-              <Text>I</Text>
+              <Lightbulb size={20} color="#fbbf24" />
               选择创作素材来源
             </Text>
             {loading ? (
@@ -150,7 +151,7 @@ const SystemsPage = () => {
             className="px-3 py-1.5 bg-slate-9000/20 border border-sky-500/30 rounded-lg flex items-center gap-1.5 active:scale-95 transition-all"
             onClick={() => Taro.navigateTo({ url: '/pages/input-sources/index' })}
           >
-            <Text>⚙️</Text>
+            <Settings size={14} color="#60a5fa" />
             <Text className="block text-xs text-blue-300">筛选</Text>
           </View>
         </View>
@@ -279,7 +280,7 @@ const SystemsPage = () => {
               </Text>
               <View className="w-px h-4 bg-slate-700"></View>
               <View className="flex items-center gap-1 text-blue-400">
-                <Text>✨</Text>
+                <Sparkles size={16} />
                 <Text className="block text-xs">{topicQuestions.length} 个选题</Text>
               </View>
             </View>
@@ -306,7 +307,7 @@ const SystemsPage = () => {
                     toggleTopicSelection(item.question);
                   }}
                 >
-                  {selectedTopics.includes(item.question) && <Text>✓</Text>}
+                  {selectedTopics.includes(item.question) && <Check size={12} color="white" />}
                 </View>
                 <View className="flex-1">
                   <Text className="block text-sm text-white leading-relaxed">{item.question}</Text>
@@ -318,7 +319,7 @@ const SystemsPage = () => {
                     handleDeleteTopic(item.question, index);
                   }}
                 >
-                  <Text>🗑️</Text>
+                  <Trash2 size={14} color="#ef4444" />
                 </View>
               </View>
             ))}
@@ -333,7 +334,7 @@ const SystemsPage = () => {
             className="bg-blue-500 text-white text-center py-3 rounded-xl font-medium active:opacity-80 flex items-center justify-center gap-2"
             onClick={handleGenerateContent}
           >
-            <Text>✨</Text>
+            <Sparkles size={18} />
             <Text className="block">已选择 {selectedTopics.length} 个选题，创作内容</Text>
           </View>
         </View>
@@ -342,7 +343,7 @@ const SystemsPage = () => {
       {/* 空状态提示 */}
       {topicQuestions.length === 0 && !loading && (
         <View className="bg-slate-800 rounded-xl border border-slate-700 p-6 text-center">
-          <Text>I</Text>
+          <Lightbulb size={48} color="#475569" />
           <Text className="block text-slate-400 text-base mt-4 mb-2">
             暂无策划的选题
           </Text>
@@ -359,12 +360,12 @@ const SystemsPage = () => {
       {/* 脚本初稿制作 */}
       <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
         <Text className="block text-lg font-semibold text-white mb-3 flex items-center gap-2">
-          <Text>🖊️</Text>
+          <PenTool size={20} color="#60a5fa" />
           脚本初稿制作
         </Text>
         <View className="flex items-center gap-2 py-3 bg-slate-800 rounded-lg px-3">
           <Text className="block text-sm text-slate-400">结构化提示词输入</Text>
-          <Text>→</Text>
+          <ArrowRight size={16} color="#94a3b8" />
           <Text className="block text-sm text-blue-400 font-medium">五段式脚本输出</Text>
         </View>
       </View>
@@ -418,7 +419,7 @@ const SystemsPage = () => {
       {/* 企业语料库 */}
       <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
         <Text className="block text-lg font-semibold text-white mb-3 flex items-center gap-2">
-          <Text>✨</Text>
+          <Sparkles size={20} color="#34d399" />
           企业语料库
         </Text>
         <View className="flex flex-col gap-2">
@@ -471,7 +472,7 @@ const SystemsPage = () => {
       {/* 核心目标 */}
       <View className="bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl border border-red-500/30 p-4">
         <Text className="block text-lg font-semibold text-white mb-2 flex items-center gap-2">
-          <Text>^</Text>
+          <TrendingUp size={20} color="#f87171" />
           核心目标
         </Text>
         <Text className="block text-sm text-slate-300 leading-relaxed">
@@ -531,7 +532,7 @@ const SystemsPage = () => {
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
           onClick={() => Taro.navigateTo({ url: '/pages/quick-note/index' })}
         >
-          <Text style={{marginRight: '4px'}}>📝</Text>
+          <StickyNote size={16} color="#94a3b8" style={{ marginRight: '4px' }} />
           <Text className="block text-sm">灵感速记</Text>
         </View>
         <View
@@ -541,35 +542,35 @@ const SystemsPage = () => {
             loadTopicQuestions();
           }}
         >
-          <Text>I</Text>
+          <Lightbulb size={16} color={activeType === 'topic' ? '#60a5fa' : '#94a3b8'} style={{ marginRight: '4px' }} />
           <Text className="block text-sm">选题策划</Text>
         </View>
         <View
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
           onClick={() => Taro.navigateTo({ url: '/pages/content-system/index' })}
         >
-          <Text style={{marginRight: '4px'}}>🖊️</Text>
+          <PenTool size={16} color="#94a3b8" style={{ marginRight: '4px' }} />
           <Text className="block text-sm">内容创作</Text>
         </View>
         <View
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
           onClick={() => Taro.navigateTo({ url: '/pages/lexicon-system/index' })}
         >
-          <Text>✨</Text>
+          <Sparkles size={16} color="#94a3b8" style={{ marginRight: '4px' }} />
           <Text className="block text-sm">语料优化</Text>
         </View>
         <View
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
           onClick={() => Taro.navigateTo({ url: '/pages/viral-system/index' })}
         >
-          <Text>^</Text>
+          <TrendingUp size={16} color="#94a3b8" style={{ marginRight: '4px' }} />
           <Text className="block text-sm">爆款复刻</Text>
         </View>
         <View
           className="flex items-center text-slate-400 px-3 py-1.5 rounded-lg"
           onClick={() => Taro.navigateTo({ url: '/pages/knowledge-share/index' })}
         >
-          <Text>📖</Text>
+          <BookOpen size={16} color="#94a3b8" style={{ marginRight: '4px' }} />
           <Text className="block text-sm">知识分享</Text>
         </View>
       </View>

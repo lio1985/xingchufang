@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
+import { Check, TrendingUp, Sparkles, Star, FileText, Search, X, ChevronRight, Plus, Trash2, Pencil } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 type HotTopicSource = 'douyin' | 'baidu' | 'toutiao' | 'weibo';
@@ -329,7 +330,7 @@ const InputSourcesPage = () => {
           <View className="flex items-center justify-between">
             <View className="flex items-center gap-3">
               <View className="w-12 h-12 bg-gradient-to-br from-amber-500/20 to-amber-500/10 rounded-xl flex items-center justify-center">
-                <Text>*</Text>
+                <Star size={24} color="#f59e0b" />
               </View>
               <View>
                 <Text className="block text-base font-semibold text-white mb-1">星标笔记</Text>
@@ -338,7 +339,7 @@ const InputSourcesPage = () => {
                 </Text>
               </View>
             </View>
-            <Text>›</Text>
+            <ChevronRight size={20} color="#64748b" />
           </View>
         </View>
       </View>
@@ -352,7 +353,7 @@ const InputSourcesPage = () => {
           <View className="flex items-center justify-between">
             <View className="flex items-center gap-3">
               <View className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl flex items-center justify-center">
-                <Text>✨</Text>
+                <Sparkles size={24} color="#60a5fa" />
               </View>
               <View>
                 <Text className="block text-base font-semibold text-white mb-1">自定义问题库</Text>
@@ -361,7 +362,7 @@ const InputSourcesPage = () => {
                 </Text>
               </View>
             </View>
-            <Text>›</Text>
+            <ChevronRight size={20} color="#64748b" />
           </View>
         </View>
       </View>
@@ -375,7 +376,7 @@ const InputSourcesPage = () => {
           <View className="flex items-center justify-between">
             <View className="flex items-center gap-3">
               <View className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-500/10 rounded-xl flex items-center justify-center">
-                <Text>^</Text>
+                <TrendingUp size={24} color="#a855f7" />
               </View>
               <View>
                 <Text className="block text-base font-semibold text-white mb-1">热点榜单</Text>
@@ -384,7 +385,7 @@ const InputSourcesPage = () => {
                 </Text>
               </View>
             </View>
-            <Text>›</Text>
+            <ChevronRight size={20} color="#64748b" />
           </View>
         </View>
       </View>
@@ -410,7 +411,7 @@ const InputSourcesPage = () => {
         <View className="fixed inset-0 bg-black/80 z-50 flex flex-col">
           <View className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between">
             <View className="flex items-center gap-2">
-              <Text>*</Text>
+              <Star size={20} color="#f59e0b" />
               <Text className="block text-lg font-semibold text-white">星标笔记</Text>
               <Text className="block text-sm text-slate-400">
                 已选 {selectedNotes.length} / {starredNotes.length}
@@ -427,7 +428,7 @@ const InputSourcesPage = () => {
                 className="w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center"
                 onClick={() => setShowStarredNotesModal(false)}
               >
-                <Text>✕</Text>
+                <X size={20} color="#94a3b8" />
               </View>
             </View>
           </View>
@@ -453,7 +454,7 @@ const InputSourcesPage = () => {
                             : 'border-slate-700'
                         }`}
                       >
-                        {selectedNotes.includes(note.id) && <Text>✓</Text>}
+                        {selectedNotes.includes(note.id) && <Check size={14} color="white" />}
                       </View>
                       <View style={{ flex: 1 }}>
                         {note.title && (
@@ -476,7 +477,7 @@ const InputSourcesPage = () => {
               </View>
             ) : (
               <View className="text-center py-12 bg-slate-800 rounded-xl">
-                <Text>📄</Text>
+                <FileText size={48} color="#475569" />
                 <Text className="block text-slate-400 text-base mt-4 mb-2">
                   还没有星标笔记
                 </Text>
@@ -512,7 +513,7 @@ const InputSourcesPage = () => {
         <View className="fixed inset-0 bg-black/80 z-50 flex flex-col">
           <View className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between">
             <View className="flex items-center gap-2">
-              <Text>✨</Text>
+              <Sparkles size={20} color="#60a5fa" />
               <Text className="block text-lg font-semibold text-white">自定义问题库</Text>
               <Text className="block text-sm text-slate-400">
                 已选 {selectedQuestions.length}
@@ -526,7 +527,7 @@ const InputSourcesPage = () => {
                 setNewQuestionInput({ type: null, value: '' });
               }}
             >
-              <Text>✕</Text>
+              <X size={20} color="#94a3b8" />
             </View>
           </View>
 
@@ -589,7 +590,7 @@ const InputSourcesPage = () => {
                                     toggleQuestionSelection(question);
                                   }}
                                 >
-                                  {selectedQuestions.includes(question) && <Text>✓</Text>}
+                                  {selectedQuestions.includes(question) && <Check size={12} color="white" />}
                                 </View>
                                 <Text className="block text-sm text-slate-300 flex-1 leading-relaxed">
                                   {question}
@@ -601,7 +602,7 @@ const InputSourcesPage = () => {
                                     setEditingQuestion({ type: typeInfo.id, index, value: question });
                                   }}
                                 >
-                                  <Text>✏️</Text>
+                                  <Pencil size={16} color="#64748b" />
                                 </View>
                                 <View
                                   className="w-8 h-8 flex items-center justify-center flex-shrink-0"
@@ -610,7 +611,7 @@ const InputSourcesPage = () => {
                                     handleDeleteQuestion(typeInfo.id, index);
                                   }}
                                 >
-                                  <Text>🗑️</Text>
+                                  <Trash2 size={16} color="#f43f5e" />
                                 </View>
                               </View>
                             )}
@@ -678,7 +679,7 @@ const InputSourcesPage = () => {
                         className="flex items-center gap-2 py-2 px-3 bg-slate-800 rounded-lg active:opacity-80"
                         onClick={() => setNewQuestionInput({ type: typeInfo.id, value: '' })}
                       >
-                        <Text>➕</Text>
+                        <Plus size={16} color="#60a5fa" />
                         <Text className="block text-sm text-blue-400">添加问题</Text>
                       </View>
                     )}
@@ -708,7 +709,7 @@ const InputSourcesPage = () => {
         <View className="fixed inset-0 bg-black/80 z-50 flex flex-col">
           <View className="bg-slate-800 p-4 border-b border-slate-700 flex items-center justify-between">
             <View className="flex items-center gap-2">
-              <Text>^</Text>
+              <TrendingUp size={20} color="#a855f7" />
               <Text className="block text-lg font-semibold text-white">热点榜单</Text>
               <Text className="block text-sm text-slate-400">
                 已选 {selectedHotTopics.length} / {getFilteredHotTopics().length}
@@ -718,7 +719,7 @@ const InputSourcesPage = () => {
               className="w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center"
               onClick={() => setShowHotTopicsModal(false)}
             >
-              <Text>✕</Text>
+              <X size={20} color="#94a3b8" />
             </View>
           </View>
 
@@ -735,7 +736,7 @@ const InputSourcesPage = () => {
                   }`}
                   onClick={() => toggleHotSource(source.id)}
                 >
-                  {selectedHotSources.includes(source.id) && <Text>✓</Text>}
+                  {selectedHotSources.includes(source.id) && <Check size={14} color="#a855f7" />}
                   <Text
                     className={`block text-sm ${
                       selectedHotSources.includes(source.id) ? 'text-purple-400' : 'text-slate-300'
@@ -750,7 +751,7 @@ const InputSourcesPage = () => {
 
           <View className="bg-slate-800 p-4 border-b border-slate-700">
             <View className="bg-slate-800 rounded-lg px-4 py-3 flex items-center gap-2">
-              <Text>?</Text>
+              <Search size={16} color="#94a3b8" />
               <Input
                 className="w-full bg-transparent text-white text-sm"
                 placeholder="搜索热点话题..."
@@ -805,7 +806,7 @@ const InputSourcesPage = () => {
                             : 'border-slate-700'
                         }`}
                       >
-                        {selectedHotTopics.includes(topic.id || index.toString()) && <Text>✓</Text>}
+                        {selectedHotTopics.includes(topic.id || index.toString()) && <Check size={14} color="white" />}
                       </View>
                     </View>
                   </View>
@@ -813,7 +814,7 @@ const InputSourcesPage = () => {
               </View>
             ) : (
               <View className="text-center py-12 bg-slate-800 rounded-xl">
-                <Text>^</Text>
+                <TrendingUp size={48} color="#475569" />
                 <Text className="block text-slate-400 text-base mt-4">
                   暂无热点话题
                 </Text>

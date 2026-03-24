@@ -1,6 +1,7 @@
 import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
+import { Flame, RefreshCw, TrendingUp, TrendingDown, Minus, Flame as FlameIcon } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface HotKeyword {
@@ -325,11 +326,11 @@ const HotspotPage = () => {
   // 渲染趋势图标
   const renderTrendIcon = (item: HotKeyword) => {
     if (item.trend === 'up' || (item.trendChange && item.trendChange > 0)) {
-      return <Text>^</Text>;
+      return <TrendingUp size={14} color="#10b981" strokeWidth={2} />;
     } else if (item.trend === 'down' || (item.trendChange && item.trendChange < 0)) {
-      return <Text>v</Text>;
+      return <TrendingDown size={14} color="#ef4444" strokeWidth={2} />;
     } else {
-      return <Text>➖</Text>;
+      return <Minus size={14} color="#64748b" strokeWidth={2} />;
     }
   };
 
@@ -367,7 +368,7 @@ const HotspotPage = () => {
     return (
       <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6">
         <View className="text-center">
-          <Text>!</Text>
+          <FlameIcon size={48} color="#64748b" strokeWidth={1} />
           <Text className="block text-slate-400 text-lg mt-4">暂无热点数据</Text>
           <Text className="block text-slate-400 text-sm mt-2">稍后再来看看吧</Text>
         </View>
@@ -382,7 +383,7 @@ const HotspotPage = () => {
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-3">
             <View className="w-14 h-14 bg-gradient-to-br from-amber-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20 border border-orange-500/20">
-              <Text>!</Text>
+              <Flame size={28} color="#f59e0b" strokeWidth={2.5} />
             </View>
             <View>
               <Text className="block text-2xl font-bold text-white mb-0.5 tracking-tight">全网热点</Text>
@@ -410,7 +411,7 @@ const HotspotPage = () => {
             disabled={refreshing}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
-              <Text>🔄</Text>
+              <RefreshCw size={14} color="#0EA5E9" strokeWidth={2} className={refreshing ? 'animate-spin' : ''} />
               <Text className="block">{refreshing ? '刷新中...' : '刷新'}</Text>
             </View>
           </Button>

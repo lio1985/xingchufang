@@ -1,5 +1,7 @@
+import { View, Text, ScrollView, Image, Audio } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
+import { BookOpen, ArrowLeft, Eye, ThumbsUp, Clock, Trash2, Pencil, Mic, FileText, Download, Star } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface Attachment {
@@ -332,10 +334,10 @@ const KnowledgeShareDetailPage = () => {
           className="flex items-center gap-2"
           onClick={() => Taro.navigateBack()}
         >
-          <Text>←</Text>
+          <ArrowLeft size={24} color="#94a3b8" />
         </View>
         <View className="flex items-center gap-2">
-          <Text>📖</Text>
+          <BookOpen size={24} color="#60a5fa" />
           <Text className="block text-lg font-bold text-white">知识分享</Text>
         </View>
         {(isOwner || isAdmin) && (
@@ -345,7 +347,7 @@ const KnowledgeShareDetailPage = () => {
                 className="p-2 rounded-lg active:bg-slate-800"
                 onClick={handleEdit}
               >
-                <Text>✏️</Text>
+                <Pencil size={20} color="#94a3b8" />
               </View>
             )}
             {isAdmin && (
@@ -353,14 +355,17 @@ const KnowledgeShareDetailPage = () => {
                 className="p-2 rounded-lg active:bg-slate-800"
                 onClick={handleFeature}
               >
-                <Text>*</Text>
+                <Star
+                  size={20}
+                  color={detail?.isFeatured ? '#fbbf24' : '#94a3b8'}
+                />
               </View>
             )}
             <View
               className="p-2 rounded-lg active:bg-slate-800"
               onClick={handleDelete}
             >
-              <Text>🗑️</Text>
+              <Trash2 size={20} color="#ef4444" />
             </View>
           </View>
         )}
@@ -386,14 +391,14 @@ const KnowledgeShareDetailPage = () => {
                 {detail.author}
               </Text>
               <View className="flex items-center gap-1">
-                <Text>🕐</Text>
+                <Clock size={12} color="#94a3b8" />
                 <Text className="block text-xs text-slate-400">
                   {formatTime(detail.createdAt)}
                 </Text>
               </View>
             </View>
             <View className="flex items-center gap-1">
-              <Text>👁️</Text>
+              <Eye size={16} color="#94a3b8" />
               <Text className="block text-sm text-slate-400">
                 {detail.viewCount}
               </Text>
@@ -469,7 +474,7 @@ const KnowledgeShareDetailPage = () => {
                     ) : attachment.fileType === 'audio' ? (
                       <View className="flex items-center gap-3">
                         <View className="w-12 h-12 rounded-lg bg-slate-9000/20 flex items-center justify-center">
-                          <Text>🎤</Text>
+                          <Mic size={24} color="#60a5fa" />
                         </View>
                         <View className="flex-1">
                           <Text className="block text-sm text-white truncate mb-1">
@@ -491,14 +496,14 @@ const KnowledgeShareDetailPage = () => {
                             className="p-2 rounded-lg bg-slate-800"
                             onClick={() => handleDownloadFile(attachment)}
                           >
-                            <Text>⬇️</Text>
+                            <Download size={18} color="#94a3b8" />
                           </View>
                         </View>
                       </View>
                     ) : (
                       <View className="flex items-center gap-3">
                         <View className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center">
-                          <Text>📄</Text>
+                          <FileText size={24} color="#94a3b8" />
                         </View>
                         <View className="flex-1 min-w-0">
                           <Text className="block text-sm text-white truncate mb-1">
@@ -512,7 +517,7 @@ const KnowledgeShareDetailPage = () => {
                           className="p-2 rounded-lg bg-slate-800"
                           onClick={() => handleDownloadFile(attachment)}
                         >
-                          <Text>⬇️</Text>
+                          <Download size={18} color="#94a3b8" />
                         </View>
                       </View>
                     )}
@@ -530,7 +535,7 @@ const KnowledgeShareDetailPage = () => {
               }`}
               onClick={handleLike}
             >
-              <Text>👍</Text>
+              <ThumbsUp size={20} color="white" />
               <Text className="block text-base font-semibold text-white">
                 {detail.likeCount}
               </Text>

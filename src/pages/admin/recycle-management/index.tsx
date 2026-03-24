@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { Store, DollarSign, Users, Target, RefreshCw, ArrowUp, ArrowDown, Minus, Check } from 'lucide-react-taro';
 
 interface GlobalStatistics {
   totalStores: number;
@@ -108,18 +109,18 @@ export default function AdminRecycleManagementPage() {
       <View className="flex items-center justify-between mb-2">
         <View className="flex items-center gap-2">
           <View className={`p-2 rounded-lg ${color}`}>
-            <Text>●</Text>
+            <Icon size={18} className="text-white" />
           </View>
           <Text className="text-slate-400 text-sm">{label}</Text>
         </View>
         {trend && (
           <View className="flex items-center gap-1">
             {trend > 0 ? (
-              <Text>↑</Text>
+              <ArrowUp size={14} className="text-green-400" />
             ) : trend < 0 ? (
-              <Text>↓</Text>
+              <ArrowDown size={14} className="text-red-400" />
             ) : (
-              <Text>➖</Text>
+              <Minus size={14} className="text-slate-400" />
             )}
             <Text className={`text-xs ${trend > 0 ? 'text-green-400' : trend < 0 ? 'text-red-400' : 'text-slate-400'}`}>
               {Math.abs(trend)}%
@@ -186,7 +187,7 @@ export default function AdminRecycleManagementPage() {
       <View className="bg-slate-800 rounded-lg p-4 mb-3 border border-slate-700">
         <View className="flex items-start gap-3">
           <View className={`mt-1 p-1.5 rounded ${getRiskColor(store.risk_level)}`}>
-            <Text>@</Text>
+            <Target size={16} className="text-white" />
           </View>
           <View className="flex-1">
             <View className="flex items-center justify-between mb-2">
@@ -212,7 +213,7 @@ export default function AdminRecycleManagementPage() {
       <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
         <Text className="text-white text-lg font-bold">回收门店管理</Text>
         <View className={`p-2 rounded-lg bg-slate-800 ${loading ? 'opacity-50' : ''}`} onClick={handleRefresh}>
-          <Text>🔄</Text>
+          <RefreshCw size={20} className={`text-slate-300 ${loading ? 'animate-spin' : ''}`} />
         </View>
       </View>
 
@@ -366,7 +367,7 @@ export default function AdminRecycleManagementPage() {
             <View>
               <View className="flex justify-between items-center mb-3">
                 <View className="flex items-center gap-2">
-                  <Text>👤</Text>
+                  <Users size={20} className="text-cyan-400" />
                   <Text className="text-white font-semibold">回收业绩排行</Text>
                 </View>
                 <Text className="text-slate-400 text-sm">Top {salesRankings.length}</Text>
@@ -380,7 +381,7 @@ export default function AdminRecycleManagementPage() {
                 </View>
               ) : (
                 <View className="bg-slate-800 rounded-lg p-8 text-center">
-                  <Text>👤</Text>
+                  <Users size={48} className="text-slate-300 mx-auto mb-3" />
                   <Text className="text-slate-400 block">暂无排行数据</Text>
                 </View>
               )}
@@ -392,7 +393,7 @@ export default function AdminRecycleManagementPage() {
             <View>
               <View className="flex justify-between items-center mb-3">
                 <View className="flex items-center gap-2">
-                  <Text>@</Text>
+                  <Target size={20} className="text-red-400" />
                   <Text className="text-white font-semibold">风险预警门店</Text>
                 </View>
                 <Text className="text-slate-400 text-sm">近期需要跟进</Text>
@@ -406,7 +407,7 @@ export default function AdminRecycleManagementPage() {
                 </View>
               ) : (
                 <View className="bg-slate-800 rounded-lg p-8 text-center">
-                  <Text>✓</Text>
+                  <Check size={48} className="text-green-600 mx-auto mb-3" />
                   <Text className="text-slate-400 block">暂无风险门店</Text>
                 </View>
               )}

@@ -1,6 +1,7 @@
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
+import { BookOpen, Plus, Eye, Clock, ThumbsUp, Search } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface KnowledgeItem {
@@ -82,14 +83,14 @@ const KnowledgeSharePage = () => {
       {/* 顶部标题栏 */}
       <View className="bg-slate-800 px-4 py-4 flex items-center justify-between border-b border-slate-700">
         <View className="flex items-center gap-2">
-          <Text>📖</Text>
+          <BookOpen size={24} color="#60a5fa" />
           <Text className="block text-xl font-bold text-white">知识分享</Text>
         </View>
         <View
           className="bg-blue-500 px-3 py-1.5 rounded-lg flex items-center gap-1 active:opacity-80"
           onClick={handleCreateKnowledge}
         >
-          <Text>➕</Text>
+          <Plus size={18} color="white" />
           <Text className="block text-sm text-white">分享</Text>
         </View>
       </View>
@@ -97,7 +98,7 @@ const KnowledgeSharePage = () => {
       {/* 搜索栏 */}
       <View className="px-4 py-3 bg-slate-800">
         <View className="bg-slate-800 rounded-xl px-4 py-2.5 flex items-center gap-2">
-          <Text>?</Text>
+          <Search size={18} color="#94a3b8" />
           <View className="flex-1">
             <input
               className="w-full bg-transparent text-white text-sm placeholder-slate-400 outline-none"
@@ -123,7 +124,7 @@ const KnowledgeSharePage = () => {
             </View>
           ) : knowledgeList.length === 0 ? (
             <View className="text-center py-20">
-              <Text>📖</Text>
+              <BookOpen size={64} color="#334155" />
               <Text className="block text-sm text-slate-400 mt-4">暂无知识分享</Text>
               <View
                 className="inline-block mt-4 px-6 py-2 bg-slate-9000/20 border border-sky-500/30 rounded-lg"
@@ -169,17 +170,17 @@ const KnowledgeSharePage = () => {
                     <View className="flex items-center gap-4">
                       <Text className="block text-xs">{item.author}</Text>
                       <View className="flex items-center gap-1">
-                        <Text>🕐</Text>
+                        <Clock size={12} />
                         <Text className="block text-xs">{formatTime(item.createdAt)}</Text>
                       </View>
                     </View>
                     <View className="flex items-center gap-3">
                       <View className="flex items-center gap-1">
-                        <Text>👁️</Text>
+                        <Eye size={12} />
                         <Text className="block text-xs">{item.viewCount}</Text>
                       </View>
                       <View className="flex items-center gap-1">
-                        <Text>👍</Text>
+                        <ThumbsUp size={12} />
                         <Text className="block text-xs">{item.likeCount}</Text>
                       </View>
                     </View>

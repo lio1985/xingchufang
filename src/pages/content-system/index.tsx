@@ -1,5 +1,7 @@
+import { View, Text, ScrollView, Textarea, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
+import { PenTool, Check, Copy, RefreshCw, ChevronRight, Play, ImagePlus, FileText, Bot, Pencil, Sparkles, X } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 const ContentSystemPage = () => {
@@ -233,7 +235,7 @@ const ContentSystemPage = () => {
       {/* 顶部导航 */}
       <View className="bg-slate-800 px-4 py-3 flex items-center gap-2 border-b border-slate-700">
         <View className="w-8 h-8 bg-slate-9000/20 rounded-lg flex items-center justify-center">
-          <Text>🖊️</Text>
+          <PenTool size={16} color="#60a5fa" />
         </View>
         <Text className="block text-base font-semibold text-white">内容创作</Text>
       </View>
@@ -248,7 +250,7 @@ const ContentSystemPage = () => {
           }`}
           onClick={() => setActiveTab('topic')}
         >
-          <Text>📄</Text>
+          <FileText size={16} />
           <Text className="block text-sm font-medium">基于选题</Text>
         </View>
         <View
@@ -259,7 +261,7 @@ const ContentSystemPage = () => {
           }`}
           onClick={() => setActiveTab('freestyle')}
         >
-          <Text>✨</Text>
+          <Sparkles size={16} />
           <Text className="block text-sm font-medium">自由创作</Text>
         </View>
       </View>
@@ -281,7 +283,7 @@ const ContentSystemPage = () => {
                         key={index}
                         className="flex items-start gap-2 py-2 px-3 bg-slate-800 rounded-lg"
                       >
-                        <Text>✓</Text>
+                        <Check size={14} color="#22c55e" />
                         <Text className="block text-sm text-slate-300 flex-1">
                           {topic}
                         </Text>
@@ -295,7 +297,7 @@ const ContentSystemPage = () => {
               {isGenerating && (
                 <View className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl border border-sky-500/30 p-6">
                   <View className="flex flex-col items-center gap-3">
-                    <Text>🔄</Text>
+                    <RefreshCw size={32} color="#60a5fa" className="animate-spin" />
                     <Text className="block text-white font-medium">
                       正在创建 AB 方案...
                     </Text>
@@ -321,7 +323,7 @@ const ContentSystemPage = () => {
                           {/* 选题标题 */}
                           <View className="flex items-center gap-2 mb-4">
                             <View className="w-8 h-8 bg-slate-9000/20 rounded-lg flex items-center justify-center">
-                              <Text>▶️</Text>
+                              <Play size={14} color="#60a5fa" />
                             </View>
                             <Text className="block text-base font-semibold text-white">
                               {currentContent.topic}
@@ -392,7 +394,7 @@ const ContentSystemPage = () => {
                                 className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
                                 onClick={() => handleEditStart(currentContent.id, currentContent.content)}
                               >
-                                <Text>✏️</Text>
+                                <Pencil size={14} color="#94a3b8" />
                                 <Text className="block text-xs text-slate-300">手动改写</Text>
                               </View>
                             )}
@@ -402,7 +404,7 @@ const ContentSystemPage = () => {
                               }`}
                               onClick={() => handleRewrite(currentContent.id)}
                             >
-                              <Text>🤖</Text>
+                              <Bot size={14} color="#94a3b8" />
                               <Text className="block text-xs text-slate-300">
                                 {rewritingId === currentContent.id ? '改写中...' : '改写'}
                               </Text>
@@ -411,7 +413,7 @@ const ContentSystemPage = () => {
                               className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
                               onClick={() => handleCopy(currentContent.content)}
                             >
-                              <Text>📋</Text>
+                              <Copy size={14} color="#94a3b8" />
                               <Text className="block text-xs text-slate-300">复制</Text>
                             </View>
                           </View>
@@ -424,7 +426,7 @@ const ContentSystemPage = () => {
               {/* 空状态 */}
               {!isGenerating && generatedContents.length === 0 && (
                 <View className="bg-slate-800 rounded-xl border border-slate-700 p-6 text-center">
-                  <Text>🖊️</Text>
+                  <PenTool size={48} color="#475569" />
                   <Text className="block text-slate-400 text-base mt-4 mb-2">
                     暂无创建的内容
                   </Text>
@@ -441,7 +443,7 @@ const ContentSystemPage = () => {
                     className="flex-1 bg-slate-800 text-white text-center py-3 rounded-xl font-medium active:opacity-80 flex items-center justify-center gap-2"
                     onClick={handleRegenerate}
                   >
-                    <Text>🔄</Text>
+                    <RefreshCw size={18} />
                     <Text className="block">重新创建</Text>
                   </View>
                 </View>
@@ -453,7 +455,7 @@ const ContentSystemPage = () => {
                   className="bg-slate-800 text-slate-300 text-center py-3 rounded-xl font-medium active:opacity-80 flex items-center justify-center gap-2"
                   onClick={() => Taro.navigateBack()}
                 >
-                  <Text>›</Text>
+                  <ChevronRight size={18} className="rotate-180" />
                   <Text className="block">返回选题策划</Text>
                 </View>
               </View>
@@ -493,7 +495,7 @@ const ContentSystemPage = () => {
                         className="absolute top-2 right-2 w-8 h-8 bg-red-500/80 rounded-full flex items-center justify-center"
                         onClick={() => setUploadedImage(null)}
                       >
-                        <Text>✕</Text>
+                        <X size={16} color="white" />
                       </View>
                     </View>
                   ) : (
@@ -501,7 +503,7 @@ const ContentSystemPage = () => {
                       className="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center active:border-blue-500 transition-all"
                       onClick={handleChooseImage}
                     >
-                      <Text>🖼️➕</Text>
+                      <ImagePlus size={32} color="#64748b" />
                       <Text className="block text-sm text-slate-400 mt-2">点击上传图片</Text>
                     </View>
                   )}
@@ -518,12 +520,12 @@ const ContentSystemPage = () => {
                 >
                   {isFreestyleGenerating ? (
                     <>
-                      <Text>🔄</Text>
+                      <RefreshCw size={18} className="animate-spin" />
                       <Text className="block">创建中...</Text>
                     </>
                   ) : (
                     <>
-                      <Text>✨</Text>
+                      <Sparkles size={18} />
                       <Text className="block">内容创作</Text>
                     </>
                   )}
@@ -571,7 +573,7 @@ const ContentSystemPage = () => {
             <View className="flex items-center justify-between mb-5">
               <View className="flex items-center gap-3">
                 <View className="w-10 h-10 bg-slate-9000/20 rounded-xl flex items-center justify-center">
-                  <Text>🤖</Text>
+                  <Bot size={20} color="#60a5fa" />
                 </View>
                 <View>
                   <Text className="block text-lg font-semibold text-white">内容改写</Text>
@@ -582,7 +584,7 @@ const ContentSystemPage = () => {
                 className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800/60 active:opacity-70"
                 onClick={() => setShowRewriteModal(false)}
               >
-                <Text>✕</Text>
+                <X size={20} color="#94a3b8" />
               </View>
             </View>
 

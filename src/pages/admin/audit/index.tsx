@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
+import { Search, ListFilter, Clock, FileText, Download, ChevronDown } from 'lucide-react-taro';
 
 interface OperationLog {
   id: string;
@@ -158,7 +159,7 @@ export default function AdminAuditPage() {
       <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700">
         <View className="flex items-center gap-3">
           <View className="flex-1 bg-slate-800 rounded-lg px-4 py-2 flex items-center gap-2">
-            <Text>?</Text>
+            <Search size={16} className="text-slate-400" />
             <Input
               className="flex-1 text-white bg-transparent placeholder-slate-400"
               placeholder="搜索用户、操作..."
@@ -170,10 +171,10 @@ export default function AdminAuditPage() {
             className="bg-slate-800 rounded-lg px-3 py-2"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <Text>📋</Text>
+            <ListFilter size={20} className="text-slate-300" />
           </View>
           <View className="bg-slate-800 rounded-lg px-3 py-2" onClick={exportLogs}>
-            <Text>⬇️</Text>
+            <Download size={20} className="text-slate-300" />
           </View>
         </View>
 
@@ -294,7 +295,7 @@ export default function AdminAuditPage() {
             >
               <View className="flex items-start gap-3">
                 <View className="p-2 rounded-lg bg-slate-800 flex-shrink-0">
-                  <Text>🕐</Text>
+                  <Clock size={16} className="text-slate-400" />
                 </View>
                 <View className="flex-1 min-w-0">
                   <View className="flex items-center gap-2 mb-1">
@@ -308,7 +309,7 @@ export default function AdminAuditPage() {
                   )}
                   {log.resourceType && (
                     <View className="flex items-center gap-1">
-                      <Text>📄</Text>
+                      <FileText size={12} className="text-slate-400" />
                       <Text className="text-slate-400 text-sm">{log.resourceType}</Text>
                     </View>
                   )}
@@ -316,7 +317,7 @@ export default function AdminAuditPage() {
                     {new Date(log.createdAt).toLocaleString('zh-CN')}
                   </Text>
                 </View>
-                <Text>⌄</Text>
+                <ChevronDown size={20} className="text-slate-400 flex-shrink-0" />
               </View>
             </View>
           ))}
@@ -329,7 +330,7 @@ export default function AdminAuditPage() {
 
           {!loading && logs.length === 0 && (
             <View className="text-center py-12">
-              <Text>🕐</Text>
+              <Clock size={48} className="text-slate-300 mx-auto mb-3" />
               <Text className="text-slate-400 block">暂无日志数据</Text>
             </View>
           )}

@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Button } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
+import { ArrowLeft, ExternalLink, Bookmark, BookmarkCheck, Flame, Clock, TrendingUp, Lightbulb, Info, Link2 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import TimelineChart from '@/components/TimelineChart';
 
@@ -414,7 +415,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
             className="mb-4 w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
             onClick={() => Taro.navigateBack()}
           >
-            <Text>←</Text>
+            <ArrowLeft size={20} color="#94a3b8" />
           </View>
 
           {/* 标题 */}
@@ -426,20 +427,20 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
           <View className="flex flex-wrap gap-3 mb-4">
             {/* 平台 */}
             <View className="bg-slate-9000/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-              <Text>^</Text>
+              <TrendingUp size={14} color="#3b82f6" strokeWidth={2} />
               <Text className="block text-xs text-blue-400 font-medium">{platform}</Text>
             </View>
 
             {/* 热度 */}
             <View className="bg-amber-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-              <Text>!</Text>
+              <Flame size={14} color="#fbbf24" strokeWidth={2} />
               <Text className="block text-xs text-amber-400 font-medium">{formatHotness(hotness)}</Text>
             </View>
 
             {/* 时间 */}
             {publishTime && (
               <View className="bg-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                <Text>🕐</Text>
+                <Clock size={14} color="#94a3b8" strokeWidth={2} />
                 <Text className="block text-xs text-slate-400">{formatTime(publishTime)}</Text>
               </View>
             )}
@@ -474,7 +475,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
           {creativeAngles.length > 0 && (
             <View className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700">
               <View className="flex items-center gap-2 mb-3">
-                <Text>I</Text>
+                <Lightbulb size={18} color="#fbbf24" strokeWidth={2} />
                 <Text className="block text-base font-bold text-white">💡 创作角度建议</Text>
               </View>
               {loadingAngles ? (
@@ -498,7 +499,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
           {sentimentData && (
             <View className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700">
               <View className="flex items-center gap-2 mb-3">
-                <Text>^</Text>
+                <TrendingUp size={18} color="#3b82f6" strokeWidth={2} />
                 <Text className="block text-base font-bold text-white">📊 舆情分析</Text>
               </View>
               {loadingSentiment ? (
@@ -549,7 +550,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
                   {sentimentData.controversies && sentimentData.controversies.length > 0 && (
                     <View className="mt-3 pt-3 border-t border-slate-700">
                       <View className="flex items-center gap-2 mb-2">
-                        <Text>ℹ️</Text>
+                        <Info size={14} color="#f59e0b" strokeWidth={2} />
                         <Text className="text-xs text-amber-400 font-medium">主要争议点</Text>
                       </View>
                       <View className="space-y-1">
@@ -594,7 +595,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
                           <View className="flex items-center gap-2">
                             <Text className="text-xs text-slate-400">{topic.platform}</Text>
                             <View className="flex items-center gap-1">
-                              <Text>!</Text>
+                              <Flame size={10} color="#fbbf24" strokeWidth={2} />
                               <Text className="text-xs text-amber-400">{formatHotness(topic.hotness)}</Text>
                             </View>
                           </View>
@@ -620,7 +621,7 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
             >
               <View className="flex items-center gap-3">
                 <View className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center">
-                  <Text>🔗</Text>
+                  <ExternalLink size={16} color="#94a3b8" strokeWidth={2} />
                 </View>
                 <View className="flex-1">
                   <Text className="block text-sm text-slate-300">查看原文链接</Text>
@@ -647,9 +648,9 @@ ${platformName}热榜数据显示，"${topicKeyword}"已成为当前最受关注
               disabled={isSaving || isSaved}
             >
               {isSaved ? (
-                <Text>🔖</Text>
+                <BookmarkCheck size={18} color="#22c55e" strokeWidth={2} />
               ) : (
-                <Text>📑</Text>
+                <Bookmark size={18} color="#ffffff" strokeWidth={2} />
               )}
               <Text className={`text-base ${isSaved ? 'text-green-400' : 'text-white'}`}>
                 {isSaving ? '保存中...' : isSaved ? '已收藏' : '收藏到选题库'}
