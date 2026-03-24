@@ -153,3 +153,45 @@ const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
 - [x] 构建命令正常执行
 - [x] 源代码无报错
 - [x] 核心功能完整保留
+
+---
+
+## 🔧 补充清理（2026-03-24）
+
+### 额外删除的文件
+
+| 文件 | 大小 | 说明 |
+|------|------|------|
+| server-static.js | 3KB | H5 静态文件服务器 |
+
+### 修改的配置
+
+| 文件 | 修改内容 |
+|------|---------|
+| ecosystem.config.cjs | 移除 `star-kitchen-web` 应用配置 |
+
+### 服务调整
+
+- **停止使用**：5000 端口的静态文件服务器
+- **保留使用**：3000 端口的后端 API 服务
+- **开发命令**：`pnpm dev` 现在启动小程序开发模式
+
+### 正确的开发流程
+
+```bash
+# 启动开发服务
+pnpm dev
+
+# 微信开发者工具导入
+# 路径：/workspace/projects/dist-weapp
+# 不再需要访问 http://localhost:5000
+```
+
+### 故障排查
+
+如果遇到 `ENOENT: no such file or directory, stat 'dist-web/index.html'` 错误：
+
+1. 已删除 `server-static.js`，不再启动静态文件服务器
+2. 小程序开发使用微信开发者工具导入 `dist-weapp/` 目录
+3. 后端 API 服务在 3000 端口，前端通过 Network.request 自动代理
+
