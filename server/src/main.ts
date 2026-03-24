@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@/app.module';
 import * as express from 'express';
+import { join } from 'path';
 import { HttpStatusInterceptor } from '@/interceptors/http-status.interceptor';
 
 function parsePort(): number {
@@ -48,20 +49,39 @@ async function bootstrap() {
   // 全局拦截器：统一将 POST 请求的 201 状态码改为 200
   app.useGlobalInterceptors(new HttpStatusInterceptor());
 
-  // 小程序项目：不需要 H5 静态文件服务
-  // API 请求会自动路由到对应的 Controller
-  // 非API请求返回 404
-  app.use((req, res, next) => {
-    if (!req.path.startsWith('/api/')) {
-      res.status(404).json({
-        statusCode: 404,
-        message: 'This is a WeChat Mini Program backend API server. API endpoints start with /api/',
-        error: 'Not Found'
-      });
-    } else {
-      next();
-    }
-  });
+  // 小程序开发预览模式
+  // 检查是否存在 H5 构建产物（仅用于扣子平台预览）
+  const h5Path = '/workspace/projects/dist-web';
+  const fs = require('fs');
+  const hasH5Build = fs.existsSync(join(h5Path, 'index.html'));
+
+  if (hasH5Build) {
+    // H5 构建存在，提供预览服务
+    console.log('📱 H5 preview mode enabled');
+    app.use(express.static(h5Path));
+    app.use((req, res, next) => {
+      if (!req.path.startsWith('/api/')) {
+        res.sendFile(join(h5Path, 'index.html'));
+      } else {
+        next();
+      }
+    });
+  } else {
+    // 纯小程序模式，API only
+    console.log('🎯 Mini Program API mode');
+    app.use((req, res, next) => {
+      if (!req.path.startsWith('/api/')) {
+        res.status(404).json({
+          statusCode: 404,
+          message: 'This is a WeChat Mini Program backend API server. API endpoints start with /api/',
+          error: 'Not Found',
+          hint: 'For H5 preview, run: pnpm build:web'
+        });
+      } else {
+        next();
+      }
+    });
+  }
 
   // 1. 开启优雅关闭 Hooks (关键!)
   app.enableShutdownHooks();
