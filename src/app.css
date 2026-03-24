@@ -1,35 +1,35 @@
 @import "tailwindcss";
 
 /*
- * 星厨房主题 CSS 变量
+ * 星厨房主题 CSS 变量 - 清爽蓝色科技风
  */
 :root, page {
-  /* 背景色 - 深蓝渐变 */
-  --background: #0f172a;
-  --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
-  --background-secondary: #1e293b;
-  --card-background: rgba(30, 41, 59, 0.8);
+  /* 背景色 - 清爽浅色 */
+  --background: #f8fafc;
+  --background-gradient: #f8fafc;
+  --background-secondary: #f1f5f9;
+  --card-background: #ffffff;
   
-  /* 主题色 */
-  --primary: #60a5fa;
+  /* 主题色 - 蓝色科技风 */
+  --primary: #2563eb;
   --primary-hover: #3b82f6;
-  --primary-light: rgba(96, 165, 250, 0.2);
+  --primary-light: #eff6ff;
   
   /* 文字色 */
-  --text-primary: #ffffff;
-  --text-secondary: #cbd5e1;
-  --text-tertiary: #94a3b8;
-  --text-muted: #64748b;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
   
   /* 边框色 */
-  --border: #334155;
-  --border-light: #475569;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
   
   /* 功能色 */
-  --success: #34d399;
-  --warning: #fbbf24;
-  --error: #f87171;
-  --info: #60a5fa;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 
 /*
@@ -40,14 +40,13 @@ html {
   font-size: 4vw !important;
 }
 
-/* 全局背景色 - 深蓝渐变 */
+/* 全局背景色 - 清爽浅色 */
 html, body, page {
-  background: var(--background-gradient) !important;
+  background: var(--background) !important;
   color: var(--text-primary);
-  background-attachment: fixed;
 }
 
-/* 小程序页面容器高度设置，确保垂直居中生效 */
+/* 小程序页面容器高度设置 */
 /* stylelint-disable-next-line selector-type-no-unknown */
 page {
   height: 100%;
