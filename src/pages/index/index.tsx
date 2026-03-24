@@ -202,6 +202,11 @@ const IndexPage = () => {
 
   return (
     <View className="min-h-screen bg-slate-50 flex flex-col">
+      {/* 测试标记：验证页面是否更新 */}
+      <View className="bg-red-500 text-white text-center py-3 text-lg font-bold">
+        🚀 版本测试：2026-03-24-01 | 最新构建
+      </View>
+      
       {/* 顶部品牌区 */}
       <BrandHeader
         isLoggedIn={isLoggedIn}
