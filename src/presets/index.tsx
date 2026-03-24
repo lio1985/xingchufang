@@ -1,18 +1,14 @@
 import { useLaunch } from '@tarojs/taro';
 import { PropsWithChildren } from 'react';
-import { H5NavBar } from './h5-navbar';
-import { injectH5Styles } from './h5-styles';
 import { enableWxDebugIfNeeded } from './wx-debug';
 
 export const Preset = ({ children }: PropsWithChildren) => {
   useLaunch(() => {
     enableWxDebugIfNeeded();
-    injectH5Styles();
   });
 
-  if (TARO_ENV === 'h5') {
-    return <H5NavBar>{children}</H5NavBar>;
-  }
+  // H5 相关预设已移除
+  // 小程序项目不再需要 H5 导航栏和样式
 
   return <>{children}</>;
 };
