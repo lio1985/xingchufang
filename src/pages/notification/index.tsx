@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import Taro, { showToast, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { Network } from '@/network';
-import { Bell, Check, ChevronRight, MessageSquare, Info } from 'lucide-react-taro';
 import './index.less';
 
 interface Notification {
@@ -104,13 +103,13 @@ const NotificationPage = () => {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'system':
-        return <Bell size={20} color="#3b82f6" />;
+        return <Text>🔔</Text>;
       case 'activity':
-        return <Info size={20} color="#f59e0b" />;
+        return <Text>ℹ</Text>;
       case 'update':
-        return <Info size={20} color="#10b981" />;
+        return <Text>ℹ</Text>;
       default:
-        return <MessageSquare size={20} color="#6b7280" />;
+        return <Text>💬</Text>;
     }
   };
 
@@ -194,7 +193,7 @@ const NotificationPage = () => {
         </View>
         {unreadCount > 0 && (
           <View className="read-all-btn" onClick={markAllAsRead}>
-            <Check size={16} color="#3b82f6" />
+            <Text>✓</Text>
             <Text className="read-all-text">全部已读</Text>
           </View>
         )}
@@ -204,7 +203,7 @@ const NotificationPage = () => {
       <View className="notification-list">
         {notifications.length === 0 ? (
           <View className="empty-state">
-            <Bell size={64} color="#d1d5db" />
+            <Text>🔔</Text>
             <Text className="empty-text">暂无消息</Text>
           </View>
         ) : (
@@ -237,7 +236,7 @@ const NotificationPage = () => {
                   <Text className="notification-type">
                     {getTypeName(notification.type)}
                   </Text>
-                  <ChevronRight size={16} color="#9ca3af" />
+                  <Text>{">"}</Text>
                 </View>
               </View>
             </View>

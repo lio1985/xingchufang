@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Taro, { useLoad } from '@tarojs/taro';
 import { View, Text, Button, ScrollView, Picker } from '@tarojs/components';
 import { Network } from '@/network';
-import { Download, FileText, Users, History, Check, X, Loader, Calendar, Share2 } from 'lucide-react-taro';
 
 type ExportDataType = 'users' | 'lexicons' | 'logs' | 'all';
 type ExportFormat = 'json' | 'csv';
@@ -284,11 +283,11 @@ const DataExportPage: React.FC = () => {
     switch (status) {
       case 'pending':
       case 'processing':
-        return <Loader className="w-4 h-4 animate-spin" />;
+        return <Text>⏳</Text>;
       case 'completed':
-        return <Check className="w-4 h-4" />;
+        return <Text>✓</Text>;
       case 'failed':
-        return <X className="w-4 h-4" />;
+        return <Text>✕</Text>;
       default:
         return null;
     }
@@ -386,7 +385,7 @@ const DataExportPage: React.FC = () => {
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'all' })}
               >
-                <FileText className="w-5 h-5 text-blue-400 mb-2" />
+                <Text>📄</Text>
                 <Text className="block text-white text-sm font-medium">全部数据</Text>
               </View>
               <View
@@ -397,7 +396,7 @@ const DataExportPage: React.FC = () => {
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'users' })}
               >
-                <Users className="w-5 h-5 text-emerald-400 mb-2" />
+                <Text>👤</Text>
                 <Text className="block text-white text-sm font-medium">用户数据</Text>
               </View>
               <View
@@ -408,7 +407,7 @@ const DataExportPage: React.FC = () => {
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'lexicons' })}
               >
-                <Share2 className="w-5 h-5 text-purple-400 mb-2" />
+                <Text>🔗</Text>
                 <Text className="block text-white text-sm font-medium">语料库</Text>
               </View>
               <View
@@ -419,7 +418,7 @@ const DataExportPage: React.FC = () => {
                 }`}
                 onClick={() => setConfig({ ...config, dataType: 'logs' })}
               >
-                <History className="w-5 h-5 text-yellow-400 mb-2" />
+                <Text>📜</Text>
                 <Text className="block text-white text-sm font-medium">操作日志</Text>
               </View>
             </View>
@@ -536,7 +535,7 @@ const DataExportPage: React.FC = () => {
                       <Text className="block text-white text-sm">
                         {config.timeRange?.startDate || '选择开始日期'}
                       </Text>
-                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <Text>📅</Text>
                     </View>
                   </Picker>
                 </View>
@@ -551,7 +550,7 @@ const DataExportPage: React.FC = () => {
                       <Text className="block text-white text-sm">
                         {config.timeRange?.endDate || '选择结束日期'}
                       </Text>
-                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <Text>📅</Text>
                     </View>
                   </Picker>
                 </View>
@@ -595,11 +594,11 @@ const DataExportPage: React.FC = () => {
 
           {loading ? (
             <View className="flex items-center justify-center py-8">
-              <Loader className="w-6 h-6 text-blue-400 animate-spin" />
+              <Text>⏳</Text>
             </View>
           ) : tasks.length === 0 ? (
             <View className="flex flex-col items-center justify-center py-16">
-              <Download className="w-12 h-12 text-gray-600 mb-3" />
+              <Text>⬇</Text>
               <Text className="block text-gray-500 text-sm">暂无导出记录</Text>
             </View>
           ) : (
@@ -626,7 +625,7 @@ const DataExportPage: React.FC = () => {
                       className="flex items-center gap-1 cursor-pointer"
                       onClick={() => refreshTaskStatus(task.id)}
                     >
-                      <Loader className="w-4 h-4 text-blue-400 animate-spin" />
+                      <Text>⏳</Text>
                       <Text className="block text-blue-400 text-xs">刷新</Text>
                     </View>
                   )}
@@ -645,11 +644,11 @@ const DataExportPage: React.FC = () => {
                 {/* 任务统计 */}
                 <View className="flex items-center gap-4 text-xs text-gray-400 mb-3">
                   <View className="flex items-center gap-1">
-                    <FileText className="w-3 h-3" />
+                    <Text>📄</Text>
                     <Text className="block">{task.recordCount} 条记录</Text>
                   </View>
                   <View className="flex items-center gap-1">
-                    <Download className="w-3 h-3" />
+                    <Text>⬇</Text>
                     <Text className="block">{formatFileSize(task.fileSize)}</Text>
                   </View>
                 </View>

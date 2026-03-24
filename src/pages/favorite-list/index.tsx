@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { Heart, Trash2, Check, Clock, Share2 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface FavoriteItem {
@@ -123,13 +122,13 @@ export default function FavoriteListPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case '待拍':
-        return <Clock size={14} color="#f59e0b" />;
+        return <Text>🕐</Text>;
       case '已拍':
-        return <Check size={14} color="#10b981" />;
+        return <Text>✓</Text>;
       case '已发布':
-        return <Share2 size={14} color="#3b82f6" />;
+        return <Text>🔗</Text>;
       default:
-        return <Clock size={14} color="#9ca3af" />;
+        return <Text>🕐</Text>;
     }
   };
 
@@ -152,7 +151,7 @@ export default function FavoriteListPage() {
       <View className="bg-slate-800 sticky top-0 z-10 shadow-sm">
         <View className="px-4 py-3 flex items-center justify-between">
           <View className="flex items-center gap-2">
-            <Heart size={24} color="#ec4899" />
+            <Text>❤️</Text>
             <Text className="text-lg font-semibold text-gray-800 block">待拍清单</Text>
           </View>
           <View className="flex items-center gap-1">
@@ -169,7 +168,7 @@ export default function FavoriteListPage() {
           </View>
         ) : favorites.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20 px-4">
-            <Heart size={48} color="#d1d5db" />
+            <Text>❤️</Text>
             <Text className="block text-gray-500 mt-4 text-center">
               暂无收藏内容{'\n'}去热点列表收藏感兴趣的内容吧
             </Text>
@@ -253,7 +252,7 @@ export default function FavoriteListPage() {
                       className="border border-red-300 text-red-500"
                       onClick={() => handleDeleteFavorite(item.id)}
                     >
-                      <Trash2 size={14} color="#ef4444" />
+                      <Text>🗑</Text>
                     </Button>
                   </View>
                 </View>

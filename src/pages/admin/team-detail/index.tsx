@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
-import { ChevronLeft, Users, UserPlus, UserMinus, Crown, Search, X, Pencil } from 'lucide-react-taro';
 
 interface TeamMember {
   id: string;
@@ -274,7 +273,7 @@ export default function TeamDetail() {
             className="p-2 bg-slate-800 rounded-lg active:bg-slate-800 transition-colors"
             onClick={() => Taro.navigateBack()}
           >
-            <ChevronLeft size={20} className="text-slate-300" />
+            <Text>{"<"}</Text>
           </View>
           <Text className="block text-lg font-semibold text-white">{team.name}</Text>
         </View>
@@ -336,7 +335,7 @@ export default function TeamDetail() {
                   className="px-3 py-1.5 bg-blue-600/20 rounded-lg flex items-center gap-1.5"
                   onClick={handleStartEdit}
                 >
-                  <Pencil size={14} className="text-blue-400" />
+                  <Text>✏</Text>
                   <Text className="block text-sm text-blue-400">编辑</Text>
                 </View>
               </View>
@@ -364,7 +363,7 @@ export default function TeamDetail() {
                 {/* 搜索框 */}
                 <View className="flex items-center gap-2 mb-3">
                   <View className="flex-1 bg-slate-800 rounded-lg px-3 py-2 flex items-center gap-2">
-                    <Search size={16} className="text-slate-400" />
+                    <Text>🔍</Text>
                     <Input
                       className="text-sm text-white bg-transparent flex-1"
                       placeholder="输入用户昵称或6位员工ID搜索"
@@ -375,7 +374,7 @@ export default function TeamDetail() {
                     />
                     {searchKeyword && (
                       <View onClick={() => setSearchKeyword('')}>
-                        <X size={14} className="text-slate-400" />
+                        <Text>✕</Text>
                       </View>
                     )}
                   </View>
@@ -446,7 +445,7 @@ export default function TeamDetail() {
                 <View className="flex items-center justify-between mb-3">
                   <Text className="block text-sm text-slate-400">已选择用户</Text>
                   <View onClick={handleClearSelection}>
-                    <X size={16} className="text-slate-400" />
+                    <Text>✕</Text>
                   </View>
                 </View>
                 <View className="flex items-center gap-3 mb-3">
@@ -475,7 +474,7 @@ export default function TeamDetail() {
                   className="py-2 bg-blue-600 rounded-lg active:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                   onClick={handleAddMember}
                 >
-                  <UserPlus size={16} className="text-white" />
+                  <Text>👤</Text>
                   <Text className="block text-sm text-white">确认添加</Text>
                 </View>
               </View>
@@ -503,7 +502,7 @@ export default function TeamDetail() {
                     <View className="flex items-center gap-2 mt-0.5">
                       {member.role === 'leader' ? (
                         <View className="flex items-center gap-1">
-                          <Crown size={12} className="text-yellow-400" />
+                          <Text>👑</Text>
                           <Text className="block text-xs text-yellow-400">负责人</Text>
                         </View>
                       ) : (
@@ -525,14 +524,14 @@ export default function TeamDetail() {
                     className="p-2 bg-red-500/20 rounded-lg"
                     onClick={() => handleRemoveMember(member.user_id, member.user?.nickname || '该成员')}
                   >
-                    <UserMinus size={16} className="text-red-400" />
+                    <Text>👤</Text>
                   </View>
                 </View>
               </View>
             ))}
             {(!team.members || team.members.length === 0) && (
               <View className="flex flex-col items-center justify-center py-8">
-                <Users size={32} className="text-slate-300 mb-2" />
+                <Text>👤</Text>
                 <Text className="block text-slate-400">暂无成员</Text>
               </View>
             )}

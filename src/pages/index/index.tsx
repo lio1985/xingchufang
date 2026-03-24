@@ -2,321 +2,106 @@ import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { Network } from '@/network';
-import './index.css';
 
-// 图标路径配置
-const iconPath = '/static/icons';
+const FEATURES = [
+  { id: 'quick-note', title: '灵感速记', desc: '快速记录创作灵感', color: '#3b82f6' },
+  { id: 'customer', title: '客资管理', desc: '客户资料管理与跟进', color: '#22c55e' },
+  { id: 'recycle', title: '厨具回收', desc: '厨具设备回收管理', color: '#22c55e' },
+  { id: 'knowledge', title: '知识分享', desc: '分享创作经验和技巧', color: '#a855f7' },
+  { id: 'topic', title: '选题策划', desc: '快速发现优质选题', color: '#06b6d4' },
+  { id: 'content', title: '内容创作', desc: '高效创作优质内容', color: '#6366f1' },
+  { id: 'lexicon', title: '语料优化', desc: '管理优化语料库', color: '#14b8a6' },
+  { id: 'viral', title: '爆款复刻', desc: '解析爆款内容', color: '#ec4899' },
+  { id: 'live', title: '直播数据', desc: '抖音直播数据分析', color: '#f43f5e' },
+];
 
-// 图标组件封装 - 使用本地 PNG
-const IconLightbulb = () => (
-  <Image src={`${iconPath}/lightbulb.png`} className="icon" mode="aspectFit" />
-);
-const IconUsers = () => (
-  <Image src={`${iconPath}/users.png`} className="icon" mode="aspectFit" />
-);
-const IconRecycle = () => (
-  <Image src={`${iconPath}/recycle.png`} className="icon" mode="aspectFit" />
-);
-const IconBookOpen = () => (
-  <Image src={`${iconPath}/book.png`} className="icon" mode="aspectFit" />
-);
-const IconSparkles = () => (
-  <Image src={`${iconPath}/sparkles.png`} className="icon" mode="aspectFit" />
-);
-const IconPenTool = () => (
-  <Image src={`${iconPath}/pentool.png`} className="icon" mode="aspectFit" />
-);
-const IconTrendingUp = () => (
-  <Image src={`${iconPath}/trending.png`} className="icon" mode="aspectFit" />
-);
-const IconVideo = () => (
-  <Image src={`${iconPath}/video.png`} className="icon" mode="aspectFit" />
-);
-const IconBell = () => (
-  <Image src={`${iconPath}/bell.png`} className="icon-sm" mode="aspectFit" />
-);
-const IconUser = () => (
-  <Image src={`${iconPath}/user.png`} className="icon-sm" mode="aspectFit" />
-);
-
-
-const IndexPage = () => {
+const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [userStatus, setUserStatus] = useState<'active' | 'pending' | 'disabled' | 'deleted'>('active');
-  const [unreadCount, setUnreadCount] = useState(0);
 
-  // 处理导航
-  const handleNavigateTo = (url: string, requireLogin: boolean = false) => {
-    console.log('跳转到:', url);
-
-    // 公开页面（游客可访问）
-    const publicPages = [
-      '/pages/hotspot/index',
-      '/pages/news/index',
-      '/pages/index/index',
-    ];
-
-    const isPublicPage = publicPages.some(page => url.startsWith(page));
-    
-    if (isPublicPage) {
-      Taro.navigateTo({ url });
-      return;
-    }
-
-    if (requireLogin && !isLoggedIn) {
-      Taro.showModal({
-        title: '提示',
-        content: '登录后可保存您的数据，是否立即登录？',
-        cancelText: '暂不登录',
-        confirmText: '去登录',
-        success: (res) => {
-          if (res.confirm) {
-            Taro.navigateTo({ url: '/pages/login/index' });
-          }
-        }
-      });
-      return;
-    }
-
-    if (userStatus === 'pending') {
-      Taro.showModal({
-        title: '等待审核',
-        content: '您的账号正在等待管理员审核，审核通过后即可使用功能。',
-        showCancel: false
-      });
-      return;
-    }
-
-    if (userStatus === 'disabled' || userStatus === 'deleted') {
-      Taro.showModal({
-        title: '账号状态异常',
-        content: '您的账号已被禁用，请联系管理员。',
-        showCancel: false
-      });
-      return;
-    }
-
-    Taro.navigateTo({ url });
-  };
-
-  // 加载用户信息
   useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        let storedUser = null;
-        let token = null;
-        
-        try {
-          storedUser = Taro.getStorageSync('user');
-          token = Taro.getStorageSync('token');
-        } catch (storageError) {
-          console.error('读取本地存储失败:', storageError);
-        }
-
-        if (storedUser && token) {
-          const user = storedUser as { role?: string; status?: 'active' | 'pending' | 'disabled' | 'deleted' };
-          setIsLoggedIn(true);
-          setIsAdmin(user?.role === 'admin');
-          setUserStatus(user?.status || 'active');
-        } else {
-          setIsLoggedIn(false);
-        }
-      } catch (error) {
-        console.error('加载用户信息失败:', error);
-        setIsLoggedIn(false);
+    try {
+      const user = Taro.getStorageSync('user');
+      const token = Taro.getStorageSync('token');
+      if (user && token) {
+        setIsLoggedIn(true);
+        setIsAdmin(user.role === 'admin');
       }
-    };
-
-    loadUserInfo();
+    } catch (e) {
+      console.log('storage error');
+    }
   }, []);
 
-  // 获取未读消息数量
-  useEffect(() => {
-    const fetchUnreadCount = async () => {
-      if (!isLoggedIn) return;
-      
-      try {
-        const response = await Network.request({
-          url: '/api/notifications/unread-count',
-          method: 'GET',
-        });
-
-        if (response.data?.success) {
-          setUnreadCount(response.data.data.count);
-        }
-      } catch (error) {
-        console.log('通知接口暂未部署');
-      }
-    };
-
-    fetchUnreadCount();
-  }, [isLoggedIn]);
+  const handleNav = (path) => {
+    Taro.navigateTo({ url: path });
+  };
 
   return (
-    <View className="page-container">
-      {/* 顶部区域 */}
-      <View className="header">
-        <View className="header-left">
-          <Text className="header-title">星厨房</Text>
-          <Text className="header-subtitle">内容创作助手</Text>
-        </View>
-        <View className="header-right">
-          {isLoggedIn ? (
-            <>
-              <View className="header-btn" onClick={() => handleNavigateTo('/pages/notification/index')}>
-                <IconBell />
-                {unreadCount > 0 && (
-                  <View className="badge">
-                    <Text className="badge-text">{unreadCount > 99 ? '99+' : unreadCount}</Text>
-                  </View>
-                )}
-              </View>
-              {isAdmin && (
-                <View className="header-btn admin" onClick={() => handleNavigateTo('/pages/admin/dashboard/index')}>
-                  <Text className="btn-text">管理</Text>
-                </View>
-              )}
-            </>
-          ) : (
-            <View className="header-btn login" onClick={() => handleNavigateTo('/pages/login/index')}>
-              <IconUser />
-              <Text className="btn-text">登录</Text>
-            </View>
-          )}
+    <View style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+      {/* Header */}
+      <View style={{ backgroundColor: '#fff', padding: '32px', borderBottom: '1px solid #f0f0f0' }}>
+        <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View>
+            <Text style={{ fontSize: '40px', fontWeight: '600', color: '#333', display: 'block' }}>星厨房</Text>
+            <Text style={{ fontSize: '24px', color: '#999', marginTop: '8px', display: 'block' }}>内容创作助手</Text>
+          </View>
+          <View 
+            style={{ backgroundColor: '#f5f5f5', padding: '16px 24px', borderRadius: '16px' }}
+            onClick={() => handleNav('/pages/login/index')}
+          >
+            <Text style={{ fontSize: '28px' }}>{isLoggedIn ? '已登录' : '登录'}</Text>
+          </View>
         </View>
       </View>
 
-      {/* 可滚动内容区 */}
-      <ScrollView
-        className="content"
-        scrollY
-        scrollWithAnimation
-        enableBackToTop
-      >
-        {/* 快捷入口区域 */}
-        <View className="section">
-          <Text className="section-title">快捷入口</Text>
-          <View className="quick-entry" onClick={() => handleNavigateTo('/pages/quick-note/index', false)}>
-            <View className="quick-icon">
-              <IconLightbulb />
-            </View>
-            <View className="quick-content">
-              <Text className="quick-title">灵感速记</Text>
-              <Text className="quick-desc">快速记录创作灵感</Text>
-            </View>
-            <Text className="arrow-text">›</Text>
-          </View>
-        </View>
-
-        {/* 核心功能区域 */}
-        <View className="section">
-          <Text className="section-title">核心功能</Text>
+      {/* Content */}
+      <ScrollView scrollY style={{ flex: 1, paddingBottom: '120px' }}>
+        <View style={{ padding: '24px' }}>
+          <Text style={{ fontSize: '32px', fontWeight: '600', color: '#333', display: 'block', marginBottom: '24px' }}>
+            功能列表
+          </Text>
           
-          <View className="feature-list">
-            {/* 客资管理 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/customer/index', false)}>
-              <View className="feature-icon blue">
-                <IconUsers />
+          {FEATURES.map((item) => (
+            <View
+              key={item.id}
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: '20px',
+                padding: '28px',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+              }}
+              onClick={() => handleNav(`/pages/${item.id}/index`)}
+            >
+              <View style={{
+                width: '88px',
+                height: '88px',
+                borderRadius: '20px',
+                backgroundColor: item.color + '15',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '24px'
+              }}>
+                <Text style={{ fontSize: '44px' }}>{item.title[0]}</Text>
               </View>
-              <View className="feature-content">
-                <Text className="feature-title">客资管理</Text>
-                <Text className="feature-desc">客户资料管理与跟进</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: '32px', fontWeight: '500', color: '#333', display: 'block', marginBottom: '8px' }}>
+                  {item.title}
+                </Text>
+                <Text style={{ fontSize: '24px', color: '#999', display: 'block' }}>
+                  {item.desc}
+                </Text>
               </View>
-              <Text className="arrow-text">›</Text>
+              <Text style={{ fontSize: '48px', color: '#ccc', fontWeight: '300' }}>{'>'}</Text>
             </View>
-
-            {/* 厨具回收 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/recycle/index', false)}>
-              <View className="feature-icon green">
-                <IconRecycle />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">厨具回收</Text>
-                <Text className="feature-desc">厨具设备回收管理</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 知识分享 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/knowledge-share/index', false)}>
-              <View className="feature-icon purple">
-                <IconBookOpen />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">知识分享</Text>
-                <Text className="feature-desc">分享创作经验和技巧</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 选题策划 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/topic-planning/index', false)}>
-              <View className="feature-icon cyan">
-                <IconSparkles />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">选题策划</Text>
-                <Text className="feature-desc">快速发现优质选题</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 内容创作 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/content-system/index', false)}>
-              <View className="feature-icon indigo">
-                <IconPenTool />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">内容创作</Text>
-                <Text className="feature-desc">高效创作优质内容</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 语料优化 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/lexicon-manage/index', false)}>
-              <View className="feature-icon teal">
-                <IconTrendingUp />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">语料优化</Text>
-                <Text className="feature-desc">管理优化语料库</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 爆款复刻 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/viral-system/index', false)}>
-              <View className="feature-icon pink">
-                <IconSparkles />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">爆款复刻</Text>
-                <Text className="feature-desc">解析爆款内容</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-
-            {/* 直播数据 */}
-            <View className="feature-item" onClick={() => handleNavigateTo('/pages/live-data/dashboard/index', false)}>
-              <View className="feature-icon rose">
-                <IconVideo />
-              </View>
-              <View className="feature-content">
-                <Text className="feature-title">直播数据统计</Text>
-                <Text className="feature-desc">抖音直播数据分析</Text>
-              </View>
-              <Text className="arrow-text">›</Text>
-            </View>
-          </View>
+          ))}
         </View>
-
-        {/* 底部安全区 */}
-        <View className="safe-bottom" />
       </ScrollView>
     </View>
   );
 };
 
-export default IndexPage;
+export default Index;

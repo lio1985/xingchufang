@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View } from '@tarojs/components';
-import { Sparkles, Star } from 'lucide-react-taro';
 
 interface StarIconProps {
   size?: number;
@@ -70,7 +69,7 @@ const StarIcon: React.FC<StarIconProps> = ({ size = 40, className = '' }) => {
             boxShadow: `0 0 ${20 + pulse * 10}px rgba(96, 165, 250, 0.6)`,
           }}
         >
-          <Sparkles size={size * 0.5} color="#60a5fa" strokeWidth={2.5} />
+          <Text>✨</Text>
         </View>
 
         {/* 装饰小星星 */}
@@ -83,7 +82,7 @@ const StarIcon: React.FC<StarIconProps> = ({ size = 40, className = '' }) => {
             transition: 'transform 1s ease-in-out',
           }}
         >
-          <Star size={size * 0.25} color="#f59e0b" strokeWidth={2} />
+          <Text>⭐</Text>
         </View>
 
         <View
@@ -95,7 +94,7 @@ const StarIcon: React.FC<StarIconProps> = ({ size = 40, className = '' }) => {
             transition: 'transform 1s ease-in-out',
           }}
         >
-          <Star size={size * 0.2} color="#a855f7" strokeWidth={2} />
+          <Text>⭐</Text>
         </View>
       </View>
 

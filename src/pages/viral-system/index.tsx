@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
-import { TrendingUp, RefreshCw, Heart, Plus, Check, BookOpen, Sparkles, Loader, Type } from 'lucide-react-taro'
 
 type Step = 'input' | 'analyzing' | 'completed'
 
@@ -178,7 +177,7 @@ export default function ViralSystemPage() {
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View className="w-10 h-10 bg-gradient-to-br from-red-500/20 to-red-500/10 rounded-xl flex items-center justify-center">
-              <TrendingUp size={24} color="#f87171" strokeWidth={2.5} />
+              <Text>📈</Text>
             </View>
             <Text className="block text-xl font-bold text-white">爆款复刻系统</Text>
           </View>
@@ -187,7 +186,7 @@ export default function ViralSystemPage() {
             onClick={handleGoToFavorites}
           >
             <View className="flex items-center gap-1.5">
-              <Heart size={18} color="#ef4444" />
+              <Text>❤️</Text>
               <Text className="text-sm text-slate-300">收藏夹</Text>
             </View>
           </View>
@@ -221,7 +220,7 @@ export default function ViralSystemPage() {
                       }`}
                     >
                       {isPast ? (
-                        <Check size={18} color="white" strokeWidth={3} />
+                        <Text>✓</Text>
                       ) : (
                         <item.icon size={18} color={isActive ? 'white' : '#94a3b8'} strokeWidth={2.5} />
                       )}
@@ -241,7 +240,7 @@ export default function ViralSystemPage() {
               <View className="mt-6 bg-slate-800/60 rounded-2xl p-5">
                 <View className="flex items-center justify-between mb-3">
                   <View className="flex items-center gap-2">
-                    <Loader size={18} color="#60a5fa" className="animate-spin" />
+                    <Text>⏳</Text>
                     <Text className="text-sm font-medium text-white">
                       正在使用豆包系统分析文案结构
                     </Text>
@@ -258,11 +257,11 @@ export default function ViralSystemPage() {
                 </View>
                 <View className="mt-3 flex flex-col gap-1.5">
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
-                    {progress >= 40 && <Check size={12} color="#34d399" />}
+                    {progress >= 40 && <Text>✓</Text>}
                     {progress >= 40 ? '✓ 分析文案结构' : '正在分析文案结构...'}
                   </Text>
                   <Text className="text-xs text-slate-400 flex items-center gap-1.5">
-                    {progress >= 80 && <Check size={12} color="#34d399" />}
+                    {progress >= 80 && <Text>✓</Text>}
                     {progress >= 80 ? '✓ 输出爆款框架' : '正在输出爆款框架...'}
                   </Text>
                 </View>
@@ -277,7 +276,7 @@ export default function ViralSystemPage() {
             {/* 标题 */}
             <View className="flex items-center gap-2 mb-4">
               <View className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
-                <Type size={18} color="#f87171" strokeWidth={2.5} />
+                <Text>🔤</Text>
               </View>
               <Text className="block text-lg font-bold text-white">粘贴抖音文案</Text>
             </View>
@@ -308,12 +307,12 @@ export default function ViralSystemPage() {
             >
               {isProcessing ? (
                 <View className="flex items-center justify-center gap-2">
-                  <RefreshCw size={18} className="animate-spin" />
+                  <Text>🔄</Text>
                   <Text>分析中...</Text>
                 </View>
               ) : (
                 <View className="flex items-center justify-center gap-2">
-                  <Sparkles size={18} />
+                  <Text>✨</Text>
                   <Text>开始分析</Text>
                 </View>
               )}
@@ -329,7 +328,7 @@ export default function ViralSystemPage() {
             <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
               <View className="flex items-center gap-2 mb-4">
                 <View className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <BookOpen size={18} color="#a855f7" strokeWidth={2.5} />
+                  <Text>📖</Text>
                 </View>
                 <Text className="block text-lg font-bold text-white">爆款框架</Text>
               </View>
@@ -390,7 +389,7 @@ export default function ViralSystemPage() {
                 onClick={handleFavorite}
               >
                 <View className="flex items-center justify-center gap-2">
-                  <Heart size={18} color="white" />
+                  <Text>❤️</Text>
                   <Text className="text-white font-medium">
                     {isFavorited ? '已收藏' : '收藏爆款框架'}
                   </Text>
@@ -401,7 +400,7 @@ export default function ViralSystemPage() {
                 onClick={handleRemix}
               >
                 <View className="flex items-center justify-center gap-2">
-                  <Plus size={18} color="white" />
+                  <Text>+</Text>
                   <Text className="text-white font-medium">二创改写</Text>
                 </View>
               </View>
@@ -413,7 +412,7 @@ export default function ViralSystemPage() {
               onClick={handleReset}
             >
               <View className="flex items-center justify-center gap-2">
-                <RefreshCw size={16} color="#94a3b8" />
+                <Text>🔄</Text>
                 <Text className="text-sm text-slate-300">重新分析</Text>
               </View>
             </View>

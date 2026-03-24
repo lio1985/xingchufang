@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Taro, { showToast, showModal } from '@tarojs/taro'
 import { View, Text, Textarea, Input, Button } from '@tarojs/components'
 import { Network } from '@/network'
-import { Database, Plus, Pencil, Trash2, Building2, User, Search, X, Save, Mic, FileText, Brain, Sparkles, Package, Video, TrendingUp, Circle, Check, Share2, Users } from 'lucide-react-taro'
 
 interface Lexicon {
   id: string
@@ -920,7 +919,7 @@ export default function LexiconManagePage() {
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
             <View className="w-10 h-10 bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 rounded-xl flex items-center justify-center">
-              <Database size={24} color="#34d399" strokeWidth={2.5} />
+              <Text>💾</Text>
             </View>
             <Text className="block text-xl font-bold text-white">语料库管理</Text>
           </View>
@@ -979,7 +978,7 @@ export default function LexiconManagePage() {
                 onClick={() => handleSwitchType('enterprise')}
               >
                 <View className="flex flex-col items-center gap-2">
-                  <Building2 size={20} strokeWidth={2.5} color={currentType === 'enterprise' ? '#34d399' : '#94a3b8'} />
+                  <Text>🏢</Text>
                   <Text className={`block text-xs font-bold ${
                     currentType === 'enterprise' ? 'text-white' : 'text-slate-400'
                   }`}
@@ -997,7 +996,7 @@ export default function LexiconManagePage() {
                 onClick={() => handleSwitchType('personal')}
               >
                 <View className="flex flex-col items-center gap-2">
-                  <User size={20} strokeWidth={2.5} color={currentType === 'personal' ? '#60a5fa' : '#94a3b8'} />
+                  <Text>👤</Text>
                   <Text className={`block text-xs font-bold ${
                     currentType === 'personal' ? 'text-white' : 'text-slate-400'
                   }`}
@@ -1015,7 +1014,7 @@ export default function LexiconManagePage() {
                 onClick={() => handleSwitchType('product')}
               >
                 <View className="flex flex-col items-center gap-2">
-                  <Package size={20} strokeWidth={2.5} color={currentType === 'product' ? '#a855f7' : '#94a3b8'} />
+                  <Text>📦</Text>
                   <Text className={`block text-xs font-bold ${
                     currentType === 'product' ? 'text-white' : 'text-slate-400'
                   }`}
@@ -1034,7 +1033,7 @@ export default function LexiconManagePage() {
             <View className="flex items-center justify-between">
               <View className="flex items-center gap-3">
                 <View className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Package size={18} color="#a855f7" strokeWidth={2.5} />
+                  <Text>📦</Text>
                 </View>
                 <View>
                   <View className="flex items-center gap-2">
@@ -1069,7 +1068,7 @@ export default function LexiconManagePage() {
         {/* 搜索和操作栏 */}
         <View className="flex items-center gap-3">
           <View className="flex-1 bg-slate-800 rounded-xl px-4 py-3 flex items-center gap-2">
-            <Search size={18} color="#94a3b8" />
+            <Text>🔍</Text>
             <Input
               className="flex-1 bg-transparent text-white text-sm"
               placeholder="搜索语料..."
@@ -1084,7 +1083,7 @@ export default function LexiconManagePage() {
             className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-3 rounded-xl flex items-center gap-2"
             onClick={handleOpenAddModal}
           >
-            <Plus size={18} />
+            <Text>+</Text>
             <Text className="block">添加</Text>
           </Button>
         </View>
@@ -1098,7 +1097,7 @@ export default function LexiconManagePage() {
           >
             {isAnalyzing ? '分析中...' : (
               <>
-                <Brain size={18} />
+                <Text>🧠</Text>
                 <Text className="block">{currentType === 'enterprise' ? '创建企业画像' : '创建 IP 画像'}</Text>
               </>
             )}
@@ -1115,7 +1114,7 @@ export default function LexiconManagePage() {
         {/* 语料列表 */}
         {(selectMode ? filteredAllLexicons : filteredLexicons).length === 0 ? (
           <View className="flex flex-col items-center justify-center py-12">
-            <Database size={48} color="#334155" strokeWidth={1.5} />
+            <Text>💾</Text>
             <Text className="block text-sm text-slate-400 mt-3">
               {searchKeyword ? '未找到相关语料' : '暂无语料，点击上方按钮添加'}
             </Text>
@@ -1147,7 +1146,7 @@ export default function LexiconManagePage() {
                     <View className="flex-1 flex items-center gap-3">
                       {selectMode && (
                         <View className="w-6 h-6 rounded-full border-2 flex items-center justify-center">
-                          {isSelected && <Check size={14} color="#60a5fa" strokeWidth={3} />}
+                          {isSelected && <Text>✓</Text>}
                         </View>
                       )}
                       <View>
@@ -1164,7 +1163,7 @@ export default function LexiconManagePage() {
                           </Text>
                           {lexicon.is_shared && (
                             <View className="px-2 py-0.5 bg-slate-9000/20 rounded flex items-center gap-1">
-                              <Share2 size={12} color="#60a5fa" strokeWidth={2} />
+                              <Text>🔗</Text>
                               <Text className="block text-xs text-blue-400">已共享</Text>
                             </View>
                           )}
@@ -1184,13 +1183,13 @@ export default function LexiconManagePage() {
                           className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                           onClick={() => handleOpenEditModal(lexicon)}
                         >
-                          <Pencil size={16} color="#94a3b8" strokeWidth={2} />
+                          <Text>✏</Text>
                         </View>
                         <View
                           className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                           onClick={() => handleDelete(lexicon)}
                         >
-                          <Trash2 size={16} color="#94a3b8" strokeWidth={2} />
+                          <Text>🗑</Text>
                         </View>
                         <View
                           className={`w-8 h-8 rounded-lg flex items-center justify-center active:scale-95 transition-all ${
@@ -1198,7 +1197,7 @@ export default function LexiconManagePage() {
                           }`}
                           onClick={() => handleOpenShareModal(lexicon)}
                         >
-                          <Share2 size={16} color={lexicon.is_shared ? '#60a5fa' : '#94a3b8'} strokeWidth={2} />
+                          <Text>🔗</Text>
                         </View>
                       </View>
                     )}
@@ -1217,7 +1216,7 @@ export default function LexiconManagePage() {
           <View className="mt-8">
             <View className="flex items-center justify-between mb-4">
               <View className="flex items-center gap-2">
-                <Video size={20} color="#60a5fa" strokeWidth={2.5} />
+                <Text>🎬</Text>
                 <Text className="block text-lg font-bold text-white">直播话术</Text>
               </View>
               <Button
@@ -1227,14 +1226,14 @@ export default function LexiconManagePage() {
                   handleOpenLiveScriptModal()
                 }}
               >
-                <Plus size={14} />
+                <Text>+</Text>
                 <Text className="block">添加</Text>
               </Button>
             </View>
 
             {liveScripts.length === 0 ? (
               <View className="flex flex-col items-center justify-center py-8 bg-slate-800/30 rounded-xl">
-                <Video size={48} color="#334155" strokeWidth={1.5} />
+                <Text>🎬</Text>
                 <Text className="block text-sm text-slate-400 mt-3">
                   暂无直播话术，点击上方按钮添加
                 </Text>
@@ -1284,7 +1283,7 @@ export default function LexiconManagePage() {
                           className="w-8 h-8 bg-blue-500/50 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                           onClick={() => handleViewLiveScriptDetail(script)}
                         >
-                          <FileText size={16} color="#94a3b8" strokeWidth={2} />
+                          <Text>📄</Text>
                         </View>
                         <View
                           className={`w-8 h-8 rounded-lg flex items-center justify-center active:scale-95 transition-all ${analyzingScriptId === script.id ? 'bg-emerald-500/30' : 'bg-emerald-500/50'}`}
@@ -1293,20 +1292,20 @@ export default function LexiconManagePage() {
                           {analyzingScriptId === script.id ? (
                             <Text className="block text-xs text-emerald-400">...</Text>
                           ) : (
-                            <Brain size={16} color="#94a3b8" strokeWidth={2} />
+                            <Text>🧠</Text>
                           )}
                         </View>
                         <View
                           className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                           onClick={() => handleOpenLiveScriptEditModal(script)}
                         >
-                          <Pencil size={16} color="#94a3b8" strokeWidth={2} />
+                          <Text>✏</Text>
                         </View>
                         <View
                           className="w-8 h-8 bg-red-500/50 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                           onClick={() => handleDeleteLiveScript(script)}
                         >
-                          <Trash2 size={16} color="#94a3b8" strokeWidth={2} />
+                          <Text>🗑</Text>
                         </View>
                       </View>
                     </View>
@@ -1345,7 +1344,7 @@ export default function LexiconManagePage() {
               >
                 {isUploading ? '上传中...' : (
                   <>
-                    <FileText size={18} />
+                    <Text>📄</Text>
                     <Text className="block">上传文件</Text>
                   </>
                 )}
@@ -1356,7 +1355,7 @@ export default function LexiconManagePage() {
                     className="flex-1 bg-slate-800 text-white py-3 rounded-xl flex items-center justify-center gap-2"
                     onClick={isRecording ? handleStopRecord : handleStartRecord}
                   >
-                    <Mic size={18} color={isRecording ? '#ef4444' : '#94a3b8'} />
+                    <Text>🎤</Text>
                     <Text className="block">{isRecording ? `${recordingDuration}s` : '录音'}</Text>
                   </Button>
                   {audioPath && (
@@ -1413,7 +1412,7 @@ export default function LexiconManagePage() {
               <View className="mb-4 px-4 py-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
                 <View className="flex items-center justify-between">
                   <View className="flex items-center gap-2">
-                    <Sparkles size={16} color="#60a5fa" />
+                    <Text>✨</Text>
                     <Text className="text-sm text-blue-400">
                       内容检查
                     </Text>
@@ -1456,7 +1455,7 @@ export default function LexiconManagePage() {
               >
                 {isCorrecting ? '校正中...' : (
                   <>
-                    <Sparkles size={18} />
+                    <Text>✨</Text>
                     <Text className="block">校正错别字</Text>
                   </>
                 )}
@@ -1474,7 +1473,7 @@ export default function LexiconManagePage() {
                 className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 rounded-xl flex items-center justify-center gap-2"
                 onClick={handleSave}
               >
-                <Save size={18} />
+                <Text>💾</Text>
                 <Text className="block">保存</Text>
               </Button>
             </View>
@@ -1488,7 +1487,7 @@ export default function LexiconManagePage() {
           <View className="w-full max-w-lg bg-slate-800 rounded-2xl p-6 max-h-[80vh] overflow-y-auto">
             <View className="flex items-center justify-between mb-6">
               <View className="flex items-center gap-2">
-                <Share2 size={24} color="#60a5fa" strokeWidth={2.5} />
+                <Text>🔗</Text>
                 <Text className="block text-xl font-bold text-white">
                   共享设置
                 </Text>
@@ -1582,14 +1581,14 @@ export default function LexiconManagePage() {
                         onClick={() => handleToggleUser(user.id)}
                       >
                         <View className="flex items-center gap-2">
-                          <Users size={18} color="#94a3b8" />
+                          <Text>👤</Text>
                           <Text className="block text-sm text-white">
                             {user.nickname || '未命名'}
                           </Text>
                         </View>
                         <View className="w-6 h-6 rounded-full border-2 flex items-center justify-center">
                           {sharedUsers.includes(user.id) && (
-                            <Check size={14} color="#60a5fa" strokeWidth={3} />
+                            <Text>✓</Text>
                           )}
                         </View>
                       </View>
@@ -1624,7 +1623,7 @@ export default function LexiconManagePage() {
                       className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl flex items-center justify-center gap-2"
                       onClick={handleSaveShare}
                     >
-                      <Save size={18} />
+                      <Text>💾</Text>
                       <Text className="block">更新</Text>
                     </Button>
                   </View>
@@ -1644,7 +1643,7 @@ export default function LexiconManagePage() {
                       className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl flex items-center justify-center gap-2"
                       onClick={handleSaveShare}
                     >
-                      <Share2 size={18} />
+                      <Text>🔗</Text>
                       <Text className="block">共享</Text>
                     </Button>
                   </View>
@@ -1661,7 +1660,7 @@ export default function LexiconManagePage() {
           <View className="w-full max-w-lg bg-slate-800 rounded-2xl p-6 max-h-[80vh] overflow-y-auto">
             <View className="flex items-center justify-between mb-6">
               <View className="flex items-center gap-2">
-                <Sparkles size={24} color="#34d399" strokeWidth={2.5} />
+                <Text>✨</Text>
                 <Text className="block text-xl font-bold text-white">
                   校正结果
                 </Text>
@@ -1673,7 +1672,7 @@ export default function LexiconManagePage() {
             {hasErrors && (
               <View className="mb-4 px-4 py-3 bg-emerald-500/10 rounded-xl border border-emerald-500/30">
                 <View className="flex items-center gap-2">
-                  <Check size={16} color="#34d399" />
+                  <Text>✓</Text>
                   <Text className="text-sm text-emerald-400">
                     已发现并修正 {errorCount} 处内容
                   </Text>
@@ -1740,7 +1739,7 @@ export default function LexiconManagePage() {
           <View className="w-full max-w-2xl bg-slate-800 rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
             <View className="flex items-center justify-between mb-6">
               <View className="flex items-center gap-2">
-                <Brain size={24} color="#60a5fa" strokeWidth={2.5} />
+                <Text>🧠</Text>
                 <Text className="block text-xl font-bold text-white">
                   {currentType === 'enterprise' ? '企业' : currentType === 'personal' ? '个人IP' : '产品'}画像分析
                 </Text>
@@ -1908,7 +1907,7 @@ export default function LexiconManagePage() {
           <View className="w-full max-w-lg bg-slate-800 rounded-2xl p-6 max-h-[80vh] overflow-y-auto">
             <View className="flex items-center justify-between mb-6">
               <View className="flex items-center gap-2">
-                <Package size={24} color="#a855f7" strokeWidth={2.5} />
+                <Text>📦</Text>
                 <Text className="block text-xl font-bold text-white">选择产品</Text>
               </View>
               <X size={24} color="#94a3b8" onClick={() => setShowProductModal(false)} />
@@ -1931,7 +1930,7 @@ export default function LexiconManagePage() {
             <View className="flex flex-col gap-3">
               {products.length === 0 ? (
                 <View className="flex flex-col items-center justify-center py-8">
-                  <Package size={48} color="#334155" strokeWidth={1.5} />
+                  <Text>📦</Text>
                   <Text className="block text-sm text-slate-400 mt-3">
                     暂无产品，点击上方按钮添加
                   </Text>
@@ -1973,7 +1972,7 @@ export default function LexiconManagePage() {
                           className="bg-slate-700 text-white w-8 h-8 rounded-lg flex items-center justify-center"
                           onClick={() => handleDeleteProduct(product)}
                         >
-                          <Trash2 size={14} />
+                          <Text>🗑</Text>
                         </Button>
                       </View>
                     </View>
@@ -1998,7 +1997,7 @@ export default function LexiconManagePage() {
           <View className="w-full max-w-lg bg-slate-800 rounded-2xl p-6">
             <View className="flex items-center justify-between mb-6">
               <View className="flex items-center gap-2">
-                <Package size={24} color="#a855f7" strokeWidth={2.5} />
+                <Text>📦</Text>
                 <Text className="block text-xl font-bold text-white">添加产品</Text>
               </View>
               <X size={24} color="#94a3b8" onClick={() => setShowAddProductModal(false)} />
@@ -2056,7 +2055,7 @@ export default function LexiconManagePage() {
           <View className="w-full max-w-lg bg-slate-800 rounded-2xl p-6 max-h-[80vh] overflow-y-auto">
             <View className="flex items-center justify-between mb-6">
               <View className="flex items-center gap-2">
-                <Video size={24} color="#60a5fa" strokeWidth={2.5} />
+                <Text>🎬</Text>
                 <Text className="block text-xl font-bold text-white">
                   {editingLiveScript ? '编辑' : '添加'}直播话术
                 </Text>
@@ -2137,7 +2136,7 @@ export default function LexiconManagePage() {
           <View className="w-full max-w-3xl bg-slate-800 rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
             <View className="flex items-center justify-between mb-6">
               <View className="flex items-center gap-2">
-                <Video size={24} color="#60a5fa" strokeWidth={2.5} />
+                <Text>🎬</Text>
                 <Text className="block text-xl font-bold text-white">直播话术详情</Text>
               </View>
               <X size={24} color="#94a3b8" onClick={() => setShowLiveScriptDetailModal(false)} />
@@ -2175,7 +2174,7 @@ export default function LexiconManagePage() {
             {editingLiveScript.analysis && (
               <View className="mb-6 space-y-4">
                 <View className="flex items-center gap-2 mb-4">
-                  <Brain size={20} color="#34d399" strokeWidth={2.5} />
+                  <Text>🧠</Text>
                   <Text className="block text-base font-bold text-white">分析报告</Text>
                   <View className="flex-1" />
                   <View className="px-3 py-1 bg-emerald-500/20 rounded-lg">
@@ -2189,7 +2188,7 @@ export default function LexiconManagePage() {
                 {editingLiveScript.analysis.banned_words.length > 0 && (
                   <View className="bg-red-500/10 rounded-xl p-4 border border-red-500/30">
                     <View className="flex items-center gap-2 mb-2">
-                      <Circle size={18} color="#ef4444" strokeWidth={2} />
+                      <Text>○</Text>
                       <Text className="block text-base font-bold text-red-400">违禁词检测</Text>
                     </View>
                     <View className="flex flex-wrap gap-2">
@@ -2206,7 +2205,7 @@ export default function LexiconManagePage() {
                 {editingLiveScript.analysis.sensitive_words.length > 0 && (
                   <View className="bg-orange-500/10 rounded-xl p-4 border border-orange-500/30">
                     <View className="flex items-center gap-2 mb-2">
-                      <Circle size={18} color="#f97316" strokeWidth={2} />
+                      <Text>○</Text>
                       <Text className="block text-base font-bold text-orange-400">敏感词检测</Text>
                     </View>
                     <View className="flex flex-wrap gap-2">
@@ -2222,7 +2221,7 @@ export default function LexiconManagePage() {
                 {/* 优化建议 */}
                 <View className="bg-blue-500/10 rounded-xl p-4 border border-sky-500/30">
                   <View className="flex items-center gap-2 mb-2">
-                    <Check size={18} color="#60a5fa" strokeWidth={2} />
+                    <Text>✓</Text>
                     <Text className="block text-base font-bold text-blue-400">优化建议</Text>
                   </View>
                   <View className="space-y-2">
@@ -2238,7 +2237,7 @@ export default function LexiconManagePage() {
                 {/* 直播总结 */}
                 <View className="bg-purple-500/10 rounded-xl p-4 border border-purple-500/30">
                   <View className="flex items-center gap-2 mb-2">
-                    <TrendingUp size={18} color="#a855f7" strokeWidth={2} />
+                    <Text>📈</Text>
                     <Text className="block text-base font-bold text-purple-400">直播总结</Text>
                   </View>
                   <Text className="block text-sm text-purple-300 leading-relaxed">
@@ -2249,7 +2248,7 @@ export default function LexiconManagePage() {
                 {/* 直播亮点 */}
                 <View className="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/30">
                   <View className="flex items-center gap-2 mb-2">
-                    <Sparkles size={18} color="#34d399" strokeWidth={2} />
+                    <Text>✨</Text>
                     <Text className="block text-base font-bold text-emerald-400">直播亮点</Text>
                   </View>
                   <View className="flex flex-wrap gap-2">

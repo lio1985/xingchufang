@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text, Checkbox, CheckboxGroup, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
-import { ArrowLeft, Sparkles, Copy, RefreshCw, BookOpen, Check, Wand, Building2, User, Package } from 'lucide-react-taro'
 
 interface ViralAnalysis {
   transcript: string
@@ -268,10 +267,10 @@ export default function ViralRemixPage() {
             className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
             onClick={() => Taro.navigateBack()}
           >
-            <ArrowLeft size={22} color="#94a3b8" />
+            <Text>←</Text>
           </View>
           <View className="flex items-center gap-2">
-            <Sparkles size={24} color="#60a5fa" />
+            <Text>✨</Text>
             <Text className="block text-xl font-bold text-white">二创改写</Text>
           </View>
         </View>
@@ -282,7 +281,7 @@ export default function ViralRemixPage() {
         {analysis && (
           <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
             <View className="flex items-center gap-2 mb-4">
-              <BookOpen size={18} color="#34d399" strokeWidth={2.5} />
+              <Text>📖</Text>
               <Text className="block text-lg font-bold text-white">提取的文案</Text>
             </View>
             <View className="bg-slate-800/60 rounded-xl p-4 max-h-48 overflow-y-auto">
@@ -297,7 +296,7 @@ export default function ViralRemixPage() {
         {analysis && (
           <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
             <View className="flex items-center gap-2 mb-4">
-              <BookOpen size={18} color="#a855f7" strokeWidth={2.5} />
+              <Text>📖</Text>
               <Text className="block text-lg font-bold text-white">爆款框架参考</Text>
             </View>
             <View className="bg-emerald-500/20 rounded-xl p-3">
@@ -315,7 +314,7 @@ export default function ViralRemixPage() {
         <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
           <View className="flex items-center justify-between mb-4">
             <View className="flex items-center gap-2">
-              <BookOpen size={18} color="#34d399" strokeWidth={2.5} />
+              <Text>📖</Text>
               <Text className="block text-lg font-bold text-white">选择语料库</Text>
             </View>
             <View className="flex items-center gap-2">
@@ -350,13 +349,13 @@ export default function ViralRemixPage() {
                         onClick={() => toggleCategory('enterprise')}
                       >
                         <View className="flex items-center gap-2">
-                          <Building2 size={16} color="#34d399" strokeWidth={2.5} />
+                          <Text>🏢</Text>
                           <Text className="text-sm font-bold text-white">企业语料库</Text>
                           <View className="px-2 py-0.5 bg-emerald-500/20 rounded">
                             <Text className="text-xs text-emerald-400">{enterpriseLexicons.length}</Text>
                           </View>
                         </View>
-                        <Check size={14} color="#34d399" className={`transition-transform ${expandedCategory === 'all' || expandedCategory === 'enterprise' ? 'rotate-90' : ''}`} />
+                        <Text>✓</Text>
                       </View>
                       {(expandedCategory === 'all' || expandedCategory === 'enterprise') && (
                         <View className="p-3 flex flex-col gap-2">
@@ -366,11 +365,7 @@ export default function ViralRemixPage() {
                               className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
                             >
                               <View className="flex items-start gap-3">
-                                <Checkbox
-                                  value={lexicon.id}
-                                  checked={selectedLexicons.includes(lexicon.id)}
-                                  color="#34d399"
-                                />
+                                <Text>✓</Text>
                                 <View className="flex-1">
                                   <Text className="block text-sm font-semibold text-white mb-1">
                                     {lexicon.title}
@@ -403,13 +398,13 @@ export default function ViralRemixPage() {
                         onClick={() => toggleCategory('personal')}
                       >
                         <View className="flex items-center gap-2">
-                          <User size={16} color="#60a5fa" strokeWidth={2.5} />
+                          <Text>👤</Text>
                           <Text className="text-sm font-bold text-white">个人IP语料库</Text>
                           <View className="px-2 py-0.5 bg-slate-9000/20 rounded">
                             <Text className="text-xs text-blue-400">{personalLexicons.length}</Text>
                           </View>
                         </View>
-                        <Check size={14} color="#60a5fa" className={`transition-transform ${expandedCategory === 'all' || expandedCategory === 'personal' ? 'rotate-90' : ''}`} />
+                        <Text>✓</Text>
                       </View>
                       {(expandedCategory === 'all' || expandedCategory === 'personal') && (
                         <View className="p-3 flex flex-col gap-2">
@@ -419,11 +414,7 @@ export default function ViralRemixPage() {
                               className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
                             >
                               <View className="flex items-start gap-3">
-                                <Checkbox
-                                  value={lexicon.id}
-                                  checked={selectedLexicons.includes(lexicon.id)}
-                                  color="#60a5fa"
-                                />
+                                <Text>✓</Text>
                                 <View className="flex-1">
                                   <Text className="block text-sm font-semibold text-white mb-1">
                                     {lexicon.title}
@@ -456,13 +447,13 @@ export default function ViralRemixPage() {
                         onClick={() => toggleCategory('product')}
                       >
                         <View className="flex items-center gap-2">
-                          <Package size={16} color="#a855f7" strokeWidth={2.5} />
+                          <Text>📦</Text>
                           <Text className="text-sm font-bold text-white">产品知识库</Text>
                           <View className="px-2 py-0.5 bg-purple-500/20 rounded">
                             <Text className="text-xs text-purple-400">{productLexicons.length}</Text>
                           </View>
                         </View>
-                        <Check size={14} color="#a855f7" className={`transition-transform ${expandedCategory === 'all' || expandedCategory === 'product' ? 'rotate-90' : ''}`} />
+                        <Text>✓</Text>
                       </View>
                       {(expandedCategory === 'all' || expandedCategory === 'product') && (
                         <View className="p-3 flex flex-col gap-2">
@@ -472,11 +463,7 @@ export default function ViralRemixPage() {
                               className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
                             >
                               <View className="flex items-start gap-3">
-                                <Checkbox
-                                  value={lexicon.id}
-                                  checked={selectedLexicons.includes(lexicon.id)}
-                                  color="#a855f7"
-                                />
+                                <Text>✓</Text>
                                 <View className="flex-1">
                                   <Text className="block text-sm font-semibold text-white mb-1">
                                     {lexicon.title}
@@ -507,7 +494,7 @@ export default function ViralRemixPage() {
         <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
           <View className="flex items-center justify-between mb-4">
             <View className="flex items-center gap-2">
-              <Wand size={18} color="#f59e0b" strokeWidth={2.5} />
+              <Text>🪄</Text>
               <Text className="block text-lg font-bold text-white">改写想法</Text>
             </View>
             {remixIdea.trim() && (
@@ -521,9 +508,9 @@ export default function ViralRemixPage() {
               >
                 <View className="flex items-center gap-1">
                   {isOptimizing ? (
-                    <RefreshCw size={14} className="animate-spin" />
+                    <Text>🔄</Text>
                   ) : (
-                    <Sparkles size={14} />
+                    <Text>✨</Text>
                   )}
                   <Text className="text-xs">
                     {isOptimizing ? '优化中...' : '优化表述'}
@@ -595,12 +582,12 @@ export default function ViralRemixPage() {
         >
           {isGenerating ? (
             <View className="flex items-center justify-center gap-2">
-              <RefreshCw size={18} className="animate-spin" />
+              <Text>🔄</Text>
               <Text>创建2个方案中...</Text>
             </View>
           ) : (
             <View className="flex items-center justify-center gap-2">
-              <Sparkles size={18} />
+              <Text>✨</Text>
               <Text>创建二创方案</Text>
             </View>
           )}
@@ -620,7 +607,7 @@ export default function ViralRemixPage() {
               >
                 <View className="flex items-center justify-between mb-4">
                   <View className="flex items-center gap-2">
-                    <Check size={18} color="#34d399" strokeWidth={2.5} />
+                    <Text>✓</Text>
                     <Text className="block text-lg font-bold text-white">
                       方案 {String.fromCharCode(65 + idx)}
                     </Text>
@@ -630,7 +617,7 @@ export default function ViralRemixPage() {
                     onClick={() => handleCopy(scheme)}
                   >
                     <View className="flex items-center gap-1">
-                      <Copy size={14} color="#60a5fa" />
+                      <Text>📋</Text>
                       <Text className="text-xs text-blue-400">复制</Text>
                     </View>
                   </View>
@@ -687,7 +674,7 @@ export default function ViralRemixPage() {
               onClick={!isGenerating ? handleGenerate : undefined}
             >
               <View className="flex items-center justify-center gap-2">
-                <RefreshCw size={16} color="#94a3b8" />
+                <Text>🔄</Text>
                 <Text className="text-sm">重新创建</Text>
               </View>
             </View>

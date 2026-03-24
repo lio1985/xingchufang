@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Textarea, Picker } from '@tarojs/components';
 import { Network } from '@/network';
-import {
-  ArrowLeft, Save, Phone, MessageCircle, User,
-  DollarSign, Store, Navigation
-} from 'lucide-react-taro';
-
 interface RecycleStore {
   id?: string;
   store_name: string;
@@ -154,7 +149,7 @@ export default function RecycleStoreEdit() {
       <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center" onClick={goBack}>
-            <ArrowLeft size={24} color="#ffffff" />
+            <Text>←</Text>
             <Text className="block text-white text-lg font-semibold ml-2">
               {isEdit ? '编辑门店' : '新增门店'}
             </Text>
@@ -163,7 +158,7 @@ export default function RecycleStoreEdit() {
             className="bg-cyan-600 px-4 py-2 rounded-full flex items-center"
             onClick={handleSubmit}
           >
-            <Save size={16} color="#ffffff" />
+            <Text>💾</Text>
             <Text className="block text-white text-sm ml-1">保存</Text>
           </View>
         </View>
@@ -177,7 +172,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">门店名称 <Text className="text-red-400">*</Text></Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <Store size={16} className="text-slate-400 mr-2" />
+              <Text>🏪</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入门店名称"
@@ -190,7 +185,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">手机号码</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <Phone size={16} className="text-slate-400 mr-2" />
+              <Text>📞</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入手机号码"
@@ -204,7 +199,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">微信号</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <MessageCircle size={16} className="text-slate-400 mr-2" />
+              <Text>💬</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入微信号"
@@ -217,7 +212,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">小红书号</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <User size={16} className="text-slate-400 mr-2" />
+              <Text>👤</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入小红书号"
@@ -230,7 +225,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">抖音号</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <User size={16} className="text-slate-400 mr-2" />
+              <Text>👤</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入抖音号"
@@ -267,7 +262,7 @@ export default function RecycleStoreEdit() {
                 onInput={(e) => handleInput('address', e.detail.value)}
               />
               <View className="ml-2" onClick={handleLocation}>
-                <Navigation size={20} color="#06b6d4" />
+                <Text>🧭</Text>
               </View>
             </View>
           </View>
@@ -369,7 +364,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">预估价值（元）</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-slate-400 mr-2" />
+              <Text>💰</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入预估价值"
@@ -383,7 +378,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">收购价格（元）</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-emerald-400 mr-2" />
+              <Text>💰</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入收购价格"
@@ -397,7 +392,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">运输成本（元）</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-slate-400 mr-2" />
+              <Text>💰</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入运输成本"
@@ -411,7 +406,7 @@ export default function RecycleStoreEdit() {
           <View className="mb-4">
             <Text className="block text-slate-400 text-sm mb-2">人工成本（元）</Text>
             <View className="bg-slate-800 rounded-lg px-3 py-2 flex items-center">
-              <DollarSign size={16} className="text-slate-400 mr-2" />
+              <Text>💰</Text>
               <Input
                 className="flex-1 text-white text-sm bg-transparent"
                 placeholder="请输入人工成本"

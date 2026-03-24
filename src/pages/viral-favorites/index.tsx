@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { Network } from '@/network'
-import { Heart, ArrowLeft, Trash2, BookOpen, Calendar } from 'lucide-react-taro'
 
 interface ViralFavorite {
   id: string
@@ -110,10 +109,10 @@ export default function ViralFavoritesPage() {
             className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
             onClick={() => Taro.navigateBack()}
           >
-            <ArrowLeft size={22} color="#94a3b8" />
+            <Text>←</Text>
           </View>
           <View className="flex items-center gap-2">
-            <Heart size={24} color="#ef4444" />
+            <Text>❤️</Text>
             <Text className="block text-xl font-bold text-white">收藏夹</Text>
           </View>
         </View>
@@ -129,7 +128,7 @@ export default function ViralFavoritesPage() {
         favorites.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20">
             <View className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-              <Heart size={40} color="#475569" />
+              <Text>❤️</Text>
             </View>
             <Text className="block text-base text-slate-400 mb-2">还没有收藏</Text>
             <Text className="block text-sm text-slate-400">去爆款复刻系统收藏一些爆款框架吧</Text>
@@ -148,7 +147,7 @@ export default function ViralFavoritesPage() {
                   <View className="flex-1 pr-3">
                     <Text className="block text-lg font-bold text-white mb-1">{item.title}</Text>
                     <View className="flex items-center gap-2">
-                      <Calendar size={14} color="#64748b" />
+                      <Text>📅</Text>
                       <Text className="block text-xs text-slate-400">{formatDate(item.created_at)}</Text>
                     </View>
                   </View>
@@ -156,7 +155,7 @@ export default function ViralFavoritesPage() {
                     className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center active:scale-95 transition-all"
                     onClick={(e) => handleDelete(item.id, e)}
                   >
-                    <Trash2 size={16} color="#ef4444" />
+                    <Text>🗑</Text>
                   </View>
                 </View>
 
@@ -195,7 +194,7 @@ export default function ViralFavoritesPage() {
 
                 {/* 查看详情按钮 */}
                 <View className="mt-4 pt-4 border-t border-slate-700 flex items-center justify-center gap-2">
-                  <BookOpen size={16} color="#60a5fa" />
+                  <Text>📖</Text>
                   <Text className="block text-sm text-blue-400">查看详情</Text>
                 </View>
               </View>

@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { showToast } from '@tarojs/taro';
 import { View, Text, Textarea, Input, Radio } from '@tarojs/components';
 import { Network } from '@/network';
-import {
-  Send, User, Globe, Bell, Sparkles, Gift, Info
-} from 'lucide-react-taro';
 import './index.less';
 
 type NotificationType = 'system' | 'activity' | 'update';
@@ -177,7 +174,7 @@ const SendNotificationPage = () => {
                   className={`radio-card ${isActive ? 'active' : ''}`}
                   onClick={() => setType(item.value)}
                 >
-                  <Radio value={item.value} checked={isActive} style={{ display: 'none' }} />
+                  <Text>📻</Text>
                   <View
                     className="radio-icon system"
                     style={{ backgroundColor: item.bgColor }}
@@ -207,7 +204,7 @@ const SendNotificationPage = () => {
                   className={`radio-card ${isActive ? 'active' : ''}`}
                   onClick={() => setTargetType(item.value)}
                 >
-                  <Radio value={item.value} checked={isActive} style={{ display: 'none' }} />
+                  <Text>📻</Text>
                   <View
                     className="radio-icon all"
                     style={{ backgroundColor: item.bgColor }}
@@ -249,7 +246,7 @@ const SendNotificationPage = () => {
           className={`send-btn ${sending ? 'disabled' : ''}`}
           onClick={!sending ? handleSend : undefined}
         >
-          <Send size={26} color="#fff" />
+          <Text>📤</Text>
           <Text className="send-text">{sending ? '发送中...' : '发送通知'}</Text>
         </View>
       </View>
@@ -257,7 +254,7 @@ const SendNotificationPage = () => {
       {/* 使用说明 */}
       <View className="tips-section">
         <View className="tips-header">
-          <Info size={22} color="#047857" />
+          <Text>ℹ</Text>
           <Text className="tips-title">使用说明</Text>
         </View>
         <View className="tips-list">

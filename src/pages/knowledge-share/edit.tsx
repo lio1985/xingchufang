@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, Image } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { BookOpen, ArrowLeft, Save, X, Mic, MicOff, Image as ImageIcon, FileText, Trash2 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface Attachment {
@@ -451,17 +450,17 @@ const KnowledgeShareEditPage = () => {
           className="flex items-center gap-2"
           onClick={() => Taro.navigateBack()}
         >
-          <ArrowLeft size={24} color="#94a3b8" />
+          <Text>←</Text>
         </View>
         <View className="flex items-center gap-2">
-          <BookOpen size={24} color="#60a5fa" />
+          <Text>📖</Text>
           <Text className="block text-lg font-bold text-white">编辑知识分享</Text>
         </View>
         <View
           className={`px-4 py-2 rounded-lg flex items-center gap-1.5 ${loading || uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
           onClick={handleSave}
         >
-          <Save size={18} color="white" />
+          <Text>💾</Text>
           <Text className="block text-sm text-white">
             {loading ? '保存中...' : uploading ? '上传中...' : '保存'}
           </Text>
@@ -515,7 +514,7 @@ const KnowledgeShareEditPage = () => {
                       className="flex items-center justify-center w-4 h-4 rounded-full bg-blue-500/50"
                       onClick={() => handleRemoveTag(index)}
                     >
-                      <X size={10} color="#93c5fd" />
+                      <Text>✕</Text>
                     </View>
                   </View>
                 ))}
@@ -558,14 +557,14 @@ const KnowledgeShareEditPage = () => {
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
                 onClick={handleChooseImage}
               >
-                <ImageIcon size={18} color="white" />
+                <Text>🖼</Text>
                 <Text className="block text-sm text-white">图片</Text>
               </View>
               <View
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
                 onClick={handleChooseFile}
               >
-                <FileText size={18} color="white" />
+                <Text>📄</Text>
                 <Text className="block text-sm text-white">文件</Text>
               </View>
               {isWeapp && (
@@ -575,12 +574,12 @@ const KnowledgeShareEditPage = () => {
                 >
                   {isRecording ? (
                     <>
-                      <MicOff size={18} color="white" />
+                      <Text>🎤</Text>
                       <Text className="block text-sm text-white">{formatRecordingTime(recordingTime)}</Text>
                     </>
                   ) : (
                     <>
-                      <Mic size={18} color="white" />
+                      <Text>🎤</Text>
                       <Text className="block text-sm text-white">录音</Text>
                     </>
                   )}
@@ -606,7 +605,7 @@ const KnowledgeShareEditPage = () => {
                       className="p-1.5 rounded-lg bg-slate-700"
                       onClick={handleRemoveAudio}
                     >
-                      <X size={14} color="#94a3b8" />
+                      <Text>✕</Text>
                     </View>
                   </View>
                 </View>
@@ -622,18 +621,14 @@ const KnowledgeShareEditPage = () => {
                     className="bg-slate-800 rounded-lg p-3 flex items-center gap-3"
                   >
                     {attachment.fileType === 'image' ? (
-                      <Image
-                        src={attachment.fileUrl}
-                        className="w-12 h-12 rounded object-cover"
-                        mode="aspectFill"
-                      />
+                      <Text>🖼</Text>
                     ) : attachment.fileType === 'audio' ? (
                       <View className="w-12 h-12 rounded bg-slate-700 flex items-center justify-center">
-                        <Mic size={20} color="#94a3b8" />
+                        <Text>🎤</Text>
                       </View>
                     ) : (
                       <View className="w-12 h-12 rounded bg-slate-700 flex items-center justify-center">
-                        <FileText size={20} color="#94a3b8" />
+                        <Text>📄</Text>
                       </View>
                     )}
                     <View className="flex-1 min-w-0">
@@ -648,7 +643,7 @@ const KnowledgeShareEditPage = () => {
                       className="p-1.5 rounded-lg bg-slate-700"
                       onClick={() => handleRemoveAttachment(index)}
                     >
-                      <Trash2 size={14} color="#ef4444" />
+                      <Text>🗑</Text>
                     </View>
                   </View>
                 ))}

@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
-import { 
-  ArrowLeft, Pencil, Phone, MapPin, MessageCircle, User, 
-  Plus, Navigation, Check, TrendingUp, Trash2
-} from 'lucide-react-taro';
-
 interface Customer {
   id: string;
   name: string;
@@ -185,14 +180,14 @@ export default function CustomerDetail() {
       <View className="px-4 pt-12 pb-4 bg-slate-800/50">
         <View className="flex items-center justify-between">
           <View className="flex items-center" onClick={goBack}>
-            <ArrowLeft size={24} color="#ffffff" />
+            <Text>←</Text>
           </View>
           <View className="flex items-center gap-3">
             <View onClick={goEdit}>
-              <Pencil size={20} color="#3b82f6" />
+              <Text>✏</Text>
             </View>
             <View onClick={handleDelete}>
-              <Trash2 size={20} color="#ef4444" />
+              <Text>🗑</Text>
             </View>
           </View>
         </View>
@@ -229,27 +224,27 @@ export default function CustomerDetail() {
 
           <View className="border-t border-slate-700 pt-4">
             <View className="flex items-center mb-3" onClick={makePhoneCall}>
-              <Phone size={16} className="text-blue-400 mr-3" />
+              <Text>📞</Text>
               <Text className="block text-white text-sm">{customer.phone || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
-              <MessageCircle size={16} className="text-green-400 mr-3" />
+              <Text>💬</Text>
               <Text className="block text-white text-sm">{customer.wechat || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
-              <User size={16} className="text-pink-400 mr-3" />
+              <Text>👤</Text>
               <Text className="block text-white text-sm">{customer.xiaohongshu || '未填写'}</Text>
             </View>
             <View className="flex items-center mb-3">
-              <User size={16} className="text-cyan-400 mr-3" />
+              <Text>👤</Text>
               <Text className="block text-white text-sm">{customer.douyin || '未填写'}</Text>
             </View>
             <View className="flex items-center" onClick={openLocation}>
-              <MapPin size={16} className="text-amber-400 mr-3" />
+              <Text>📍</Text>
               <Text className="block text-white text-sm flex-1">
                 {customer.city || ''} {customer.location?.address || '未填写位置'}
               </Text>
-              {customer.location && <Navigation size={16} className="text-blue-400" />}
+              {customer.location && <Text>🧭</Text>}
             </View>
           </View>
         </View>
@@ -293,7 +288,7 @@ export default function CustomerDetail() {
               className="bg-blue-600 px-3 py-1.5 rounded-full flex items-center"
               onClick={() => setShowAddFollowUp(true)}
             >
-              <Plus size={14} color="#ffffff" />
+              <Text>+</Text>
               <Text className="block text-white text-xs ml-1">添加</Text>
             </View>
           </View>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { Share2, Globe, FileText, TrendingUp, RefreshCw, Activity } from 'lucide-react-taro';
 
 interface ShareStats {
   totalLexicons: number;
@@ -58,7 +57,7 @@ export default function AdminShareStatsPage() {
           className={`p-2 rounded-lg bg-slate-800 ${loading ? 'opacity-50' : ''}`}
           onClick={loadStats}
         >
-          <RefreshCw size={20} className={`text-slate-300 ${loading ? 'animate-spin' : ''}`} />
+          <Text>🔄</Text>
         </View>
       </View>
 
@@ -67,28 +66,28 @@ export default function AdminShareStatsPage() {
         <View className="grid grid-cols-2 gap-3 mb-4">
           <View className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-4">
             <View className="flex items-center gap-2 mb-2">
-              <FileText size={20} className="text-white" />
+              <Text>📄</Text>
               <Text className="text-white/80 text-sm">总语料库</Text>
             </View>
             <Text className="text-white text-3xl font-bold">{stats?.totalLexicons || 0}</Text>
           </View>
           <View className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl p-4">
             <View className="flex items-center gap-2 mb-2">
-              <Share2 size={20} className="text-white" />
+              <Text>🔗</Text>
               <Text className="text-white/80 text-sm">已共享</Text>
             </View>
             <Text className="text-white text-3xl font-bold">{stats?.sharedLexicons || 0}</Text>
           </View>
           <View className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-4">
             <View className="flex items-center gap-2 mb-2">
-              <Globe size={20} className="text-white" />
+              <Text>🌐</Text>
               <Text className="text-white/80 text-sm">全局共享</Text>
             </View>
             <Text className="text-white text-3xl font-bold">{stats?.globalShared || 0}</Text>
           </View>
           <View className="bg-gradient-to-br from-orange-600 to-orange-700 rounded-xl p-4">
             <View className="flex items-center gap-2 mb-2">
-              <Activity size={20} className="text-white" />
+              <Text>📊</Text>
               <Text className="text-white/80 text-sm">近7天操作</Text>
             </View>
             <Text className="text-white text-3xl font-bold">{stats?.recentShareActions || 0}</Text>
@@ -99,7 +98,7 @@ export default function AdminShareStatsPage() {
         <View className="bg-slate-800 rounded-xl p-4 mb-4 border border-slate-700">
           <View className="flex items-center justify-between mb-3">
             <Text className="text-white font-semibold">共享率概览</Text>
-            <TrendingUp size={18} className="text-blue-400" />
+            <Text>📈</Text>
           </View>
           <View className="bg-slate-800 rounded-lg p-4">
             <View className="flex items-center justify-between mb-2">
@@ -119,7 +118,7 @@ export default function AdminShareStatsPage() {
         {stats?.shareScopeStats && (
           <View className="bg-slate-800 rounded-xl p-4 mb-4 border border-slate-700">
             <View className="flex items-center gap-2 mb-3">
-              <TrendingUp size={18} className="text-blue-400" />
+              <Text>📈</Text>
               <Text className="text-white font-semibold">共享范围分布</Text>
             </View>
             <View className="space-y-3">

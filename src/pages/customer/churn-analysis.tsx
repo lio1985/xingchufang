@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { ChevronRight, TrendingUp, Target, Award, Phone, MessageSquare, MapPin, Mail, CircleEllipsis, Calendar, Check, MoveHorizontal } from 'lucide-react-taro';
 
 interface HandleResultStats {
   totalWarnings: number;
@@ -119,7 +118,7 @@ export default function ChurnAnalysis() {
               onClick={() => Taro.navigateBack()}
               className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
             >
-              <ChevronRight size={18} color="#94a3b8" />
+              <Text>{">"}</Text>
             </View>
             <Text className="block text-white text-xl font-bold">预警效果分析</Text>
           </View>
@@ -127,7 +126,7 @@ export default function ChurnAnalysis() {
             onClick={loadStats}
             className="w-9 h-9 rounded-full bg-slate-9000/20 flex items-center justify-center active:scale-95"
           >
-            <TrendingUp size={18} color="#60a5fa" />
+            <Text>📈</Text>
           </View>
         </View>
 
@@ -174,7 +173,7 @@ export default function ChurnAnalysis() {
                 <View className="grid grid-cols-2 gap-3">
                   <View className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-2xl p-4 border border-sky-500/30">
                     <View className="flex items-center gap-2 mb-2">
-                      <Target size={16} color="#60a5fa" />
+                      <Text>🎯</Text>
                       <Text className="block text-slate-300 text-xs">挽回成功率</Text>
                     </View>
                     <Text className="block text-white text-2xl font-bold">{stats.successRate}%</Text>
@@ -184,7 +183,7 @@ export default function ChurnAnalysis() {
                   </View>
                   <View className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-2xl p-4 border border-emerald-500/30">
                     <View className="flex items-center gap-2 mb-2">
-                      <Check size={16} color="#34d399" />
+                      <Text>✓</Text>
                       <Text className="block text-slate-300 text-xs">成交转化率</Text>
                     </View>
                     <Text className="block text-white text-2xl font-bold">{stats.conversionRate}%</Text>
@@ -343,7 +342,7 @@ export default function ChurnAnalysis() {
                         {stats.monthlyTrend.map((month, idx) => (
                           <View key={idx} className="flex items-center justify-between py-2 border-b border-slate-700 last:border-0">
                             <View className="flex items-center gap-2">
-                              <Calendar size={14} color="#64748b" />
+                              <Text>📅</Text>
                               <Text className="block text-slate-300 text-sm">{month.month}</Text>
                             </View>
                             <View className="flex items-center gap-4">
@@ -360,7 +359,7 @@ export default function ChurnAnalysis() {
                   </>
                 ) : (
                   <View className="py-20 text-center">
-                    <Calendar size={48} color="#475569" className="mx-auto mb-4" />
+                    <Text>📅</Text>
                     <Text className="block text-slate-400">暂无趋势数据</Text>
                   </View>
                 )}
@@ -423,7 +422,7 @@ export default function ChurnAnalysis() {
                   </View>
                 ) : (
                   <View className="py-20 text-center">
-                    <Award size={48} color="#475569" className="mx-auto mb-4" />
+                    <Text>🏆</Text>
                     <Text className="block text-slate-400">暂无排行数据</Text>
                     <Text className="block text-slate-400 text-sm mt-2">处理预警后将显示排行榜</Text>
                   </View>

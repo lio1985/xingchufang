@@ -1,7 +1,6 @@
 import Taro, { useLoad } from '@tarojs/taro';
 import { useState } from 'react';
 import { View, Text, Image, Input } from '@tarojs/components';
-import { Search, Funnel, Trash, FileText, Heart, Eye, Star, Calendar, Image as ImageIcon, File, Download, TrendingUp } from 'lucide-react-taro';
 import { Network } from '@/network';
 
 interface KnowledgeShareItem {
@@ -430,7 +429,7 @@ export default function AdminKnowledgeSharePage() {
               </View>
               <View style={{ flexShrink: 0 }} onClick={handleSearch}>
                 <View className="bg-blue-500 px-6 py-3 rounded-xl flex items-center justify-center">
-                  <Search color="#ffffff" size={20} />
+                  <Text>🔍</Text>
                 </View>
               </View>
             </View>
@@ -447,7 +446,7 @@ export default function AdminKnowledgeSharePage() {
               })}
               >
                 <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
-                  <Funnel color="#94a3b8" size={16} />
+                  <Text>🔽</Text>
                   <Text className="text-gray-300 ml-2">{filters.category || '分类'}</Text>
                 </View>
               </View>
@@ -461,7 +460,7 @@ export default function AdminKnowledgeSharePage() {
               })}
               >
                 <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
-                  <FileText color="#94a3b8" size={16} />
+                  <Text>📄</Text>
                   <Text className="text-gray-300 ml-2">{filters.status === 'published' ? '已发布' : filters.status === 'draft' ? '草稿' : '状态'}</Text>
                 </View>
               </View>
@@ -490,7 +489,7 @@ export default function AdminKnowledgeSharePage() {
               })}
               >
                 <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
-                  <Calendar color="#94a3b8" size={16} />
+                  <Text>📅</Text>
                   <Text className="text-gray-300 ml-2">{filters.startDate ? '时间范围' : '全部时间'}</Text>
                 </View>
               </View>
@@ -504,7 +503,7 @@ export default function AdminKnowledgeSharePage() {
               })}
               >
                 <View className="bg-slate-800 px-4 py-3 rounded-xl flex items-center justify-center">
-                  <File color="#94a3b8" size={16} />
+                  <Text>📁</Text>
                   <Text className="text-gray-300 ml-2">
                     {filters.attachmentType === 'image' ? '有图片' :
                      filters.attachmentType === 'file' ? '有文件' :
@@ -516,7 +515,7 @@ export default function AdminKnowledgeSharePage() {
               {selectedItems.size > 0 && (
                 <View style={{ flexShrink: 0 }} onClick={handleBatchDelete}>
                   <View className="bg-red-500 px-4 py-3 rounded-xl flex items-center justify-center">
-                    <Trash color="#ffffff" size={16} />
+                    <Text>🗑</Text>
                     <Text className="text-white ml-2">删除({selectedItems.size})</Text>
                   </View>
                 </View>
@@ -524,7 +523,7 @@ export default function AdminKnowledgeSharePage() {
               {selectedItems.size > 0 && (
                 <View style={{ flexShrink: 0 }} onClick={handleBatchExport}>
                   <View className="bg-green-500 px-4 py-3 rounded-xl flex items-center justify-center">
-                    <Download color="#ffffff" size={16} />
+                    <Text>⬇</Text>
                     <Text className="text-white ml-2">导出({selectedItems.size})</Text>
                   </View>
                 </View>
@@ -610,30 +609,26 @@ export default function AdminKnowledgeSharePage() {
                     </View>
                     <View style={{ flex: 1, marginLeft: '12px' }}>
                       <View className="flex items-center gap-2 mb-2">
-                        {item.isFeatured && <Star color="#fbbf24" size={14} />}
+                        {item.isFeatured && <Text>⭐</Text>}
                         <Text className="text-white font-semibold text-base flex-1">{item.title}</Text>
                         <View className="flex items-center gap-1">
                           {item.isFeatured ? (
                             <View onClick={(e) => { e.stopPropagation(); handleFeature(item.id, true); }}>
-                              <Star color="#fbbf24" size={18} />
+                              <Text>⭐</Text>
                             </View>
                           ) : (
                             <View onClick={(e) => { e.stopPropagation(); handleFeature(item.id, false); }}>
-                              <Star color="#6b7280" size={18} />
+                              <Text>⭐</Text>
                             </View>
                           )}
                           <View onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} style={{ marginLeft: '8px' }}>
-                            <Trash color="#ef4444" size={18} />
+                            <Text>🗑</Text>
                           </View>
                         </View>
                       </View>
 
                       <View className="flex items-center gap-2 mb-2">
-                        <Image
-                          src={item.author.avatar || ''}
-                          className="w-5 h-5 rounded-full"
-                          mode="aspectFill"
-                        />
+                        <Text>🖼</Text>
                         <Text className="text-gray-400 text-sm">{item.author.nickname}</Text>
                         <Text className="text-gray-500 text-xs">•</Text>
                         <Text className="text-gray-400 text-xs">{item.category}</Text>
@@ -647,16 +642,16 @@ export default function AdminKnowledgeSharePage() {
 
                       <View className="flex items-center gap-4 mb-2">
                         <View className="flex items-center gap-1">
-                          <Eye color="#6b7280" size={14} />
+                          <Text>👁</Text>
                           <Text className="text-gray-400 text-xs">{item.viewCount}</Text>
                         </View>
                         <View className="flex items-center gap-1">
-                          <Heart color="#6b7280" size={14} />
+                          <Text>❤️</Text>
                           <Text className="text-gray-400 text-xs">{item.likeCount}</Text>
                         </View>
                         {item.attachmentCount > 0 && (
                           <View className="flex items-center gap-1">
-                            <File color="#6b7280" size={14} />
+                            <Text>📁</Text>
                             <Text className="text-gray-400 text-xs">{item.attachmentCount}个附件</Text>
                           </View>
                         )}
@@ -677,7 +672,7 @@ export default function AdminKnowledgeSharePage() {
             <View className="flex items-center justify-between mb-4">
               <Text className="block text-white font-semibold text-lg">统计分析</Text>
               <View onClick={handleExportReport} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Download color="#60a5fa" size={16} />
+                <Text>⬇</Text>
                 <Text className="text-blue-400 text-sm">导出报告</Text>
               </View>
             </View>
@@ -753,7 +748,7 @@ export default function AdminKnowledgeSharePage() {
             {/* 时间分析 */}
             <View className="flex items-center justify-between mb-4">
               <View className="flex items-center gap-2">
-                <TrendingUp color="#60a5fa" size={20} />
+                <Text>📈</Text>
                 <Text className="block text-white font-semibold text-lg">时间分析</Text>
               </View>
               <View onClick={() => Taro.showActionSheet({
@@ -830,11 +825,11 @@ export default function AdminKnowledgeSharePage() {
                     </View>
                     <View className="flex items-center gap-3">
                       <View className="flex items-center gap-1">
-                        <Eye color="#6b7280" size={12} />
+                        <Text>👁</Text>
                         <Text className="text-gray-400 text-xs">{item.viewCount}</Text>
                       </View>
                       <View className="flex items-center gap-1">
-                        <Heart color="#6b7280" size={12} />
+                        <Text>❤️</Text>
                         <Text className="text-gray-400 text-xs">{item.likeCount}</Text>
                       </View>
                     </View>
@@ -852,11 +847,7 @@ export default function AdminKnowledgeSharePage() {
                     <View className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${index < 3 ? 'bg-yellow-500' : 'bg-slate-800'}`}>
                       <Text className="text-white text-xs font-bold">{index + 1}</Text>
                     </View>
-                    <Image
-                      src={author.avatar || ''}
-                      className="w-8 h-8 rounded-full mr-3"
-                      mode="aspectFill"
-                    />
+                    <Text>🖼</Text>
                     <View style={{ flex: 1 }}>
                       <Text className="text-white text-sm">{author.nickname}</Text>
                       <Text className="text-gray-400 text-xs">发布 {author.shareCount} 条</Text>
@@ -904,28 +895,28 @@ export default function AdminKnowledgeSharePage() {
                   <View className="grid grid-cols-2 gap-4">
                     <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
-                        <ImageIcon color="#60a5fa" size={24} />
+                        <Text>🖼</Text>
                       </View>
                       <Text className="text-white font-bold text-xl">{stats.attachmentStats.withImage}</Text>
                       <Text className="text-gray-400 text-xs">有图片</Text>
                     </View>
                     <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
-                        <File color="#10b981" size={24} />
+                        <Text>📁</Text>
                       </View>
                       <Text className="text-white font-bold text-xl">{stats.attachmentStats.withFile}</Text>
                       <Text className="text-gray-400 text-xs">有文件</Text>
                     </View>
                     <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
-                        <File color="#f59e0b" size={24} />
+                        <Text>📁</Text>
                       </View>
                       <Text className="text-white font-bold text-xl">{stats.attachmentStats.withAudio}</Text>
                       <Text className="text-gray-400 text-xs">有录音</Text>
                     </View>
                     <View className="bg-slate-800 rounded-lg p-3 text-center">
                       <View className="flex justify-center mb-2">
-                        <File color="#6b7280" size={24} />
+                        <Text>📁</Text>
                       </View>
                       <Text className="text-white font-bold text-xl">{stats.attachmentStats.noAttachment}</Text>
                       <Text className="text-gray-400 text-xs">无附件</Text>

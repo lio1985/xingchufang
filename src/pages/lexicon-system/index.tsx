@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
 import { View, Text, Textarea, Checkbox, CheckboxGroup } from '@tarojs/components'
 import { Network } from '@/network'
-import { Sparkles, Check, Copy, RefreshCw, Building2, User, Zap, Package, BookOpen, Settings, ChevronDown, ChevronRight } from 'lucide-react-taro'
 
 interface Lexicon {
   id: string
@@ -137,7 +136,7 @@ export default function LexiconSystemPage() {
       <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
         <View className="flex items-center gap-3">
           <View className="w-10 h-10 bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 rounded-xl flex items-center justify-center">
-            <Sparkles size={24} color="#34d399" strokeWidth={2.5} />
+            <Text>✨</Text>
           </View>
           <Text className="block text-xl font-bold text-white">语料优化系统</Text>
         </View>
@@ -151,7 +150,7 @@ export default function LexiconSystemPage() {
             <View className="flex items-center justify-between mb-3">
               <View className="flex items-center gap-2.5">
                 <View className="w-9 h-9 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 rounded-xl flex items-center justify-center">
-                  <BookOpen size={20} color="#34d399" strokeWidth={2.5} />
+                  <Text>📖</Text>
                 </View>
                 <View>
                   <Text className="block text-base font-bold text-white">选择语料库</Text>
@@ -162,7 +161,7 @@ export default function LexiconSystemPage() {
                 className="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-lg active:scale-95 transition-all flex items-center gap-1.5"
                 onClick={handleNavigateToManage}
               >
-                <Settings size={14} color="#34d399" strokeWidth={2} />
+                <Text>⚙</Text>
                 <Text className="block text-xs text-emerald-400 font-medium">管理</Text>
               </View>
             </View>
@@ -177,9 +176,9 @@ export default function LexiconSystemPage() {
                 onClick={toggleAll}
               >
                 {expandedCategory === 'all' ? (
-                  <ChevronDown size={14} color="#94a3b8" strokeWidth={2.5} />
+                  <Text>▼</Text>
                 ) : (
-                  <ChevronRight size={14} color="#94a3b8" strokeWidth={2.5} />
+                  <Text>{">"}</Text>
                 )}
                 <Text className="block text-xs text-slate-300">
                   {expandedCategory === 'all' ? '全部折叠' : '全部展开'}
@@ -193,7 +192,7 @@ export default function LexiconSystemPage() {
             {lexicons.length === 0 ? (
               <View className="flex flex-col items-center justify-center py-16">
                 <View className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mb-4">
-                  <BookOpen size={32} color="#475569" strokeWidth={1.5} />
+                  <Text>📖</Text>
                 </View>
                 <Text className="block text-base text-slate-400 font-medium mb-2">暂无语料库</Text>
                 <Text className="block text-sm text-slate-400">点击右上角管理按钮添加语料</Text>
@@ -212,7 +211,7 @@ export default function LexiconSystemPage() {
                       >
                         <View className="flex items-center gap-2.5">
                           <View className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                            <Building2 size={18} color="#34d399" strokeWidth={2.5} />
+                            <Text>🏢</Text>
                           </View>
                           <Text className="block text-sm font-bold text-white">企业语料库</Text>
                           <View className="px-2 py-0.5 bg-emerald-500/20 rounded-md border border-emerald-500/30">
@@ -220,9 +219,9 @@ export default function LexiconSystemPage() {
                           </View>
                         </View>
                         {expandedCategory === 'all' || expandedCategory === 'enterprise' ? (
-                          <ChevronDown size={16} color="#34d399" strokeWidth={2.5} />
+                          <Text>▼</Text>
                         ) : (
-                          <ChevronRight size={16} color="#34d399" strokeWidth={2.5} />
+                          <Text>{">"}</Text>
                         )}
                       </View>
                       {(expandedCategory === 'all' || expandedCategory === 'enterprise') && (
@@ -234,11 +233,7 @@ export default function LexiconSystemPage() {
                             >
                               <View className="flex items-start gap-3">
                                 <View className="pt-0.5">
-                                  <Checkbox
-                                    value={lexicon.id}
-                                    checked={selectedLexicons.includes(lexicon.id)}
-                                    color="#34d399"
-                                  />
+                                  <Text>✓</Text>
                                 </View>
                                 <View className="flex-1 min-w-0">
                                   <Text className="block text-sm font-semibold text-white mb-1.5 line-clamp-1">
@@ -275,7 +270,7 @@ export default function LexiconSystemPage() {
                       >
                         <View className="flex items-center gap-2.5">
                           <View className="w-8 h-8 bg-slate-9000/20 rounded-lg flex items-center justify-center">
-                            <User size={18} color="#60a5fa" strokeWidth={2.5} />
+                            <Text>👤</Text>
                           </View>
                           <Text className="block text-sm font-bold text-white">个人IP语料库</Text>
                           <View className="px-2 py-0.5 bg-slate-9000/20 rounded-md border border-sky-500/30">
@@ -283,9 +278,9 @@ export default function LexiconSystemPage() {
                           </View>
                         </View>
                         {expandedCategory === 'all' || expandedCategory === 'personal' ? (
-                          <ChevronDown size={16} color="#60a5fa" strokeWidth={2.5} />
+                          <Text>▼</Text>
                         ) : (
-                          <ChevronRight size={16} color="#60a5fa" strokeWidth={2.5} />
+                          <Text>{">"}</Text>
                         )}
                       </View>
                       {(expandedCategory === 'all' || expandedCategory === 'personal') && (
@@ -297,11 +292,7 @@ export default function LexiconSystemPage() {
                             >
                               <View className="flex items-start gap-3">
                                 <View className="pt-0.5">
-                                  <Checkbox
-                                    value={lexicon.id}
-                                    checked={selectedLexicons.includes(lexicon.id)}
-                                    color="#60a5fa"
-                                  />
+                                  <Text>✓</Text>
                                 </View>
                                 <View className="flex-1 min-w-0">
                                   <Text className="block text-sm font-semibold text-white mb-1.5 line-clamp-1">
@@ -338,7 +329,7 @@ export default function LexiconSystemPage() {
                       >
                         <View className="flex items-center gap-2.5">
                           <View className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                            <Package size={18} color="#a855f7" strokeWidth={2.5} />
+                            <Text>📦</Text>
                           </View>
                           <Text className="block text-sm font-bold text-white">产品知识库</Text>
                           <View className="px-2 py-0.5 bg-purple-500/20 rounded-md border border-purple-500/30">
@@ -346,9 +337,9 @@ export default function LexiconSystemPage() {
                           </View>
                         </View>
                         {expandedCategory === 'all' || expandedCategory === 'product' ? (
-                          <ChevronDown size={16} color="#a855f7" strokeWidth={2.5} />
+                          <Text>▼</Text>
                         ) : (
-                          <ChevronRight size={16} color="#a855f7" strokeWidth={2.5} />
+                          <Text>{">"}</Text>
                         )}
                       </View>
                       {(expandedCategory === 'all' || expandedCategory === 'product') && (
@@ -360,11 +351,7 @@ export default function LexiconSystemPage() {
                             >
                               <View className="flex items-start gap-3">
                                 <View className="pt-0.5">
-                                  <Checkbox
-                                    value={lexicon.id}
-                                    checked={selectedLexicons.includes(lexicon.id)}
-                                    color="#a855f7"
-                                  />
+                                  <Text>✓</Text>
                                 </View>
                                 <View className="flex-1 min-w-0">
                                   <Text className="block text-sm font-semibold text-white mb-1.5 line-clamp-1">
@@ -420,7 +407,7 @@ export default function LexiconSystemPage() {
               onClick={handleOptimize}
             >
               {isProcessing ? (
-                <RefreshCw size={20} color="white" className="animate-spin" strokeWidth={2.5} />
+                <Text>🔄</Text>
               ) : (
                 <Text className="block text-white font-bold text-base tracking-wide">开始优化</Text>
               )}
@@ -429,7 +416,7 @@ export default function LexiconSystemPage() {
               className="w-14 bg-slate-800 hover:bg-slate-700 rounded-xl flex items-center justify-center active:scale-95 transition-all"
               onClick={handleClear}
             >
-              <RefreshCw size={20} color="#94a3b8" strokeWidth={2} />
+              <Text>🔄</Text>
             </View>
           </View>
         </View>
@@ -440,7 +427,7 @@ export default function LexiconSystemPage() {
             <View className="flex justify-between items-center mb-4">
               <Text className="block text-lg font-bold text-white tracking-wide flex items-center gap-2">
                 <View className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                  <Check size={18} color="#34d399" strokeWidth={2.5} />
+                  <Text>✓</Text>
                 </View>
                 优化结果
               </Text>
@@ -448,7 +435,7 @@ export default function LexiconSystemPage() {
                 className="px-4 py-2 bg-slate-800/80 rounded-xl flex items-center gap-2 active:scale-95 transition-transform"
                 onClick={handleCopy}
               >
-                <Copy size={16} color="#94a3b8" />
+                <Text>📋</Text>
                 <Text className="block text-white text-xs font-medium">复制</Text>
               </View>
             </View>
@@ -463,7 +450,7 @@ export default function LexiconSystemPage() {
         {/* 执行机制说明 */}
         <View className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 rounded-2xl border border-emerald-500/20 p-5">
           <View className="flex items-center gap-2 mb-4">
-            <Zap size={20} color="#34d399" strokeWidth={2.5} />
+            <Text>⚡</Text>
             <Text className="block text-base font-bold text-white">执行机制</Text>
           </View>
           <Text className="block text-sm text-slate-300 leading-relaxed mb-3">

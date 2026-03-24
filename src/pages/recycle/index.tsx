@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, Input } from '@tarojs/components';
 import { Network } from '@/network';
-import { Store, Search, Plus, Phone, MapPin, TrendingUp, Check, Target, Activity } from 'lucide-react-taro';
 
 interface RecycleStore {
   id: string;
@@ -150,7 +149,7 @@ export default function RecycleStoreList() {
 
         {/* 搜索栏 */}
         <View className="bg-slate-800 rounded-xl p-3 mb-4 flex items-center gap-3">
-          <Search size={16} color="#94a3b8" />
+          <Text>🔍</Text>
           <Input
             className="flex-1 text-white text-sm bg-transparent"
             placeholder="搜索门店名称、电话、微信"
@@ -197,7 +196,7 @@ export default function RecycleStoreList() {
       <View className="px-4 pb-20">
         {stores.length === 0 && !loading ? (
           <View className="flex flex-col items-center justify-center py-20">
-            <Store size={48} color="#64748b" />
+            <Text>🏪</Text>
             <Text className="block text-slate-400 text-sm mt-3">暂无回收门店</Text>
             <View
               className="mt-4 bg-cyan-600 px-6 py-2 rounded-full"
@@ -234,11 +233,11 @@ export default function RecycleStoreList() {
                   </View>
 
                   <View className="flex items-center mt-3">
-                    <Phone size={14} className="text-slate-400 mr-2" />
+                    <Text>📞</Text>
                     <Text className="block text-slate-400 text-xs mr-4">
                       {store.phone || '未填写'}
                     </Text>
-                    <MapPin size={14} className="text-slate-400 mr-2" />
+                    <Text>📍</Text>
                     <Text className="block text-slate-400 text-xs">
                       {store.city || '未填写'}
                     </Text>
@@ -276,7 +275,7 @@ export default function RecycleStoreList() {
         className="fixed bottom-24 right-4 w-14 h-14 bg-cyan-600 rounded-full flex items-center justify-center shadow-lg"
         onClick={goToCreate}
       >
-        <Plus size={24} color="#ffffff" />
+        <Text>+</Text>
       </View>
     </View>
   );

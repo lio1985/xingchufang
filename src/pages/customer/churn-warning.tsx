@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
-import { ChevronRight, ShieldAlert, ShieldX, TrendingUp, DollarSign, Clock, Phone, MessageSquare, MapPin, Mail, CircleEllipsis, Activity, Check } from 'lucide-react-taro';
 
 interface ChurnRiskAssessment {
   customerId: string;
@@ -179,7 +178,7 @@ export default function ChurnWarningList() {
               onClick={() => Taro.navigateBack()}
               className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
             >
-              <ChevronRight size={18} color="#94a3b8" />
+              <Text>{">"}</Text>
             </View>
             <Text className="block text-white text-xl font-bold">客户流失预警</Text>
           </View>
@@ -188,7 +187,7 @@ export default function ChurnWarningList() {
               onClick={navigateToAnalysis}
               className="w-9 h-9 rounded-full bg-slate-9000/20 flex items-center justify-center active:scale-95 mr-2"
             >
-              <Activity size={18} color="#60a5fa" />
+              <Text>📊</Text>
             </View>
             <View className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             <Text className="block text-red-400 text-xs">需跟进</Text>
@@ -258,7 +257,7 @@ export default function ChurnWarningList() {
         {churnRisks.length === 0 ? (
           <View className="py-20 text-center">
             <View className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <TrendingUp size={40} color="#34d399" />
+              <Text>📈</Text>
             </View>
             <Text className="block text-white text-lg font-semibold mb-2">暂无流失预警</Text>
             <Text className="block text-slate-400 text-sm">您的客户跟进情况良好，继续保持！</Text>
@@ -266,7 +265,7 @@ export default function ChurnWarningList() {
               onClick={navigateToAnalysis}
               className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-slate-9000/20 border border-sky-500/30 rounded-xl"
             >
-              <Activity size={16} color="#60a5fa" />
+              <Text>📊</Text>
               <Text className="block text-blue-400 text-sm">查看效果分析</Text>
             </View>
           </View>
@@ -297,7 +296,7 @@ export default function ChurnWarningList() {
                   {/* 关键信息 */}
                   <View className="flex items-center gap-4 mb-3">
                     <View className="flex items-center gap-1">
-                      <Clock size={14} color="#64748b" />
+                      <Text>🕐</Text>
                       <Text className="block text-slate-400 text-sm">
                         <Text className={risk.daysSinceLastFollowUp >= 30 ? 'text-red-400' : risk.daysSinceLastFollowUp >= 14 ? 'text-amber-400' : 'text-yellow-400'}>
                           {risk.daysSinceLastFollowUp}天
@@ -307,7 +306,7 @@ export default function ChurnWarningList() {
                     </View>
                     {risk.estimatedAmount && (
                       <View className="flex items-center gap-1">
-                        <DollarSign size={14} color="#10b981" />
+                        <Text>💰</Text>
                         <Text className="block text-emerald-400 text-sm">
                           ¥{(risk.estimatedAmount / 10000).toFixed(1)}万
                         </Text>
@@ -436,13 +435,7 @@ export default function ChurnWarningList() {
                       }`}
                     >
                       {handleForm.handle_result === result.key && (
-                        <Check size={14} color={
-                          result.key === 'success' ? '#34d399' :
-                          result.key === 'converted' ? '#60a5fa' :
-                          result.key === 'pending' ? '#fbbf24' :
-                          '#94a3b8'
-                        }
-                        />
+                        <Text>✓</Text>
                       )}
                       <Text className={`block text-sm ${
                         handleForm.handle_result === result.key
