@@ -1,654 +1,265 @@
-import { View, Text, ScrollView, Textarea, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { Network } from '@/network';
+import { View, Text, ScrollView } from '@tarojs/components';
+import Taro from '@tarojs/taro';
+
+interface ContentItem {
+  id: string;
+  title: string;
+  type: string;
+  platform: string;
+  status: 'draft' | 'pending' | 'published';
+  createdAt: string;
+  views?: number;
+  likes?: number;
+}
 
 const ContentSystemPage = () => {
-  const [activeTab, setActiveTab] = useState<'topic' | 'freestyle'>('topic');
+  const [contents, setContents] = useState<ContentItem[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [loading, setLoading] = useState(false);
 
-  // 基于选题的创作
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [generatedContents, setGeneratedContents] = useState<any[]>([]);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState<Record<string, 'A' | 'B'>>({});
-  const [editingContent, setEditingContent] = useState<{ id: string; content: string } | null>(null);
-  const [rewritingId, setRewritingId] = useState<string | null>(null);
-  const [showRewriteModal, setShowRewriteModal] = useState(false);
-  const [rewritePrompt, setRewritePrompt] = useState('');
-  const [currentRewriteId, setCurrentRewriteId] = useState<string | null>(null);
-
-  // 自由创作
-  const [inputText, setInputText] = useState('');
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [freestyleResult, setFreestyleResult] = useState<any>(null);
-  const [isFreestyleGenerating, setIsFreestyleGenerating] = useState(false);
+  const statuses = [
+    { key: 'all', label: '全部', count: 0 },
+    { key: 'draft', label: '草稿', count: 0 },
+    { key: 'pending', label: '待发布', count: 0 },
+    { key: 'published', label: '已发布', count: 0 }
+  ];
 
   useEffect(() => {
-    if (activeTab === 'topic') {
-      loadSelectedTopics();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+    loadContents();
+  }, []);
 
-  const loadSelectedTopics = () => {
-    try {
-      const topics = Taro.getStorageSync('selectedTopics') || [];
-      setSelectedTopics(topics);
-      if (topics.length > 0) {
-        generateContent(topics);
-      }
-    } catch (error) {
-      console.error('加载选题失败', error);
-    }
+  const loadContents = () => {
+    setLoading(true);
+    const localData = Taro.getStorageSync('contents') || [];
+    setContents(localData);
+    setLoading(false);
   };
 
-  const generateContent = async (topics: string[]) => {
-    if (topics.length === 0) {
-      Taro.showToast({ title: '请先选择选题', icon: 'none' });
-      return;
-    }
-
-    setIsGenerating(true);
-    try {
-      const res = await Network.request({
-        url: '/api/content-generation/generate',
-        method: 'POST',
-        data: {
-          topics,
-          platform: '通用',
-          style: '标准版',
-          length: 'medium'
-        },
-        timeout: 120000 // 120秒超时，内容创建需要较长时间
-      });
-
-      if (res.data.code === 200) {
-        setGeneratedContents(res.data.data || []);
-        Taro.showToast({ title: '创建成功', icon: 'success' });
-      } else {
-        Taro.showToast({ title: res.data.msg || '创建失败', icon: 'error' });
-      }
-    } catch (error: any) {
-      console.error('创建内容失败', error);
-      if (error.errMsg?.includes('abort') || error.message?.includes('abort')) {
-        Taro.showToast({ title: '创建超时，请重试', icon: 'error' });
-      } else {
-        Taro.showToast({ title: '创建失败', icon: 'error' });
-      }
-    } finally {
-      setIsGenerating(false);
-    }
+  const getFilteredContents = () => {
+    if (selectedStatus === 'all') return contents;
+    return contents.filter(c => c.status === selectedStatus);
   };
 
-  const handleRegenerate = () => {
-    if (selectedTopics.length > 0) {
-      generateContent(selectedTopics);
-    }
+  const getCounts = () => {
+    return {
+      all: contents.length,
+      draft: contents.filter(c => c.status === 'draft').length,
+      pending: contents.filter(c => c.status === 'pending').length,
+      published: contents.filter(c => c.status === 'published').length
+    };
   };
 
-  const handleVariantSelect = (contentId: string, variant: 'A' | 'B') => {
-    setSelectedVariant(prev => ({
-      ...prev,
-      [contentId]: variant
-    }));
+  const counts = getCounts();
+
+  const statusConfig = {
+    draft: { label: '草稿', color: '#71717a', bg: 'rgba(113, 113, 122, 0.1)' },
+    pending: { label: '待发布', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+    published: { label: '已发布', color: '#22c55e', bg: 'rgba(34, 197, 94, 0.1)' }
   };
 
-  const handleEditStart = (contentId: string, content: string) => {
-    setEditingContent({ id: contentId, content });
+  const platformConfig: Record<string, string> = {
+    '抖音': '🎵',
+    '小红书': '📕',
+    '微信': '💬',
+    'B站': '📺',
+    '微博': '🌐'
   };
 
-  const handleEditSave = () => {
-    if (editingContent) {
-      setGeneratedContents(prev =>
-        prev.map(item =>
-          item.id === editingContent.id
-            ? { ...item, content: editingContent.content }
-            : item
-        )
-      );
-      setEditingContent(null);
-      Taro.showToast({ title: '保存成功', icon: 'success' });
-    }
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
-  const handleRewrite = (contentId: string) => {
-    setCurrentRewriteId(contentId);
-    setRewritePrompt('');
-    setShowRewriteModal(true);
-  };
-
-  const executeRewrite = async () => {
-    if (!rewritePrompt.trim()) {
-      Taro.showToast({ title: '请输入改写需求', icon: 'none' });
-      return;
-    }
-
-    if (!currentRewriteId) return;
-
-    const currentContent = generatedContents.find(item => item.id === currentRewriteId);
-    if (!currentContent) return;
-
-    setShowRewriteModal(false);
-    setRewritingId(currentRewriteId);
-
-    try {
-      const res = await Network.request({
-        url: '/api/content-rewrite/rewrite',
-        method: 'POST',
-        data: {
-          content: currentContent.content,
-          prompt: rewritePrompt
-        }
-      });
-
-      if (res.data.code === 200) {
-        setGeneratedContents(prev =>
-          prev.map(item =>
-            item.id === currentRewriteId
-              ? { ...item, content: res.data.data.rewrittenContent }
-              : item
-          )
-        );
-        Taro.showToast({ title: '改写成功', icon: 'success' });
-      } else {
-        Taro.showToast({ title: '改写失败', icon: 'error' });
-      }
-    } catch (error) {
-      console.error('改写失败', error);
-      Taro.showToast({ title: '改写失败', icon: 'error' });
-    } finally {
-      setRewritingId(null);
-      setCurrentRewriteId(null);
-      setRewritePrompt('');
-    }
-  };
-
-  const handleCopy = (content: string) => {
-    Taro.setClipboardData({ data: content });
-    Taro.showToast({ title: '已复制', icon: 'success' });
-  };
-
-  // 自由创作
-  const handleChooseImage = () => {
-    Taro.chooseImage({
-      count: 1,
-      success: (res) => {
-        setUploadedImage(res.tempFilePaths[0]);
-      }
-    });
-  };
-
-  const handleGenerateFreestyle = async () => {
-    if (!inputText.trim() && !uploadedImage) {
-      Taro.showToast({ title: '请输入文字或上传图片', icon: 'none' });
-      return;
-    }
-
-    setIsFreestyleGenerating(true);
-    try {
-      const data: any = {
-        style: '标准',
-        platform: '通用'
-      };
-
-      if (inputText.trim()) {
-        data.text = inputText;
-      }
-
-      if (uploadedImage) {
-        // 上传图片并获取 URL
-        const uploadRes = await Network.uploadFile({
-          url: '/api/upload',
-          filePath: uploadedImage,
-          name: 'file'
-        });
-
-        const uploadData = JSON.parse(uploadRes.data);
-        if (uploadData.code === 200) {
-          data.imageUrl = uploadData.data.url;
-        }
-      }
-
-      const res = await Network.request({
-        url: '/api/freestyle-generation/generate',
-        method: 'POST',
-        data
-      });
-
-      if (res.data.code === 200) {
-        setFreestyleResult(res.data.data);
-        Taro.showToast({ title: '创建成功', icon: 'success' });
-      } else {
-        Taro.showToast({ title: '创建失败', icon: 'error' });
-      }
-    } catch (error) {
-      console.error('创建失败', error);
-      Taro.showToast({ title: '创建失败', icon: 'error' });
-    } finally {
-      setIsFreestyleGenerating(false);
-    }
-  };
+  const filteredContents = getFilteredContents();
 
   return (
-    <View className="min-h-screen bg-slate-900 pb-4">
-      {/* 顶部导航 */}
-      <View className="bg-slate-800 px-4 py-3 flex items-center gap-2 border-b border-slate-700">
-        <View className="w-8 h-8 bg-slate-9000/20 rounded-lg flex items-center justify-center">
-          <Text>✒</Text>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
+      {/* Header */}
+      <View style={{ 
+        background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
+        padding: '48px 32px 32px',
+        borderBottom: '1px solid #27272a'
+      }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+          <View style={{ padding: '8px' }} onClick={() => Taro.navigateBack()}>
+            <Text style={{ fontSize: '32px', color: '#fafafa' }}>←</Text>
+          </View>
+          <Text style={{ fontSize: '36px', fontWeight: '700', color: '#fafafa' }}>内容体系</Text>
         </View>
-        <Text className="block text-base font-semibold text-white">内容创作</Text>
+
+        {/* 状态筛选 */}
+        <View style={{ display: 'flex', gap: '12px' }}>
+          {statuses.map((status) => (
+            <View
+              key={status.key}
+              style={{
+                flex: 1,
+                padding: '16px 8px',
+                backgroundColor: selectedStatus === status.key ? '#f59e0b' : '#141416',
+                borderRadius: '12px',
+                textAlign: 'center',
+                border: selectedStatus === status.key ? 'none' : '1px solid #27272a'
+              }}
+              onClick={() => setSelectedStatus(status.key)}
+            >
+              <Text style={{ 
+                fontSize: '24px', 
+                fontWeight: '600',
+                color: selectedStatus === status.key ? '#000' : '#a1a1aa',
+                display: 'block'
+              }}>
+                {counts[status.key as keyof typeof counts]}
+              </Text>
+              <Text style={{ 
+                fontSize: '18px', 
+                color: selectedStatus === status.key ? '#000' : '#71717a',
+                marginTop: '4px'
+              }}>
+                {status.label}
+              </Text>
+            </View>
+          ))}
+        </View>
       </View>
 
-      {/* Tab 切换 */}
-      <View className="bg-slate-800/50 px-4 py-2 flex gap-4 border-b border-slate-700">
-        <View
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-            activeTab === 'topic'
-              ? 'bg-slate-9000/20 text-blue-400 border border-sky-500/30'
-              : 'text-slate-400'
-          }`}
-          onClick={() => setActiveTab('topic')}
-        >
-          <Text>📄</Text>
-          <Text className="block text-sm font-medium">基于选题</Text>
-        </View>
-        <View
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-            activeTab === 'freestyle'
-              ? 'bg-slate-9000/20 text-blue-400 border border-sky-500/30'
-              : 'text-slate-400'
-          }`}
-          onClick={() => setActiveTab('freestyle')}
-        >
-          <Text>✨</Text>
-          <Text className="block text-sm font-medium">自由创作</Text>
-        </View>
-      </View>
-
-      <ScrollView scrollY className="flex-1">
-        <View className="p-4">
-          {/* 基于选题的创作 */}
-          {activeTab === 'topic' && (
-            <View className="flex flex-col gap-4">
-              {/* 已选选题 */}
-              {selectedTopics.length > 0 && (
-                <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
-                  <Text className="block text-sm font-semibold text-white mb-3">
-                    已选择 {selectedTopics.length} 个选题
+      {/* 内容列表 */}
+      <View style={{ padding: '32px' }}>
+        {loading ? (
+          <View style={{ textAlign: 'center', paddingTop: '120px' }}>
+            <Text style={{ fontSize: '64px' }}>⏳</Text>
+            <Text style={{ fontSize: '28px', color: '#71717a', marginTop: '24px' }}>加载中...</Text>
+          </View>
+        ) : filteredContents.length === 0 ? (
+          <View style={{ textAlign: 'center', paddingTop: '120px' }}>
+            <Text style={{ fontSize: '80px' }}>📝</Text>
+            <Text style={{ fontSize: '28px', color: '#71717a', marginTop: '24px' }}>
+              {selectedStatus === 'all' ? '暂无内容' : `暂无${statuses.find(s => s.key === selectedStatus)?.label}`}
+            </Text>
+            <Text style={{ fontSize: '24px', color: '#f59e0b', marginTop: '16px' }}
+              onClick={() => Taro.navigateTo({ url: '/pages/content-creation/index' })}
+            >
+              去创建内容
+            </Text>
+          </View>
+        ) : (
+          filteredContents.map((content) => (
+            <View
+              key={content.id}
+              style={{
+                backgroundColor: '#141416',
+                borderRadius: '20px',
+                padding: '28px',
+                marginBottom: '16px',
+                border: '1px solid #27272a'
+              }}
+            >
+              <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ 
+                    fontSize: '28px', 
+                    fontWeight: '600', 
+                    color: '#fafafa',
+                    display: 'block',
+                    marginBottom: '8px'
+                  }}>
+                    {content.title}
                   </Text>
-                  <View className="flex flex-col gap-2">
-                    {selectedTopics.map((topic, index) => (
-                      <View
-                        key={index}
-                        className="flex items-start gap-2 py-2 px-3 bg-slate-800 rounded-lg"
-                      >
-                        <Text>✓</Text>
-                        <Text className="block text-sm text-slate-300 flex-1">
-                          {topic}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              )}
-
-              {/* 创建中 */}
-              {isGenerating && (
-                <View className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl border border-sky-500/30 p-6">
-                  <View className="flex flex-col items-center gap-3">
-                    <Text>🔄</Text>
-                    <Text className="block text-white font-medium">
-                      正在创建 AB 方案...
+                  <View style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <View style={{
+                      padding: '6px 12px',
+                      backgroundColor: statusConfig[content.status].bg,
+                      borderRadius: '8px'
+                    }}>
+                      <Text style={{ fontSize: '20px', color: statusConfig[content.status].color }}>
+                        {statusConfig[content.status].label}
+                      </Text>
+                    </View>
+                    <Text style={{ fontSize: '22px', color: '#71717a' }}>
+                      {platformConfig[content.platform] || '📱'} {content.platform}
                     </Text>
-                    <Text className="block text-slate-400 text-sm">
-                      请稍候，这可能需要几秒钟
+                    <Text style={{ fontSize: '22px', color: '#71717a' }}>
+                      {content.type}
                     </Text>
                   </View>
-                </View>
-              )}
-
-              {/* 创建的内容 */}
-              {!isGenerating && generatedContents.length > 0 && (
-                <View className="flex flex-col gap-6">
-                  {generatedContents
-                    .filter((_, index) => index % 2 === 0)
-                    .map((contentA, index) => {
-                      const contentB = generatedContents[index * 2 + 1];
-                      const variant = selectedVariant[contentA.id] || 'A';
-                      const currentContent = variant === 'A' ? contentA : contentB;
-
-                      return (
-                        <View key={index} className="bg-slate-800 rounded-xl border-2 border-slate-700 p-4">
-                          {/* 选题标题 */}
-                          <View className="flex items-center gap-2 mb-4">
-                            <View className="w-8 h-8 bg-slate-9000/20 rounded-lg flex items-center justify-center">
-                              <Text>▶</Text>
-                            </View>
-                            <Text className="block text-base font-semibold text-white">
-                              {currentContent.topic}
-                            </Text>
-                          </View>
-
-                          {/* AB 方案选择 */}
-                          <View className="flex gap-2 mb-4">
-                            <View
-                              className={`flex-1 py-2 px-4 rounded-lg text-center transition-all ${
-                                variant === 'A'
-                                  ? 'bg-blue-500 text-white'
-                                  : 'bg-slate-800 text-slate-300'
-                              }`}
-                              onClick={() => handleVariantSelect(contentA.id, 'A')}
-                            >
-                              <Text className="block text-sm font-medium">方案 A</Text>
-                            </View>
-                            <View
-                              className={`flex-1 py-2 px-4 rounded-lg text-center transition-all ${
-                                variant === 'B'
-                                  ? 'bg-purple-500 text-white'
-                                  : 'bg-slate-800 text-slate-300'
-                              }`}
-                              onClick={() => handleVariantSelect(contentA.id, 'B')}
-                            >
-                              <Text className="block text-sm font-medium">方案 B</Text>
-                            </View>
-                          </View>
-
-                          {/* 内容展示/编辑 */}
-                          {editingContent?.id === currentContent.id ? (
-                            <View className="mb-4">
-                              <View className="bg-slate-900/50 rounded-lg p-4 mb-3">
-                                <Textarea
-                                  className="w-full bg-transparent text-white text-sm min-h-[200px]"
-                                  value={editingContent?.content || ''}
-                                  onInput={(e) => setEditingContent({ id: editingContent?.id || currentContent.id, content: e.detail.value })}
-                                />
-                              </View>
-                              <View className="flex gap-2">
-                                <View
-                                  className="flex-1 py-2 bg-blue-500 rounded-lg text-center active:opacity-80"
-                                  onClick={handleEditSave}
-                                >
-                                  <Text className="block text-sm text-white">保存</Text>
-                                </View>
-                                <View
-                                  className="flex-1 py-2 bg-slate-800 rounded-lg text-center active:opacity-80"
-                                  onClick={() => setEditingContent(null)}
-                                >
-                                  <Text className="block text-sm text-slate-300">取消</Text>
-                                </View>
-                              </View>
-                            </View>
-                          ) : (
-                            <View className="bg-slate-900/50 rounded-lg p-4 mb-4">
-                              <Text className="block text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
-                                {currentContent.content}
-                              </Text>
-                            </View>
-                          )}
-
-                          {/* 操作按钮 */}
-                          <View className="flex flex-wrap gap-2">
-                            {!editingContent && (
-                              <View
-                                className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
-                                onClick={() => handleEditStart(currentContent.id, currentContent.content)}
-                              >
-                                <Text>✏</Text>
-                                <Text className="block text-xs text-slate-300">手动改写</Text>
-                              </View>
-                            )}
-                            <View
-                              className={`flex items-center gap-1.5 px-3 py-2 bg-slate-800 rounded-lg active:scale-95 transition-all ${
-                                rewritingId === currentContent.id ? 'opacity-50' : ''
-                              }`}
-                              onClick={() => handleRewrite(currentContent.id)}
-                            >
-                              <Text>🤖</Text>
-                              <Text className="block text-xs text-slate-300">
-                                {rewritingId === currentContent.id ? '改写中...' : '改写'}
-                              </Text>
-                            </View>
-                            <View
-                              className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
-                              onClick={() => handleCopy(currentContent.content)}
-                            >
-                              <Text>📋</Text>
-                              <Text className="block text-xs text-slate-300">复制</Text>
-                            </View>
-                          </View>
-                        </View>
-                      );
-                    })}
-                </View>
-              )}
-
-              {/* 空状态 */}
-              {!isGenerating && generatedContents.length === 0 && (
-                <View className="bg-slate-800 rounded-xl border border-slate-700 p-6 text-center">
-                  <Text>✒</Text>
-                  <Text className="block text-slate-400 text-base mt-4 mb-2">
-                    暂无创建的内容
-                  </Text>
-                  <Text className="block text-slate-300 text-sm">
-                    请在选题策划页面选择选题并确认
-                  </Text>
-                </View>
-              )}
-
-              {/* 重新创建按钮 */}
-              {!isGenerating && generatedContents.length > 0 && (
-                <View className="flex gap-3">
-                  <View
-                    className="flex-1 bg-slate-800 text-white text-center py-3 rounded-xl font-medium active:opacity-80 flex items-center justify-center gap-2"
-                    onClick={handleRegenerate}
-                  >
-                    <Text>🔄</Text>
-                    <Text className="block">重新创建</Text>
-                  </View>
-                </View>
-              )}
-
-              {/* 返回按钮 */}
-              <View>
-                <View
-                  className="bg-slate-800 text-slate-300 text-center py-3 rounded-xl font-medium active:opacity-80 flex items-center justify-center gap-2"
-                  onClick={() => Taro.navigateBack()}
-                >
-                  <Text>{">"}</Text>
-                  <Text className="block">返回选题策划</Text>
                 </View>
               </View>
-            </View>
-          )}
 
-          {/* 自由创作 */}
-          {activeTab === 'freestyle' && (
-            <View className="flex flex-col gap-4">
-              {/* 输入区域 */}
-              <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
-                <Text className="block text-base font-semibold text-white mb-4">输入内容</Text>
-
-                {/* 文字输入 */}
-                <View className="mb-4">
-                  <View className="bg-slate-800 rounded-lg p-3">
-                    <Textarea
-                      className="w-full bg-transparent text-white text-sm min-h-[100px]"
-                      placeholder="输入您的语料文字，系统将为您进行二次创作..."
-                      value={inputText}
-                      onInput={(e) => setInputText(e.detail.value)}
-                    />
-                  </View>
-                </View>
-
-                {/* 图片上传 */}
-                <View>
-                  <Text className="block text-sm text-slate-400 mb-2">或上传图片</Text>
-                  {uploadedImage ? (
-                    <View className="relative">
-                      <Text>🖼</Text>
-                      <View
-                        className="absolute top-2 right-2 w-8 h-8 bg-red-500/80 rounded-full flex items-center justify-center"
-                        onClick={() => setUploadedImage(null)}
-                      >
-                        <Text>✕</Text>
-                      </View>
-                    </View>
-                  ) : (
-                    <View
-                      className="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center active:border-blue-500 transition-all"
-                      onClick={handleChooseImage}
-                    >
-                      <Text>🖼</Text>
-                      <Text className="block text-sm text-slate-400 mt-2">点击上传图片</Text>
-                    </View>
+              <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ display: 'flex', gap: '16px' }}>
+                  {content.views !== undefined && (
+                    <Text style={{ fontSize: '22px', color: '#71717a' }}>
+                      👁 {content.views}
+                    </Text>
+                  )}
+                  {content.likes !== undefined && (
+                    <Text style={{ fontSize: '22px', color: '#71717a' }}>
+                      ❤️ {content.likes}
+                    </Text>
                   )}
                 </View>
-
-                {/* 创建按钮 */}
-                <View
-                  className={`mt-4 py-3 rounded-xl text-center font-medium flex items-center justify-center gap-2 transition-all ${
-                    isFreestyleGenerating
-                      ? 'bg-slate-800 text-slate-400'
-                      : 'bg-blue-500 text-white active:opacity-80'
-                  }`}
-                  onClick={handleGenerateFreestyle}
-                >
-                  {isFreestyleGenerating ? (
-                    <>
-                      <Text>🔄</Text>
-                      <Text className="block">创建中...</Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text>✨</Text>
-                      <Text className="block">内容创作</Text>
-                    </>
-                  )}
-                </View>
-              </View>
-
-              {/* 创建结果 */}
-              {freestyleResult && (
-                <View className="bg-slate-800 rounded-xl border border-slate-700 p-4">
-                  <Text className="block text-base font-semibold text-white mb-4">创建结果</Text>
-
-                  {/* 内容展示 */}
-                  <View className="bg-slate-900/50 rounded-lg p-4 mb-4">
-                    <Text className="block text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
-                      {freestyleResult.content}
-                    </Text>
-                  </View>
-
-                  {/* 操作按钮 */}
-                  <View className="flex gap-2">
-                    <View
-                      className="flex-1 py-2 bg-blue-500 rounded-lg text-center active:opacity-80"
-                      onClick={() => handleCopy(freestyleResult.content)}
-                    >
-                      <Text className="block text-sm text-white">复制</Text>
-                    </View>
-                    <View
-                      className="flex-1 py-2 bg-slate-800 rounded-lg text-center active:opacity-80"
-                      onClick={() => setFreestyleResult(null)}
-                    >
-                      <Text className="block text-sm text-slate-300">清除</Text>
-                    </View>
-                  </View>
-                </View>
-              )}
-            </View>
-          )}
-        </View>
-      </ScrollView>
-
-      {/* 系统改写对话框 */}
-      {showRewriteModal && (
-        <View className="fixed inset-0 bg-black/80 z-50 flex flex-col justify-end">
-          <View className="bg-slate-800 rounded-t-3xl p-6 border-t border-slate-700" style={{ maxHeight: '80vh' }}>
-            <View className="flex items-center justify-between mb-5">
-              <View className="flex items-center gap-3">
-                <View className="w-10 h-10 bg-slate-9000/20 rounded-xl flex items-center justify-center">
-                  <Text>🤖</Text>
-                </View>
-                <View>
-                  <Text className="block text-lg font-semibold text-white">内容改写</Text>
-                  <Text className="block text-xs text-slate-400">描述您的改写需求</Text>
-                </View>
-              </View>
-              <View
-                className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800/60 active:opacity-70"
-                onClick={() => setShowRewriteModal(false)}
-              >
-                <Text>✕</Text>
-              </View>
-            </View>
-
-            {/* 快捷改写标签 */}
-            <View className="mb-4">
-              <Text className="block text-sm text-slate-400 mb-3">快捷选择</Text>
-              <ScrollView scrollX className="flex gap-2">
-                <View
-                  className="flex-shrink-0 px-4 py-2 bg-slate-900/80 border border-slate-700 rounded-full active:bg-slate-9000/20"
-                  onClick={() => setRewritePrompt('请改写得更专业、更正式，增加数据支持和权威引用')}
-                >
-                  <Text className="block text-xs text-blue-300">更专业</Text>
-                </View>
-                <View
-                  className="flex-shrink-0 px-4 py-2 bg-slate-900/80 border border-slate-700 rounded-full active:bg-slate-9000/20"
-                  onClick={() => setRewritePrompt('请改写得更轻松、更亲切，增加幽默感和趣味性')}
-                >
-                  <Text className="block text-xs text-emerald-300">更轻松</Text>
-                </View>
-                <View
-                  className="flex-shrink-0 px-4 py-2 bg-slate-900/80 border border-slate-700 rounded-full active:bg-slate-9000/20"
-                  onClick={() => setRewritePrompt('请精简内容，去除冗余信息，保留核心观点')}
-                >
-                  <Text className="block text-xs text-amber-300">更简洁</Text>
-                </View>
-                <View
-                  className="flex-shrink-0 px-4 py-2 bg-slate-900/80 border border-slate-700 rounded-full active:bg-slate-9000/20"
-                  onClick={() => setRewritePrompt('请增加情感表达，让内容更有感染力')}
-                >
-                  <Text className="block text-xs text-pink-300">更有感染力</Text>
-                </View>
-              </ScrollView>
-            </View>
-
-            {/* 输入框 */}
-            <View className="mb-4">
-              <Text className="block text-sm text-slate-400 mb-2">详细描述</Text>
-              <View className="bg-slate-900 rounded-2xl p-4 border border-slate-700">
-                <Textarea
-                  style={{ width: '100%', minHeight: '200px', backgroundColor: 'transparent', color: '#fff', fontSize: '15px', lineHeight: '1.6' }}
-                  placeholder="例如：请帮我改写得更专业一点，增加数据支持，语气要更亲切..."
-                  value={rewritePrompt}
-                  onInput={(e) => setRewritePrompt(e.detail.value)}
-                  maxlength={500}
-                />
-                <Text className="block text-xs text-slate-400 mt-2 text-right">
-                  {rewritePrompt.length}/500
+                <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                  {formatDate(content.createdAt)}
                 </Text>
               </View>
-            </View>
 
-            {/* 操作按钮 */}
-            <View className="flex gap-3">
-              <View
-                className="flex-1 py-4 bg-slate-800/60 rounded-2xl text-center active:opacity-70"
-                onClick={() => setShowRewriteModal(false)}
-              >
-                <Text className="block text-base text-slate-300 font-medium">取消</Text>
-              </View>
-              <View
-                className="flex-1 py-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl text-center active:opacity-80 shadow-lg shadow-blue-500/20"
-                onClick={executeRewrite}
-              >
-                <Text className="block text-base text-white font-medium">开始改写</Text>
+              {/* 操作按钮 */}
+              <View style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                {content.status === 'draft' && (
+                  <View 
+                    style={{ flex: 1, padding: '14px', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderRadius: '12px', textAlign: 'center' }}
+                    onClick={() => Taro.showToast({ title: '提交审核', icon: 'success' })}
+                  >
+                    <Text style={{ fontSize: '24px', color: '#f59e0b' }}>提交审核</Text>
+                  </View>
+                )}
+                {content.status === 'pending' && (
+                  <View 
+                    style={{ flex: 1, padding: '14px', backgroundColor: 'rgba(34, 197, 94, 0.1)', borderRadius: '12px', textAlign: 'center' }}
+                    onClick={() => Taro.showToast({ title: '立即发布', icon: 'success' })}
+                  >
+                    <Text style={{ fontSize: '24px', color: '#22c55e' }}>立即发布</Text>
+                  </View>
+                )}
+                <View 
+                  style={{ flex: 1, padding: '14px', backgroundColor: '#1a1a1d', borderRadius: '12px', textAlign: 'center', border: '1px solid #27272a' }}
+                  onClick={() => Taro.showToast({ title: '编辑内容', icon: 'none' })}
+                >
+                  <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>编辑</Text>
+                </View>
+                <View 
+                  style={{ flex: 1, padding: '14px', backgroundColor: '#1a1a1d', borderRadius: '12px', textAlign: 'center', border: '1px solid #27272a' }}
+                  onClick={() => Taro.setClipboardData({ data: content.title })}
+                >
+                  <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>复制</Text>
+                </View>
               </View>
             </View>
-          </View>
-        </View>
-      )}
+          ))
+        )}
+      </View>
+
+      {/* 悬浮创建按钮 */}
+      <View 
+        style={{
+          position: 'fixed',
+          right: '32px',
+          bottom: '140px',
+          width: '112px',
+          height: '112px',
+          background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
+          borderRadius: '32px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '48px',
+          boxShadow: '0 8px 32px rgba(245, 158, 11, 0.3)',
+          zIndex: 100
+        }}
+        onClick={() => Taro.navigateTo({ url: '/pages/content-creation/index' })}
+      >
+        ✏️
+      </View>
     </View>
   );
 };

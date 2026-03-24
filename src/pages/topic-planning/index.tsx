@@ -1,7 +1,7 @@
-import { View, Text, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-
+import { View, Text, ScrollView, Input } from '@tarojs/components';
+import Taro from '@tarojs/taro';
+import { Network } from '@/network';
 
 interface TopicQuestion {
   question: string;
@@ -14,12 +14,10 @@ const TopicPlanningPage = () => {
   const [topicQuestions, setTopicQuestions] = useState<TopicQuestion[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [inputSources, setInputSources] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     loadData();
-    loadInputSources();
   }, []);
 
   const loadData = async () => {
@@ -35,22 +33,9 @@ const TopicPlanningPage = () => {
       }
     } catch (error) {
       console.error('加载选题失败', error);
+      Taro.showToast({ title: '加载失败', icon: 'none' });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadInputSources = async () => {
-    try {
-      const res = await Network.request({
-        url: '/api/input-sources',
-        method: 'GET'
-      });
-      if (res.data.code === 200) {
-        setInputSources(res.data.data);
-      }
-    } catch (error) {
-      console.error('加载输入来源失败', error);
     }
   };
 
@@ -70,13 +55,6 @@ const TopicPlanningPage = () => {
     setSelectedTopics([]);
   };
 
-  const handleDeleteTopic = (question: string) => {
-    setTopicQuestions(prev => prev.filter(t => t.question !== question));
-    if (selectedTopics.includes(question)) {
-      setSelectedTopics(prev => prev.filter(q => q !== question));
-    }
-  };
-
   const handleGenerate = async () => {
     if (selectedTopics.length === 0) {
       Taro.showToast({ title: '请先选择选题', icon: 'none' });
@@ -85,14 +63,8 @@ const TopicPlanningPage = () => {
 
     setIsGenerating(true);
     try {
-      // 保存选择的选题
       Taro.setStorageSync('selectedTopics', selectedTopics);
-
-      // 跳转到内容创作页面
-      Taro.navigateTo({
-        url: '/pages/content-system/index'
-      });
-
+      Taro.navigateTo({ url: '/pages/content-system/index' });
       Taro.showToast({ title: '已选择选题', icon: 'success' });
     } catch (error) {
       console.error('创建失败', error);
@@ -102,198 +74,295 @@ const TopicPlanningPage = () => {
     }
   };
 
-  const handleRefresh = () => {
-    loadData();
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return '#ef4444';
+    if (score >= 60) return '#f59e0b';
+    if (score >= 40) return '#22c55e';
+    return '#71717a';
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
-      {/* 顶部导航栏 */}
-      <View className="sticky top-0 z-10 bg-slate-800 border-b border-slate-700 px-4 py-4">
-        <View className="flex items-center gap-3">
-          {/* 返回按钮 */}
-          <View
-            className="flex items-center justify-center w-10 h-10 bg-slate-800 rounded-xl active:scale-95 transition-all"
-            onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
+    <View style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#0a0a0b',
+      paddingBottom: '140px'
+    }}>
+      {/* Header */}
+      <View style={{ 
+        background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
+        padding: '48px 32px 32px',
+        borderBottom: '1px solid #27272a'
+      }}>
+        <View style={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          gap: '16px',
+          marginBottom: '24px'
+        }}>
+          <View 
+            style={{ padding: '8px' }}
+            onClick={() => Taro.navigateBack()}
           >
-            <Text>←</Text>
+            <Text style={{ fontSize: '32px', color: '#fafafa' }}>←</Text>
           </View>
-
-          {/* 标题 */}
-          <Text className="block text-xl font-bold text-white flex-1">选题策划</Text>
-
-          {/* 刷新按钮 */}
-          <View
-            className="flex items-center justify-center w-10 h-10 bg-slate-800 rounded-xl active:scale-95 transition-all"
-            onClick={handleRefresh}
-          >
-            <Text>🔄</Text>
-          </View>
-
-          {/* 筛选按钮 */}
-          <View
-            className="flex items-center justify-center w-10 h-10 bg-slate-800 rounded-xl active:scale-95 transition-all"
-            onClick={() => Taro.navigateTo({ url: '/pages/input-sources/index' })}
-          >
-            <Text style={{ fontSize: '20px' }}>🔽</Text>
-          </View>
+          <Text style={{ 
+            fontSize: '36px', 
+            fontWeight: '700', 
+            color: '#fafafa'
+          }}>
+            选题策划
+          </Text>
         </View>
 
-        {/* 操作栏 */}
-        <View className="flex items-center justify-between mt-3">
-          <View className="flex items-center gap-2">
-            <Text className="block text-sm text-slate-400">共 {topicQuestions.length} 个选题</Text>
-            {selectedTopics.length > 0 && (
-              <Text className="block text-sm text-blue-400">已选 {selectedTopics.length} 个</Text>
-            )}
-          </View>
-          <View className="flex items-center gap-2">
-            {selectedTopics.length > 0 && (
-              <>
-                <Text
-                  className="block text-sm text-slate-400"
-                  onClick={handleClearAll}
-                >
-                  清空
-                </Text>
-                <View className="w-px h-4 bg-slate-700"></View>
-                <Text
-                  className="block text-sm text-blue-400"
-                  onClick={handleSelectAll}
-                >
-                  全选
-                </Text>
-              </>
-            )}
-          </View>
-        </View>
-      </View>
-
-      {/* 内容区 */}
-      <ScrollView className="flex-1" scrollY>
-        {/* 输入来源信息 */}
-        {inputSources && (
-          <View className="px-4 py-3 bg-slate-800/50 border-b border-slate-700">
-            <View className="flex items-center gap-2 text-sm text-slate-400">
-              <Text>⚙</Text>
-              <Text>来源配置：</Text>
-              {inputSources.platforms?.length > 0 ? (
-                <Text className="text-emerald-400">
-                  {inputSources.platforms.join(', ')}
-                </Text>
-              ) : (
-                <Text className="text-slate-400">未配置</Text>
-              )}
-            </View>
-          </View>
-        )}
-
-        {/* 选题列表 */}
-        {loading ? (
-          <View className="flex items-center justify-center py-20">
-            <Text className="block text-slate-400">加载中...</Text>
-          </View>
-        ) : topicQuestions.length === 0 ? (
-          <View className="flex flex-col items-center justify-center py-20 px-4">
-            <Text>💡</Text>
-            <Text className="block text-slate-400 mt-4 text-center">
-              暂无选题
+        <View style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Text style={{ 
+            fontSize: '24px', 
+            color: '#71717a'
+          }}>
+            共 {topicQuestions.length} 个选题
+          </Text>
+          {selectedTopics.length > 0 && (
+            <Text style={{ 
+              fontSize: '24px', 
+              color: '#f59e0b'
+            }}>
+              已选 {selectedTopics.length} 个
             </Text>
-            <View
-              className="mt-4 px-4 py-2 bg-slate-9000/20 border border-sky-500/30 rounded-lg"
-              onClick={handleRefresh}
-            >
-              <Text className="block text-sm text-blue-300">刷新获取</Text>
-            </View>
-          </View>
-        ) : (
-          <View className="p-4 flex flex-col gap-3">
-            {topicQuestions.map((topic, index) => (
-              <View
-                key={index}
-                className={`bg-slate-800 rounded-xl border transition-all ${
-                  selectedTopics.includes(topic.question)
-                    ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-slate-700'
-                }`}
-                onClick={() => toggleTopicSelection(topic.question)}
-              >
-                <View className="p-4">
-                  {/* 选题标题 */}
-                  <View className="flex items-start gap-3">
-                    <View className="flex items-center justify-center w-5 h-5 border-2 border-slate-700 rounded mt-0.5">
-                      {selectedTopics.includes(topic.question) && (
-                        <Text>✓</Text>
-                      )}
-                    </View>
-                    <View className="flex-1">
-                      <Text className="block text-base text-white leading-relaxed">
-                        {topic.question}
-                      </Text>
-                    </View>
-                  </View>
-
-                  {/* 选题信息 */}
-                  <View className="flex items-center gap-3 mt-3 ml-8">
-                    <View className="flex items-center gap-1">
-                      <Text style={{ fontSize: '14px' }}>📈</Text>
-                      <Text className={`text-xs ${topic.hotScore > 80 ? 'text-red-400' : 'text-slate-400'}`}>
-                        热度 {topic.hotScore}
-                      </Text>
-                    </View>
-                    {topic.category && (
-                      <View className="px-2 py-0.5 bg-slate-800 rounded">
-                        <Text className="block text-xs text-slate-400">{topic.category}</Text>
-                      </View>
-                    )}
-                    {topic.source && (
-                      <Text className="block text-xs text-slate-400">{topic.source}</Text>
-                    )}
-                  </View>
-                </View>
-
-                {/* 删除按钮 */}
-                <View
-                  className="px-4 py-2 border-t border-slate-700 flex items-center justify-end"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteTopic(topic.question);
-                  }}
-                >
-                  <Text>🗑</Text>
-                  <Text className="block text-xs text-slate-400 ml-1">删除</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        )}
-      </ScrollView>
-
-      {/* 底部操作栏 */}
-      <View className="sticky bottom-0 bg-slate-800 border-t border-slate-700 px-4 py-3 safe-area-bottom">
-        <View
-          className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 transition-all ${
-            selectedTopics.length === 0
-              ? 'bg-slate-800'
-              : 'bg-gradient-to-r from-blue-500 to-cyan-500'
-          }`}
-          onClick={handleGenerate}
-        >
-          {isGenerating ? (
-            <>
-              <Text>🔄</Text>
-              <Text className="block text-base font-medium text-white">创建中...</Text>
-            </>
-          ) : (
-            <>
-              <Text>✨</Text>
-              <Text className="block text-base font-medium text-white">
-                {selectedTopics.length === 0 ? '请选择选题' : `创建内容 (${selectedTopics.length})`}
-              </Text>
-            </>
           )}
         </View>
       </View>
+
+      {/* 操作栏 */}
+      {topicQuestions.length > 0 && (
+        <View style={{
+          padding: '24px 32px',
+          borderBottom: '1px solid #27272a',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <View 
+            style={{
+              padding: '12px 20px',
+              backgroundColor: '#141416',
+              borderRadius: '12px',
+              border: '1px solid #27272a'
+            }}
+            onClick={selectedTopics.length === topicQuestions.length ? handleClearAll : handleSelectAll}
+          >
+            <Text style={{ 
+              fontSize: '24px', 
+              color: '#a1a1aa'
+            }}>
+              {selectedTopics.length === topicQuestions.length ? '取消全选' : '全选'}
+            </Text>
+          </View>
+          <View 
+            style={{
+              padding: '12px 20px',
+              backgroundColor: '#141416',
+              borderRadius: '12px',
+              border: '1px solid #27272a'
+            }}
+            onClick={loadData}
+          >
+            <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>🔄 刷新</Text>
+          </View>
+        </View>
+      )}
+
+      {/* 选题列表 */}
+      <View style={{ padding: '32px' }}>
+        {loading ? (
+          <View style={{ 
+            textAlign: 'center', 
+            paddingTop: '120px' 
+          }}>
+            <Text style={{ fontSize: '64px' }}>⏳</Text>
+            <Text style={{ 
+              fontSize: '28px', 
+              color: '#71717a',
+              marginTop: '24px'
+            }}>
+              加载中...
+            </Text>
+          </View>
+        ) : topicQuestions.length === 0 ? (
+          <View style={{ 
+            textAlign: 'center', 
+            paddingTop: '120px' 
+          }}>
+            <Text style={{ fontSize: '80px' }}>🎯</Text>
+            <Text style={{ 
+              fontSize: '28px', 
+              color: '#71717a',
+              marginTop: '24px'
+            }}>
+              暂无选题数据
+            </Text>
+            <Text style={{ 
+              fontSize: '24px', 
+              color: '#52525b',
+              marginTop: '16px'
+            }}>
+              请先配置输入来源
+            </Text>
+          </View>
+        ) : (
+          topicQuestions.map((topic, index) => (
+            <View
+              key={index}
+              style={{
+                backgroundColor: '#141416',
+                borderRadius: '20px',
+                padding: '28px',
+                marginBottom: '16px',
+                border: '1px solid #27272a',
+                borderLeftWidth: '4px',
+                borderLeftColor: selectedTopics.includes(topic.question) ? '#f59e0b' : '#27272a'
+              }}
+              onClick={() => toggleTopicSelection(topic.question)}
+            >
+              <View style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '16px'
+              }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ 
+                    fontSize: '28px', 
+                    fontWeight: '600', 
+                    color: '#fafafa',
+                    display: 'block',
+                    lineHeight: '1.4'
+                  }}>
+                    {topic.question}
+                  </Text>
+                </View>
+                <View style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  backgroundColor: selectedTopics.includes(topic.question) 
+                    ? 'rgba(245, 158, 11, 0.2)' 
+                    : '#1a1a1d',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginLeft: '16px'
+                }}>
+                  <Text style={{ fontSize: '24px' }}>
+                    {selectedTopics.includes(topic.question) ? '✓' : ''}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={{ 
+                display: 'flex', 
+                gap: '16px',
+                alignItems: 'center'
+              }}>
+                <View style={{
+                  padding: '6px 12px',
+                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  borderRadius: '8px',
+                  fontSize: '20px',
+                  color: '#3b82f6'
+                }}>
+                  {topic.category || '通用'}
+                </View>
+                <View style={{
+                  padding: '6px 12px',
+                  backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                  borderRadius: '8px',
+                  fontSize: '20px',
+                  color: '#22c55e'
+                }}>
+                  {topic.source || '选题库'}
+                </View>
+                <View style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  marginLeft: 'auto'
+                }}>
+                  <Text style={{ 
+                    fontSize: '20px',
+                    color: getScoreColor(topic.hotScore)
+                  }}>
+                    🔥
+                  </Text>
+                  <Text style={{ 
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    color: getScoreColor(topic.hotScore)
+                  }}>
+                    {topic.hotScore}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          ))
+        )}
+      </View>
+
+      {/* 底部操作栏 */}
+      {selectedTopics.length > 0 && (
+        <View style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: '#141416',
+          borderTop: '1px solid #27272a',
+          padding: '24px 32px',
+          display: 'flex',
+          gap: '16px',
+          zIndex: 100
+        }}>
+          <View 
+            style={{
+              flex: 1,
+              padding: '24px',
+              backgroundColor: '#1a1a1d',
+              borderRadius: '16px',
+              border: '1px solid #27272a',
+              textAlign: 'center'
+            }}
+            onClick={handleClearAll}
+          >
+            <Text style={{ 
+              fontSize: '28px', 
+              color: '#a1a1aa'
+            }}>
+              清空 ({selectedTopics.length})
+            </Text>
+          </View>
+          <View 
+            style={{
+              flex: 2,
+              padding: '24px',
+              background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
+              borderRadius: '16px',
+              textAlign: 'center'
+            }}
+            onClick={handleGenerate}
+          >
+            <Text style={{ 
+              fontSize: '28px', 
+              fontWeight: '600',
+              color: '#000'
+            }}>
+              开始创作 ({selectedTopics.length})
+            </Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 };

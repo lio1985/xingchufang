@@ -6,6 +6,12 @@ export default defineAppConfig({
     'pages/change-password/index',
     'pages/quick-note/index',
     'pages/topic-planning/index',
+    'pages/content-creation/index',
+    'pages/content-system/index',
+    'pages/customer-management/index',
+    'pages/recycling-order/index',
+    'pages/data-stats/index',
+    'pages/settings/index',
     'pages/knowledge-share/index',
     'pages/knowledge-share/create',
     'pages/knowledge-share/edit',
@@ -14,7 +20,6 @@ export default defineAppConfig({
     'pages/news/index',
     'pages/ai-chat/index',
     'pages/systems/index',
-    'pages/content-system/index',
     'pages/lexicon-system/index',
     'pages/lexicon-manage/index',
     'pages/viral-system/index',
@@ -69,10 +74,10 @@ export default defineAppConfig({
   ],
   window: {
     backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#0f172a',
+    navigationBarBackgroundColor: '#0a0a0b',
     navigationBarTitleText: '星厨房',
     navigationBarTextStyle: 'white',
-    backgroundColor: '#0f172a'
+    backgroundColor: '#0a0a0b'
   },
   permission: {
     'scope.userLocation': {
@@ -80,9 +85,9 @@ export default defineAppConfig({
     }
   },
   tabBar: {
-    color: '#94a3b8',
-    selectedColor: '#60a5fa',
-    backgroundColor: '#0f172a',
+    color: '#71717a',
+    selectedColor: '#f59e0b',
+    backgroundColor: '#141416',
     borderStyle: 'black',
     list: [
       {

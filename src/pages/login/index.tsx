@@ -1,4 +1,4 @@
-import { View, Text, Input, Button } from '@tarojs/components';
+import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState } from 'react';
 import { Network } from '@/network';
@@ -41,12 +41,10 @@ const LoginPage = () => {
 
       console.log('登录接口返回=', res);
 
-      // 检查响应状态码
       if (res.statusCode !== 200) {
         throw new Error(`请求失败，状态码: ${res.statusCode}`);
       }
 
-      // 检查响应体
       const responseData = res.data;
       if (!responseData) {
         throw new Error('服务器未返回响应数据');
@@ -54,12 +52,10 @@ const LoginPage = () => {
 
       console.log('[登录] 响应数据:', responseData);
 
-      // 统一成功判断：检查 code 字段
       if (responseData.code !== 200) {
         throw new Error(responseData.msg || responseData.message || '登录失败');
       }
 
-      // 检查 data 字段
       if (!responseData.data) {
         throw new Error('登录成功但未返回数据');
       }
@@ -71,14 +67,9 @@ const LoginPage = () => {
         throw new Error('登录成功但未返回 token');
       }
 
-      // 2）取出 token
-      console.log('[登录] 开始存储 token 到缓存');
-
-      // 3）写入本地缓存（统一使用 Taro.setStorageSync）
       Taro.setStorageSync('token', token);
       console.log('[登录] Token 已存储到缓存');
 
-      // 验证 token 是否成功存储
       const savedToken = Taro.getStorageSync('token');
       console.log('本地缓存token=', savedToken);
 
@@ -86,16 +77,10 @@ const LoginPage = () => {
         throw new Error('Token 存储失败');
       }
 
-      // 存储用户信息
       console.log('[登录] 存储用户信息到缓存');
       Taro.setStorageSync('user', user);
       console.log('[登录] 用户信息已存储');
 
-      // 打印所有缓存
-      const allStorage = Taro.getStorageInfoSync();
-      console.log('[登录] 当前所有缓存键:', allStorage.keys);
-
-      // 显示成功提示
       console.log('[登录] 登录成功，准备跳转');
       Taro.showToast({
         title: '登录成功',
@@ -103,22 +88,13 @@ const LoginPage = () => {
         duration: 2000
       });
 
-      // 4）延迟跳转，确保缓存写入完成
       setTimeout(() => {
         console.log('[登录] 执行跳转到首页');
-        // 5）再执行页面跳转
         Taro.switchTab({ url: '/pages/index/index' });
       }, 500);
 
     } catch (error: any) {
       console.error('登录接口异常=', error);
-      console.error('[登录] 错误类型:', typeof error);
-      console.error('[登录] 错误信息:', error.message);
-      console.error('[登录] 错误堆栈:', error.stack);
-
-      // 检查当前缓存
-      const currentToken = Taro.getStorageSync('token');
-      console.log('失败时的当前 token:', currentToken);
 
       Taro.showToast({
         title: error.message || '登录失败，请重试',
@@ -131,68 +107,237 @@ const LoginPage = () => {
     }
   };
 
+  const handleRegister = () => {
+    Taro.navigateTo({ url: '/pages/register/index' });
+  };
+
+  const handleChangePassword = () => {
+    Taro.navigateTo({ url: '/pages/change-password/index' });
+  };
+
   return (
-    <View className="login-page">
-      <View className="login-container">
-        {/* 登录表单 */}
-        <View className="form-section">
-          {/* 标题 */}
-          <View className="form-title">
-            <Text className="block title-text">星厨房</Text>
-            <Text className="block title-subtitle">Star Kitchen</Text>
-          </View>
+    <View style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#0a0a0b',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* 背景装饰 */}
+      <View style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '400px',
+        background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%)',
+        pointerEvents: 'none'
+      }} />
 
-          <View className="input-group">
-            <Input
-              className="input"
-              placeholder="请输入账号"
-              value={username}
-              onInput={(e) => setUsername(e.detail.value)}
-              placeholderClass="input-placeholder"
-            />
+      {/* Logo 区域 */}
+      <View style={{ 
+        paddingTop: '120px', 
+        paddingLeft: '48px',
+        paddingRight: '48px'
+      }}>
+        <View style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '16px',
+          marginBottom: '16px'
+        }}>
+          <View style={{
+            width: '80px',
+            height: '80px',
+            background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '40px'
+          }}>
+            ⭐
           </View>
-
-          <View className="input-group password-group">
-            <Input
-              className="input"
-              password={!showPassword}
-              placeholder="请输入密码"
-              value={password}
-              onInput={(e) => setPassword(e.detail.value)}
-              placeholderClass="input-placeholder"
-            />
-            <Text
-              className="show-password"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? '隐藏密码' : '显示密码'}
+          <View>
+            <Text style={{ 
+              fontSize: '48px', 
+              fontWeight: '700', 
+              color: '#fafafa',
+              letterSpacing: '-0.02em'
+            }}>
+              星厨房
             </Text>
-          </View>
-
-          <Button
-            className={`login-button ${loading ? 'loading' : ''}`}
-            onClick={handleLogin}
-            disabled={loading}
-          >
-            {loading ? '登录中...' : '登录'}
-          </Button>
-
-          <View className="footer-links">
-            <Text
-              className="block footer-link"
-              onClick={() => Taro.navigateTo({ url: '/pages/register/index' })}
-            >
-              注册账号
-            </Text>
-            <Text className="block footer-divider">|</Text>
-            <Text
-              className="block footer-link"
-              onClick={() => Taro.navigateTo({ url: '/pages/change-password/index' })}
-            >
-              修改密码
+            <Text style={{ 
+              fontSize: '24px', 
+              color: '#71717a',
+              letterSpacing: '0.1em'
+            }}>
+              STAR KITCHEN
             </Text>
           </View>
         </View>
+        <Text style={{ 
+          fontSize: '28px', 
+          color: '#a1a1aa',
+          marginTop: '16px'
+        }}>
+          欢迎回来，创作者
+        </Text>
+      </View>
+
+      {/* 登录表单 */}
+      <View style={{ 
+        flex: 1,
+        padding: '48px 32px 0'
+      }}>
+        {/* 账号输入 */}
+        <View style={{ marginBottom: '24px' }}>
+          <Text style={{ 
+            fontSize: '24px', 
+            color: '#a1a1aa',
+            marginBottom: '12px',
+            display: 'block'
+          }}>
+            账号
+          </Text>
+          <View style={{
+            backgroundColor: '#141416',
+            borderRadius: '16px',
+            border: '1px solid #27272a',
+            padding: '24px'
+          }}>
+            <Input
+              style={{ 
+                fontSize: '28px', 
+                color: '#fafafa',
+                width: '100%'
+              }}
+              placeholder="请输入账号"
+              placeholderStyle="color: #52525b"
+              value={username}
+              onInput={(e) => setUsername(e.detail.value)}
+            />
+          </View>
+        </View>
+
+        {/* 密码输入 */}
+        <View style={{ marginBottom: '16px' }}>
+          <Text style={{ 
+            fontSize: '24px', 
+            color: '#a1a1aa',
+            marginBottom: '12px',
+            display: 'block'
+          }}>
+            密码
+          </Text>
+          <View style={{
+            backgroundColor: '#141416',
+            borderRadius: '16px',
+            border: '1px solid #27272a',
+            padding: '24px',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <Input
+              style={{ 
+                flex: 1,
+                fontSize: '28px', 
+                color: '#fafafa'
+              }}
+              password={!showPassword}
+              placeholder="请输入密码"
+              placeholderStyle="color: #52525b"
+              value={password}
+              onInput={(e) => setPassword(e.detail.value)}
+            />
+            <Text 
+              style={{ 
+                fontSize: '24px', 
+                color: '#f59e0b',
+                paddingLeft: '16px'
+              }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? '🙈' : '👁'}
+            </Text>
+          </View>
+        </View>
+
+        {/* 忘记密码 */}
+        <View style={{ 
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: '48px'
+        }}>
+          <Text 
+            style={{ 
+              fontSize: '24px', 
+              color: '#71717a'
+            }}
+            onClick={handleChangePassword}
+          >
+            忘记密码？
+          </Text>
+        </View>
+
+        {/* 登录按钮 */}
+        <View
+          style={{
+            background: loading 
+              ? '#27272a' 
+              : 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
+            borderRadius: '16px',
+            padding: '28px',
+            textAlign: 'center',
+            marginBottom: '32px'
+          }}
+          onClick={loading ? undefined : handleLogin}
+        >
+          <Text style={{ 
+            fontSize: '32px', 
+            fontWeight: '600',
+            color: loading ? '#52525b' : '#000'
+          }}>
+            {loading ? '登录中...' : '登录'}
+          </Text>
+        </View>
+
+        {/* 注册入口 */}
+        <View style={{ 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <Text style={{ 
+            fontSize: '24px', 
+            color: '#71717a'
+          }}>
+            还没有账号？
+          </Text>
+          <Text 
+            style={{ 
+              fontSize: '24px', 
+              color: '#f59e0b',
+              fontWeight: '500'
+            }}
+            onClick={handleRegister}
+          >
+            立即注册
+          </Text>
+        </View>
+      </View>
+
+      {/* 底部版权 */}
+      <View style={{ 
+        padding: '48px 32px',
+        textAlign: 'center'
+      }}>
+        <Text style={{ 
+          fontSize: '20px', 
+          color: '#3f3f46'
+        }}>
+          星厨房 · 让创作更高效
+        </Text>
       </View>
     </View>
   );

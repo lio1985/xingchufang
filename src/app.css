@@ -1,36 +1,64 @@
 @import "tailwindcss";
 
 /*
- * 星厨房主题 CSS 变量
- * 注意：避免使用 H5 专用的单位（如 rem、vh、vw）
- * 小程序使用 rpx，H5 使用 px，两者在 Taro 中会自动转换
+ * 星厨房主题 CSS 变量 - Warm Industrial 温暖工业风
+ * 深色主题 + 琥珀金点缀
  */
-:root, page {
-  /* 背景色 */
-  --background: #ffffff;
-  --background-secondary: #f5f5f5;
-  --card-background: #ffffff;
+:root, page, root-portal {
+  /* 深色背景 - 哑光金属感 */
+  --background: #0a0a0b;
+  --background-elevated: #141416;
+  --background-subtle: #1a1a1d;
   
-  /* 主题色 */
-  --primary: #1890ff;
-  --primary-hover: #40a9ff;
-  --primary-light: #e6f7ff;
+  /* 前景色 */
+  --foreground: #fafafa;
+  --foreground-muted: #a1a1aa;
+  --foreground-subtle: #71717a;
   
-  /* 文字色 */
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --text-tertiary: #999999;
-  --text-muted: #cccccc;
+  /* 边框 */
+  --border: #27272a;
+  --border-light: #3f3f46;
   
-  /* 边框色 */
-  --border: #e5e5e5;
-  --border-light: #f0f0f0;
+  /* 主色 - 琥珀金 */
+  --primary: #f59e0b;
+  --primary-hover: #fbbf24;
+  --primary-foreground: #000000;
+  --primary-subtle: rgba(245, 158, 11, 0.1);
+  
+  /* 强调色 */
+  --accent: #fb923c;
+  --accent-secondary: #fbbf24;
   
   /* 功能色 */
-  --success: #52c41a;
-  --warning: #faad14;
-  --error: #ff4d4f;
-  --info: #1890ff;
+  --success: #22c55e;
+  --success-subtle: rgba(34, 197, 94, 0.1);
+  --warning: #f59e0b;
+  --warning-subtle: rgba(245, 158, 11, 0.1);
+  --destructive: #ef4444;
+  --destructive-subtle: rgba(239, 68, 68, 0.1);
+  --info: #3b82f6;
+  --info-subtle: rgba(59, 130, 246, 0.1);
+  
+  /* 圆角 */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  
+  /* 间距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(245, 158, 11, 0.15);
 }
 
 /* 全局样式重置 */
@@ -39,10 +67,12 @@ html, body, page {
   margin: 0;
   padding: 0;
   background: var(--background);
-  color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 /* 小程序页面容器 */
@@ -50,11 +80,13 @@ page {
   min-height: 100%;
   background-color: var(--background);
   box-sizing: border-box;
+  color: var(--foreground);
 }
 
 /* H5 端 body 样式 */
 body {
   overflow-x: hidden;
+  background: var(--background);
 }
 
 /* 禁用 H5 滚动条 */
@@ -82,8 +114,10 @@ taro-text {
   box-sizing: border-box;
 }
 
+taro-img-core,
+taro-img,
 taro-image-core,
-taro-img {
+taro-image {
   display: inline-block;
   width: 100%;
   height: 100%;
@@ -116,41 +150,88 @@ taro-input-core input {
   background: transparent;
   border: none;
   outline: none;
-  color: var(--text-primary);
+  color: var(--foreground);
 }
 
-/* 卡片样式 */
+/* ============================================
+ * 通用组件样式 - Warm Industrial Design
+ * ============================================ */
+
+/* 页面容器 */
+.page-container {
+  min-height: 100vh;
+  background: var(--background);
+  padding: var(--spacing-md);
+}
+
+/* 页面头部 */
+.page-header {
+  padding: var(--spacing-lg) 0;
+  margin-bottom: var(--spacing-lg);
+}
+
+.page-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--foreground-muted);
+  margin-top: var(--spacing-xs);
+}
+
+/* 卡片组件 */
 .card {
-  background: var(--card-background);
-  border-radius: 16px;
-  padding: 24px;
-  margin: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: var(--background-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
-/* 列表项样式 */
+.card-hover {
+  transition: all 0.2s ease;
+}
+
+.card-hover:active {
+  transform: scale(0.98);
+  background: var(--background-subtle);
+}
+
+/* 列表项 */
 .list-item {
   display: flex;
   align-items: center;
-  padding: 24px 32px;
-  background: var(--card-background);
-  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-lg);
+  background: var(--background-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--spacing-md);
+  transition: all 0.2s ease;
+}
+
+.list-item:active {
+  transform: scale(0.98);
+  background: var(--background-subtle);
 }
 
 /* 图标容器 */
 .icon-wrapper {
-  width: 96px;
-  height: 96px;
+  width: 88px;
+  height: 88px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--primary-light);
-  border-radius: 24px;
-  margin-right: 24px;
+  border-radius: var(--radius-xl);
+  margin-right: var(--spacing-lg);
   flex-shrink: 0;
+  font-size: 44px;
 }
 
-/* 文字区域 */
+/* 文字内容 */
 .text-content {
   flex: 1;
   min-width: 0;
@@ -158,21 +239,129 @@ taro-input-core input {
 
 .text-title {
   font-size: 32px;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-  line-height: 1.4;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.3;
 }
 
 .text-desc {
   font-size: 24px;
-  color: var(--text-secondary);
+  color: var(--foreground-muted);
   line-height: 1.4;
 }
 
-/* 箭头图标 */
-.arrow-icon {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
+/* 箭头指示 */
+.arrow-indicator {
+  font-size: 32px;
+  color: var(--foreground-subtle);
+  font-weight: 300;
+}
+
+/* 主色调图标背景 */
+.icon-primary {
+  background: var(--primary-subtle);
+}
+
+.icon-success {
+  background: var(--success-subtle);
+}
+
+.icon-warning {
+  background: var(--warning-subtle);
+}
+
+.icon-destructive {
+  background: var(--destructive-subtle);
+}
+
+.icon-info {
+  background: var(--info-subtle);
+}
+
+/* 区块标题 */
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* 分割线 */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: var(--spacing-lg) 0;
+}
+
+/* 标签/徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 9999px;
+  background: var(--background-subtle);
+  color: var(--foreground-muted);
+}
+
+.badge-primary {
+  background: var(--primary-subtle);
+  color: var(--primary);
+}
+
+.badge-success {
+  background: var(--success-subtle);
+  color: var(--success);
+}
+
+/* 渐变文字 */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 玻璃态效果 */
+.glass {
+  background: rgba(20, 20, 22, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* 卡片发光边框效果 */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--primary) 0%, transparent 50%, var(--accent) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glow-border:hover::before,
+.glow-border:active::before {
+  opacity: 1;
 }
