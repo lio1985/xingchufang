@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@/app.module';
 import * as express from 'express';
-import { join } from 'path';
 import { HttpStatusInterceptor } from '@/interceptors/http-status.interceptor';
 
 function parsePort(): number {
@@ -49,14 +48,16 @@ async function bootstrap() {
   // 全局拦截器：统一将 POST 请求的 201 状态码改为 200
   app.useGlobalInterceptors(new HttpStatusInterceptor());
 
-  // 手动配置静态文件服务 - 仅在非 API 路径时提供
-  const staticPath = '/workspace/projects/dist-web';
-  app.use(express.static(staticPath));
-  
-  // 对于非 API 路径，返回 index.html（支持前端路由）
+  // 小程序项目：不需要 H5 静态文件服务
+  // API 请求会自动路由到对应的 Controller
+  // 非API请求返回 404
   app.use((req, res, next) => {
     if (!req.path.startsWith('/api/')) {
-      res.sendFile(join(staticPath, 'index.html'));
+      res.status(404).json({
+        statusCode: 404,
+        message: 'This is a WeChat Mini Program backend API server. API endpoints start with /api/',
+        error: 'Not Found'
+      });
     } else {
       next();
     }
