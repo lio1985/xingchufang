@@ -1,70 +1,114 @@
 @import "tailwindcss";
 
 /*
- * 星厨房主题 CSS 变量 - 清爽蓝色科技风
+ * 星厨房主题 CSS 变量
+ * 注意：避免使用 H5 专用的单位（如 rem、vh、vw）
+ * 小程序使用 rpx，H5 使用 px，两者在 Taro 中会自动转换
  */
 :root, page {
-  /* 背景色 - 清爽浅色 */
-  --background: #f8fafc;
-  --background-gradient: #f8fafc;
-  --background-secondary: #f1f5f9;
+  /* 背景色 */
+  --background: #ffffff;
+  --background-secondary: #f5f5f5;
   --card-background: #ffffff;
   
-  /* 主题色 - 蓝色科技风 */
-  --primary: #2563eb;
-  --primary-hover: #3b82f6;
-  --primary-light: #eff6ff;
+  /* 主题色 */
+  --primary: #1890ff;
+  --primary-hover: #40a9ff;
+  --primary-light: #e6f7ff;
   
   /* 文字色 */
-  --text-primary: #1e293b;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
-  --text-muted: #94a3b8;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-muted: #cccccc;
   
   /* 边框色 */
-  --border: #e2e8f0;
-  --border-light: #f1f5f9;
+  --border: #e5e5e5;
+  --border-light: #f0f0f0;
   
   /* 功能色 */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
+  --success: #52c41a;
+  --warning: #faad14;
+  --error: #ff4d4f;
+  --info: #1890ff;
 }
 
-/*
- * H5 端 rem 适配：与小程序 rpx 缩放一致
- * 375px 屏幕：1rem = 16px，小程序 32rpx = 16px
- */
-html {
-  font-size: 4vw !important;
-}
-
-/* 全局背景色 - 清爽浅色 */
+/* 全局样式重置 */
 html, body, page {
-  background: var(--background) !important;
-  color: var(--text-primary);
-}
-
-/* 小程序页面容器高度设置 */
-/* stylelint-disable-next-line selector-type-no-unknown */
-page {
   height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 小程序页面容器 */
+page {
+  min-height: 100%;
   background-color: var(--background);
+  box-sizing: border-box;
 }
 
-/* H5 端组件默认样式修复 */
-taro-view-core {
+/* H5 端 body 样式 */
+body {
+  overflow-x: hidden;
+}
+
+/* 禁用 H5 滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Taro 组件样式修复 - 确保跨端兼容 */
+taro-view-core,
+taro-view {
   display: block;
+  box-sizing: border-box;
 }
 
-taro-text-core {
+taro-text-core,
+taro-text {
   display: inline;
+  box-sizing: border-box;
 }
 
-taro-input-core {
+taro-image-core,
+taro-img {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 按钮样式重置 */
+button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  line-height: 1;
+}
+
+button::after {
+  border: none;
+}
+
+/* 修复输入框 */
+taro-input-core,
+taro-input {
   display: block;
   width: 100%;
+  box-sizing: border-box;
 }
 
 taro-input-core input {
@@ -75,51 +119,60 @@ taro-input-core input {
   color: var(--text-primary);
 }
 
-/* 全局按钮样式重置 */
-taro-button-core,
-button {
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: inherit;
+/* 卡片样式 */
+.card {
+  background: var(--card-background);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 列表项样式 */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 24px 32px;
+  background: var(--card-background);
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* 图标容器 */
+.icon-wrapper {
+  width: 96px;
+  height: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--primary-light);
+  border-radius: 24px;
+  margin-right: 24px;
+  flex-shrink: 0;
 }
 
-taro-button-core::after,
-button::after {
-  border: none;
+/* 文字区域 */
+.text-content {
+  flex: 1;
+  min-width: 0;
 }
 
-/* 禁用 body 滚动，防止双滚动条 */
-body {
-  overflow: hidden;
-  height: 100vh;
-  background-color: var(--background);
+.text-title {
+  font-size: 32px;
+  font-weight: 500;
   color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
-/* 隐藏滚动条但保留滚动功能 */
-::-webkit-scrollbar {
-  display: none;
+.text-desc {
+  font-size: 24px;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
-/* Firefox */
-* {
-  scrollbar-width: none;
-}
-
-/* 确保所有 View 有默认背景 */
-view, .taro-view {
-  background-color: transparent;
-}
-
-/* 输入框 placeholder 颜色 */
-::placeholder {
-  color: var(--text-tertiary);
-}
-
-/* 修复文本颜色继承 */
-text, .taro-text {
-  color: inherit;
+/* 箭头图标 */
+.arrow-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
 }
