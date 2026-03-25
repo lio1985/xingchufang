@@ -420,7 +420,7 @@ export default function AdminQuickNoteManagePage() {
                       <View style={{ display: 'flex', gap: '12px', marginLeft: '12px' }}>
                         {note.isPinned && <Pin size={20} color="#f59e0b" />}
                         <View onClick={() => toggleStar(note.id)}>
-                          <Star size={20} color={note.isStarred ? '#f59e0b' : '#52525b'} fill={note.isStarred ? '#f59e0b' : 'none'} />
+                          <Star size={20} color={note.isStarred ? '#f59e0b' : '#52525b'} />
                         </View>
                         <View onClick={() => togglePin(note.id)}>
                           <Pin size={20} color={note.isPinned ? '#f59e0b' : '#52525b'} />
@@ -499,7 +499,7 @@ export default function AdminQuickNoteManagePage() {
             <View className="modal-header">
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
                 {selectedNote.isPinned && <Pin size={24} color="#f59e0b" />}
-                {selectedNote.isStarred && <Star size={24} color="#f59e0b" fill="#f59e0b" />}
+                {selectedNote.isStarred && <Star size={24} color="#f59e0b" />}
                 <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {selectedNote.title}
                 </Text>
@@ -510,7 +510,7 @@ export default function AdminQuickNoteManagePage() {
                   setSelectedNote({ ...selectedNote, isStarred: !selectedNote.isStarred });
                 }}
                 >
-                  <Star size={24} color={selectedNote.isStarred ? '#f59e0b' : '#71717a'} fill={selectedNote.isStarred ? '#f59e0b' : 'none'} />
+                  <Star size={24} color={selectedNote.isStarred ? '#f59e0b' : '#71717a'} />
                 </View>
                 <View onClick={() => {
                   togglePin(selectedNote.id);

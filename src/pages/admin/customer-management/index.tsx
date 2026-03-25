@@ -2,6 +2,26 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import {
+  ArrowLeft,
+  User,
+  DollarSign,
+  Target,
+  TrendingUp,
+  ShieldAlert,
+  ShieldX,
+  Trophy,
+  FileText,
+  Search,
+  Download,
+  Phone,
+  MapPin,
+  Calendar,
+  ChartBar,
+  Users,
+  Award,
+  Activity
+} from 'lucide-react-taro';
 
 interface Customer {
   id: string;
@@ -53,7 +73,6 @@ interface GlobalStatistics {
   };
 }
 
-// 流失预警相关类型
 interface ChurnRiskAssessment {
   customerId: string;
   customerName: string;
@@ -131,7 +150,6 @@ export default function AdminCustomerManagement() {
       console.log('[AdminCustomer] Sales stats:', res.data);
       if (res.data.code === 200) {
         setSalesStats(res.data.data || []);
-        // 提取销售列表用于筛选
         const list = res.data.data?.map((s: SalesStats) => ({
           user_id: s.user_id,
           name: s.sales_name
@@ -283,7 +301,6 @@ export default function AdminCustomerManagement() {
     setSalesFilter(filters.salesId || '');
     setActiveTab('customers');
     
-    // 延迟加载数据，确保 Tab 切换完成
     setTimeout(() => {
       loadCustomers(true);
     }, 100);
@@ -297,12 +314,12 @@ export default function AdminCustomerManagement() {
     return (
       <View className="grid grid-cols-2 gap-3 mb-4">
         <View 
-          className="bg-gradient-to-br from-blue-600/30 to-blue-800/30 rounded-xl p-4 border border-sky-500/30 active:scale-95"
+          className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 rounded-xl p-4 border border-blue-500/30 active:scale-95"
           onClick={() => drillDownToCustomers({})}
         >
           <View className="flex items-center gap-2 mb-2">
-            <Text>👤</Text>
-            <Text className="text-slate-300 text-xs">总客户数</Text>
+            <User size={14} color="#3b82f6" />
+            <Text className="text-zinc-400 text-xs">总客户数</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{overview.totalCustomers}</Text>
           <Text className="text-blue-400 text-xs mt-1">
@@ -311,12 +328,12 @@ export default function AdminCustomerManagement() {
         </View>
 
         <View 
-          className="bg-gradient-to-br from-emerald-600/30 to-emerald-800/30 rounded-xl p-4 border border-emerald-500/30 active:scale-95"
+          className="bg-gradient-to-br from-emerald-600/20 to-emerald-800/20 rounded-xl p-4 border border-emerald-500/30 active:scale-95"
           onClick={() => drillDownToCustomers({})}
         >
           <View className="flex items-center gap-2 mb-2">
-            <Text>💰</Text>
-            <Text className="text-slate-300 text-xs">预估总额</Text>
+            <DollarSign size={14} color="#10b981" />
+            <Text className="text-zinc-400 text-xs">预估总额</Text>
           </View>
           <Text className="text-white text-2xl font-bold">
             ¥{(overview.totalEstimatedAmount / 10000).toFixed(1)}万
@@ -327,12 +344,12 @@ export default function AdminCustomerManagement() {
         </View>
 
         <View 
-          className="bg-gradient-to-br from-purple-600/30 to-purple-800/30 rounded-xl p-4 border border-purple-500/30 active:scale-95"
+          className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 rounded-xl p-4 border border-purple-500/30 active:scale-95"
           onClick={() => drillDownToCustomers({ orderStatus: 'completed' })}
         >
           <View className="flex items-center gap-2 mb-2">
-            <Text>🎯</Text>
-            <Text className="text-slate-300 text-xs">成交客户</Text>
+            <Target size={14} color="#8b5cf6" />
+            <Text className="text-zinc-400 text-xs">成交客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{overview.completedOrders}</Text>
           <Text className="text-purple-400 text-xs mt-1">
@@ -343,11 +360,11 @@ export default function AdminCustomerManagement() {
         </View>
 
         <View 
-          className="bg-gradient-to-br from-amber-600/30 to-amber-800/30 rounded-xl p-4 border border-amber-500/30"
+          className="bg-gradient-to-br from-amber-600/20 to-amber-800/20 rounded-xl p-4 border border-amber-500/30"
         >
           <View className="flex items-center gap-2 mb-2">
-            <Text>📈</Text>
-            <Text className="text-slate-300 text-xs">增长率</Text>
+            <ChartBar size={14} color="#f59e0b" />
+            <Text className="text-zinc-400 text-xs">增长率</Text>
           </View>
           <Text className={`text-2xl font-bold ${globalStats.recentGrowth.growthRate >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             {globalStats.recentGrowth.growthRate >= 0 ? '+' : ''}{globalStats.recentGrowth.growthRate.toFixed(1)}%
@@ -366,10 +383,10 @@ export default function AdminCustomerManagement() {
 
     return (
       <View className="grid grid-cols-2 gap-3 mb-4">
-        <View className="bg-gradient-to-br from-red-600/30 to-red-800/30 rounded-xl p-4 border border-red-500/30">
+        <View className="bg-gradient-to-br from-red-600/20 to-red-800/20 rounded-xl p-4 border border-red-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <Text>🛡</Text>
-            <Text className="text-slate-300 text-xs">高危客户</Text>
+            <ShieldX size={14} color="#ef4444" />
+            <Text className="text-zinc-400 text-xs">高危客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{churnStats.red}</Text>
           <Text className="text-red-400 text-xs mt-1">
@@ -377,21 +394,21 @@ export default function AdminCustomerManagement() {
           </Text>
         </View>
 
-        <View className="bg-gradient-to-br from-amber-600/30 to-amber-800/30 rounded-xl p-4 border border-amber-500/30">
+        <View className="bg-gradient-to-br from-orange-600/20 to-orange-800/20 rounded-xl p-4 border border-orange-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <Text>🛡</Text>
-            <Text className="text-slate-300 text-xs">中危客户</Text>
+            <ShieldAlert size={14} color="#f97316" />
+            <Text className="text-zinc-400 text-xs">中危客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{churnStats.orange}</Text>
-          <Text className="text-amber-400 text-xs mt-1">
+          <Text className="text-orange-400 text-xs mt-1">
             超过14天未跟进
           </Text>
         </View>
 
-        <View className="bg-gradient-to-br from-yellow-600/30 to-yellow-800/30 rounded-xl p-4 border border-yellow-500/30">
+        <View className="bg-gradient-to-br from-yellow-600/20 to-yellow-800/20 rounded-xl p-4 border border-yellow-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <Text>🛡</Text>
-            <Text className="text-slate-300 text-xs">低危客户</Text>
+            <ShieldAlert size={14} color="#eab308" />
+            <Text className="text-zinc-400 text-xs">低危客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{churnStats.yellow}</Text>
           <Text className="text-yellow-400 text-xs mt-1">
@@ -399,10 +416,10 @@ export default function AdminCustomerManagement() {
           </Text>
         </View>
 
-        <View className="bg-gradient-to-br from-purple-600/30 to-purple-800/30 rounded-xl p-4 border border-purple-500/30">
+        <View className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 rounded-xl p-4 border border-purple-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <Text>💰</Text>
-            <Text className="text-slate-300 text-xs">风险金额</Text>
+            <DollarSign size={14} color="#8b5cf6" />
+            <Text className="text-zinc-400 text-xs">风险金额</Text>
           </View>
           <Text className="text-white text-2xl font-bold">
             ¥{(churnStats.totalAtRisk / 10000).toFixed(1)}万
@@ -418,20 +435,20 @@ export default function AdminCustomerManagement() {
   // 渲染流失预警列表
   const renderChurnRiskList = () => {
     const riskLevelMap = {
-      red: { label: '高危', color: 'text-red-400', bg: 'bg-red-500/20', border: 'border-red-500/30', icon: ShieldX },
-      orange: { label: '中危', color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30', icon: ShieldAlert },
-      yellow: { label: '低危', color: 'text-yellow-400', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', icon: ShieldAlert }
+      red: { label: '高危', color: '#ef4444', bg: 'bg-red-500/20', border: 'border-red-500/30' },
+      orange: { label: '中危', color: '#f97316', bg: 'bg-orange-500/20', border: 'border-orange-500/30' },
+      yellow: { label: '低危', color: '#eab308', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30' }
     };
 
     return (
       <View className="space-y-3">
         {/* 筛选栏 */}
-        <View className="bg-slate-800/50 rounded-xl p-3 border border-slate-700">
+        <View className="bg-zinc-800/40 rounded-xl p-3 border border-zinc-700/50">
           <View className="flex gap-2">
             {[
               { key: 'all', label: '全部预警', color: 'blue' },
               { key: 'red', label: '高危', color: 'red' },
-              { key: 'orange', label: '中危', color: 'amber' },
+              { key: 'orange', label: '中危', color: 'orange' },
               { key: 'yellow', label: '低危', color: 'yellow' }
             ].map((level) => (
               <View
@@ -440,11 +457,11 @@ export default function AdminCustomerManagement() {
                 className={`flex-1 flex items-center justify-center py-2 rounded-lg border transition-all ${
                   churnRiskLevel === level.key
                     ? `bg-${level.color}-500/20 border-${level.color}-500/50`
-                    : 'bg-slate-800 border-slate-700'
+                    : 'bg-zinc-700/50 border-zinc-600/50'
                 }`}
               >
                 <Text className={`text-xs font-medium ${
-                  churnRiskLevel === level.key ? `text-${level.color}-400` : 'text-slate-400'
+                  churnRiskLevel === level.key ? `text-${level.color}-400` : 'text-zinc-500'
                 }`}
                 >
                   {level.label}
@@ -457,32 +474,33 @@ export default function AdminCustomerManagement() {
         {/* 预警列表 */}
         {churnRisks.length === 0 ? (
           <View className="py-12 text-center">
-            <Text>📊</Text>
-            <Text className="text-slate-400 text-sm">暂无流失预警客户</Text>
-            <Text className="text-slate-400 text-xs mt-2">客户跟进情况良好</Text>
+            <View className="w-16 h-16 bg-zinc-800/60 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-700/50">
+              <ChartBar size={32} color="#71717a" />
+            </View>
+            <Text className="text-zinc-500 text-sm">暂无流失预警客户</Text>
+            <Text className="text-zinc-600 text-xs mt-2">客户跟进情况良好</Text>
           </View>
         ) : (
           churnRisks.map((risk) => {
             const levelInfo = riskLevelMap[risk.riskLevel];
-            const IconComponent = levelInfo.icon;
 
             return (
               <View
                 key={risk.customerId}
                 onClick={() => Taro.navigateTo({ url: `/pages/customer/detail?id=${risk.customerId}` })}
-                className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 active:scale-[0.98] transition-transform"
+                className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 active:scale-[0.98] transition-transform"
               >
                 {/* 头部：客户名称和风险等级 */}
                 <View className="flex items-start justify-between mb-3">
                   <View className="flex-1">
                     <Text className="text-white text-base font-semibold">{risk.customerName}</Text>
-                    <Text className="text-slate-400 text-xs mt-1">
+                    <Text className="text-zinc-500 text-xs mt-1">
                       销售：{risk.salesName || '未知'}
                     </Text>
                   </View>
                   <View className={`flex items-center gap-1 px-2 py-1 rounded-full ${levelInfo.bg} ${levelInfo.border} border`}>
-                    <IconComponent size={12} className={levelInfo.color} />
-                    <Text className={`text-xs font-medium ${levelInfo.color}`}>
+                    <ShieldAlert size={12} color={levelInfo.color} />
+                    <Text className="text-xs font-medium" style={{ color: levelInfo.color }}>
                       {levelInfo.label}
                     </Text>
                   </View>
@@ -491,14 +509,14 @@ export default function AdminCustomerManagement() {
                 {/* 风险信息 */}
                 <View className="flex items-center gap-4 mb-3">
                   <View className="flex items-center gap-1">
-                    <Text>📈</Text>
-                    <Text className="text-slate-400 text-xs">
+                    <TrendingUp size={12} color="#71717a" />
+                    <Text className="text-zinc-500 text-xs">
                       {risk.daysSinceLastFollowUp}天未跟进
                     </Text>
                   </View>
                   {risk.estimatedAmount && (
                     <View className="flex items-center gap-1">
-                      <Text>💰</Text>
+                      <DollarSign size={12} color="#10b981" />
                       <Text className="text-emerald-400 text-xs">
                         ¥{(risk.estimatedAmount / 10000).toFixed(1)}万
                       </Text>
@@ -509,7 +527,7 @@ export default function AdminCustomerManagement() {
                 {/* 风险因素 */}
                 {risk.riskFactors.length > 0 && (
                   <View className="mb-3">
-                    <Text className="text-slate-400 text-xs mb-2">风险信号：</Text>
+                    <Text className="text-zinc-500 text-xs mb-2">风险信号：</Text>
                     <View className="flex flex-wrap gap-2">
                       {risk.riskFactors.map((factor, idx) => (
                         <View key={idx} className="px-2 py-1 bg-red-500/10 border border-red-500/20 rounded">
@@ -522,8 +540,8 @@ export default function AdminCustomerManagement() {
 
                 {/* 建议措施 */}
                 {risk.suggestedActions.length > 0 && (
-                  <View className="pt-3 border-t border-slate-700">
-                    <Text className="text-slate-400 text-xs mb-2">建议措施：</Text>
+                  <View className="pt-3 border-t border-zinc-700/50">
+                    <Text className="text-zinc-500 text-xs mb-2">建议措施：</Text>
                     {risk.suggestedActions.slice(0, 2).map((action, idx) => (
                       <View key={idx} className="flex items-start gap-2 mb-1">
                         <View className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5" />
@@ -547,9 +565,9 @@ export default function AdminCustomerManagement() {
     const total = overview.totalCustomers || 1;
 
     return (
-      <View className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 mb-4">
+      <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
         <View className="flex items-center gap-2 mb-4">
-          <Text>📄</Text>
+          <FileText size={16} color="#f59e0b" />
           <Text className="text-white font-semibold">客户状态分布</Text>
         </View>
 
@@ -562,7 +580,7 @@ export default function AdminCustomerManagement() {
               <Text className="text-emerald-400 text-sm">正常客户</Text>
               <Text className="text-white text-sm font-semibold">{statusDistribution.normal}</Text>
             </View>
-            <View className="h-2 bg-slate-800 rounded-full overflow-hidden">
+            <View className="h-2 bg-zinc-700 rounded-full overflow-hidden">
               <View
                 className="h-full bg-emerald-500 rounded-full"
                 style={{ width: `${(statusDistribution.normal / total) * 100}%` }}
@@ -578,7 +596,7 @@ export default function AdminCustomerManagement() {
               <Text className="text-amber-400 text-sm">有风险</Text>
               <Text className="text-white text-sm font-semibold">{statusDistribution.atRisk}</Text>
             </View>
-            <View className="h-2 bg-slate-800 rounded-full overflow-hidden">
+            <View className="h-2 bg-zinc-700 rounded-full overflow-hidden">
               <View
                 className="h-full bg-amber-500 rounded-full"
                 style={{ width: `${(statusDistribution.atRisk / total) * 100}%` }}
@@ -594,7 +612,7 @@ export default function AdminCustomerManagement() {
               <Text className="text-red-400 text-sm">已流失</Text>
               <Text className="text-white text-sm font-semibold">{statusDistribution.lost}</Text>
             </View>
-            <View className="h-2 bg-slate-800 rounded-full overflow-hidden">
+            <View className="h-2 bg-zinc-700 rounded-full overflow-hidden">
               <View
                 className="h-full bg-red-500 rounded-full"
                 style={{ width: `${(statusDistribution.lost / total) * 100}%` }}
@@ -613,13 +631,13 @@ export default function AdminCustomerManagement() {
     const sorted = [...salesStats].sort((a, b) => b.totalAmount - a.totalAmount).slice(0, 5);
 
     return (
-      <View className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 mb-4">
+      <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-2">
-            <Text>🏆</Text>
+            <Trophy size={16} color="#f59e0b" />
             <Text className="text-white font-semibold">销售业绩排行 TOP5</Text>
           </View>
-          <Text className="text-slate-400 text-xs" onClick={() => setActiveTab('sales')}>
+          <Text className="text-amber-500 text-xs" onClick={() => setActiveTab('sales')}>
             查看全部
           </Text>
         </View>
@@ -631,18 +649,20 @@ export default function AdminCustomerManagement() {
               className="flex items-center gap-3 active:opacity-70"
               onClick={() => drillDownToCustomers({ salesId: sales.user_id })}
             >
-              <View className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                index === 0 ? 'bg-amber-500 text-white' :
-                index === 1 ? 'bg-slate-400 text-white' :
-                index === 2 ? 'bg-amber-700 text-white' :
-                'bg-slate-800 text-slate-400'
+              <View className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                index === 0 ? 'bg-amber-500' :
+                index === 1 ? 'bg-zinc-400' :
+                index === 2 ? 'bg-orange-600' :
+                'bg-zinc-700'
               }`}
               >
-                {index + 1}
+                <Text className={`text-xs font-bold ${index < 3 ? 'text-white' : 'text-zinc-500'}`}>
+                  {index + 1}
+                </Text>
               </View>
               <View className="flex-1">
                 <Text className="text-white text-sm font-medium">{sales.sales_name}</Text>
-                <Text className="text-slate-400 text-xs">
+                <Text className="text-zinc-500 text-xs">
                   {sales.total}客户 · {sales.completed}成交
                 </Text>
               </View>
@@ -661,12 +681,13 @@ export default function AdminCustomerManagement() {
     return (
       <View className="space-y-3">
         {/* 筛选栏 */}
-        <View className="bg-slate-800/50 rounded-xl p-3 border border-slate-700">
+        <View className="bg-zinc-800/40 rounded-xl p-3 border border-zinc-700/50">
           <View className="flex items-center gap-2 mb-3">
-            <Text>🔍</Text>
+            <Search size={16} color="#71717a" />
             <Input
               className="flex-1 text-white text-sm bg-transparent"
               placeholder="搜索客户名称、电话..."
+              placeholderClass="text-zinc-500"
               value={keyword}
               onInput={(e) => setKeyword(e.detail.value)}
               onConfirm={() => loadCustomers(true)}
@@ -683,15 +704,14 @@ export default function AdminCustomerManagement() {
               }}
               className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border ${
                 statusFilter
-                  ? 'bg-slate-9000/20 border-blue-500/50'
-                  : 'bg-slate-800 border-slate-700'
+                  ? 'bg-blue-500/20 border-blue-500/50'
+                  : 'bg-zinc-700/50 border-zinc-600/50'
               }`}
             >
-              <Text>📈</Text>
-              <Text className={`text-xs ${statusFilter ? 'text-blue-400' : 'text-slate-400'}`}>
+              <TrendingUp size={12} color={statusFilter ? '#3b82f6' : '#71717a'} />
+              <Text className={`text-xs ${statusFilter ? 'text-blue-400' : 'text-zinc-500'}`}>
                 {statusFilter ? statusMap[statusFilter as keyof typeof statusMap]?.label : '全部状态'}
               </Text>
-              <Text>▼</Text>
             </View>
 
             {/* 销售筛选 */}
@@ -705,25 +725,24 @@ export default function AdminCustomerManagement() {
                 className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border ${
                   salesFilter
                     ? 'bg-purple-500/20 border-purple-500/50'
-                    : 'bg-slate-800 border-slate-700'
+                    : 'bg-zinc-700/50 border-zinc-600/50'
                 }`}
               >
-                <Text>👤</Text>
-                <Text className={`text-xs ${salesFilter ? 'text-purple-400' : 'text-slate-400'}`}>
+                <User size={12} color={salesFilter ? '#8b5cf6' : '#71717a'} />
+                <Text className={`text-xs ${salesFilter ? 'text-purple-400' : 'text-zinc-500'}`}>
                   {salesFilter
                     ? salesList.find(s => s.user_id === salesFilter)?.name || '销售'
                     : '全部销售'}
                 </Text>
-                <Text>▼</Text>
               </View>
             )}
 
             {/* 导出按钮 */}
             <View
               onClick={handleExport}
-              className="flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/50"
+              className="flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30"
             >
-              <Text>⬇</Text>
+              <Download size={12} color="#10b981" />
               <Text className="text-xs text-emerald-400">导出</Text>
             </View>
           </View>
@@ -734,12 +753,12 @@ export default function AdminCustomerManagement() {
           <View
             key={customer.id}
             onClick={() => Taro.navigateTo({ url: `/pages/customer/detail?id=${customer.id}` })}
-            className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 active:scale-[0.98] transition-transform"
+            className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 active:scale-[0.98] transition-transform"
           >
             <View className="flex items-start justify-between mb-3">
               <View>
                 <Text className="text-white text-base font-semibold">{customer.name}</Text>
-                <Text className="text-slate-400 text-xs mt-1">
+                <Text className="text-zinc-500 text-xs mt-1">
                   销售: {customer.sales_name || '未知'}
                 </Text>
               </View>
@@ -753,30 +772,30 @@ export default function AdminCustomerManagement() {
             <View className="flex items-center gap-4 mb-3">
               {customer.phone && (
                 <View className="flex items-center gap-1">
-                  <Text>📞</Text>
-                  <Text className="text-slate-400 text-xs">{customer.phone}</Text>
+                  <Phone size={12} color="#71717a" />
+                  <Text className="text-zinc-500 text-xs">{customer.phone}</Text>
                 </View>
               )}
               {customer.city && (
                 <View className="flex items-center gap-1">
-                  <Text>📍</Text>
-                  <Text className="text-slate-400 text-xs">{customer.city}</Text>
+                  <MapPin size={12} color="#71717a" />
+                  <Text className="text-zinc-500 text-xs">{customer.city}</Text>
                 </View>
               )}
               <View className="flex items-center gap-1">
-                <Text>📅</Text>
-                <Text className="text-slate-400 text-xs">
+                <Calendar size={12} color="#71717a" />
+                <Text className="text-zinc-500 text-xs">
                   {new Date(customer.created_at).toLocaleDateString()}
                 </Text>
               </View>
             </View>
 
-            <View className="flex items-center justify-between pt-3 border-t border-slate-700">
+            <View className="flex items-center justify-between pt-3 border-t border-zinc-700/50">
               <View>
                 <Text className={`text-sm ${orderStatusMap[customer.order_status].color}`}>
                   {orderStatusMap[customer.order_status].label}
                 </Text>
-                <Text className="text-slate-400 text-xs">{customer.customer_type}</Text>
+                <Text className="text-zinc-500 text-xs">{customer.customer_type}</Text>
               </View>
               {customer.estimated_amount && (
                 <Text className="text-emerald-400 text-lg font-bold">
@@ -793,7 +812,7 @@ export default function AdminCustomerManagement() {
             onClick={() => loadCustomers()}
             className="py-4 text-center"
           >
-            <Text className="text-slate-400 text-sm">
+            <Text className="text-zinc-500 text-sm">
               {loading ? '加载中...' : '点击加载更多'}
             </Text>
           </View>
@@ -811,20 +830,22 @@ export default function AdminCustomerManagement() {
         {sorted.map((sales, index) => (
           <View
             key={sales.user_id}
-            className="bg-slate-800/50 rounded-xl p-4 border border-slate-700"
+            className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50"
           >
             <View 
               className="flex items-center gap-3 mb-3 active:opacity-70"
               onClick={() => drillDownToCustomers({ salesId: sales.user_id })}
             >
-              <View className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                index === 0 ? 'bg-amber-500 text-white' :
-                index === 1 ? 'bg-slate-400 text-white' :
-                index === 2 ? 'bg-amber-700 text-white' :
-                'bg-slate-800 text-slate-400'
+              <View className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                index === 0 ? 'bg-amber-500' :
+                index === 1 ? 'bg-zinc-400' :
+                index === 2 ? 'bg-orange-600' :
+                'bg-zinc-700'
               }`}
               >
-                {index + 1}
+                <Text className={`text-sm font-bold ${index < 3 ? 'text-white' : 'text-zinc-500'}`}>
+                  {index + 1}
+                </Text>
               </View>
               <View className="flex-1">
                 <Text className="text-white text-base font-semibold">{sales.sales_name}</Text>
@@ -834,34 +855,34 @@ export default function AdminCustomerManagement() {
               </Text>
             </View>
 
-            <View className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-700">
+            <View className="grid grid-cols-4 gap-2 pt-3 border-t border-zinc-700/50">
               <View 
                 className="text-center active:opacity-70"
                 onClick={() => drillDownToCustomers({ salesId: sales.user_id })}
               >
                 <Text className="text-white text-lg font-semibold">{sales.total}</Text>
-                <Text className="text-slate-400 text-xs">总客户</Text>
+                <Text className="text-zinc-500 text-xs">总客户</Text>
               </View>
               <View 
                 className="text-center active:opacity-70"
                 onClick={(e) => { e.stopPropagation(); drillDownToCustomers({ salesId: sales.user_id, status: 'normal' }); }}
               >
                 <Text className="text-emerald-400 text-lg font-semibold">{sales.normal}</Text>
-                <Text className="text-slate-400 text-xs">正常</Text>
+                <Text className="text-zinc-500 text-xs">正常</Text>
               </View>
               <View 
                 className="text-center active:opacity-70"
                 onClick={(e) => { e.stopPropagation(); drillDownToCustomers({ salesId: sales.user_id, status: 'at_risk' }); }}
               >
                 <Text className="text-amber-400 text-lg font-semibold">{sales.atRisk}</Text>
-                <Text className="text-slate-400 text-xs">有风险</Text>
+                <Text className="text-zinc-500 text-xs">有风险</Text>
               </View>
               <View 
                 className="text-center active:opacity-70"
                 onClick={(e) => { e.stopPropagation(); drillDownToCustomers({ salesId: sales.user_id, orderStatus: 'completed' }); }}
               >
                 <Text className="text-blue-400 text-lg font-semibold">{sales.completed}</Text>
-                <Text className="text-slate-400 text-xs">已成交</Text>
+                <Text className="text-zinc-500 text-xs">已成交</Text>
               </View>
             </View>
           </View>
@@ -871,18 +892,23 @@ export default function AdminCustomerManagement() {
   };
 
   return (
-    <View className="min-h-screen bg-gradient-to-b from-sky-50 via-slate-800 to-slate-900">
+    <View className="min-h-screen bg-[#0a0a0b]">
       {/* Header */}
-      <View className="pt-12 pb-4 px-4 bg-slate-900/95 sticky top-0 z-20 border-b border-slate-700">
+      <View className="pt-12 pb-4 px-4 bg-zinc-900/95 sticky top-0 z-20 border-b border-zinc-800">
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-3">
             <View
               onClick={() => Taro.navigateBack()}
-              className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center active:scale-95"
+              className="w-8 h-8 rounded-full bg-zinc-800/60 flex items-center justify-center border border-zinc-700/50 active:scale-95"
             >
-              <Text>{">"}</Text>
+              <ArrowLeft size={18} color="#f59e0b" />
             </View>
-            <Text className="text-white text-xl font-bold">客户管理看板</Text>
+            <View className="flex items-center gap-2">
+              <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
+                <Users size={16} color="#f59e0b" />
+              </View>
+              <Text className="text-white text-xl font-bold">客户管理看板</Text>
+            </View>
           </View>
           <View className="flex items-center gap-2">
             <View className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -903,12 +929,12 @@ export default function AdminCustomerManagement() {
               onClick={() => setActiveTab(tab.key as any)}
               className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl transition-all ${
                 activeTab === tab.key
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-slate-800 text-slate-400'
+                  ? 'bg-amber-500'
+                  : 'bg-zinc-800/60 border border-zinc-700/50'
               }`}
             >
-              <tab.icon size={14} />
-              <Text className={`text-sm font-medium ${activeTab === tab.key ? 'text-white' : 'text-slate-400'}`}>
+              <tab.icon size={14} color={activeTab === tab.key ? '#000' : '#71717a'} />
+              <Text className={`text-sm font-medium ${activeTab === tab.key ? 'text-black' : 'text-zinc-500'}`}>
                 {tab.label}
               </Text>
             </View>

@@ -2,6 +2,15 @@ import { useState, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Network } from '@/network'
+import {
+  ArrowLeft,
+  MessageSquare,
+  FileText,
+  FolderOpen,
+  Check,
+  ClipboardList,
+  Database
+} from 'lucide-react-taro';
 
 export default function UserDataPage() {
   const router = useRouter()
@@ -15,42 +24,48 @@ export default function UserDataPage() {
       case 'conversations':
         return {
           title: '对话记录',
-          icon: <Text>💬</Text>,
+          icon: MessageSquare,
+          iconColor: '#3b82f6',
           api: `/api/conversation/list?userId=${userId}`,
           emptyText: '暂无对话记录'
         }
       case 'lexicons':
         return {
           title: '语料库',
-          icon: <Text>📄</Text>,
+          icon: FileText,
+          iconColor: '#10b981',
           api: `/api/lexicon?userId=${userId}`,
           emptyText: '暂无语料库'
         }
       case 'files':
         return {
           title: '文件上传',
-          icon: <Text>📂</Text>,
+          icon: FolderOpen,
+          iconColor: '#f59e0b',
           api: `/api/multimedia/list?userId=${userId}`,
           emptyText: '暂无文件'
         }
       case 'tasks':
         return {
           title: '任务计划',
-          icon: <Text>✓</Text>,
+          icon: Check,
+          iconColor: '#8b5cf6',
           api: `/api/work-plans?userId=${userId}`,
           emptyText: '暂无任务'
         }
       case 'audit':
         return {
           title: '操作日志',
-          icon: <Text>📋</Text>,
+          icon: ClipboardList,
+          iconColor: '#06b6d4',
           api: `/api/user/operation-logs?userId=${userId}`,
           emptyText: '暂无操作日志'
         }
       default:
         return {
           title: '数据',
-          icon: null,
+          icon: Database,
+          iconColor: '#71717a',
           api: '',
           emptyText: '暂无数据'
         }
@@ -100,83 +115,83 @@ export default function UserDataPage() {
   }, [type, userId])
 
   const renderConversationItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.title || '未命名对话'}</Text>
-        <Text className="text-slate-400 text-xs">
+        <Text className="text-zinc-500 text-xs">
           {new Date(item.created_at || item.createdAt).toLocaleDateString('zh-CN')}
         </Text>
       </View>
-      <Text className="text-slate-400 text-sm block mb-2">
+      <Text className="text-zinc-500 text-sm block mb-2">
         模型: {item.model || '未知'}
       </Text>
-      <Text className="text-slate-400 text-xs block">
+      <Text className="text-zinc-500 text-xs block">
         消息数: {item.message_count || item.messageCount || 0}
       </Text>
     </View>
   )
 
   const renderLexiconItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.title || '未命名语料'}</Text>
-        <Text className="text-slate-400 text-xs">
+        <Text className="text-zinc-500 text-xs">
           {new Date(item.created_at || item.createdAt).toLocaleDateString('zh-CN')}
         </Text>
       </View>
       <View className="mb-2">
         <Text className="text-blue-400 text-xs block mb-1">{item.category || '未分类'}</Text>
       </View>
-      <Text className="text-slate-400 text-sm block line-clamp-2">
+      <Text className="text-zinc-500 text-sm block line-clamp-2">
         {item.content || '无内容'}
       </Text>
     </View>
   )
 
   const renderFileItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
       <View className="flex items-start gap-3 mb-2">
-        <Text>📂</Text>
+        <FolderOpen size={18} color="#f59e0b" />
         <View className="flex-1 min-w-0">
           <Text className="text-white font-semibold block truncate">{item.name || item.title || '未命名文件'}</Text>
-          <Text className="text-slate-400 text-xs block">
+          <Text className="text-zinc-500 text-xs block">
             {item.file_type || item.type || '未知类型'}
           </Text>
         </View>
       </View>
-      <Text className="text-slate-400 text-xs block">
+      <Text className="text-zinc-500 text-xs block">
         大小: {item.file_size ? (item.file_size / 1024).toFixed(2) + ' KB' : '未知'}
       </Text>
-      <Text className="text-slate-400 text-xs block">
+      <Text className="text-zinc-500 text-xs block">
         上传时间: {new Date(item.created_at || item.createdAt).toLocaleString('zh-CN')}
       </Text>
     </View>
   )
 
   const renderTaskItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.title || '未命名任务'}</Text>
-        <Text className="text-slate-400 text-xs">
+        <Text className="text-zinc-500 text-xs">
           {item.status || '未知状态'}
         </Text>
       </View>
       {item.description && (
-        <Text className="text-slate-400 text-sm block mb-2 line-clamp-2">
+        <Text className="text-zinc-500 text-sm block mb-2 line-clamp-2">
           {item.description}
         </Text>
       )}
-      <Text className="text-slate-400 text-xs block">
+      <Text className="text-zinc-500 text-xs block">
         创建时间: {new Date(item.created_at || item.createdAt).toLocaleString('zh-CN')}
       </Text>
     </View>
   )
 
   const renderAuditLogItem = (item: any) => (
-    <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
       <View className="flex justify-between items-start mb-2">
         <Text className="text-white font-semibold block">{item.operation || '未知操作'}</Text>
-        <Text className="text-slate-400 text-xs">
+        <Text className="text-zinc-500 text-xs">
           {new Date(item.created_at || item.createdAt).toLocaleString('zh-CN')}
         </Text>
       </View>
@@ -186,11 +201,11 @@ export default function UserDataPage() {
         </Text>
       )}
       {item.ip_address && (
-        <Text className="text-slate-400 text-xs block mb-1">
+        <Text className="text-zinc-500 text-xs block mb-1">
           IP地址: {item.ip_address}
         </Text>
       )}
-      <Text className={`text-xs block ${item.status === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+      <Text className={`text-xs block ${item.status === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>
         状态: {item.status || '未知'}
       </Text>
     </View>
@@ -214,17 +229,23 @@ export default function UserDataPage() {
   }
 
   const config = getTypeConfig()
+  const IconComponent = config.icon
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-[#0a0a0b]">
       {/* 顶部导航栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
+      <View className="bg-zinc-900 px-4 py-3 border-b border-zinc-800">
         <View className="flex items-center gap-3">
-          <View onClick={() => Taro.navigateBack()}>
-            <Text>←</Text>
+          <View
+            className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
+            onClick={() => Taro.navigateBack()}
+          >
+            <ArrowLeft size={20} color="#f59e0b" />
           </View>
           <View className="flex items-center gap-2">
-            {config.icon}
+            <View className="w-8 h-8 rounded-lg flex items-center justify-center bg-zinc-800/60 border border-zinc-700/50">
+              <IconComponent size={16} color={config.iconColor} />
+            </View>
             <Text className="text-white font-semibold">{config.title}</Text>
           </View>
         </View>
@@ -238,7 +259,8 @@ export default function UserDataPage() {
         <View className="px-4 py-3 space-y-3">
           {loading && (
             <View className="text-center py-12">
-              <Text className="text-slate-400">加载中...</Text>
+              <View className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+              <Text className="text-zinc-500">加载中...</Text>
             </View>
           )}
 
@@ -250,7 +272,10 @@ export default function UserDataPage() {
 
           {!loading && data.length === 0 && (
             <View className="text-center py-12">
-              <Text className="text-slate-400">{config.emptyText}</Text>
+              <View className="w-16 h-16 bg-zinc-800/60 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-700/50">
+                <IconComponent size={32} color="#71717a" />
+              </View>
+              <Text className="text-zinc-500">{config.emptyText}</Text>
             </View>
           )}
 

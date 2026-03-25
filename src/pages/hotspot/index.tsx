@@ -2,6 +2,7 @@ import { View, Text, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
 import { Network } from '@/network';
+import { Flame, TrendingUp, TrendingDown, Minus, RefreshCw, Zap } from 'lucide-react-taro';
 
 interface HotKeyword {
   id: string;
@@ -325,21 +326,21 @@ const HotspotPage = () => {
   // 渲染趋势图标
   const renderTrendIcon = (item: HotKeyword) => {
     if (item.trend === 'up' || (item.trendChange && item.trendChange > 0)) {
-      return <Text>📈</Text>;
+      return <TrendingUp size={14} color="#10b981" />;
     } else if (item.trend === 'down' || (item.trendChange && item.trendChange < 0)) {
-      return <Text>📉</Text>;
+      return <TrendingDown size={14} color="#ef4444" />;
     } else {
-      return <Text>−</Text>;
+      return <Minus size={14} color="#71717a" />;
     }
   };
 
   // 渲染状态
   if (loadStatus === 'loading') {
     return (
-      <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <View className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
         <View className="text-center">
-          <View className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <Text className="block text-slate-300 text-base">加载中...</Text>
+          <View className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <Text className="block text-zinc-400 text-base">加载中...</Text>
         </View>
       </View>
     );
@@ -347,13 +348,13 @@ const HotspotPage = () => {
 
   if (loadStatus === 'error') {
     return (
-      <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6">
+      <View className="min-h-screen bg-[#0a0a0b] flex items-center justify-center px-6">
         <View className="text-center">
           <Text className="block text-red-400 text-lg mb-3">加载失败</Text>
-          <Text className="block text-slate-400 text-sm mb-4">{errorMessage}</Text>
+          <Text className="block text-zinc-500 text-sm mb-4">{errorMessage}</Text>
           <Button
             type="primary"
-            className="bg-blue-500 text-white border-none"
+            className="bg-amber-500 text-black border-none rounded-lg"
             onClick={() => loadHotKeywords(true)}
           >
             重新加载
@@ -365,53 +366,55 @@ const HotspotPage = () => {
 
   if (loadStatus === 'empty') {
     return (
-      <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6">
+      <View className="min-h-screen bg-[#0a0a0b] flex items-center justify-center px-6">
         <View className="text-center">
-          <Text>🔥</Text>
-          <Text className="block text-slate-400 text-lg mt-4">暂无热点数据</Text>
-          <Text className="block text-slate-400 text-sm mt-2">稍后再来看看吧</Text>
+          <View className="w-20 h-20 bg-zinc-800/60 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-700/50">
+            <Flame size={40} color="#f59e0b" />
+          </View>
+          <Text className="block text-zinc-400 text-lg mt-4">暂无热点数据</Text>
+          <Text className="block text-zinc-500 text-sm mt-2">稍后再来看看吧</Text>
         </View>
       </View>
     );
   }
 
   return (
-    <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <View className="min-h-screen bg-[#0a0a0b]">
       {/* 标题区 */}
-      <View className="bg-transparent px-4 pt-8 pb-5 border-b border-slate-700">
+      <View className="bg-transparent px-4 pt-8 pb-5 border-b border-zinc-800">
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-3">
-            <View className="w-14 h-14 bg-gradient-to-br from-amber-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20 border border-orange-500/20">
-              <Text>🔥</Text>
+            <View className="w-14 h-14 bg-gradient-to-br from-amber-500/20 to-orange-600/20 rounded-2xl flex items-center justify-center border border-amber-500/30">
+              <Flame size={28} color="#f59e0b" />
             </View>
             <View>
               <Text className="block text-2xl font-bold text-white mb-0.5 tracking-tight">全网热点</Text>
-              <Text className="block text-xs text-blue-400 font-medium tracking-widest opacity-90">REAL-TIME TRENDS</Text>
+              <Text className="block text-xs text-amber-500/80 font-medium tracking-widest">REAL-TIME TRENDS</Text>
             </View>
           </View>
         </View>
 
         {/* 数据来源和操作栏 */}
         <View className="flex items-center justify-between gap-3">
-          <View className="flex-1 bg-slate-800/60 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-slate-700">
-            <Text className="block text-xs text-slate-300">
-              <Text className="text-blue-400">数据来源：</Text>TopHub 聚合 30+ 平台实时热点
+          <View className="flex-1 bg-zinc-800/60 rounded-xl px-4 py-2.5 border border-zinc-700/50">
+            <Text className="block text-xs text-zinc-300">
+              <Text className="text-amber-500">数据来源：</Text>TopHub 聚合 30+ 平台实时热点
             </Text>
             {lastUpdateTime && (
-              <Text className="block text-xs text-slate-400 mt-0.5">
-                共 <Text className="text-blue-400 font-semibold">{allHotKeywords.length}</Text> 条热点 · 更新于 {new Date(lastUpdateTime).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+              <Text className="block text-xs text-zinc-500 mt-0.5">
+                共 <Text className="text-amber-500 font-semibold">{allHotKeywords.length}</Text> 条热点 · 更新于 {new Date(lastUpdateTime).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
               </Text>
             )}
           </View>
           <Button
             size="mini"
-            className={`bg-slate-9000/20 text-blue-400 border border-sky-500/40 backdrop-blur-sm ${refreshing ? 'opacity-50' : ''}`}
+            className={`bg-zinc-800/60 border border-amber-500/30 rounded-lg ${refreshing ? 'opacity-50' : ''}`}
             onClick={refreshHotKeywords}
             disabled={refreshing}
           >
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
-              <Text>🔄</Text>
-              <Text className="block">{refreshing ? '刷新中...' : '刷新'}</Text>
+              <RefreshCw size={14} color="#f59e0b" className={refreshing ? 'animate-spin' : ''} />
+              <Text className="block text-amber-500">{refreshing ? '刷新中...' : '刷新'}</Text>
             </View>
           </Button>
         </View>
@@ -423,7 +426,7 @@ const HotspotPage = () => {
           return (
             <View
               key={index}
-              className="bg-slate-800 backdrop-blur-sm rounded-2xl border border-slate-700 overflow-hidden shadow-sm px-4 py-3.5"
+              className="bg-zinc-800/40 rounded-2xl border border-zinc-700/50 overflow-hidden px-4 py-3.5 active:bg-zinc-700/40"
               onClick={() => handleKeywordClick(item)}
             >
               <View className="flex items-start gap-3">
@@ -434,7 +437,7 @@ const HotspotPage = () => {
                       index === 0 ? 'text-red-500' :
                       index === 1 ? 'text-orange-500' :
                       index === 2 ? 'text-yellow-500' :
-                      'text-slate-400'
+                      'text-zinc-500'
                     }`}
                   >
                     {index + 1}
@@ -449,21 +452,23 @@ const HotspotPage = () => {
                       {item.title}
                     </Text>
                     {item.isBursting && (
-                      <View className="flex-shrink-0 bg-red-500/20 text-red-400 text-xs px-1.5 py-0.5 rounded border border-red-500/30">
-                        爆
+                      <View className="flex-shrink-0 flex items-center gap-1 bg-red-500/20 text-red-400 text-xs px-2 py-0.5 rounded border border-red-500/30">
+                        <Zap size={12} color="#ef4444" />
+                        <Text className="block">爆</Text>
                       </View>
                     )}
                   </View>
 
                   {/* 热度和趋势 */}
                   <View className="flex items-center gap-3 mb-2">
-                    <Text className="block text-xs text-slate-400">
-                      🔥 {item.hot}
-                    </Text>
+                    <View className="flex items-center gap-1">
+                      <Flame size={12} color="#f59e0b" />
+                      <Text className="block text-xs text-zinc-400">{item.hot}</Text>
+                    </View>
                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '3px' }}>
                       {renderTrendIcon(item)}
                       {item.trendChange !== undefined && item.trendChange !== 0 && (
-                        <Text className={`block text-xs ${item.trendChange > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                        <Text className={`block text-xs ${item.trendChange > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                           {Math.abs(item.trendChange)}
                         </Text>
                       )}
@@ -472,7 +477,7 @@ const HotspotPage = () => {
 
                   {/* 摘要 */}
                   {item.summary && (
-                    <Text className="block text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                    <Text className="block text-xs text-zinc-500 mt-1.5 line-clamp-2 leading-relaxed">
                       {item.summary}
                     </Text>
                   )}
@@ -480,7 +485,7 @@ const HotspotPage = () => {
                   {/* 分类标签 */}
                   {item.category && (
                     <View className="mt-2">
-                      <Text className="block text-xs text-blue-400 bg-slate-9000/10 px-2 py-0.5 rounded inline-block border border-sky-500/20">
+                      <Text className="block text-xs text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
                         {item.category}
                       </Text>
                     </View>
@@ -497,7 +502,7 @@ const HotspotPage = () => {
         <View className="flex justify-center py-4">
           <Button
             size="default"
-            className="bg-slate-800 text-slate-300 border border-slate-700/50 px-8"
+            className="bg-zinc-800/60 text-zinc-300 border border-zinc-700/50 px-8 rounded-lg"
             onClick={handleLoadMore}
             disabled={loadingMore}
           >
@@ -509,7 +514,7 @@ const HotspotPage = () => {
       {/* 已全部加载提示 */}
       {!hasMore && allHotKeywords.length > 0 && (
         <View className="flex justify-center py-4">
-          <Text className="block text-slate-400 text-sm">
+          <Text className="block text-zinc-500 text-sm">
             已加载全部 {allHotKeywords.length} 条热点
           </Text>
         </View>

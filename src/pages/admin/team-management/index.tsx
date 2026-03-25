@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import {
+  ArrowLeft,
+  Search,
+  Users,
+  Pencil,
+  Trash2,
+  Plus
+} from 'lucide-react-taro';
 
 interface Team {
   id: string;
@@ -31,7 +39,7 @@ interface TeamListResponse {
 
 const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
   active: { label: '启用中', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
-  inactive: { label: '已禁用', color: 'text-gray-400', bg: 'bg-gray-500/20' },
+  inactive: { label: '已禁用', color: 'text-zinc-500', bg: 'bg-zinc-500/20' },
 };
 
 export default function TeamManagement() {
@@ -138,43 +146,48 @@ export default function TeamManagement() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-[#0a0a0b]">
       {/* Header */}
-      <View className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+      <View className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
         <View className="flex items-center justify-between px-4 py-3">
           <View className="flex items-center gap-3">
             <View
-              className="p-2 bg-slate-800 rounded-lg active:bg-slate-800 transition-colors"
+              className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
               onClick={() => Taro.navigateBack()}
             >
-              <Text>{"<"}</Text>
+              <ArrowLeft size={20} color="#f59e0b" />
             </View>
-            <Text className="block text-lg font-semibold text-white">团队管理</Text>
+            <View className="flex items-center gap-2">
+              <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
+                <Users size={16} color="#f59e0b" />
+              </View>
+              <Text className="block text-lg font-semibold text-white">团队管理</Text>
+            </View>
           </View>
           <View
-            className="flex items-center gap-2 px-3 py-2 bg-blue-600 rounded-lg active:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 bg-amber-500 rounded-lg active:bg-amber-600"
             onClick={navigateToCreate}
           >
-            <Text>👤</Text>
-            <Text className="block text-sm text-white">新建团队</Text>
+            <Plus size={16} color="#000" />
+            <Text className="block text-sm text-black font-medium">新建团队</Text>
           </View>
         </View>
 
         {/* Search Bar */}
         <View className="px-4 pb-3">
-          <View className="flex items-center gap-2 bg-slate-800 rounded-xl px-3 py-2">
-            <Text>🔍</Text>
+          <View className="flex items-center gap-2 bg-zinc-800/60 rounded-xl px-3 py-2 border border-zinc-700/50">
+            <Search size={18} color="#71717a" />
             <Input
               className="flex-1 text-sm text-white bg-transparent"
               placeholder="搜索团队名称..."
-              placeholderClass="text-slate-400"
+              placeholderClass="text-zinc-500"
               value={keyword}
               onInput={(e) => setKeyword(e.detail.value)}
               onConfirm={handleSearch}
             />
             {keyword && (
               <View onClick={() => { setKeyword(''); handleSearch(); }}>
-                <Text className="block text-xs text-slate-400">清除</Text>
+                <Text className="block text-xs text-amber-500">清除</Text>
               </View>
             )}
           </View>
@@ -194,7 +207,7 @@ export default function TeamManagement() {
             return (
               <View
                 key={team.id}
-                className="bg-slate-900 rounded-xl p-4 border border-slate-800"
+                className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50"
               >
                 <View className="flex items-start justify-between mb-3">
                   <View className="flex-1">
@@ -205,7 +218,7 @@ export default function TeamManagement() {
                       </View>
                     </View>
                     {team.description && (
-                      <Text className="block text-sm text-slate-400 mt-1">{team.description}</Text>
+                      <Text className="block text-sm text-zinc-500 mt-1">{team.description}</Text>
                     )}
                   </View>
                 </View>
@@ -213,39 +226,39 @@ export default function TeamManagement() {
                 {/* Team Info */}
                 <View className="flex items-center gap-4 mb-4">
                   <View className="flex items-center gap-2">
-                    <Text>👤</Text>
-                    <Text className="block text-sm text-slate-400">{team.members?.count || 0} 成员</Text>
+                    <Users size={14} color="#71717a" />
+                    <Text className="block text-sm text-zinc-500">{team.members?.count || 0} 成员</Text>
                   </View>
                   {team.leader && (
                     <View className="flex items-center gap-2">
-                      <Text className="block text-sm text-slate-400">负责人:</Text>
-                      <Text className="block text-sm text-blue-400">{team.leader.nickname}</Text>
+                      <Text className="block text-sm text-zinc-500">负责人:</Text>
+                      <Text className="block text-sm text-amber-500">{team.leader.nickname}</Text>
                     </View>
                   )}
                 </View>
 
                 {/* Actions */}
-                <View className="flex items-center gap-2 pt-3 border-t border-slate-800">
+                <View className="flex items-center gap-2 pt-3 border-t border-zinc-700/50">
                   <View
-                    className="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-800 rounded-lg active:bg-slate-800 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-zinc-700/50 rounded-lg active:bg-zinc-700"
                     onClick={() => navigateToDetail(team.id)}
                   >
-                    <Text>✏</Text>
+                    <Pencil size={14} color="#3b82f6" />
                     <Text className="block text-sm text-blue-400">详情</Text>
                   </View>
                   <View
-                    className="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-800 rounded-lg active:bg-slate-800 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-zinc-700/50 rounded-lg active:bg-zinc-700"
                     onClick={() => handleToggleStatus(team)}
                   >
-                    <Text className="block text-sm text-slate-300">
+                    <Text className="block text-sm text-zinc-300">
                       {team.is_active ? '禁用' : '启用'}
                     </Text>
                   </View>
                   <View
-                    className="flex-1 flex items-center justify-center gap-2 py-2 bg-red-500/20 rounded-lg active:bg-red-500/30 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-500/10 rounded-lg active:bg-red-500/20 border border-red-500/20"
                     onClick={() => handleDelete(team)}
                   >
-                    <Text>🗑</Text>
+                    <Trash2 size={14} color="#ef4444" />
                     <Text className="block text-sm text-red-400">删除</Text>
                   </View>
                 </View>
@@ -255,27 +268,30 @@ export default function TeamManagement() {
 
           {teams.length === 0 && !loading && (
             <View className="flex flex-col items-center justify-center py-12">
-              <Text>👤</Text>
-              <Text className="block text-slate-400 mb-2">暂无团队</Text>
-              <Text className="block text-sm text-slate-400">点击下方按钮创建第一个团队</Text>
+              <View className="w-16 h-16 bg-zinc-800/60 rounded-2xl flex items-center justify-center mb-4 border border-zinc-700/50">
+                <Users size={32} color="#71717a" />
+              </View>
+              <Text className="block text-zinc-500 mb-2">暂无团队</Text>
+              <Text className="block text-sm text-zinc-600">点击下方按钮创建第一个团队</Text>
               <View
-                className="mt-4 px-4 py-2 bg-blue-600 rounded-lg"
+                className="mt-4 flex items-center gap-2 px-4 py-2 bg-amber-500 rounded-lg"
                 onClick={navigateToCreate}
               >
-                <Text className="block text-white">创建团队</Text>
+                <Plus size={16} color="#000" />
+                <Text className="block text-black font-medium">创建团队</Text>
               </View>
             </View>
           )}
 
           {loading && (
             <View className="flex items-center justify-center py-4">
-              <Text className="block text-slate-400">加载中...</Text>
+              <Text className="block text-zinc-500">加载中...</Text>
             </View>
           )}
 
           {!hasMore && teams.length > 0 && (
             <View className="flex items-center justify-center py-4">
-              <Text className="block text-sm text-slate-400">没有更多数据了</Text>
+              <Text className="block text-sm text-zinc-600">没有更多数据了</Text>
             </View>
           )}
         </View>

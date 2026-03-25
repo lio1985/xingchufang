@@ -2,6 +2,18 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
+import {
+  ArrowLeft,
+  Users,
+  Search,
+  X,
+  User,
+  Pencil,
+  Crown,
+  Check,
+  Loader,
+  UserPlus
+} from 'lucide-react-taro';
 
 interface TeamMember {
   id: string;
@@ -250,32 +262,43 @@ export default function TeamDetail() {
 
   if (loading) {
     return (
-      <View className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <Text className="block text-slate-400">加载中...</Text>
+      <View className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+        <View className="text-center">
+          <Loader size={24} color="#f59e0b" className="animate-spin" />
+          <Text className="block text-zinc-500 mt-2">加载中...</Text>
+        </View>
       </View>
     );
   }
 
   if (!team) {
     return (
-      <View className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <Text className="block text-slate-400">团队不存在</Text>
+      <View className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+        <View className="text-center">
+          <Users size={32} color="#71717a" />
+          <Text className="block text-zinc-500 mt-2">团队不存在</Text>
+        </View>
       </View>
     );
   }
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View className="min-h-screen bg-[#0a0a0b]">
       {/* Header */}
-      <View className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+      <View className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
         <View className="flex items-center gap-3 px-4 py-3">
           <View
-            className="p-2 bg-slate-800 rounded-lg active:bg-slate-800 transition-colors"
+            className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
             onClick={() => Taro.navigateBack()}
           >
-            <Text>{"<"}</Text>
+            <ArrowLeft size={20} color="#f59e0b" />
           </View>
-          <Text className="block text-lg font-semibold text-white">{team.name}</Text>
+          <View className="flex items-center gap-2">
+            <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
+              <Users size={16} color="#f59e0b" />
+            </View>
+            <Text className="block text-lg font-semibold text-white">{team.name}</Text>
+          </View>
         </View>
       </View>
 
@@ -284,22 +307,22 @@ export default function TeamDetail() {
         <View className="p-4">
           {/* Team Info - 编辑模式 */}
           {isEditing ? (
-            <View className="bg-slate-900 rounded-xl p-4 border border-slate-800 mb-4">
-              <Text className="block text-sm text-slate-400 mb-1">团队名称 *</Text>
+            <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
+              <Text className="block text-sm text-zinc-400 mb-1">团队名称 *</Text>
               <Input
-                className="text-lg text-white font-semibold bg-slate-800 rounded-lg px-3 py-2 mb-3"
+                className="text-lg text-white font-semibold bg-zinc-700/50 rounded-lg px-3 py-2 mb-3 border border-zinc-600/50"
                 placeholder="输入团队名称"
-                placeholderClass="text-slate-400"
+                placeholderClass="text-zinc-500"
                 value={editName}
                 onInput={(e) => setEditName(e.detail.value)}
               />
               
-              <Text className="block text-sm text-slate-400 mb-1">描述</Text>
+              <Text className="block text-sm text-zinc-400 mb-1">描述</Text>
               <Textarea
-                className="text-base text-slate-300 bg-slate-800 rounded-lg px-3 py-2 mb-4"
+                className="text-base text-zinc-300 bg-zinc-700/50 rounded-lg px-3 py-2 mb-4 border border-zinc-600/50"
                 style={{ width: '100%', minHeight: '80px' }}
                 placeholder="输入团队描述（可选）"
-                placeholderClass="text-slate-400"
+                placeholderClass="text-zinc-500"
                 value={editDescription}
                 onInput={(e) => setEditDescription(e.detail.value)}
                 maxlength={200}
@@ -307,47 +330,48 @@ export default function TeamDetail() {
 
               <View className="flex gap-3">
                 <View
-                  className="flex-1 py-2 bg-slate-800 rounded-lg"
+                  className="flex-1 py-2.5 bg-zinc-700/50 rounded-lg active:bg-zinc-700"
                   onClick={handleCancelEdit}
                 >
-                  <Text className="block text-center text-sm text-slate-300">取消</Text>
+                  <Text className="block text-center text-sm text-zinc-300">取消</Text>
                 </View>
                 <View
-                  className={`flex-1 py-2 rounded-lg ${
-                    saving || !editName.trim() ? 'bg-blue-600/50' : 'bg-blue-600 active:bg-blue-700'
+                  className={`flex-1 py-2.5 rounded-lg ${
+                    saving || !editName.trim() ? 'bg-amber-500/50' : 'bg-amber-500 active:bg-amber-600'
                   }`}
                   onClick={handleSaveEdit}
                 >
-                  <Text className="block text-center text-sm text-white">
+                  <Text className="block text-center text-sm text-black font-medium">
                     {saving ? '保存中...' : '保存'}
                   </Text>
                 </View>
               </View>
             </View>
           ) : (
-            <View className="bg-slate-900 rounded-xl p-4 border border-slate-800 mb-4">
+            <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
               <View className="flex items-center justify-between">
                 <View className="flex-1">
-                  <Text className="block text-sm text-slate-400 mb-1">团队名称</Text>
+                  <Text className="block text-sm text-zinc-500 mb-1">团队名称</Text>
                   <Text className="block text-lg text-white font-semibold">{team.name}</Text>
                 </View>
                 <View
-                  className="px-3 py-1.5 bg-blue-600/20 rounded-lg flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-blue-500/20 rounded-lg flex items-center gap-1.5 active:bg-blue-500/30 border border-blue-500/30"
                   onClick={handleStartEdit}
                 >
-                  <Text>✏</Text>
+                  <Pencil size={14} color="#3b82f6" />
                   <Text className="block text-sm text-blue-400">编辑</Text>
                 </View>
               </View>
               {team.description && (
                 <>
-                  <Text className="block text-sm text-slate-400 mb-1 mt-3">描述</Text>
-                  <Text className="block text-base text-slate-300">{team.description}</Text>
+                  <Text className="block text-sm text-zinc-500 mb-1 mt-3">描述</Text>
+                  <Text className="block text-base text-zinc-300">{team.description}</Text>
                 </>
               )}
-              <Text className="block text-sm text-slate-400 mb-1 mt-3">状态</Text>
-              <View className={`inline-block px-2 py-0.5 rounded-full ${team.is_active ? 'bg-emerald-500/20' : 'bg-gray-500/20'}`}>
-                <Text className={`block text-xs ${team.is_active ? 'text-emerald-400' : 'text-gray-400'}`}>
+              <Text className="block text-sm text-zinc-500 mb-1 mt-3">状态</Text>
+              <View className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${team.is_active ? 'bg-emerald-500/20' : 'bg-zinc-500/20'}`}>
+                {team.is_active && <Check size={12} color="#10b981" />}
+                <Text className={`block text-xs ${team.is_active ? 'text-emerald-400' : 'text-zinc-400'}`}>
                   {team.is_active ? '启用中' : '已禁用'}
                 </Text>
               </View>
@@ -355,38 +379,38 @@ export default function TeamDetail() {
           )}
 
           {/* Add Member */}
-          <View className="bg-slate-900 rounded-xl p-4 border border-slate-800 mb-4">
+          <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
             <Text className="block text-base font-semibold text-white mb-3">添加成员</Text>
             
             {!selectedUser ? (
               <>
                 {/* 搜索框 */}
                 <View className="flex items-center gap-2 mb-3">
-                  <View className="flex-1 bg-slate-800 rounded-lg px-3 py-2 flex items-center gap-2">
-                    <Text>🔍</Text>
+                  <View className="flex-1 bg-zinc-700/50 rounded-lg px-3 py-2 flex items-center gap-2 border border-zinc-600/50">
+                    <Search size={16} color="#71717a" />
                     <Input
                       className="text-sm text-white bg-transparent flex-1"
                       placeholder="输入用户昵称或6位员工ID搜索"
-                      placeholderClass="text-slate-400"
+                      placeholderClass="text-zinc-500"
                       value={searchKeyword}
                       onInput={(e) => setSearchKeyword(e.detail.value)}
                       onConfirm={searchUsers}
                     />
                     {searchKeyword && (
                       <View onClick={() => setSearchKeyword('')}>
-                        <Text>✕</Text>
+                        <X size={16} color="#71717a" />
                       </View>
                     )}
                   </View>
                   <View
                     className={`px-4 py-2 rounded-lg transition-colors ${
                       searching || !searchKeyword.trim()
-                        ? 'bg-slate-800'
-                        : 'bg-blue-600 active:bg-blue-700'
+                        ? 'bg-zinc-700/50'
+                        : 'bg-amber-500 active:bg-amber-600'
                     }`}
                     onClick={searchUsers}
                   >
-                    <Text className="block text-sm text-white">
+                    <Text className={`block text-sm font-medium ${searching || !searchKeyword.trim() ? 'text-zinc-500' : 'text-black'}`}>
                       {searching ? '搜索中...' : '搜索'}
                     </Text>
                   </View>
@@ -394,18 +418,18 @@ export default function TeamDetail() {
 
                 {/* 搜索结果 */}
                 {showSearchResults && searchResults.length > 0 && (
-                  <View className="bg-slate-800 rounded-lg overflow-hidden">
-                    <View className="px-3 py-2 border-b border-slate-700">
-                      <Text className="block text-xs text-slate-400">搜索结果（点击选择）</Text>
+                  <View className="bg-zinc-700/30 rounded-lg overflow-hidden border border-zinc-600/50">
+                    <View className="px-3 py-2 border-b border-zinc-600/50">
+                      <Text className="block text-xs text-zinc-500">搜索结果（点击选择）</Text>
                     </View>
                     {searchResults.map((user) => (
                       <View
                         key={user.id}
-                        className="flex items-center gap-3 px-3 py-3 border-b border-slate-700 active:bg-slate-800 transition-colors cursor-pointer"
+                        className="flex items-center gap-3 px-3 py-3 border-b border-zinc-600/30 active:bg-zinc-700/50"
                         onClick={() => handleSelectUser(user)}
                       >
-                        <View className="w-8 h-8 rounded-full bg-slate-9000/20 flex items-center justify-center">
-                          <Text className="block text-sm text-blue-400">
+                        <View className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/30">
+                          <Text className="block text-sm text-amber-500">
                             {(user.nickname || '?')[0]}
                           </Text>
                         </View>
@@ -419,13 +443,13 @@ export default function TeamDetail() {
                                 #{user.employee_id}
                               </Text>
                             )}
-                            <Text className="block text-xs text-slate-400">
+                            <Text className="block text-xs text-zinc-500">
                               ID: {user.id.slice(0, 8)}...
                             </Text>
                           </View>
                         </View>
-                        <View className="px-2 py-1 bg-slate-9000/20 rounded">
-                          <Text className="block text-xs text-blue-400">选择</Text>
+                        <View className="px-2 py-1 bg-amber-500/20 rounded border border-amber-500/30">
+                          <Text className="block text-xs text-amber-500">选择</Text>
                         </View>
                       </View>
                     ))}
@@ -434,23 +458,23 @@ export default function TeamDetail() {
 
                 {/* 搜索提示 */}
                 {!showSearchResults && !searching && (
-                  <Text className="block text-xs text-slate-400">
+                  <Text className="block text-xs text-zinc-500">
                     提示：输入用户昵称或6位员工ID搜索，如「张三」或「123456」
                   </Text>
                 )}
               </>
             ) : (
               /* 已选择用户 */
-              <View className="bg-slate-800 rounded-lg p-3">
+              <View className="bg-zinc-700/30 rounded-lg p-3 border border-zinc-600/50">
                 <View className="flex items-center justify-between mb-3">
-                  <Text className="block text-sm text-slate-400">已选择用户</Text>
+                  <Text className="block text-sm text-zinc-400">已选择用户</Text>
                   <View onClick={handleClearSelection}>
-                    <Text>✕</Text>
+                    <X size={16} color="#71717a" />
                   </View>
                 </View>
                 <View className="flex items-center gap-3 mb-3">
-                  <View className="w-10 h-10 rounded-full bg-slate-9000/20 flex items-center justify-center">
-                    <Text className="block text-base text-blue-400">
+                  <View className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/30">
+                    <Text className="block text-base text-amber-500">
                       {(selectedUser.nickname || '?')[0]}
                     </Text>
                   </View>
@@ -464,36 +488,36 @@ export default function TeamDetail() {
                           #{selectedUser.employee_id}
                         </Text>
                       )}
-                      <Text className="block text-xs text-slate-400">
+                      <Text className="block text-xs text-zinc-500">
                         ID: {selectedUser.id}
                       </Text>
                     </View>
                   </View>
                 </View>
                 <View
-                  className="py-2 bg-blue-600 rounded-lg active:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                  className="py-2.5 bg-amber-500 rounded-lg active:bg-amber-600 flex items-center justify-center gap-2"
                   onClick={handleAddMember}
                 >
-                  <Text>👤</Text>
-                  <Text className="block text-sm text-white">确认添加</Text>
+                  <UserPlus size={16} color="#000" />
+                  <Text className="block text-sm text-black font-medium">确认添加</Text>
                 </View>
               </View>
             )}
           </View>
 
           {/* Members List */}
-          <View className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-            <View className="px-4 py-3 border-b border-slate-800">
+          <View className="bg-zinc-800/40 rounded-xl border border-zinc-700/50 overflow-hidden">
+            <View className="px-4 py-3 border-b border-zinc-700/50">
               <Text className="block text-base font-semibold text-white">团队成员</Text>
             </View>
             {team.members?.map((member) => (
               <View
                 key={member.id}
-                className="flex items-center justify-between px-4 py-3 border-b border-slate-800 last:border-b-0"
+                className="flex items-center justify-between px-4 py-3 border-b border-zinc-700/30 last:border-b-0"
               >
                 <View className="flex items-center gap-3">
-                  <View className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                    <Text className="block text-white font-semibold">
+                  <View className="w-10 h-10 bg-amber-500/20 rounded-full flex items-center justify-center border border-amber-500/30">
+                    <Text className="block text-amber-500 font-semibold">
                       {(member.user?.nickname || 'U').charAt(0).toUpperCase()}
                     </Text>
                   </View>
@@ -502,11 +526,11 @@ export default function TeamDetail() {
                     <View className="flex items-center gap-2 mt-0.5">
                       {member.role === 'leader' ? (
                         <View className="flex items-center gap-1">
-                          <Text>👑</Text>
-                          <Text className="block text-xs text-yellow-400">负责人</Text>
+                          <Crown size={12} color="#f59e0b" />
+                          <Text className="block text-xs text-amber-500">负责人</Text>
                         </View>
                       ) : (
-                        <Text className="block text-xs text-slate-400">成员</Text>
+                        <Text className="block text-xs text-zinc-500">成员</Text>
                       )}
                     </View>
                   </View>
@@ -514,25 +538,25 @@ export default function TeamDetail() {
                 <View className="flex items-center gap-2">
                   {member.role !== 'leader' && (
                     <View
-                      className="px-3 py-1 bg-yellow-500/20 rounded-lg"
+                      className="px-3 py-1.5 bg-amber-500/20 rounded-lg active:bg-amber-500/30 border border-amber-500/30"
                       onClick={() => handleSetLeader(member.user_id)}
                     >
-                      <Text className="block text-xs text-yellow-400">设负责人</Text>
+                      <Text className="block text-xs text-amber-500">设负责人</Text>
                     </View>
                   )}
                   <View
-                    className="p-2 bg-red-500/20 rounded-lg"
+                    className="p-2 bg-red-500/10 rounded-lg active:bg-red-500/20 border border-red-500/20"
                     onClick={() => handleRemoveMember(member.user_id, member.user?.nickname || '该成员')}
                   >
-                    <Text>👤</Text>
+                    <User size={14} color="#ef4444" />
                   </View>
                 </View>
               </View>
             ))}
             {(!team.members || team.members.length === 0) && (
               <View className="flex flex-col items-center justify-center py-8">
-                <Text>👤</Text>
-                <Text className="block text-slate-400">暂无成员</Text>
+                <Users size={32} color="#71717a" />
+                <Text className="block text-zinc-500 mt-2">暂无成员</Text>
               </View>
             )}
           </View>
