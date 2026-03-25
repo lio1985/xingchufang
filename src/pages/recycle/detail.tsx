@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
-import { Target, Activity, TrendingUp, Check, Store } from 'lucide-react-taro';
+import {
+  ArrowLeft,
+  Phone,
+  MapPin,
+  MessageCircle,
+  Pencil,
+  Trash2,
+  Clock,
+  Store,
+  Navigation,
+  X,
+} from 'lucide-react-taro';
 
 interface RecycleStore {
   id: string;
@@ -42,14 +53,14 @@ interface FollowUp {
 }
 
 const statusMap = {
-  pending: { label: '待接触', color: 'text-slate-400', bg: 'bg-slate-8000/20', icon: Target },
-  contacted: { label: '已接触', color: 'text-blue-400', bg: 'bg-slate-9000/20', icon: Activity },
-  assessing: { label: '评估中', color: 'text-purple-400', bg: 'bg-purple-500/20', icon: Activity },
-  negotiating: { label: '谈判中', color: 'text-amber-400', bg: 'bg-amber-500/20', icon: TrendingUp },
-  deal: { label: '已签约', color: 'text-emerald-400', bg: 'bg-emerald-500/20', icon: Check },
-  recycling: { label: '回收中', color: 'text-cyan-400', bg: 'bg-cyan-500/20', icon: Store },
-  completed: { label: '已完成', color: 'text-green-400', bg: 'bg-green-500/20', icon: Check },
-  cancelled: { label: '已取消', color: 'text-red-400', bg: 'bg-red-500/20', icon: TrendingUp }
+  pending: { label: '待接触', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.2)' },
+  contacted: { label: '已接触', color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.2)' },
+  assessing: { label: '评估中', color: '#a855f7', bgColor: 'rgba(168, 85, 247, 0.2)' },
+  negotiating: { label: '谈判中', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  deal: { label: '已签约', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  recycling: { label: '回收中', color: '#06b6d4', bgColor: 'rgba(6, 182, 212, 0.2)' },
+  completed: { label: '已完成', color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.2)' },
+  cancelled: { label: '已取消', color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.2)' }
 };
 
 export default function RecycleStoreDetail() {
@@ -176,10 +187,16 @@ export default function RecycleStoreDetail() {
     }
   };
 
+  const formatDateTime = (dateStr: string) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  };
+
   if (!store) {
     return (
-      <View className="min-h-screen bg-slate-900 items-center justify-center">
-        <Text className="block text-slate-400">加载中...</Text>
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#71717a' }}>加载中...</Text>
       </View>
     );
   }
@@ -187,240 +204,257 @@ export default function RecycleStoreDetail() {
   const statusConfig = statusMap[store.recycle_status];
 
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
       {/* 头部 */}
-      <View className="px-4 pt-12 pb-4 bg-slate-800/50">
-        <View className="flex items-center justify-between">
-          <View className="flex items-center" onClick={goBack}>
-            <Text>←</Text>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ display: 'flex', alignItems: 'center' }} onClick={goBack}>
+            <ArrowLeft size={20} color="#ffffff" />
           </View>
-          <View className="flex items-center gap-3">
+          <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <View onClick={goEdit}>
-              <Text>✏</Text>
+              <Pencil size={20} color="#a1a1aa" />
             </View>
             <View onClick={handleDelete}>
-              <Text>🗑</Text>
+              <Trash2 size={20} color="#ef4444" />
             </View>
           </View>
         </View>
 
-        <View className="mt-4">
-          <View className="flex items-center mb-2">
-            <Text>🏪</Text>
-            <Text className="block text-white text-xl font-bold">{store.store_name}</Text>
+        <View style={{ marginTop: '20px' }}>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <Store size={24} color="#3b82f6" />
+            <Text style={{ fontSize: '22px', fontWeight: '700', color: '#ffffff' }}>{store.store_name}</Text>
           </View>
-          <View className={`${statusConfig.bg} px-3 py-1 rounded-full inline-flex items-center w-fit`}>
-            <statusConfig.icon size={14} className={statusConfig.color} />
-            <Text className={`block text-xs ml-1 ${statusConfig.color}`}>{statusConfig.label}</Text>
+          <View style={{ display: 'inline-flex', alignItems: 'center', padding: '6px 12px', borderRadius: '8px', backgroundColor: statusConfig.bgColor }}>
+            <Text style={{ fontSize: '13px', color: statusConfig.color }}>{statusConfig.label}</Text>
           </View>
         </View>
       </View>
 
-      <ScrollView className="px-4 pb-24" scrollY style={{ height: 'calc(100vh - 160px)' }}>
-        {/* 关键信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
-          <View className="flex justify-between mb-4">
-            <View className="items-center">
-              <Text className="block text-2xl font-bold text-cyan-400">
-                ¥{(store.estimated_value || 0).toFixed(0)}
-              </Text>
-              <Text className="block text-slate-400 text-xs mt-1">预估价值（元）</Text>
-            </View>
-            {store.total_cost && (
-              <View className="items-center">
-                <Text className="block text-2xl font-bold text-emerald-400">
-                  ¥{store.total_cost.toFixed(0)}
+      <ScrollView scrollY style={{ height: 'calc(100vh - 180px)' }}>
+        {/* 核心数据卡片 */}
+        <View style={{ padding: '16px 20px' }}>
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '16px', padding: '20px' }}>
+            <View style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <View style={{ flex: 1, textAlign: 'center' }}>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#3b82f6' }}>
+                  ¥{(store.estimated_value || 0).toFixed(0)}
                 </Text>
-                <Text className="block text-slate-400 text-xs mt-1">总成本（元）</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>预估价值（元）</Text>
               </View>
-            )}
+              {store.total_cost && (
+                <>
+                  <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+                  <View style={{ flex: 1, textAlign: 'center' }}>
+                    <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>
+                      ¥{store.total_cost.toFixed(0)}
+                    </Text>
+                    <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>总成本（元）</Text>
+                  </View>
+                </>
+              )}
+            </View>
           </View>
+        </View>
 
-          <View className="border-t border-slate-700 pt-4">
-            <View className="flex items-center mb-3" onClick={makePhoneCall}>
-              <Text>📞</Text>
-              <Text className="block text-white text-sm">{store.phone || '未填写'}</Text>
+        {/* 联系方式 */}
+        <View style={{ padding: '0 20px' }}>
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>联系方式</Text>
+            
+            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #27272a' }} onClick={makePhoneCall}>
+              <Phone size={16} color="#3b82f6" />
+              <Text style={{ fontSize: '14px', color: '#ffffff', marginLeft: '12px', flex: 1 }}>{store.phone || '未填写'}</Text>
+              {store.phone && <Text style={{ fontSize: '12px', color: '#3b82f6' }}>拨打</Text>}
             </View>
-            <View className="flex items-center mb-3">
-              <Text>💬</Text>
-              <Text className="block text-white text-sm">{store.wechat || '未填写'}</Text>
+            
+            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #27272a' }}>
+              <MessageCircle size={16} color="#22c55e" />
+              <Text style={{ fontSize: '14px', color: '#ffffff', marginLeft: '12px' }}>{store.wechat || '未填写'}</Text>
             </View>
-            <View className="flex items-center mb-3">
-              <Text>👤</Text>
-              <Text className="block text-white text-sm">{store.xiaohongshu || '未填写'}</Text>
+            
+            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #27272a' }}>
+              <Text style={{ fontSize: '12px', color: '#ef4444', marginLeft: '28px' }}>小红书: {store.xiaohongshu || '未填写'}</Text>
             </View>
-            <View className="flex items-center mb-3">
-              <Text>👤</Text>
-              <Text className="block text-white text-sm">{store.douyin || '未填写'}</Text>
+            
+            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0' }}>
+              <Text style={{ fontSize: '12px', color: '#a855f7', marginLeft: '28px' }}>抖音: {store.douyin || '未填写'}</Text>
             </View>
-            <View className="flex items-center" onClick={openLocation}>
-              <Text>📍</Text>
-              <Text className="block text-white text-sm flex-1">
-                {store.city || ''} {store.address || '未填写地址'}
-              </Text>
-              {store.location && <Text>🧭</Text>}
+          </View>
+        </View>
+
+        {/* 位置信息 */}
+        <View style={{ padding: '16px 20px 0' }}>
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }} onClick={openLocation}>
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <View style={{ display: 'flex', alignItems: 'center' }}>
+                <MapPin size={16} color="#f59e0b" />
+                <View style={{ marginLeft: '12px' }}>
+                  <Text style={{ fontSize: '14px', color: '#ffffff' }}>{store.city || '未填写城市'}</Text>
+                  <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>{store.address || '未填写地址'}</Text>
+                </View>
+              </View>
+              {store.location && <Navigation size={18} color="#3b82f6" />}
             </View>
           </View>
         </View>
 
         {/* 业务信息 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
-          <Text className="block text-white text-base font-semibold mb-4">业务信息</Text>
+        <View style={{ padding: '16px 20px 0' }}>
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>业务信息</Text>
 
-          <View className="flex justify-between mb-3">
-            <Text className="block text-slate-400 text-sm">餐饮类别</Text>
-            <Text className="block text-white text-sm">{store.business_type || '未填写'}</Text>
-          </View>
-          <View className="flex justify-between mb-3">
-            <Text className="block text-slate-400 text-sm">面积</Text>
-            <Text className="block text-white text-sm">
-              {store.area_size ? `${store.area_size}㎡` : '未填写'}
-            </Text>
-          </View>
-          <View className="flex justify-between mb-3">
-            <Text className="block text-slate-400 text-sm">开业时间</Text>
-            <Text className="block text-white text-sm">{store.open_date || '未填写'}</Text>
-          </View>
-          {store.close_reason && (
-            <View className="mt-3 pt-3 border-t border-slate-700">
-              <Text className="block text-slate-400 text-sm mb-2">关店原因</Text>
-              <Text className="block text-white text-sm">{store.close_reason}</Text>
+            <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+              <Text style={{ fontSize: '13px', color: '#71717a' }}>餐饮类别</Text>
+              <Text style={{ fontSize: '13px', color: '#ffffff' }}>{store.business_type || '未填写'}</Text>
             </View>
-          )}
+            <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+              <Text style={{ fontSize: '13px', color: '#71717a' }}>面积</Text>
+              <Text style={{ fontSize: '13px', color: '#ffffff' }}>{store.area_size ? `${store.area_size}㎡` : '未填写'}</Text>
+            </View>
+            <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+              <Text style={{ fontSize: '13px', color: '#71717a' }}>开业时间</Text>
+              <Text style={{ fontSize: '13px', color: '#ffffff' }}>{store.open_date || '未填写'}</Text>
+            </View>
+            {store.close_reason && (
+              <View style={{ marginTop: '8px', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>关店原因</Text>
+                <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.close_reason}</Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* 回收信息 */}
         {(store.estimated_devices || store.purchase_price || store.recycle_date) && (
-          <View className="bg-slate-800 rounded-xl p-4 mb-4">
-            <Text className="block text-white text-base font-semibold mb-4">回收信息</Text>
+          <View style={{ padding: '16px 20px 0' }}>
+            <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>回收信息</Text>
 
-            {store.estimated_devices && (
-              <View className="mb-3">
-                <Text className="block text-slate-400 text-sm mb-2">预估设备清单</Text>
-                <Text className="block text-white text-sm">{store.estimated_devices}</Text>
-              </View>
-            )}
-            {store.purchase_price && (
-              <View className="flex justify-between mb-3">
-                <Text className="block text-slate-400 text-sm">收购价格</Text>
-                <Text className="block text-emerald-400 text-sm font-semibold">
-                  ¥{store.purchase_price.toFixed(0)}
-                </Text>
-              </View>
-            )}
-            {store.recycle_date && (
-              <View className="flex justify-between mb-3">
-                <Text className="block text-slate-400 text-sm">回收日期</Text>
-                <Text className="block text-white text-sm">{store.recycle_date}</Text>
-              </View>
-            )}
-            {store.device_count && (
-              <View className="flex justify-between">
-                <Text className="block text-slate-400 text-sm">设备数量</Text>
-                <Text className="block text-white text-sm">{store.device_count}台</Text>
-              </View>
-            )}
+              {store.estimated_devices && (
+                <View style={{ marginBottom: '12px' }}>
+                  <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>预估设备清单</Text>
+                  <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.estimated_devices}</Text>
+                </View>
+              )}
+              
+              {store.purchase_price && (
+                <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                  <Text style={{ fontSize: '13px', color: '#71717a' }}>收购价格</Text>
+                  <Text style={{ fontSize: '14px', fontWeight: '600', color: '#22c55e' }}>¥{store.purchase_price.toFixed(0)}</Text>
+                </View>
+              )}
+              
+              {store.recycle_date && (
+                <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                  <Text style={{ fontSize: '13px', color: '#71717a' }}>回收日期</Text>
+                  <Text style={{ fontSize: '13px', color: '#ffffff' }}>{store.recycle_date}</Text>
+                </View>
+              )}
+              
+              {store.device_count && (
+                <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                  <Text style={{ fontSize: '13px', color: '#71717a' }}>设备数量</Text>
+                  <Text style={{ fontSize: '13px', color: '#ffffff' }}>{store.device_count}台</Text>
+                </View>
+              )}
+            </View>
           </View>
         )}
 
         {/* 跟进记录 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4">
-          <View className="flex justify-between items-center mb-4">
-            <Text className="block text-white text-base font-semibold">跟进记录</Text>
-            <View
-              className="bg-cyan-600 px-3 py-1 rounded-full"
-              onClick={() => setShowAddFollowUp(true)}
-            >
-              <Text className="block text-white text-xs flex items-center">
-                <Text>+</Text>新增
-              </Text>
+        <View style={{ padding: '16px 20px 80px' }}>
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>跟进记录</Text>
+              <View
+                style={{ backgroundColor: '#3b82f6', borderRadius: '20px', padding: '6px 12px', display: 'flex', alignItems: 'center' }}
+                onClick={() => setShowAddFollowUp(true)}
+              >
+                <Text style={{ fontSize: '12px', color: '#ffffff' }}>+ 新增</Text>
+              </View>
             </View>
-          </View>
 
-          {followUps.length === 0 ? (
-            <View className="text-center py-8">
-              <Text className="block text-slate-400 text-sm">暂无跟进记录</Text>
-            </View>
-          ) : (
-            <View>
-              {followUps.map((followUp) => (
-                <View key={followUp.id} className="border-l-2 border-slate-700 pl-4 mb-4">
-                  <View className="flex items-center justify-between mb-2">
-                    <Text className="block text-slate-400 text-xs">
-                      {new Date(followUp.follow_up_time).toLocaleString('zh-CN', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </Text>
-                    {followUp.follow_up_method && (
-                      <View className="bg-slate-800 px-2 py-0.5 rounded">
-                        <Text className="block text-slate-400 text-xs">
-                          {followUp.follow_up_method}
-                        </Text>
+            {followUps.length === 0 ? (
+              <View style={{ textAlign: 'center', padding: '24px 0' }}>
+                <Clock size={24} color="#52525b" />
+                <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '8px' }}>暂无跟进记录</Text>
+              </View>
+            ) : (
+              <View>
+                {followUps.map((followUp) => (
+                  <View key={followUp.id} style={{ borderLeft: '2px solid #3b82f6', paddingLeft: '12px', marginBottom: '16px' }}>
+                    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <Text style={{ fontSize: '12px', color: '#52525b' }}>{formatDateTime(followUp.follow_up_time)}</Text>
+                      {followUp.follow_up_method && (
+                        <View style={{ backgroundColor: '#27272a', borderRadius: '4px', padding: '2px 8px' }}>
+                          <Text style={{ fontSize: '11px', color: '#71717a' }}>{followUp.follow_up_method}</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={{ fontSize: '14px', color: '#a1a1aa', display: 'block' }}>{followUp.content}</Text>
+                    {followUp.next_follow_up_plan && (
+                      <View style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #27272a' }}>
+                        <Text style={{ fontSize: '12px', color: '#f59e0b' }}>下次计划：{followUp.next_follow_up_plan}</Text>
                       </View>
                     )}
                   </View>
-                  <Text className="block text-white text-sm mb-2">{followUp.content}</Text>
-                  {followUp.next_follow_up_plan && (
-                    <View className="mt-2 pt-2 border-t border-slate-700">
-                      <Text className="block text-slate-400 text-xs">
-                        下次计划：{followUp.next_follow_up_plan}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              ))}
-            </View>
-          )}
+                ))}
+              </View>
+            )}
+          </View>
         </View>
       </ScrollView>
 
       {/* 新增跟进弹窗 */}
       {showAddFollowUp && (
-        <View className="fixed inset-0 bg-black/50 flex items-end z-50">
-          <View className="bg-slate-800 w-full rounded-t-2xl p-4">
-            <View className="flex justify-between items-center mb-4">
-              <Text className="block text-white text-base font-semibold">新增跟进记录</Text>
+        <View style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)', display: 'flex', alignItems: 'flex-end', zIndex: 100 }}>
+          <View style={{ backgroundColor: '#18181b', width: '100%', borderRadius: '20px 20px 0 0', padding: '20px' }}>
+            <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>新增跟进记录</Text>
               <View onClick={() => setShowAddFollowUp(false)}>
-                <Text className="block text-slate-400 text-xl">×</Text>
+                <X size={20} color="#71717a" />
               </View>
             </View>
 
-            <View className="mb-4">
-              <Text className="block text-slate-400 text-sm mb-2">跟进方式</Text>
-              <View className="flex gap-2">
+            <View style={{ marginBottom: '16px' }}>
+              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>跟进方式</Text>
+              <View style={{ display: 'flex', gap: '8px' }}>
                 {['电话', '微信', '上门'].map((method) => (
                   <View
                     key={method}
-                    className={`px-4 py-2 rounded-lg ${followUpMethod === method ? 'bg-cyan-600' : 'bg-slate-800'}`}
+                    style={{
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      backgroundColor: followUpMethod === method ? '#3b82f6' : '#27272a'
+                    }}
                     onClick={() => setFollowUpMethod(method)}
                   >
-                    <Text className={`block text-sm ${followUpMethod === method ? 'text-white' : 'text-slate-400'}`}>
-                      {method}
-                    </Text>
+                    <Text style={{ fontSize: '13px', color: followUpMethod === method ? '#ffffff' : '#a1a1aa' }}>{method}</Text>
                   </View>
                 ))}
               </View>
             </View>
 
-            <View className="mb-4">
-              <Text className="block text-slate-400 text-sm mb-2">跟进内容</Text>
-              <Textarea
-                className="bg-slate-800 rounded-lg p-3 text-white text-sm min-h-[100px]"
-                placeholder="请输入跟进内容"
-                value={followUpContent}
-                onInput={(e) => setFollowUpContent(e.detail.value)}
-              />
+            <View style={{ marginBottom: '20px' }}>
+              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>跟进内容</Text>
+              <View style={{ backgroundColor: '#27272a', borderRadius: '12px', padding: '12px' }}>
+                <Textarea
+                  style={{ width: '100%', minHeight: '100px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
+                  placeholder="请输入跟进内容"
+                  placeholderStyle="color: #52525b"
+                  value={followUpContent}
+                  onInput={(e) => setFollowUpContent(e.detail.value)}
+                />
+              </View>
             </View>
 
             <View
-              className="bg-cyan-600 rounded-xl py-3"
+              style={{ backgroundColor: '#3b82f6', borderRadius: '12px', padding: '14px', textAlign: 'center' }}
               onClick={handleAddFollowUp}
             >
-              <Text className="block text-white text-center text-sm font-semibold">确定</Text>
+              <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff' }}>确定添加</Text>
             </View>
           </View>
         </View>

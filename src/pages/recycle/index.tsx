@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
-import { View, Text, Input } from '@tarojs/components';
+import { View, Text, Input, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import { Target, Activity, TrendingUp, Check, Store } from 'lucide-react-taro';
+import {
+  Store,
+  Phone,
+  MapPin,
+  Plus,
+  Search,
+  ChevronRight,
+  CircleDollarSign,
+} from 'lucide-react-taro';
 
 interface RecycleStore {
   id: string;
@@ -22,14 +30,14 @@ interface Statistics {
 }
 
 const statusMap = {
-  pending: { label: '待接触', color: 'text-slate-400', bg: 'bg-slate-8000/20', icon: Target },
-  contacted: { label: '已接触', color: 'text-blue-400', bg: 'bg-slate-9000/20', icon: Activity },
-  assessing: { label: '评估中', color: 'text-purple-400', bg: 'bg-purple-500/20', icon: Activity },
-  negotiating: { label: '谈判中', color: 'text-amber-400', bg: 'bg-amber-500/20', icon: TrendingUp },
-  deal: { label: '已签约', color: 'text-emerald-400', bg: 'bg-emerald-500/20', icon: Check },
-  recycling: { label: '回收中', color: 'text-cyan-400', bg: 'bg-cyan-500/20', icon: Store },
-  completed: { label: '已完成', color: 'text-green-400', bg: 'bg-green-500/20', icon: Check },
-  cancelled: { label: '已取消', color: 'text-red-400', bg: 'bg-red-500/20', icon: TrendingUp }
+  pending: { label: '待接触', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.2)' },
+  contacted: { label: '已接触', color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.2)' },
+  assessing: { label: '评估中', color: '#a855f7', bgColor: 'rgba(168, 85, 247, 0.2)' },
+  negotiating: { label: '谈判中', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  deal: { label: '已签约', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  recycling: { label: '回收中', color: '#06b6d4', bgColor: 'rgba(6, 182, 212, 0.2)' },
+  completed: { label: '已完成', color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.2)' },
+  cancelled: { label: '已取消', color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.2)' }
 };
 
 export default function RecycleStoreList() {
@@ -101,6 +109,11 @@ export default function RecycleStoreList() {
     loadStores(true, keyword, statusFilter);
   };
 
+  const handleLoadMore = () => {
+    if (!loading && hasMore) {
+      loadStores(false);
+    }
+  };
 
   const goToDetail = (id: string) => {
     Taro.navigateTo({ url: `/pages/recycle/detail?id=${id}` });
@@ -115,95 +128,115 @@ export default function RecycleStoreList() {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
-      {/* 顶部统计卡片 */}
-      <View className="px-4 pt-4 pb-2">
-        <View className="bg-gradient-to-r from-cyan-600 to-cyan-700 rounded-2xl p-4 mb-4">
-          <View className="flex justify-between items-start mb-3">
-            <Text className="text-white text-lg font-semibold block">回收总览</Text>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
+      {/* 页面头部 */}
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+        <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>整店回收</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>回收业务全流程管理</Text>
+      </View>
+
+      {/* 统计概览 */}
+      <View style={{ padding: '0 20px', marginTop: '-16px' }}>
+        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '16px', padding: '20px' }}>
+          <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>回收总览</Text>
             <View
-              className="bg-slate-800/20 px-3 py-1 rounded-full"
+              style={{ padding: '6px 12px', backgroundColor: 'rgba(59, 130, 246, 0.2)', borderRadius: '8px' }}
               onClick={goToDashboard}
             >
-              <Text className="block text-white text-xs">查看详情</Text>
+              <Text style={{ fontSize: '12px', color: '#3b82f6' }}>查看详情</Text>
             </View>
           </View>
-          <View className="flex justify-between">
-            <View className="items-center">
-              <Text className="block text-2xl font-bold text-white">{statistics?.total || 0}</Text>
-              <Text className="block text-cyan-200 text-xs mt-1">接触门店</Text>
+          <View style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <View style={{ flex: 1, textAlign: 'center' }}>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff' }}>{statistics?.total || 0}</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>接触门店</Text>
             </View>
-            <View className="items-center">
-              <Text className="block text-2xl font-bold text-emerald-300">
+            <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+            <View style={{ flex: 1, textAlign: 'center' }}>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>
                 {statistics?.statusDistribution?.completed || 0}
               </Text>
-              <Text className="block text-cyan-200 text-xs mt-1">已完成</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>已完成</Text>
             </View>
-            <View className="items-center">
-              <Text className="block text-xl font-bold text-amber-300">
-                ¥{(statistics?.totalEstimatedValue || 0).toFixed(0)}万
+            <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+            <View style={{ flex: 1, textAlign: 'center' }}>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>
+                ¥{(statistics?.totalEstimatedValue || 0).toFixed(0)}
               </Text>
-              <Text className="block text-cyan-200 text-xs mt-1">预估价值</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>预估价值(万)</Text>
             </View>
           </View>
-        </View>
-
-        {/* 搜索栏 */}
-        <View className="bg-slate-800 rounded-xl p-3 mb-4 flex items-center gap-3">
-          <Text>🔍</Text>
-          <Input
-            className="flex-1 text-white text-sm bg-transparent"
-            placeholder="搜索门店名称、电话、微信"
-            value={keyword}
-            onInput={(e) => setKeyword(e.detail.value)}
-            onConfirm={handleSearch}
-          />
-          <View
-            className="bg-cyan-600 px-3 py-1 rounded-lg"
-            onClick={handleSearch}
-          >
-            <Text className="block text-white text-xs">搜索</Text>
-          </View>
-        </View>
-
-        {/* 状态筛选 */}
-        <View className="flex gap-2 mb-4 overflow-x-auto">
-          <View
-            className={`px-3 py-1 rounded-full whitespace-nowrap ${!statusFilter ? 'bg-cyan-600' : 'bg-slate-800'}`}
-            onClick={() => setStatusFilter('')}
-          >
-            <Text className={`block text-xs ${!statusFilter ? 'text-white' : 'text-slate-400'}`}>全部</Text>
-          </View>
-          {Object.entries(statusMap).map(([key, config]) => (
-            <View
-              key={key}
-              className={`px-3 py-1 rounded-full whitespace-nowrap ${statusFilter === key ? 'bg-cyan-600' : 'bg-slate-800'}`}
-              onClick={() => {
-                setStatusFilter(key);
-                setPage(1);
-                setHasMore(true);
-                loadStores(true, keyword, key);
-              }}
-            >
-              <Text className={`block text-xs ${statusFilter === key ? 'text-white' : 'text-slate-400'}`}>
-                {config.label}
-              </Text>
-            </View>
-          ))}
         </View>
       </View>
 
-      {/* 门店列表 */}
-      <View className="px-4 pb-20">
-        {stores.length === 0 && !loading ? (
-          <View className="flex flex-col items-center justify-center py-20">
-            <Text>🏪</Text>
-            <Text className="block text-slate-400 text-sm mt-3">暂无回收门店</Text>
+      {/* 搜索栏 */}
+      <View style={{ padding: '16px 20px 0' }}>
+        <View style={{ display: 'flex', gap: '12px' }}>
+          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}>
+            <Search size={18} color="#71717a" />
+            <Input
+              style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
+              placeholder="搜索门店名称/电话/微信"
+              placeholderStyle="color: #52525b"
+              value={keyword}
+              onInput={(e) => setKeyword(e.detail.value)}
+              onConfirm={handleSearch}
+            />
+          </View>
+          <View
+            style={{ backgroundColor: '#3b82f6', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={handleSearch}
+          >
+            <Text style={{ fontSize: '14px', color: '#ffffff' }}>搜索</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* 状态筛选 */}
+      <View style={{ padding: '16px 20px 0' }}>
+        <ScrollView scrollX style={{ width: '100%', whiteSpace: 'nowrap' }}>
+          <View style={{ display: 'inline-flex', gap: '8px' }}>
             <View
-              className="mt-4 bg-cyan-600 px-6 py-2 rounded-full"
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                backgroundColor: statusFilter === '' ? '#3b82f6' : '#18181b',
+                border: statusFilter === '' ? 'none' : '1px solid #27272a'
+              }}
+              onClick={() => { setStatusFilter(''); loadStores(true, keyword, ''); }}
+            >
+              <Text style={{ fontSize: '13px', color: statusFilter === '' ? '#ffffff' : '#a1a1aa' }}>全部</Text>
+            </View>
+            {Object.entries(statusMap).slice(0, 6).map(([key, config]) => (
+              <View
+                key={key}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  backgroundColor: statusFilter === key ? '#3b82f6' : '#18181b',
+                  border: statusFilter === key ? 'none' : '1px solid #27272a'
+                }}
+                onClick={() => { setStatusFilter(key); loadStores(true, keyword, key); }}
+              >
+                <Text style={{ fontSize: '13px', color: statusFilter === key ? '#ffffff' : '#a1a1aa' }}>{config.label}</Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+
+      {/* 门店列表 */}
+      <View style={{ padding: '16px 20px 0' }}>
+        {stores.length === 0 && !loading ? (
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
+            <Store size={48} color="#52525b" />
+            <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '12px' }}>暂无回收门店</Text>
+            <View
+              style={{ marginTop: '16px', backgroundColor: '#3b82f6', borderRadius: '24px', padding: '12px 24px' }}
               onClick={goToCreate}
             >
-              <Text className="block text-white text-sm">新增门店</Text>
+              <Text style={{ fontSize: '14px', color: '#ffffff' }}>新增门店</Text>
             </View>
           </View>
         ) : (
@@ -213,43 +246,46 @@ export default function RecycleStoreList() {
               return (
                 <View
                   key={store.id}
-                  className="bg-slate-800 rounded-xl p-4 mb-3"
+                  style={{
+                    backgroundColor: '#18181b',
+                    border: '1px solid #27272a',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    marginBottom: '12px'
+                  }}
                   onClick={() => goToDetail(store.id)}
                 >
-                  <View className="flex justify-between items-start mb-2">
-                    <View className="flex-1">
-                      <View className="flex items-center mb-1">
-                        <Text className="block text-white text-base font-semibold mr-2">
-                          {store.store_name}
-                        </Text>
-                        <View className={`${statusConfig.bg} px-2 py-0.5 rounded-full flex items-center`}>
-                          <statusConfig.icon size={12} className={statusConfig.color} />
-                          <Text className={`block text-xs ml-1 ${statusConfig.color}`}>
-                            {statusConfig.label}
-                          </Text>
+                  <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                    <View style={{ flex: 1 }}>
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>{store.store_name}</Text>
+                        <View style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: statusConfig.bgColor }}>
+                          <Text style={{ fontSize: '12px', color: statusConfig.color }}>{statusConfig.label}</Text>
                         </View>
                       </View>
-                      <Text className="block text-slate-400 text-xs">{store.business_type || '未分类'}</Text>
+                      <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>{store.business_type || '未分类'}</Text>
+                    </View>
+                    <ChevronRight size={18} color="#52525b" />
+                  </View>
+
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Phone size={14} color="#52525b" />
+                      <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.phone || '未填写'}</Text>
+                    </View>
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <MapPin size={14} color="#52525b" />
+                      <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.city || '未填写'}</Text>
                     </View>
                   </View>
 
-                  <View className="flex items-center mt-3">
-                    <Text>📞</Text>
-                    <Text className="block text-slate-400 text-xs mr-4">
-                      {store.phone || '未填写'}
-                    </Text>
-                    <Text>📍</Text>
-                    <Text className="block text-slate-400 text-xs">
-                      {store.city || '未填写'}
-                    </Text>
-                  </View>
-
                   {store.estimated_value && (
-                    <View className="flex items-center justify-between mt-3 pt-3 border-t border-slate-700">
-                      <Text className="block text-slate-400 text-xs">预估价值</Text>
-                      <Text className="block text-cyan-400 text-sm font-semibold">
-                        ¥{store.estimated_value.toFixed(0)}元
-                      </Text>
+                    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <CircleDollarSign size={14} color="#52525b" />
+                        <Text style={{ fontSize: '13px', color: '#71717a' }}>预估价值</Text>
+                      </View>
+                      <Text style={{ fontSize: '16px', fontWeight: '600', color: '#3b82f6' }}>¥{store.estimated_value.toFixed(0)}</Text>
                     </View>
                   )}
                 </View>
@@ -259,24 +295,36 @@ export default function RecycleStoreList() {
         )}
 
         {loading && (
-          <View className="flex justify-center py-4">
-            <Text className="block text-slate-400 text-sm">加载中...</Text>
+          <View style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+            <Text style={{ fontSize: '14px', color: '#71717a' }}>加载中...</Text>
           </View>
         )}
 
         {!hasMore && stores.length > 0 && (
-          <View className="flex justify-center py-4">
-            <Text className="block text-slate-400 text-xs">没有更多了</Text>
+          <View style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }} onClick={handleLoadMore}>
+            <Text style={{ fontSize: '12px', color: '#52525b' }}>没有更多了</Text>
           </View>
         )}
       </View>
 
-      {/* 新增按钮 */}
+      {/* 浮动新增按钮 */}
       <View
-        className="fixed bottom-24 right-4 w-14 h-14 bg-cyan-600 rounded-full flex items-center justify-center shadow-lg"
+        style={{
+          position: 'fixed',
+          bottom: '80px',
+          right: '20px',
+          width: '56px',
+          height: '56px',
+          backgroundColor: '#3b82f6',
+          borderRadius: '28px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
+        }}
         onClick={goToCreate}
       >
-        <Text>+</Text>
+        <Plus size={24} color="#ffffff" />
       </View>
     </View>
   );
