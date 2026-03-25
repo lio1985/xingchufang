@@ -1,6 +1,9 @@
 export default defineAppConfig({
   pages: [
-    'pages/index/index',
+    'pages/tab-customer/index',
+    'pages/tab-knowledge/index',
+    'pages/tab-content/index',
+    'pages/tab-profile/index',
     'pages/login/index',
     'pages/register/index',
     'pages/change-password/index',
@@ -87,10 +90,28 @@ export default defineAppConfig({
     borderStyle: 'black',
     list: [
       {
-        pagePath: 'pages/index/index',
-        text: '管理',
-        iconPath: './assets/tabbar/home.png',
-        selectedIconPath: './assets/tabbar/home-active.png',
+        pagePath: 'pages/tab-customer/index',
+        text: '客资管理',
+        iconPath: './assets/tabbar/users.png',
+        selectedIconPath: './assets/tabbar/users-active.png',
+      },
+      {
+        pagePath: 'pages/tab-knowledge/index',
+        text: '知识库',
+        iconPath: './assets/tabbar/book-open.png',
+        selectedIconPath: './assets/tabbar/book-open-active.png',
+      },
+      {
+        pagePath: 'pages/tab-content/index',
+        text: '内容创作',
+        iconPath: './assets/tabbar/pen-tool.png',
+        selectedIconPath: './assets/tabbar/pen-tool-active.png',
+      },
+      {
+        pagePath: 'pages/tab-profile/index',
+        text: '我',
+        iconPath: './assets/tabbar/user.png',
+        selectedIconPath: './assets/tabbar/user-active.png',
       }
     ]
   }
