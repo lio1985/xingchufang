@@ -70,6 +70,10 @@ export default defineAppConfig({
     'pages/admin/send-notification/index',
     'pages/team/index',
     'pages/notification/index',
+    'pages/knowledge/product-manual/index',
+    'pages/knowledge/product-manual/detail',
+    'pages/knowledge/design-knowledge/index',
+    'pages/knowledge/design-knowledge/detail',
   ],
   window: {
     backgroundTextStyle: 'light',

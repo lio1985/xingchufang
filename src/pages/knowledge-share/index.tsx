@@ -1,214 +1,267 @@
-import { View, Text, ScrollView, Input } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { useState, useEffect, useCallback } from 'react';
 import {
-  Plus,
-  Search,
-  BookOpen,
-  Eye,
-  Heart,
-  RefreshCw,
-  Tag,
+  Building2,
+  Wrench,
+  FileText,
+  PenTool,
   ChevronRight,
+  BookOpen,
+  Settings,
+  Lightbulb,
 } from 'lucide-react-taro';
-import { Network } from '@/network';
 
-interface KnowledgeItem {
-  id: string;
-  title: string;
-  content: string;
-  category: string;
-  author: string;
-  viewCount: number;
-  likeCount: number;
-  createdAt: string;
-  tags?: string[];
-}
+// 知识分类数据
+const knowledgeCategories = [
+  {
+    id: 'equipment-maintenance',
+    title: '商厨设备维修维保',
+    description: '设备维修保养指南与知识库',
+    icon: Wrench,
+    color: '#f59e0b',
+    bgColor: 'rgba(245, 158, 11, 0.2)',
+    count: 24,
+    subCategories: [
+      { id: 'product-manual', title: '产品使用说明书', count: 15 },
+      { id: 'design-knowledge', title: '商厨设计知识', count: 9 },
+    ]
+  },
+  {
+    id: 'company-policies',
+    title: '公司规章制度',
+    description: '企业管理制度与流程规范',
+    icon: Building2,
+    color: '#a855f7',
+    bgColor: 'rgba(168, 85, 247, 0.2)',
+    count: 12,
+  },
+  {
+    id: 'sales-skills',
+    title: '销售技巧',
+    description: '销售话术与客户沟通技巧',
+    icon: Lightbulb,
+    color: '#22c55e',
+    bgColor: 'rgba(34, 197, 94, 0.2)',
+    count: 18,
+  },
+  {
+    id: 'product-knowledge',
+    title: '产品知识',
+    description: '产品介绍与参数说明',
+    icon: Settings,
+    color: '#3b82f6',
+    bgColor: 'rgba(59, 130, 246, 0.2)',
+    count: 32,
+  },
+];
 
 const KnowledgeSharePage = () => {
-  const [knowledgeList, setKnowledgeList] = useState<KnowledgeItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const handleNavigate = (path: string) => {
+    Taro.navigateTo({ url: path });
+  };
 
-  const loadKnowledgeList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await Network.request({
-        url: '/api/knowledge-shares',
-        method: 'GET',
-        data: {
-          keyword: searchKeyword,
-        },
-      });
-
-      if (res.data?.code === 200) {
-        setKnowledgeList(res.data.data || []);
-      }
-    } catch (error) {
-      console.error('[KnowledgeShare] 加载失败:', error);
-    } finally {
-      setLoading(false);
+  const handleCategoryClick = (categoryId: string) => {
+    if (categoryId === 'equipment-maintenance') {
+      // 商厨设备维修维保是主分类，展开子分类
+      return;
     }
-  }, [searchKeyword]);
-
-  useEffect(() => {
-    loadKnowledgeList();
-  }, [loadKnowledgeList]);
-
-  const handleCreateKnowledge = () => {
-    Taro.navigateTo({ url: '/pages/knowledge-share/create' });
+    Taro.showToast({ title: '功能开发中', icon: 'none' });
   };
 
-  const handleViewDetail = (item: KnowledgeItem) => {
-    Taro.navigateTo({
-      url: `/pages/knowledge-share/detail?id=${item.id}`,
-    });
-  };
-
-  const formatTime = (timeStr: string) => {
-    const date = new Date(timeStr);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (days === 0) {
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      if (hours === 0) {
-        const minutes = Math.floor(diff / (1000 * 60));
-        return `${minutes}分钟前`;
-      }
-      return `${hours}小时前`;
-    } else if (days === 1) {
-      return '昨天';
-    } else if (days < 7) {
-      return `${days}天前`;
+  const handleSubCategoryClick = (subId: string) => {
+    if (subId === 'product-manual') {
+      handleNavigate('/pages/knowledge/product-manual/index');
+    } else if (subId === 'design-knowledge') {
+      handleNavigate('/pages/knowledge/design-knowledge/index');
     } else {
-      return date.toLocaleDateString('zh-CN');
+      Taro.showToast({ title: '功能开发中', icon: 'none' });
     }
   };
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 16px', backgroundColor: '#141416' }}>
-        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <View style={{ display: 'flex', alignItems: 'center' }}>
-            <BookOpen size={24} color="#a855f7" />
-            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginLeft: '8px' }}>公司资料</Text>
-          </View>
-          <View
-            style={{ backgroundColor: '#a855f7', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center' }}
-            onClick={handleCreateKnowledge}
-          >
-            <Plus size={16} color="#ffffff" />
-            <Text style={{ fontSize: '13px', color: '#ffffff', marginLeft: '4px' }}>新建</Text>
-          </View>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+        <View style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+          <Building2 size={24} color="#a855f7" />
+          <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginLeft: '8px' }}>公司资料</Text>
         </View>
-
-        {/* 搜索框 */}
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}>
-          <Search size={18} color="#71717a" />
-          <Input
-            style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
-            placeholder="搜索知识内容..."
-            placeholderStyle="color: #52525b"
-            value={searchKeyword}
-            onInput={(e) => setSearchKeyword(e.detail.value)}
-            onConfirm={() => loadKnowledgeList()}
-          />
-        </View>
-        
-        {/* 统计 */}
-        <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '12px' }}>共 {knowledgeList.length} 条知识</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a' }}>企业知识沉淀与复用</Text>
       </View>
 
-      {/* 知识列表 */}
-      <ScrollView scrollY style={{ height: 'calc(100vh - 200px)' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 140px)' }}>
         <View style={{ padding: '16px 20px' }}>
-          {loading ? (
-            <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
-              <RefreshCw size={32} color="#f59e0b" />
-              <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '12px' }}>加载中...</Text>
-            </View>
-          ) : knowledgeList.length === 0 ? (
-            <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
-              <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#18181b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <BookOpen size={32} color="#52525b" />
+          {/* 统计概览 */}
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <BookOpen size={20} color="#f59e0b" />
+                <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>知识库概览</Text>
               </View>
-              <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginTop: '16px' }}>
-                {searchKeyword ? '没有找到相关知识' : '暂无知识分享'}
-              </Text>
-              {!searchKeyword && (
-                <View
-                  style={{ marginTop: '16px', padding: '10px 20px', backgroundColor: '#a855f7', borderRadius: '20px' }}
-                  onClick={handleCreateKnowledge}
-                >
-                  <Text style={{ fontSize: '14px', color: '#ffffff' }}>创建第一条知识分享</Text>
-                </View>
-              )}
             </View>
-          ) : (
-            <View>
-              {knowledgeList.map((item) => (
+            <View style={{ display: 'flex', justifyContent: 'space-around', marginTop: '16px' }}>
+              <View style={{ textAlign: 'center' }}>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff' }}>86</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>知识总数</Text>
+              </View>
+              <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+              <View style={{ textAlign: 'center' }}>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>4</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>知识分类</Text>
+              </View>
+              <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+              <View style={{ textAlign: 'center' }}>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>12</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周更新</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* 知识分类列表 */}
+          <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
+          
+          {knowledgeCategories.map((category) => {
+            const CategoryIcon = category.icon;
+            return (
+              <View
+                key={category.id}
+                style={{
+                  backgroundColor: '#18181b',
+                  border: '1px solid #27272a',
+                  borderRadius: '12px',
+                  marginBottom: '12px',
+                  overflow: 'hidden'
+                }}
+              >
+                {/* 主分类 */}
                 <View
-                  key={item.id}
-                  style={{
-                    backgroundColor: '#18181b',
-                    border: '1px solid #27272a',
+                  style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}
+                  onClick={() => handleCategoryClick(category.id)}
+                >
+                  <View style={{
+                    width: '48px',
+                    height: '48px',
                     borderRadius: '12px',
-                    padding: '16px',
-                    marginBottom: '12px'
+                    backgroundColor: category.bgColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
                   }}
-                  onClick={() => handleViewDetail(item)}
-                >
-                  {/* 标题和分类 */}
-                  <View style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', flex: 1, marginRight: '8px' }}>{item.title}</Text>
-                    {item.category && (
-                      <View style={{ padding: '4px 10px', borderRadius: '6px', backgroundColor: 'rgba(168, 85, 247, 0.2)', flexShrink: 0 }}>
-                        <Text style={{ fontSize: '12px', color: '#a855f7' }}>{item.category}</Text>
-                      </View>
-                    )}
+                  >
+                    <CategoryIcon size={24} color={category.color} />
                   </View>
-
-                  {/* 标签 */}
-                  {item.tags && item.tags.length > 0 && (
-                    <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
-                      {item.tags.slice(0, 3).map((tag, idx) => (
-                        <View key={idx} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Tag size={12} color="#71717a" />
-                          <Text style={{ fontSize: '12px', color: '#71717a' }}>{tag}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  )}
-
-                  {/* 内容 */}
-                  <Text style={{ fontSize: '13px', color: '#a1a1aa', display: 'block', marginBottom: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {item.content}
-                  </Text>
-
-                  {/* 底部信息 */}
-                  <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
-                    <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Eye size={14} color="#52525b" />
-                        <Text style={{ fontSize: '12px', color: '#71717a' }}>{item.viewCount}</Text>
-                      </View>
-                      <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Heart size={14} color="#52525b" />
-                        <Text style={{ fontSize: '12px', color: '#71717a' }}>{item.likeCount}</Text>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>{category.title}</Text>
+                      <View style={{ padding: '4px 10px', borderRadius: '12px', backgroundColor: category.bgColor }}>
+                        <Text style={{ fontSize: '12px', color: category.color }}>{category.count}</Text>
                       </View>
                     </View>
-                    <View style={{ display: 'flex', alignItems: 'center' }}>
-                      <Text style={{ fontSize: '12px', color: '#52525b' }}>{formatTime(item.createdAt)}</Text>
-                      <ChevronRight size={16} color="#52525b" />
-                    </View>
+                    <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>{category.description}</Text>
                   </View>
                 </View>
-              ))}
+
+                {/* 子分类（仅商厨设备维修维保显示） */}
+                {category.subCategories && category.subCategories.length > 0 && (
+                  <View style={{ borderTop: '1px solid #27272a' }}>
+                    {category.subCategories.map((sub, index) => (
+                      <View
+                        key={sub.id}
+                        style={{
+                          padding: '12px 16px 12px 76px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          borderBottom: index < category.subCategories!.length - 1 ? '1px solid #27272a' : 'none',
+                          backgroundColor: '#141416'
+                        }}
+                        onClick={() => handleSubCategoryClick(sub.id)}
+                      >
+                        <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          {sub.id === 'product-manual' ? (
+                            <FileText size={16} color="#f59e0b" />
+                          ) : (
+                            <PenTool size={16} color="#f59e0b" />
+                          )}
+                          <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>{sub.title}</Text>
+                        </View>
+                        <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Text style={{ fontSize: '12px', color: '#52525b' }}>{sub.count}篇</Text>
+                          <ChevronRight size={16} color="#52525b" />
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            );
+          })}
+
+          {/* 快捷入口 */}
+          <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', marginTop: '8px', fontWeight: '500' }}>快捷入口</Text>
+          
+          <View style={{ display: 'flex', gap: '12px' }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: '#18181b',
+                border: '1px solid #27272a',
+                borderRadius: '12px',
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+              }}
+              onClick={() => handleNavigate('/pages/knowledge-share/create')}
+            >
+              <View style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '8px'
+              }}
+              >
+                <Text style={{ fontSize: '20px' }}>+</Text>
+              </View>
+              <Text style={{ fontSize: '14px', color: '#ffffff' }}>新建知识</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>分享你的知识</Text>
             </View>
-          )}
+
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: '#18181b',
+                border: '1px solid #27272a',
+                borderRadius: '12px',
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+              }}
+              onClick={() => handleNavigate('/pages/knowledge-share/index')}
+            >
+              <View style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '8px'
+              }}
+              >
+                <BookOpen size={20} color="#3b82f6" />
+              </View>
+              <Text style={{ fontSize: '14px', color: '#ffffff' }}>全部知识</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>查看所有内容</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
     </View>
