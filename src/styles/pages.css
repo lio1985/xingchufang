@@ -1,5 +1,77 @@
 /* 页面通用样式 - Warm Industrial Design */
 
+/* ============================================
+   交互状态类（可与组件类组合使用）
+   ============================================ */
+
+/* 卡片悬停效果 - 配合 content-card 使用 */
+.card-hover {
+  transition: all 200ms ease;
+}
+
+.card-hover:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+}
+
+.card-hover:active {
+  transform: scale(0.98);
+}
+
+/* 按钮按下效果 - 配合 action-btn-* 使用 */
+.btn-press {
+  transition: all 150ms ease;
+}
+
+.btn-press:hover {
+  transform: translateY(-1px);
+}
+
+.btn-press:active {
+  transform: scale(0.96);
+}
+
+/* 输入框聚焦效果 - 配合 form-input 使用 */
+.input-focus {
+  transition: all 200ms ease;
+}
+
+.input-focus:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-subtle);
+  outline: none;
+}
+
+/* 列表项悬停效果 */
+.list-item-hover {
+  transition: all 200ms ease;
+}
+
+.list-item-hover:hover {
+  background-color: var(--background-subtle);
+}
+
+.list-item-hover:active {
+  transform: scale(0.99);
+}
+
+/* 图标按钮效果 */
+.icon-btn-hover {
+  transition: all 150ms ease;
+}
+
+.icon-btn-hover:hover {
+  background-color: var(--primary-subtle);
+}
+
+.icon-btn-hover:active {
+  transform: scale(0.9);
+}
+
+/* ============================================
+   页面基础样式
+   ============================================ */
+
 /* 页面容器 */
 .page-wrapper {
   min-height: 100vh;
