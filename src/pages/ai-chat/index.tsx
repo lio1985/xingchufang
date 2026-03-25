@@ -2,6 +2,27 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
+import {
+  X,
+  Plus,
+  Trash2,
+  Clock,
+  Zap,
+  ChevronDown,
+  ChevronRight,
+  Bot,
+  User,
+  Image,
+  Video,
+  FileText,
+  Mic,
+  Paperclip,
+  Send,
+  MessageSquare,
+  BookOpen,
+  Sparkles,
+  Loader
+} from 'lucide-react-taro';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -43,37 +64,29 @@ const AiChatPage = () => {
   const [showConversationList, setShowConversationList] = useState(false);
   const [lexicons, setLexicons] = useState<Lexicon[]>([]);
   const [showLexiconList, setShowLexiconList] = useState(false);
-  const [modelExpanded, setModelExpanded] = useState(false); // 模型选择折叠状态
-  const [isRecording, setIsRecording] = useState(false); // 是否正在录音
-  const [recordingDuration, setRecordingDuration] = useState(0); // 录音时长（秒）
-  const [attachments, setAttachments] = useState<MessageAttachment[]>([]); // 待发送的附件
-  const [showActionSheet, setShowActionSheet] = useState(false); // 显示操作菜单
-  const [scrollTop, setScrollTop] = useState(0); // 滚动位置
+  const [modelExpanded, setModelExpanded] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [attachments, setAttachments] = useState<MessageAttachment[]>([]);
+  const [showActionSheet, setShowActionSheet] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
   const recorderManagerRef = useRef<Taro.RecorderManager | null>(null);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 获取用户ID（优先使用登录时的真实userId，否则使用localStorage）
   const getUserId = () => {
-    // 优先使用登录时存储的真实用户ID（UUID格式）
     const user = Taro.getStorageSync('user');
     if (user && user.id) {
-      // 验证 UUID 格式
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       if (uuidRegex.test(user.id)) {
         return user.id;
       }
     }
     
-    // 其次使用userId storage
     let userId = Taro.getStorageSync('userId');
-    
-    // 验证 UUID 格式
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     
-    // 如果没有userId，或者格式不正确，创建新的UUID
     if (!userId || !uuidRegex.test(userId)) {
       console.log('[AI Chat] 生成新的 UUID');
-      // 创建UUID格式的用户ID（兼容小程序）
       userId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = Math.random() * 16 | 0;
         const v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -86,7 +99,6 @@ const AiChatPage = () => {
     return userId;
   };
 
-  // 加载对话列表
   const loadConversations = useCallback(async () => {
     try {
       const response = await Network.request({
@@ -98,7 +110,6 @@ const AiChatPage = () => {
         setConversations(response.data.data);
       }
     } catch (error: any) {
-      // 静默处理 404 错误，后端接口未部署时不影响核心功能
       if (error.statusCode === 404) {
         console.log('对话列表接口暂未部署');
       } else {
@@ -107,7 +118,6 @@ const AiChatPage = () => {
     }
   }, []);
 
-  // 加载语料列表
   const loadLexicons = async () => {
     try {
       const response = await Network.request({
@@ -116,14 +126,12 @@ const AiChatPage = () => {
       });
 
       if (response.statusCode === 200 && response.data?.data) {
-        // 后端返回的数据结构是 { items, total, page, pageSize }
         const lexiconData = Array.isArray(response.data.data.items) ? response.data.data.items : []
         setLexicons(lexiconData)
       } else {
         setLexicons([])
       }
     } catch (error: any) {
-      // 静默处理 404 错误
       if (error.statusCode === 404) {
         console.log('语料库接口暂未部署');
       } else {
@@ -133,7 +141,6 @@ const AiChatPage = () => {
     }
   };
 
-  // 创建新对话
   const createConversation = async (title: string): Promise<string | null> => {
     try {
       const userId = getUserId();
@@ -165,7 +172,6 @@ const AiChatPage = () => {
     return null;
   };
 
-  // 加载对话详情
   const loadConversationDetail = async (conversationId: string) => {
     try {
       const response = await Network.request({
@@ -186,7 +192,6 @@ const AiChatPage = () => {
     }
   };
 
-  // 保存消息到数据库
   const saveMessage = async (role: string, content: string, convId?: string) => {
     const targetConversationId = convId || currentConversationId;
     if (!targetConversationId) return;
@@ -206,16 +211,13 @@ const AiChatPage = () => {
     }
   };
 
-  // 处理录音完成
   const handleRecordingComplete = useCallback(async (tempFilePath: string, duration: number) => {
     console.log('录音完成，准备上传:', tempFilePath, duration);
 
     try {
-      // 上传文件
       const userId = getUserId();
       const uploadResult = await uploadFile(tempFilePath, userId);
 
-      // 进行语音识别
       Taro.showLoading({ title: '语音识别中...' });
 
       const transcriptResponse = await Network.request({
@@ -230,10 +232,7 @@ const AiChatPage = () => {
 
       if (transcriptResponse.statusCode === 200 && transcriptResponse.data) {
         const recognizedText = transcriptResponse.data.data?.text || '';
-
-        // 将识别的文本填充到输入框
         setInputText(prev => prev + (prev ? ' ' : '') + recognizedText);
-
         Taro.showToast({ title: '识别成功', icon: 'success' });
       } else {
         throw new Error('语音识别失败');
@@ -244,23 +243,18 @@ const AiChatPage = () => {
     }
   }, []);
 
-  // 初始化 - 只在组件挂载时运行
   useEffect(() => {
-    // 游客模式也允许使用基础功能
     loadConversations();
     loadLexicons();
 
-    // 初始化录音管理器（仅在小程序端）
     if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
       recorderManagerRef.current = Taro.getRecorderManager();
 
-      // 监听录音停止事件
       recorderManagerRef.current.onStop((result) => {
         console.log('录音完成:', result);
         handleRecordingComplete(result.tempFilePath, result.duration);
       });
 
-      // 监听录音错误事件
       recorderManagerRef.current.onError((error) => {
         console.error('录音失败:', error);
         Taro.showToast({ title: '录音失败', icon: 'none' });
@@ -274,13 +268,10 @@ const AiChatPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 滚动到底部
   useEffect(() => {
-    // 使用 scrollTop 状态控制滚动位置，微信小程序 ScrollView 不支持 ref.scrollTo
     setScrollTop(prev => prev + 100000);
   }, [messages]);
 
-  // H5 环境下监听键盘事件（Enter 发送，Shift+Enter 换行）
   useEffect(() => {
     if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP && typeof window !== 'undefined') {
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -300,7 +291,6 @@ const AiChatPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputText, loading, attachments.length]);
 
-  // 开始录音
   const startRecording = () => {
     const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
 
@@ -317,13 +307,11 @@ const AiChatPage = () => {
     setIsRecording(true);
     setRecordingDuration(0);
 
-    // 开始录音
     recorderManagerRef.current.start({
       format: 'mp3',
-      duration: 60000, // 最长60秒
+      duration: 60000,
     });
 
-    // 开始计时
     recordingTimerRef.current = setInterval(() => {
       setRecordingDuration(prev => prev + 1);
     }, 1000);
@@ -331,7 +319,6 @@ const AiChatPage = () => {
     Taro.showToast({ title: '开始录音', icon: 'none', duration: 1000 });
   };
 
-  // 停止录音
   const stopRecording = () => {
     if (!recorderManagerRef.current) return;
 
@@ -345,12 +332,10 @@ const AiChatPage = () => {
     setIsRecording(false);
   };
 
-  // 上传文件
   const uploadFile = async (filePath: string, userId: string): Promise<MessageAttachment> => {
     try {
       Taro.showLoading({ title: '上传中...' });
 
-      // 使用Network.uploadFile上传文件
       const uploadResponse = await Network.uploadFile({
         url: '/api/multimedia/upload',
         filePath,
@@ -384,16 +369,13 @@ const AiChatPage = () => {
     }
   };
 
-  // 选择文件
   const handleSelectFile = () => {
     setShowActionSheet(true);
   };
 
-  // 选择图片
   const handleSelectImage = () => {
     setShowActionSheet(false);
 
-    // H5 端不支持 chooseImage，使用 input 替代
     if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP) {
       Taro.showToast({ title: 'H5端请使用小程序体验完整功能', icon: 'none' });
       return;
@@ -431,11 +413,9 @@ const AiChatPage = () => {
     });
   };
 
-  // 选择视频
   const handleSelectVideo = () => {
     setShowActionSheet(false);
 
-    // H5 端不支持 chooseVideo
     if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP) {
       Taro.showToast({ title: 'H5端请使用小程序体验完整功能', icon: 'none' });
       return;
@@ -464,11 +444,9 @@ const AiChatPage = () => {
     });
   };
 
-  // 选择文件（文档）
   const handleSelectDocument = () => {
     setShowActionSheet(false);
 
-    // H5 端不支持 chooseMessageFile
     if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP) {
       Taro.showToast({ title: 'H5端请使用小程序体验完整功能', icon: 'none' });
       return;
@@ -505,7 +483,6 @@ const AiChatPage = () => {
     });
   };
 
-  // 删除附件
   const handleRemoveAttachment = (index: number) => {
     setAttachments(prev => prev.filter((_, i) => i !== index));
   };
@@ -515,7 +492,6 @@ const AiChatPage = () => {
       return;
     }
 
-    // 如果没有当前对话，创建一个新对话
     let conversationId = currentConversationId;
     if (!conversationId) {
       const title = inputText.trim().substring(0, 30) + (inputText.trim().length > 30 ? '...' : '') || '新对话';
@@ -534,17 +510,14 @@ const AiChatPage = () => {
       attachments: attachments.length > 0 ? [...attachments] : undefined,
     };
 
-    // 使用函数式更新确保状态正确
     setMessages(prevMessages => [...prevMessages, userMessage]);
     setInputText('');
     setAttachments([]);
     setLoading(true);
 
     try {
-      // 保存用户消息
       await saveMessage('user', userMessage.content, conversationId);
 
-      // 构建消息内容（包含附件信息）
       let messageContent = userMessage.content;
       if (userMessage.attachments && userMessage.attachments.length > 0) {
         messageContent += '\n\n[附件信息]\n';
@@ -572,7 +545,7 @@ const AiChatPage = () => {
           conversationId,
           model
         },
-        timeout: 60000 // 60秒超时，防止长时间无响应
+        timeout: 60000
       });
 
       console.log('=== 前端响应数据 ===');
@@ -587,10 +560,8 @@ const AiChatPage = () => {
         };
         setMessages(prev => [...prev, aiMessage]);
 
-        // 保存AI消息
         await saveMessage('assistant', aiMessage.content, conversationId);
 
-        // 如果有推荐模型，自动切换
         if (responseData.recommendedModel && responseData.recommendedModel !== model) {
           console.log('自动切换到推荐模型:', responseData.recommendedModel);
           setModel(responseData.recommendedModel);
@@ -601,7 +572,6 @@ const AiChatPage = () => {
           });
         }
 
-        // 更新当前对话ID
         if (responseData.conversationId && responseData.conversationId !== currentConversationId) {
           setCurrentConversationId(responseData.conversationId);
         }
@@ -616,7 +586,6 @@ const AiChatPage = () => {
     }
   };
 
-  // 获取模型标签
   const getModelLabel = (modelValue: string): string => {
     const labels: Record<string, string> = {
       'doubao-seed-2-0-pro-260215': '豆包 Pro',
@@ -687,29 +656,29 @@ const AiChatPage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col">
+    <View className="min-h-screen bg-[#0a0a0b] flex flex-col">
       {/* 对话列表侧边栏 */}
       {showConversationList && (
-        <View className="fixed inset-0 z-50 bg-slate-900/95">
+        <View className="fixed inset-0 z-50 bg-[#0a0a0b]/95">
           <View className="h-full flex flex-col p-4">
             <View className="flex items-center justify-between mb-6">
               <Text className="block text-xl font-bold text-white">对话历史</Text>
               <View
-                className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center"
+                className="w-10 h-10 bg-zinc-800/60 rounded-xl flex items-center justify-center border border-zinc-700/50 active:bg-zinc-700"
                 style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowConversationList(false)}
               >
-                <Text>{prismjs}</Text>
+                <X size={20} color="#f59e0b" />
               </View>
             </View>
 
             <View
-              className="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-sky-500/30 flex items-center justify-center gap-2 active:scale-95 transition-all"
+              className="mb-6 p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30 flex items-center justify-center gap-2 active:scale-95 transition-all"
               style={{ touchAction: 'none', zIndex: 10 }}
               onClick={handleNewConversation}
             >
-              <Text>+</Text>
-              <Text className="block text-sm font-medium text-blue-300">新建对话</Text>
+              <Plus size={18} color="#3b82f6" />
+              <Text className="block text-sm font-medium text-blue-400">新建对话</Text>
             </View>
 
             <ScrollView scrollY className="flex-1">
@@ -719,8 +688,8 @@ const AiChatPage = () => {
                     key={conv.id}
                     className={`p-4 rounded-xl transition-all ${
                       currentConversationId === conv.id
-                        ? 'bg-slate-9000/20 border border-sky-500/30'
-                        : 'bg-slate-800 border border-slate-700'
+                        ? 'bg-blue-500/20 border border-blue-500/30'
+                        : 'bg-zinc-800/60 border border-zinc-700/50'
                     }`}
                     style={{ touchAction: 'none', zIndex: 10 }}
                     onClick={() => handleSelectConversation(conv)}
@@ -728,13 +697,13 @@ const AiChatPage = () => {
                   >
                     <View className="flex items-start justify-between mb-2">
                       <Text className={`block text-sm font-medium ${
-                        currentConversationId === conv.id ? 'text-blue-300' : 'text-slate-300'
+                        currentConversationId === conv.id ? 'text-blue-400' : 'text-zinc-300'
                       }`}
                       >
                         {conv.title}
                       </Text>
                       <View
-                        className="ml-2"
+                        className="ml-2 p-1 rounded-lg bg-red-500/10 active:bg-red-500/20"
                         style={{
                           padding: '4px',
                           touchAction: 'none',
@@ -743,12 +712,12 @@ const AiChatPage = () => {
                         onClick={(e) => handleDeleteConversation(conv.id, e)}
                         onTap={(e) => handleDeleteConversation(conv.id, e)}
                       >
-                        <Text>🗑</Text>
+                        <Trash2 size={14} color="#ef4444" />
                       </View>
                     </View>
                     <View className="flex items-center gap-1">
-                      <Text>🕐</Text>
-                      <Text className="text-xs text-slate-400">
+                      <Clock size={12} color="#71717a" />
+                      <Text className="text-xs text-zinc-500">
                         {new Date(conv.created_at).toLocaleDateString()}
                       </Text>
                     </View>
@@ -757,7 +726,8 @@ const AiChatPage = () => {
 
                 {conversations.length === 0 && (
                   <View className="flex flex-col items-center justify-center py-10">
-                    <Text className="block text-sm text-slate-400">暂无对话记录</Text>
+                    <MessageSquare size={32} color="#71717a" />
+                    <Text className="block text-sm text-zinc-500 mt-2">暂无对话记录</Text>
                   </View>
                 )}
               </View>
@@ -768,41 +738,41 @@ const AiChatPage = () => {
 
       {/* 语料列表 */}
       {showLexiconList && (
-        <View className="fixed inset-0 z-50 bg-slate-900/95">
+        <View className="fixed inset-0 z-50 bg-[#0a0a0b]/95">
           <View className="h-full flex flex-col p-4">
             <View className="flex items-center justify-between mb-6">
               <Text className="block text-xl font-bold text-white">语料知识库</Text>
               <View
-                className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center"
+                className="w-10 h-10 bg-zinc-800/60 rounded-xl flex items-center justify-center border border-zinc-700/50 active:bg-zinc-700"
                 style={{ touchAction: 'none', zIndex: 10 }}
                 onClick={() => setShowLexiconList(false)}
               >
-                <Text>{prismjs}</Text>
+                <X size={20} color="#f59e0b" />
               </View>
             </View>
 
             <ScrollView scrollY className="flex-1">
               <View className="flex flex-col gap-3">
                 {lexicons.map((lexicon) => (
-                  <View key={lexicon.id} className="p-4 bg-slate-800 rounded-xl border border-slate-700">
-                    <Text className="block text-sm font-medium text-slate-300 mb-2">{lexicon.title}</Text>
-                    <Text className="block text-xs text-slate-400 mb-3 leading-relaxed">{lexicon.content.substring(0, 100)}...</Text>
+                  <View key={lexicon.id} className="p-4 bg-zinc-800/60 rounded-xl border border-zinc-700/50">
+                    <Text className="block text-sm font-medium text-zinc-300 mb-2">{lexicon.title}</Text>
+                    <Text className="block text-xs text-zinc-500 mb-3 leading-relaxed">{lexicon.content.substring(0, 100)}...</Text>
                     <View className="flex gap-2">
                       <View
-                        className="flex-1 py-2 bg-slate-9000/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+                        className="flex-1 py-2 bg-blue-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all border border-blue-500/30"
                         style={{ touchAction: 'none', zIndex: 10 }}
                         onClick={() => handleInsertLexicon(lexicon)}
                         onTap={() => handleInsertLexicon(lexicon)}
                       >
-                        <Text className="text-xs text-blue-300">插入</Text>
+                        <Text className="text-xs text-blue-400">插入</Text>
                       </View>
                       <View
-                        className="flex-1 py-2 bg-green-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+                        className="flex-1 py-2 bg-emerald-500/20 rounded-lg flex items-center justify-center active:scale-95 transition-all border border-emerald-500/30"
                         style={{ touchAction: 'none', zIndex: 10 }}
                         onClick={() => handleSendLexicon(lexicon)}
                         onTap={() => handleSendLexicon(lexicon)}
                       >
-                        <Text className="text-xs text-green-300">发送</Text>
+                        <Text className="text-xs text-emerald-400">发送</Text>
                       </View>
                     </View>
                   </View>
@@ -810,7 +780,8 @@ const AiChatPage = () => {
 
                 {lexicons.length === 0 && (
                   <View className="flex flex-col items-center justify-center py-10">
-                    <Text className="block text-sm text-slate-400">暂无语料</Text>
+                    <BookOpen size={32} color="#71717a" />
+                    <Text className="block text-sm text-zinc-500 mt-2">暂无语料</Text>
                   </View>
                 )}
               </View>
@@ -820,17 +791,33 @@ const AiChatPage = () => {
       )}
 
       {/* 头部 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 px-4 py-3">
+      <View className="sticky top-0 z-10 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-800 px-4 py-3">
         <View className="flex items-center justify-between">
           <View className="flex items-center gap-3">
-            <Text>⭐</Text>
+            <View className="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center border border-amber-500/30">
+              <Sparkles size={20} color="#f59e0b" />
+            </View>
             <Text className="block text-xl font-bold text-white">星小帮</Text>
+          </View>
+          <View className="flex items-center gap-2">
+            <View
+              className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
+              onClick={() => setShowConversationList(true)}
+            >
+              <MessageSquare size={18} color="#f59e0b" />
+            </View>
+            <View
+              className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
+              onClick={() => setShowLexiconList(true)}
+            >
+              <BookOpen size={18} color="#f59e0b" />
+            </View>
           </View>
         </View>
 
         {/* 模型选择折叠区域 */}
         <View
-          className="mt-3 bg-slate-800/50 rounded-xl overflow-hidden transition-all"
+          className="mt-3 bg-zinc-800/50 rounded-xl overflow-hidden transition-all border border-zinc-700/50"
           style={{
             maxHeight: modelExpanded ? '200px' : '48px',
             touchAction: 'none',
@@ -846,8 +833,8 @@ const AiChatPage = () => {
             }}
           >
             <View className="flex items-center gap-2">
-              <Text>⚡</Text>
-              <Text className="text-sm font-medium text-slate-300">
+              <Zap size={16} color="#f59e0b" />
+              <Text className="text-sm font-medium text-zinc-300">
                 {model === 'doubao-seed-2-0-pro-260215' && '豆包 Pro'}
                 {model === 'doubao-seed-2-0-lite-260215' && '豆包 Lite'}
                 {model === 'doubao-seed-2-0-mini-260215' && '豆包 Mini'}
@@ -855,15 +842,15 @@ const AiChatPage = () => {
                 {model === 'doubao-seed-1-6-thinking-250715' && '思考模型'}
               </Text>
               {model === 'doubao-seed-2-0-pro-260215' && (
-                <Text className="text-xs px-2 py-0.5 bg-slate-9000/20 text-blue-400 rounded-full">推荐</Text>
+                <Text className="text-xs px-2 py-0.5 bg-amber-500/20 text-amber-400 rounded-full border border-amber-500/30">推荐</Text>
               )}
             </View>
             <View className="flex items-center gap-1">
-              <Text className="text-xs text-slate-400">自动选择</Text>
+              <Text className="text-xs text-zinc-500">自动选择</Text>
               {modelExpanded ? (
-                <Text>▼</Text>
+                <ChevronDown size={14} color="#71717a" />
               ) : (
-                <Text>{">"}</Text>
+                <ChevronRight size={14} color="#71717a" />
               )}
             </View>
           </View>
@@ -884,8 +871,8 @@ const AiChatPage = () => {
                   paddingTop: '6px',
                   paddingBottom: '6px',
                   borderRadius: '6px',
-                  backgroundColor: model === item.value ? 'rgba(14, 165, 233, 0.2)' : 'rgba(241, 245, 249, 1)',
-                  border: model === item.value ? '1px solid rgba(14, 165, 233, 0.3)' : '1px solid rgba(226, 232, 240, 1)',
+                  backgroundColor: model === item.value ? 'rgba(245, 158, 11, 0.2)' : 'rgba(39, 39, 42, 0.8)',
+                  border: model === item.value ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid rgba(63, 63, 70, 0.5)',
                   flexShrink: 0,
                   touchAction: 'none',
                   zIndex: 10,
@@ -905,13 +892,13 @@ const AiChatPage = () => {
                   <Text style={{
                     fontSize: '12px',
                     fontWeight: '500',
-                    color: model === item.value ? '#0EA5E9' : '#64748B',
+                    color: model === item.value ? '#f59e0b' : '#a1a1aa',
                   }}
                   >
                     {item.label}
                   </Text>
                   {item.recommended && model !== item.value && (
-                    <Text className="text-[10px] px-1 py-0.5 bg-slate-9000/20 text-blue-400 rounded">推荐</Text>
+                    <Text className="text-[10px] px-1 py-0.5 bg-amber-500/20 text-amber-400 rounded border border-amber-500/30">推荐</Text>
                   )}
                 </View>
               </View>
@@ -929,11 +916,11 @@ const AiChatPage = () => {
       >
         {messages.length === 0 ? (
           <View className="flex flex-col items-center justify-center py-20">
-            <View className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mb-4">
-              <Text>🤖</Text>
+            <View className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mb-4 border border-blue-500/30">
+              <Bot size={40} color="#3b82f6" />
             </View>
-            <Text className="block text-base text-slate-400 mb-2">开始对话</Text>
-            <Text className="block text-sm text-slate-300">我是你的助手，随时为你服务</Text>
+            <Text className="block text-base text-zinc-400 mb-2">开始对话</Text>
+            <Text className="block text-sm text-zinc-300">我是你的助手，随时为你服务</Text>
           </View>
         ) : (
           <View className="flex flex-col gap-4">
@@ -946,14 +933,14 @@ const AiChatPage = () => {
                   <View
                     className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                       msg.role === 'user'
-                        ? 'bg-amber-500/20'
-                        : 'bg-slate-9000/20'
+                        ? 'bg-amber-500/20 border border-amber-500/30'
+                        : 'bg-blue-500/20 border border-blue-500/30'
                     }`}
                   >
                     {msg.role === 'user' ? (
-                      <Text>👤</Text>
+                      <User size={20} color="#f59e0b" />
                     ) : (
-                      <Text>🤖</Text>
+                      <Bot size={20} color="#3b82f6" />
                     )}
                   </View>
 
@@ -962,7 +949,7 @@ const AiChatPage = () => {
                       className={`px-4 py-3 rounded-2xl ${
                         msg.role === 'user'
                           ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-tr-none'
-                          : 'bg-slate-800 text-slate-200 rounded-tl-none'
+                          : 'bg-zinc-800 text-zinc-200 rounded-tl-none border border-zinc-700/50'
                       }`}
                     >
                       {/* 附件展示 */}
@@ -977,21 +964,14 @@ const AiChatPage = () => {
                                 borderRadius: '8px',
                                 overflow: 'hidden',
                                 backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                             >
-                              {att.type === 'image' && (
-                                <Text>🖼</Text>
-                              )}
-                              {att.type === 'video' && (
-                                <View className="w-full h-full flex items-center justify-center">
-                                  <Text>🎬</Text>
-                                </View>
-                              )}
-                              {att.type === 'document' && (
-                                <View className="w-full h-full flex items-center justify-center">
-                                  <Text>📄</Text>
-                                </View>
-                              )}
+                              {att.type === 'image' && <Image size={32} color="#71717a" />}
+                              {att.type === 'video' && <Video size={32} color="#71717a" />}
+                              {att.type === 'document' && <FileText size={32} color="#71717a" />}
                             </View>
                           ))}
                         </View>
@@ -1002,7 +982,7 @@ const AiChatPage = () => {
                         {msg.content}
                       </Text>
                     </View>
-                    <Text className={`text-xs text-slate-400 mt-1 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                    <Text className={`text-xs text-zinc-500 mt-1 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                       {formatTime(msg.timestamp)}
                     </Text>
                   </View>
@@ -1012,11 +992,14 @@ const AiChatPage = () => {
             {loading && (
               <View className="flex justify-start">
                 <View className="flex gap-3 max-w-[85%]">
-                  <View className="w-10 h-10 bg-slate-9000/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Text>🤖</Text>
+                  <View className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-blue-500/30">
+                    <Bot size={20} color="#3b82f6" />
                   </View>
-                  <View className="bg-slate-800 px-4 py-3 rounded-2xl rounded-tl-none">
-                    <Text className="block text-sm text-slate-400">思考中...</Text>
+                  <View className="bg-zinc-800 px-4 py-3 rounded-2xl rounded-tl-none border border-zinc-700/50">
+                    <View className="flex items-center gap-2">
+                      <Loader size={14} color="#f59e0b" className="animate-spin" />
+                      <Text className="block text-sm text-zinc-400">思考中...</Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -1025,14 +1008,14 @@ const AiChatPage = () => {
         )}
       </ScrollView>
 
-      {/* 底部输入区域 - 美化版 */}
+      {/* 底部输入区域 */}
       <View style={{ 
         position: 'fixed', 
         bottom: 50, 
         left: 0, 
         right: 0, 
-        background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%)', 
-        borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+        background: 'linear-gradient(180deg, rgba(24, 24, 27, 0.95) 0%, rgba(10, 10, 11, 0.98) 100%)', 
+        borderTop: '1px solid rgba(39, 39, 42, 0.5)',
         backdropFilter: 'blur(20px)',
         zIndex: 40,
         paddingBottom: 'env(safe-area-inset-bottom)'
@@ -1042,7 +1025,7 @@ const AiChatPage = () => {
         {attachments.length > 0 && (
           <View style={{ 
             padding: '12px 16px 8px',
-            borderBottom: '1px solid rgba(148, 163, 184, 0.1)'
+            borderBottom: '1px solid rgba(39, 39, 42, 0.5)'
           }}
           >
             <View style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
@@ -1055,24 +1038,17 @@ const AiChatPage = () => {
                     height: '72px',
                     borderRadius: '12px',
                     overflow: 'hidden',
-                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+                    background: 'linear-gradient(135deg, #27272a 0%, #18181b 100%)',
+                    border: '1px solid rgba(63, 63, 70, 0.5)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
                 >
-                  {att.type === 'image' && (
-                    <Text>🖼</Text>
-                  )}
-                  {att.type === 'video' && (
-                    <View className="w-full h-full flex items-center justify-center bg-slate-800">
-                      <Text>🎬</Text>
-                    </View>
-                  )}
-                  {att.type === 'document' && (
-                    <View className="w-full h-full flex items-center justify-center bg-slate-800">
-                      <Text>📄</Text>
-                    </View>
-                  )}
+                  {att.type === 'image' && <Image size={24} color="#71717a" />}
+                  {att.type === 'video' && <Video size={24} color="#71717a" />}
+                  {att.type === 'document' && <FileText size={24} color="#71717a" />}
                   {/* 删除按钮 */}
                   <View
                     style={{
@@ -1093,7 +1069,7 @@ const AiChatPage = () => {
                     onClick={() => handleRemoveAttachment(index)}
                     onTap={() => handleRemoveAttachment(index)}
                   >
-                    <Text>✕</Text>
+                    <X size={12} color="#fff" />
                   </View>
                 </View>
               ))}
@@ -1123,10 +1099,11 @@ const AiChatPage = () => {
               animation: 'pulse 1s infinite'
             }}
             />
+            <Mic size={16} color="#fca5a5" />
             <Text style={{ fontSize: '14px', color: '#fca5a5', fontWeight: 500 }}>
               正在录音 {Math.floor(recordingDuration / 60)}:{(recordingDuration % 60).toString().padStart(2, '0')}
             </Text>
-            <Text style={{ fontSize: '12px', color: '#94a3b8', marginLeft: 'auto' }}>
+            <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: 'auto' }}>
               点击麦克风停止
             </Text>
           </View>
@@ -1139,10 +1116,10 @@ const AiChatPage = () => {
             flexDirection: 'row', 
             gap: '10px', 
             alignItems: 'flex-end',
-            background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%)',
+            background: 'linear-gradient(135deg, rgba(24, 24, 27, 0.8) 0%, rgba(10, 10, 11, 0.9) 100%)',
             borderRadius: '20px',
             padding: '6px',
-            border: '1px solid rgba(148, 163, 184, 0.15)',
+            border: '1px solid rgba(63, 63, 70, 0.5)',
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
             position: 'relative',
             zIndex: 5
@@ -1157,7 +1134,7 @@ const AiChatPage = () => {
                   borderRadius: '14px',
                   background: isRecording 
                     ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' 
-                    : 'linear-gradient(135deg, #475569 0%, #334155 100%)',
+                    : 'linear-gradient(135deg, #3f3f46 0%, #27272a 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -1173,17 +1150,17 @@ const AiChatPage = () => {
                 onClick={isRecording ? stopRecording : startRecording}
                 onTap={isRecording ? stopRecording : startRecording}
               >
-                <Text>🎤</Text>
+                <Mic size={18} color={isRecording ? '#fff' : '#a1a1aa'} />
               </View>
             )}
 
             {/* 输入框 */}
             <View style={{ 
               flex: 1, 
-              backgroundColor: 'rgba(15, 23, 42, 0.6)', 
+              backgroundColor: 'rgba(10, 10, 11, 0.6)', 
               borderRadius: '14px', 
               padding: '10px 14px',
-              border: '1px solid rgba(148, 163, 184, 0.1)'
+              border: '1px solid rgba(63, 63, 70, 0.3)'
             }}
             >
               <Textarea
@@ -1192,12 +1169,12 @@ const AiChatPage = () => {
                   minHeight: '36px', 
                   maxHeight: '100px', 
                   backgroundColor: 'transparent', 
-                  color: '#f1f5f9', 
+                  color: '#fafafa', 
                   fontSize: '15px',
                   lineHeight: '20px'
                 }}
                 placeholder="输入消息..."
-                placeholderStyle="color: #64748b"
+                placeholderStyle="color: #71717a"
                 value={inputText}
                 onInput={(e) => setInputText(e.detail.value)}
                 maxlength={2000}
@@ -1213,7 +1190,7 @@ const AiChatPage = () => {
                 width: '40px',
                 height: '40px',
                 borderRadius: '14px',
-                background: 'linear-gradient(135deg, #475569 0%, #334155 100%)',
+                background: 'linear-gradient(135deg, #3f3f46 0%, #27272a 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1226,7 +1203,7 @@ const AiChatPage = () => {
               onClick={handleSelectFile}
               onTap={handleSelectFile}
             >
-              <Text>📎</Text>
+              <Paperclip size={18} color="#a1a1aa" />
             </View>
 
             {/* 发送按钮 */}
@@ -1236,8 +1213,8 @@ const AiChatPage = () => {
                 height: '44px',
                 borderRadius: '14px',
                 background: loading || (!inputText.trim() && attachments.length === 0)
-                  ? 'linear-gradient(135deg, #475569 0%, #334155 100%)'
-                  : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                  ? 'linear-gradient(135deg, #3f3f46 0%, #27272a 100%)'
+                  : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1247,18 +1224,18 @@ const AiChatPage = () => {
                 zIndex: 10,
                 boxShadow: loading || (!inputText.trim() && attachments.length === 0)
                   ? 'none'
-                  : '0 4px 15px rgba(59, 130, 246, 0.4)',
+                  : '0 4px 15px rgba(245, 158, 11, 0.4)',
                 transition: 'all 0.2s ease'
               }}
               onClick={() => !loading && handleSend()}
               onTap={() => !loading && handleSend()}
             >
-              <Text>📤</Text>
+              <Send size={18} color={loading || (!inputText.trim() && attachments.length === 0) ? '#71717a' : '#000'} />
             </View>
           </View>
         </View>
 
-        {/* 操作菜单 - 美化版 */}
+        {/* 操作菜单 */}
         {showActionSheet && (
           <View
             style={{
@@ -1280,7 +1257,7 @@ const AiChatPage = () => {
             <View
               style={{
                 width: '100%',
-                background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+                background: 'linear-gradient(180deg, #18181b 0%, #0a0a0b 100%)',
                 borderTopLeftRadius: '24px',
                 borderTopRightRadius: '24px',
                 padding: '20px',
@@ -1291,7 +1268,7 @@ const AiChatPage = () => {
               <View style={{
                 width: '40px',
                 height: '4px',
-                backgroundColor: 'rgba(148, 163, 184, 0.3)',
+                backgroundColor: 'rgba(63, 63, 70, 0.5)',
                 borderRadius: '2px',
                 margin: '0 auto 20px'
               }}
@@ -1300,7 +1277,7 @@ const AiChatPage = () => {
               <Text style={{ 
                 fontSize: '18px', 
                 fontWeight: '600', 
-                color: '#f8fafc', 
+                color: '#fafafa', 
                 marginBottom: '20px', 
                 textAlign: 'center' 
               }}
@@ -1318,9 +1295,9 @@ const AiChatPage = () => {
                     alignItems: 'center',
                     gap: '10px',
                     padding: '20px 16px',
-                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                    background: 'linear-gradient(135deg, #27272a 0%, #18181b 100%)',
                     borderRadius: '16px',
-                    border: '1px solid rgba(96, 165, 250, 0.2)',
+                    border: '1px solid rgba(59, 130, 246, 0.3)',
                     touchAction: 'none',
                     cursor: 'pointer'
                   }}
@@ -1337,9 +1314,9 @@ const AiChatPage = () => {
                     boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
                   }}
                   >
-                    <Text>🖼</Text>
+                    <Image size={24} color="#fff" />
                   </View>
-                  <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>图片</Text>
+                  <Text style={{ fontSize: '14px', color: '#e4e4e7', fontWeight: 500 }}>图片</Text>
                 </View>
 
                 {/* 视频选项 */}
@@ -1351,9 +1328,9 @@ const AiChatPage = () => {
                     alignItems: 'center',
                     gap: '10px',
                     padding: '20px 16px',
-                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                    background: 'linear-gradient(135deg, #27272a 0%, #18181b 100%)',
                     borderRadius: '16px',
-                    border: '1px solid rgba(168, 85, 247, 0.2)',
+                    border: '1px solid rgba(168, 85, 247, 0.3)',
                     touchAction: 'none',
                     cursor: 'pointer'
                   }}
@@ -1370,9 +1347,9 @@ const AiChatPage = () => {
                     boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)'
                   }}
                   >
-                    <Text>🎬</Text>
+                    <Video size={24} color="#fff" />
                   </View>
-                  <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>视频</Text>
+                  <Text style={{ fontSize: '14px', color: '#e4e4e7', fontWeight: 500 }}>视频</Text>
                 </View>
 
                 {/* 文档选项 */}
@@ -1384,9 +1361,9 @@ const AiChatPage = () => {
                     alignItems: 'center',
                     gap: '10px',
                     padding: '20px 16px',
-                    background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
+                    background: 'linear-gradient(135deg, #27272a 0%, #18181b 100%)',
                     borderRadius: '16px',
-                    border: '1px solid rgba(34, 197, 94, 0.2)',
+                    border: '1px solid rgba(34, 197, 94, 0.3)',
                     touchAction: 'none',
                     cursor: 'pointer'
                   }}
@@ -1403,9 +1380,9 @@ const AiChatPage = () => {
                     boxShadow: '0 4px 15px rgba(34, 197, 94, 0.3)'
                   }}
                   >
-                    <Text>📄</Text>
+                    <FileText size={24} color="#fff" />
                   </View>
-                  <Text style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 500 }}>文档</Text>
+                  <Text style={{ fontSize: '14px', color: '#e4e4e7', fontWeight: 500 }}>文档</Text>
                 </View>
               </View>
 
@@ -1414,14 +1391,17 @@ const AiChatPage = () => {
                 style={{
                   marginTop: '16px',
                   padding: '14px',
-                  background: 'rgba(71, 85, 105, 0.5)',
+                  background: 'rgba(63, 63, 70, 0.5)',
                   borderRadius: '12px',
                   touchAction: 'none',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
                 onTap={() => setShowActionSheet(false)}
               >
-                <Text style={{ fontSize: '16px', color: '#94a3b8', textAlign: 'center', fontWeight: 500 }}>
+                <Text style={{ fontSize: '16px', color: '#a1a1aa', textAlign: 'center', fontWeight: 500 }}>
                   取消
                 </Text>
               </View>
