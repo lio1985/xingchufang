@@ -2,6 +2,19 @@ import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text, CheckboxGroup, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
+import {
+  ChevronLeft,
+  Sparkles,
+  BookOpen,
+  Building2,
+  User,
+  Package,
+  RefreshCw,
+  Copy,
+  ChevronDown,
+  ChevronRight,
+  Lightbulb,
+} from 'lucide-react-taro'
 
 interface ViralAnalysis {
   transcript: string
@@ -50,51 +63,15 @@ export default function ViralRemixPage() {
   const [generatedSchemes, setGeneratedSchemes] = useState<Scheme[]>([])
 
   // 风格选项配置
-  const styleOptions: Array<{ value: ContentStyle; label: string; color: string; bg: string; titleLimit: string; titleTips: string }> = [
-    { 
-      value: 'douyin', 
-      label: '抖音风格', 
-      color: 'text-white', 
-      bg: 'bg-gradient-to-r from-pink-500 to-red-500',
-      titleLimit: '15-25字（最多50）',
-      titleTips: '简洁有力，使用悬念、数字、疑问句吸引点击'
-    },
-    { 
-      value: 'xiaohongshu', 
-      label: '小红书风格', 
-      color: 'text-white', 
-      bg: 'bg-gradient-to-r from-red-400 to-pink-500',
-      titleLimit: '15-30字',
-      titleTips: '突出关键词，使用emoji，展示干货或价值'
-    },
-    { 
-      value: 'shipinhao', 
-      label: '视频号风格', 
-      color: 'text-white', 
-      bg: 'bg-gradient-to-r from-blue-500 to-blue-600',
-      titleLimit: '10-30字',
-      titleTips: '简洁明了，直接传达核心信息，适合中老年群体'
-    },
-    { 
-      value: 'gongzhonghao', 
-      label: '公众号文章', 
-      color: 'text-white', 
-      bg: 'bg-gradient-to-r from-emerald-500 to-teal-500',
-      titleLimit: '20-30字（最多64）',
-      titleTips: '专业有价值，避免标题党，体现文章核心观点'
-    },
-    { 
-      value: 'pyq', 
-      label: '微信朋友圈', 
-      color: 'text-white', 
-      bg: 'bg-gradient-to-r from-green-500 to-green-600',
-      titleLimit: '20-30字',
-      titleTips: '开头吸引眼球，用一两句话作为"标题"'
-    }
+  const styleOptions: Array<{ value: ContentStyle; label: string; color: string }> = [
+    { value: 'douyin', label: '抖音风格', color: '#ec4899' },
+    { value: 'xiaohongshu', label: '小红书风格', color: '#f43f5e' },
+    { value: 'shipinhao', label: '视频号风格', color: '#3b82f6' },
+    { value: 'gongzhonghao', label: '公众号文章', color: '#10b981' },
+    { value: 'pyq', label: '微信朋友圈', color: '#22c55e' }
   ]
 
   useLoad((options) => {
-    // 解析完整分析数据
     if (options.analysis) {
       try {
         const analysisData = JSON.parse(decodeURIComponent(options.analysis))
@@ -108,12 +85,9 @@ export default function ViralRemixPage() {
       showToast({ title: '缺少分析数据', icon: 'none' })
       Taro.navigateBack()
     }
-
-    // 加载所有类型的语料库列表
     loadAllLexicons()
   })
 
-  // 加载所有类型的语料库
   const loadAllLexicons = async () => {
     try {
       const [enterpriseRes, personalRes, productRes] = await Promise.all([
@@ -127,56 +101,36 @@ export default function ViralRemixPage() {
         ...(personalRes.data?.data?.items || []).map((item: Lexicon) => ({ ...item, type: 'personal' })),
         ...(productRes.data?.data?.items || []).map((item: Lexicon) => ({ ...item, type: 'product' }))
       ]
-
       setLexicons(allData)
     } catch (error) {
       console.error('加载语料库失败:', error)
     }
   }
 
-  // 选择语料库
   const handleLexiconChange = (e: any) => {
     setSelectedLexicons(e.detail.value)
   }
 
-  // 切换类别展开/折叠
   const toggleCategory = (category: string) => {
     setExpandedCategory(prev => prev === category ? '' : category)
   }
 
-  // 切换全部展开/折叠
   const toggleAll = () => {
-    if (expandedCategory === 'all') {
-      setExpandedCategory('')
-    } else {
-      setExpandedCategory('all')
-    }
+    setExpandedCategory(prev => prev === 'all' ? '' : 'all')
   }
 
-  // 优化表述
   const handleOptimizeIdea = async () => {
     if (!remixIdea.trim()) {
       showToast({ title: '请输入改写想法', icon: 'none' })
       return
     }
-
     setIsOptimizing(true)
-
     try {
-      console.log('🪄 开始优化改写想法:', { remixIdea, style: selectedStyle })
-
       const response = await Network.request({
         url: '/api/viral/optimize-idea',
         method: 'POST',
-        data: {
-          idea: remixIdea,
-          transcript: analysis?.transcript,
-          style: selectedStyle
-        }
+        data: { idea: remixIdea, transcript: analysis?.transcript, style: selectedStyle }
       })
-
-      console.log('🪄 优化结果:', response.data)
-
       if (response.data?.code === 200) {
         setRemixIdea(response.data.data.optimizedIdea)
         showToast({ title: '优化成功', icon: 'success' })
@@ -184,40 +138,26 @@ export default function ViralRemixPage() {
         showToast({ title: '优化失败', icon: 'none' })
       }
     } catch (error) {
-      console.error('优化失败:', error)
       showToast({ title: '网络错误', icon: 'none' })
     } finally {
       setIsOptimizing(false)
     }
   }
 
-  // 创建二创内容
   const handleGenerate = async () => {
     if (!analysis) {
       showToast({ title: '缺少分析数据', icon: 'none' })
       return
     }
-
     if (!remixIdea.trim()) {
       showToast({ title: '请输入改写想法', icon: 'none' })
       return
     }
-
     setIsGenerating(true)
     setGeneratedSchemes([])
-
     try {
-      console.log('🚀 开始创建二创内容:', {
-        transcriptLength: analysis.transcript.length,
-        ideaLength: remixIdea.length,
-        selectedLexiconsCount: selectedLexicons.length,
-        selectedStyle: selectedStyle
-      })
-
-      // 获取选中的语料库内容
       const selectedLexiconData = lexicons.filter(l => selectedLexicons.includes(l.id))
       const lexiconContents = selectedLexiconData.map(l => l.content).join('\n\n')
-
       const response = await Network.request({
         url: '/api/viral/remix',
         method: 'POST',
@@ -230,9 +170,6 @@ export default function ViralRemixPage() {
           style: selectedStyle
         }
       })
-
-      console.log('🚀 二创内容响应:', response.data)
-
       if (response.data?.code === 200) {
         setGeneratedSchemes(response.data.data.schemes || [])
         showToast({ title: '创建成功', icon: 'success' })
@@ -240,422 +177,303 @@ export default function ViralRemixPage() {
         showToast({ title: response.data?.msg || '创建失败', icon: 'none' })
       }
     } catch (error) {
-      console.error('创建二创内容失败:', error)
       showToast({ title: '网络错误，请重试', icon: 'none' })
     } finally {
       setIsGenerating(false)
     }
   }
 
-  // 复制内容
   const handleCopy = (scheme: Scheme) => {
     const copyText = `${scheme.title}\n\n${scheme.content}\n\n标签：${scheme.tags.join('、')}`
     Taro.setClipboardData({
       data: copyText,
-      success: () => {
-        showToast({ title: '复制成功', icon: 'success' })
-      }
+      success: () => showToast({ title: '复制成功', icon: 'success' })
     })
   }
 
+  // 按类型分组语料库
+  const enterpriseLexicons = lexicons.filter(l => l.type === 'enterprise')
+  const personalLexicons = lexicons.filter(l => l.type === 'personal')
+  const productLexicons = lexicons.filter(l => l.type === 'product')
+
   return (
-    <View className="min-h-screen bg-slate-900 pb-8">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
       {/* 头部导航 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
-        <View className="flex items-center gap-3">
+      <View style={{ padding: '48px 20px 16px', backgroundColor: '#141416', borderBottom: '1px solid #27272a' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <View
-            className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center active:scale-95 transition-all"
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={() => Taro.navigateBack()}
           >
-            <Text>←</Text>
+            <ChevronLeft size={24} color="#fafafa" />
           </View>
-          <View className="flex items-center gap-2">
-            <Text>✨</Text>
-            <Text className="block text-xl font-bold text-white">二创改写</Text>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Sparkles size={24} color="#f59e0b" />
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>二创改写</Text>
           </View>
         </View>
       </View>
 
-      <View className="px-4 mt-6 flex flex-col gap-6">
+      <View style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {/* 提取的文案 */}
         {analysis && (
-          <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
-            <View className="flex items-center gap-2 mb-4">
-              <Text>📖</Text>
-              <Text className="block text-lg font-bold text-white">提取的文案</Text>
+          <View style={{ backgroundColor: '#18181b', borderRadius: '12px', border: '1px solid #27272a', padding: '16px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <BookOpen size={18} color="#f59e0b" />
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>提取的文案</Text>
             </View>
-            <View className="bg-slate-800/60 rounded-xl p-4 max-h-48 overflow-y-auto">
-              <Text className="block text-sm text-slate-200 leading-relaxed">
-                {analysis.transcript}
-              </Text>
+            <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', maxHeight: '120px', overflow: 'hidden' }}>
+              <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '20px' }}>{analysis.transcript}</Text>
             </View>
           </View>
         )}
 
-        {/* 爆款框架（只读） */}
+        {/* 爆款框架 */}
         {analysis && (
-          <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
-            <View className="flex items-center gap-2 mb-4">
-              <Text>📖</Text>
-              <Text className="block text-lg font-bold text-white">爆款框架参考</Text>
+          <View style={{ backgroundColor: '#18181b', borderRadius: '12px', border: '1px solid #27272a', padding: '16px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <Lightbulb size={18} color="#22c55e" />
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>爆款框架参考</Text>
             </View>
-            <View className="bg-emerald-500/20 rounded-xl p-3">
-              <Text className="block text-sm font-semibold text-emerald-400 mb-1">
-                {analysis.framework.type}
-              </Text>
-              <Text className="block text-xs text-slate-300">
-                {analysis.framework.description}
-              </Text>
+            <View style={{ backgroundColor: 'rgba(34, 197, 94, 0.15)', borderRadius: '8px', padding: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#22c55e', marginBottom: '4px', display: 'block' }}>{analysis.framework.type}</Text>
+              <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>{analysis.framework.description}</Text>
             </View>
           </View>
         )}
 
-        {/* 语料库选择 - 按类别显示 */}
-        <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
-          <View className="flex items-center justify-between mb-4">
-            <View className="flex items-center gap-2">
-              <Text>📖</Text>
-              <Text className="block text-lg font-bold text-white">选择语料库</Text>
+        {/* 语料库选择 */}
+        <View style={{ backgroundColor: '#18181b', borderRadius: '12px', border: '1px solid #27272a', padding: '16px' }}>
+          <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <BookOpen size={18} color="#3b82f6" />
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>选择语料库</Text>
             </View>
-            <View className="flex items-center gap-2">
-              <Text className="block text-sm text-slate-400">
-                已选 {selectedLexicons.length} 个
-              </Text>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Text style={{ fontSize: '12px', color: '#71717a' }}>已选 {selectedLexicons.length} 个</Text>
               <View
-                className="px-3 py-1.5 bg-slate-800 rounded-lg active:scale-95 transition-all"
+                style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#27272a' }}
                 onClick={toggleAll}
               >
-                <Text className="text-xs text-white">
-                  {expandedCategory === 'all' ? '全部折叠' : '全部展开'}
-                </Text>
+                <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>{expandedCategory === 'all' ? '全部折叠' : '全部展开'}</Text>
               </View>
             </View>
           </View>
 
           {lexicons.length === 0 ? (
-            <View className="flex flex-col items-center justify-center py-10">
-              <Text className="block text-sm text-slate-400">暂无语料库</Text>
+            <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 0' }}>
+              <Text style={{ fontSize: '14px', color: '#71717a' }}>暂无语料库</Text>
             </View>
           ) : (
             <CheckboxGroup onChange={handleLexiconChange}>
-              <View className="flex flex-col gap-4 max-h-96 overflow-y-auto">
+              <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {/* 企业语料库 */}
-                {(() => {
-                  const enterpriseLexicons = lexicons.filter(l => l.type === 'enterprise')
-                  return enterpriseLexicons.length > 0 && (
-                    <View className="bg-slate-800/40 rounded-xl overflow-hidden">
-                      <View
-                        className="flex items-center justify-between px-4 py-3 bg-emerald-500/10 border-b border-emerald-500/20 active:bg-emerald-500/20 transition-all"
-                        onClick={() => toggleCategory('enterprise')}
-                      >
-                        <View className="flex items-center gap-2">
-                          <Text>🏢</Text>
-                          <Text className="text-sm font-bold text-white">企业语料库</Text>
-                          <View className="px-2 py-0.5 bg-emerald-500/20 rounded">
-                            <Text className="text-xs text-emerald-400">{enterpriseLexicons.length}</Text>
-                          </View>
+                {enterpriseLexicons.length > 0 && (
+                  <View style={{ backgroundColor: '#0a0a0b', borderRadius: '10px', overflow: 'hidden' }}>
+                    <View
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'rgba(34, 197, 94, 0.1)', borderBottom: expandedCategory === 'all' || expandedCategory === 'enterprise' ? '1px solid #27272a' : 'none' }}
+                      onClick={() => toggleCategory('enterprise')}
+                    >
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Building2 size={16} color="#22c55e" />
+                        <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>企业语料库</Text>
+                        <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(34, 197, 94, 0.2)' }}>
+                          <Text style={{ fontSize: '11px', color: '#22c55e' }}>{enterpriseLexicons.length}</Text>
                         </View>
-                        <Text>✓</Text>
                       </View>
-                      {(expandedCategory === 'all' || expandedCategory === 'enterprise') && (
-                        <View className="p-3 flex flex-col gap-2">
-                          {enterpriseLexicons.map((lexicon) => (
-                            <View
-                              key={lexicon.id}
-                              className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
-                            >
-                              <View className="flex items-start gap-3">
-                                <Text>✓</Text>
-                                <View className="flex-1">
-                                  <Text className="block text-sm font-semibold text-white mb-1">
-                                    {lexicon.title}
-                                  </Text>
-                                  {lexicon.category && (
-                                    <Text className="block text-xs text-slate-400 mb-1">
-                                      {lexicon.category}
-                                    </Text>
-                                  )}
-                                  <Text className="block text-xs text-slate-300 line-clamp-2">
-                                    {lexicon.content}
-                                  </Text>
-                                </View>
-                              </View>
-                            </View>
-                          ))}
-                        </View>
-                      )}
+                      {expandedCategory === 'all' || expandedCategory === 'enterprise' ? <ChevronDown size={16} color="#71717a" /> : <ChevronRight size={16} color="#71717a" />}
                     </View>
-                  )
-                })()}
+                    {(expandedCategory === 'all' || expandedCategory === 'enterprise') && (
+                      <View style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {enterpriseLexicons.map((lexicon) => (
+                          <View key={lexicon.id} style={{ backgroundColor: '#18181b', borderRadius: '8px', padding: '12px' }}>
+                            <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', marginBottom: '4px', display: 'block' }}>{lexicon.title}</Text>
+                            {lexicon.category && <Text style={{ fontSize: '11px', color: '#71717a', marginBottom: '4px', display: 'block' }}>{lexicon.category}</Text>}
+                            <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                )}
 
                 {/* 个人IP语料库 */}
-                {(() => {
-                  const personalLexicons = lexicons.filter(l => l.type === 'personal')
-                  return personalLexicons.length > 0 && (
-                    <View className="bg-slate-800/40 rounded-xl overflow-hidden">
-                      <View
-                        className="flex items-center justify-between px-4 py-3 bg-blue-500/10 border-b border-blue-500/20 active:bg-slate-9000/20 transition-all"
-                        onClick={() => toggleCategory('personal')}
-                      >
-                        <View className="flex items-center gap-2">
-                          <Text>👤</Text>
-                          <Text className="text-sm font-bold text-white">个人IP语料库</Text>
-                          <View className="px-2 py-0.5 bg-slate-9000/20 rounded">
-                            <Text className="text-xs text-blue-400">{personalLexicons.length}</Text>
-                          </View>
+                {personalLexicons.length > 0 && (
+                  <View style={{ backgroundColor: '#0a0a0b', borderRadius: '10px', overflow: 'hidden' }}>
+                    <View
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderBottom: expandedCategory === 'all' || expandedCategory === 'personal' ? '1px solid #27272a' : 'none' }}
+                      onClick={() => toggleCategory('personal')}
+                    >
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <User size={16} color="#3b82f6" />
+                        <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>个人IP语料库</Text>
+                        <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 0.2)' }}>
+                          <Text style={{ fontSize: '11px', color: '#3b82f6' }}>{personalLexicons.length}</Text>
                         </View>
-                        <Text>✓</Text>
                       </View>
-                      {(expandedCategory === 'all' || expandedCategory === 'personal') && (
-                        <View className="p-3 flex flex-col gap-2">
-                          {personalLexicons.map((lexicon) => (
-                            <View
-                              key={lexicon.id}
-                              className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
-                            >
-                              <View className="flex items-start gap-3">
-                                <Text>✓</Text>
-                                <View className="flex-1">
-                                  <Text className="block text-sm font-semibold text-white mb-1">
-                                    {lexicon.title}
-                                  </Text>
-                                  {lexicon.category && (
-                                    <Text className="block text-xs text-slate-400 mb-1">
-                                      {lexicon.category}
-                                    </Text>
-                                  )}
-                                  <Text className="block text-xs text-slate-300 line-clamp-2">
-                                    {lexicon.content}
-                                  </Text>
-                                </View>
-                              </View>
-                            </View>
-                          ))}
-                        </View>
-                      )}
+                      {expandedCategory === 'all' || expandedCategory === 'personal' ? <ChevronDown size={16} color="#71717a" /> : <ChevronRight size={16} color="#71717a" />}
                     </View>
-                  )
-                })()}
+                    {(expandedCategory === 'all' || expandedCategory === 'personal') && (
+                      <View style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {personalLexicons.map((lexicon) => (
+                          <View key={lexicon.id} style={{ backgroundColor: '#18181b', borderRadius: '8px', padding: '12px' }}>
+                            <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', marginBottom: '4px', display: 'block' }}>{lexicon.title}</Text>
+                            {lexicon.category && <Text style={{ fontSize: '11px', color: '#71717a', marginBottom: '4px', display: 'block' }}>{lexicon.category}</Text>}
+                            <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                )}
 
                 {/* 产品知识库 */}
-                {(() => {
-                  const productLexicons = lexicons.filter(l => l.type === 'product')
-                  return productLexicons.length > 0 && (
-                    <View className="bg-slate-800/40 rounded-xl overflow-hidden">
-                      <View
-                        className="flex items-center justify-between px-4 py-3 bg-purple-500/10 border-b border-purple-500/20 active:bg-purple-500/20 transition-all"
-                        onClick={() => toggleCategory('product')}
-                      >
-                        <View className="flex items-center gap-2">
-                          <Text>📦</Text>
-                          <Text className="text-sm font-bold text-white">产品知识库</Text>
-                          <View className="px-2 py-0.5 bg-purple-500/20 rounded">
-                            <Text className="text-xs text-purple-400">{productLexicons.length}</Text>
-                          </View>
+                {productLexicons.length > 0 && (
+                  <View style={{ backgroundColor: '#0a0a0b', borderRadius: '10px', overflow: 'hidden' }}>
+                    <View
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', backgroundColor: 'rgba(168, 85, 247, 0.1)', borderBottom: expandedCategory === 'all' || expandedCategory === 'product' ? '1px solid #27272a' : 'none' }}
+                      onClick={() => toggleCategory('product')}
+                    >
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Package size={16} color="#a855f7" />
+                        <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>产品知识库</Text>
+                        <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(168, 85, 247, 0.2)' }}>
+                          <Text style={{ fontSize: '11px', color: '#a855f7' }}>{productLexicons.length}</Text>
                         </View>
-                        <Text>✓</Text>
                       </View>
-                      {(expandedCategory === 'all' || expandedCategory === 'product') && (
-                        <View className="p-3 flex flex-col gap-2">
-                          {productLexicons.map((lexicon) => (
-                            <View
-                              key={lexicon.id}
-                              className="bg-slate-800/60 rounded-lg p-3 active:bg-slate-800/80 transition-all"
-                            >
-                              <View className="flex items-start gap-3">
-                                <Text>✓</Text>
-                                <View className="flex-1">
-                                  <Text className="block text-sm font-semibold text-white mb-1">
-                                    {lexicon.title}
-                                  </Text>
-                                  {lexicon.category && (
-                                    <Text className="block text-xs text-slate-400 mb-1">
-                                      {lexicon.category}
-                                    </Text>
-                                  )}
-                                  <Text className="block text-xs text-slate-300 line-clamp-2">
-                                    {lexicon.content}
-                                  </Text>
-                                </View>
-                              </View>
-                            </View>
-                          ))}
-                        </View>
-                      )}
+                      {expandedCategory === 'all' || expandedCategory === 'product' ? <ChevronDown size={16} color="#71717a" /> : <ChevronRight size={16} color="#71717a" />}
                     </View>
-                  )
-                })()}
+                    {(expandedCategory === 'all' || expandedCategory === 'product') && (
+                      <View style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {productLexicons.map((lexicon) => (
+                          <View key={lexicon.id} style={{ backgroundColor: '#18181b', borderRadius: '8px', padding: '12px' }}>
+                            <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', marginBottom: '4px', display: 'block' }}>{lexicon.title}</Text>
+                            {lexicon.category && <Text style={{ fontSize: '11px', color: '#71717a', marginBottom: '4px', display: 'block' }}>{lexicon.category}</Text>}
+                            <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                )}
               </View>
             </CheckboxGroup>
           )}
         </View>
 
         {/* 改写想法 */}
-        <View className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5">
-          <View className="flex items-center justify-between mb-4">
-            <View className="flex items-center gap-2">
-              <Text>🪄</Text>
-              <Text className="block text-lg font-bold text-white">改写想法</Text>
+        <View style={{ backgroundColor: '#18181b', borderRadius: '12px', border: '1px solid #27272a', padding: '16px' }}>
+          <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles size={18} color="#a855f7" />
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>改写想法</Text>
             </View>
             {remixIdea.trim() && (
               <View
-                className={`px-3 py-1.5 rounded-lg active:scale-95 transition-all ${
-                  isOptimizing
-                    ? 'bg-slate-800 text-slate-400'
-                    : 'bg-purple-500 text-white'
-                }`}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px', borderRadius: '8px', backgroundColor: isOptimizing ? '#27272a' : 'rgba(168, 85, 247, 0.2)' }}
                 onClick={!isOptimizing ? handleOptimizeIdea : undefined}
               >
-                <View className="flex items-center gap-1">
-                  {isOptimizing ? (
-                    <Text>🔄</Text>
-                  ) : (
-                    <Text>✨</Text>
-                  )}
-                  <Text className="text-xs">
-                    {isOptimizing ? '优化中...' : '优化表述'}
-                  </Text>
-                </View>
+                {isOptimizing ? <RefreshCw size={12} color="#71717a" /> : <Sparkles size={12} color="#a855f7" />}
+                <Text style={{ fontSize: '12px', color: isOptimizing ? '#71717a' : '#a855f7' }}>{isOptimizing ? '优化中...' : '优化表述'}</Text>
               </View>
             )}
           </View>
-          <View className="bg-slate-800/60 rounded-xl p-4">
+          <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
             <Textarea
-              className="w-full bg-transparent text-slate-200 text-base leading-relaxed"
+              style={{ width: '100%', minHeight: '100px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
               placeholder="请输入你的改写想法，例如：重点突出产品优势，增加购买引导..."
+              placeholderStyle="color: #52525b"
               value={remixIdea}
               onInput={(e) => setRemixIdea(e.detail.value)}
               maxlength={500}
-              style={{ minHeight: '120px' }}
             />
           </View>
 
           {/* 风格选择 */}
-          <View className="mt-4">
-            <Text className="block text-sm font-semibold text-white mb-3">选择文案风格</Text>
-            <View className="flex flex-wrap gap-2">
+          <View style={{ marginTop: '16px' }}>
+            <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', marginBottom: '12px', display: 'block' }}>选择文案风格</Text>
+            <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {styleOptions.map((option) => (
                 <View
                   key={option.value}
-                  className={`px-4 py-2 rounded-xl border-2 transition-all ${
-                    selectedStyle === option.value
-                      ? `${option.bg} border-transparent text-white`
-                      : 'bg-slate-800 border-slate-700 text-slate-300'
-                  }`}
+                  style={{ 
+                    padding: '8px 16px', 
+                    borderRadius: '10px', 
+                    backgroundColor: selectedStyle === option.value ? option.color : '#27272a',
+                    border: selectedStyle === option.value ? 'none' : '1px solid #3f3f46'
+                  }}
                   onClick={() => setSelectedStyle(option.value)}
                 >
-                  <Text className="text-xs font-medium">{option.label}</Text>
+                  <Text style={{ fontSize: '13px', color: selectedStyle === option.value ? '#ffffff' : '#a1a1aa' }}>{option.label}</Text>
                 </View>
               ))}
             </View>
-
-            {/* 标题限制提示 */}
-            {selectedStyle && (() => {
-              const selectedOption = styleOptions.find(opt => opt.value === selectedStyle)
-              return selectedOption && (
-                <View className="mt-3 px-4 py-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                  <View className="flex items-start gap-2">
-                    <Text className="text-lg">💡</Text>
-                    <View className="flex-1">
-                      <Text className="block text-sm text-blue-400 mb-1">
-                        {selectedOption.label}标题限制：{selectedOption.titleLimit}
-                      </Text>
-                      <Text className="block text-xs text-slate-400">
-                        {selectedOption.titleTips}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              )
-            })()}
           </View>
         </View>
 
         {/* 创建按钮 */}
         <View
-          className={`py-4 rounded-xl text-center transition-all ${
-            isGenerating || !remixIdea.trim()
-              ? 'bg-slate-800 text-slate-400'
-              : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white active:scale-[0.98]'
-          }`}
+          style={{ 
+            padding: '14px', 
+            borderRadius: '12px', 
+            backgroundColor: isGenerating || !remixIdea.trim() ? '#27272a' : '#f59e0b', 
+            textAlign: 'center' 
+          }}
           onClick={!isGenerating && remixIdea.trim() ? handleGenerate : undefined}
         >
-          {isGenerating ? (
-            <View className="flex items-center justify-center gap-2">
-              <Text>🔄</Text>
-              <Text>创建2个方案中...</Text>
-            </View>
-          ) : (
-            <View className="flex items-center justify-center gap-2">
-              <Text>✨</Text>
-              <Text>创建二创方案</Text>
-            </View>
-          )}
+          <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            {isGenerating ? <RefreshCw size={18} color="#71717a" /> : <Sparkles size={18} color={remixIdea.trim() ? '#0a0a0b' : '#71717a'} />}
+            <Text style={{ fontSize: '15px', fontWeight: '600', color: isGenerating || !remixIdea.trim() ? '#71717a' : '#0a0a0b' }}>
+              {isGenerating ? '创建2个方案中...' : '创建二创方案'}
+            </Text>
+          </View>
         </View>
 
-        {/* 创建结果 - 2个方案 */}
+        {/* 创建结果 */}
         {generatedSchemes.length > 0 && (
-          <View className="flex flex-col gap-6">
-            <Text className="block text-lg font-bold text-white text-center">
-              创建结果
-            </Text>
+          <View style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', textAlign: 'center' }}>创建结果</Text>
             
             {generatedSchemes.map((scheme, idx) => (
-              <View
-                key={idx}
-                className="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-5"
-              >
-                <View className="flex items-center justify-between mb-4">
-                  <View className="flex items-center gap-2">
-                    <Text>✓</Text>
-                    <Text className="block text-lg font-bold text-white">
-                      方案 {String.fromCharCode(65 + idx)}
-                    </Text>
-                  </View>
+              <View key={idx} style={{ backgroundColor: '#18181b', borderRadius: '12px', border: '1px solid #27272a', padding: '16px' }}>
+                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>方案 {String.fromCharCode(65 + idx)}</Text>
                   <View
-                    className="px-3 py-1.5 bg-slate-9000/20 rounded-lg active:scale-95 transition-all"
+                    style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px', borderRadius: '8px', backgroundColor: '#27272a' }}
                     onClick={() => handleCopy(scheme)}
                   >
-                    <View className="flex items-center gap-1">
-                      <Text>📋</Text>
-                      <Text className="text-xs text-blue-400">复制</Text>
-                    </View>
+                    <Copy size={14} color="#3b82f6" />
+                    <Text style={{ fontSize: '12px', color: '#3b82f6' }}>复制</Text>
                   </View>
                 </View>
 
                 {/* 标题 */}
-                <View className="mb-4">
-                  <View className="flex items-center justify-between mb-2">
-                    <Text className="block text-xs text-slate-400">标题</Text>
-                    <Text className={`text-xs ${scheme.title.length > 50 ? 'text-red-400' : scheme.title.length >= 30 ? 'text-yellow-400' : 'text-emerald-400'}`}>
-                      {scheme.title.length}字
-                    </Text>
+                <View style={{ marginBottom: '12px' }}>
+                  <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <Text style={{ fontSize: '12px', color: '#71717a' }}>标题</Text>
+                    <Text style={{ fontSize: '11px', color: scheme.title.length > 50 ? '#ef4444' : scheme.title.length >= 30 ? '#f59e0b' : '#22c55e' }}>{scheme.title.length}字</Text>
                   </View>
-                  <View className="bg-slate-800/60 rounded-xl p-4">
-                    <Text className="block text-base font-semibold text-white">
-                      {scheme.title}
-                    </Text>
+                  <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+                    <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff' }}>{scheme.title}</Text>
                   </View>
                 </View>
 
                 {/* 内容 */}
-                <View className="mb-4">
-                  <Text className="block text-xs text-slate-400 mb-2">内容</Text>
-                  <View className="bg-slate-800/60 rounded-xl p-4">
-                    <Text className="block text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">
-                      {scheme.content}
-                    </Text>
+                <View style={{ marginBottom: '12px' }}>
+                  <Text style={{ fontSize: '12px', color: '#71717a', marginBottom: '8px', display: 'block' }}>内容</Text>
+                  <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+                    <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '22px', whiteSpace: 'pre-wrap' }}>{scheme.content}</Text>
                   </View>
                 </View>
 
                 {/* 标签 */}
                 {scheme.tags && scheme.tags.length > 0 && (
                   <View>
-                    <Text className="block text-xs text-slate-400 mb-2">标签</Text>
-                    <View className="flex flex-wrap gap-2">
+                    <Text style={{ fontSize: '12px', color: '#71717a', marginBottom: '8px', display: 'block' }}>标签</Text>
+                    <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                       {scheme.tags.map((tag, tagIdx) => (
-                        <View key={tagIdx} className="px-3 py-1.5 bg-slate-9000/20 rounded-lg">
-                          <Text className="text-xs text-blue-400">{tag}</Text>
+                        <View key={tagIdx} style={{ padding: '4px 10px', borderRadius: '6px', backgroundColor: 'rgba(59, 130, 246, 0.15)' }}>
+                          <Text style={{ fontSize: '12px', color: '#3b82f6' }}>{tag}</Text>
                         </View>
                       ))}
                     </View>
@@ -666,16 +484,12 @@ export default function ViralRemixPage() {
 
             {/* 重新创建 */}
             <View
-              className={`py-3 rounded-xl text-center transition-all ${
-                isGenerating
-                  ? 'bg-slate-800 text-slate-400'
-                  : 'bg-slate-800 text-slate-300 active:scale-[0.98]'
-              }`}
+              style={{ padding: '12px', borderRadius: '12px', backgroundColor: '#18181b', textAlign: 'center', border: '1px solid #27272a' }}
               onClick={!isGenerating ? handleGenerate : undefined}
             >
-              <View className="flex items-center justify-center gap-2">
-                <Text>🔄</Text>
-                <Text className="text-sm">重新创建</Text>
+              <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <RefreshCw size={14} color="#a1a1aa" />
+                <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>重新创建</Text>
               </View>
             </View>
           </View>
