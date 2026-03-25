@@ -92,7 +92,7 @@ export default defineAppConfig({
     list: [
       {
         pagePath: 'pages/index/index',
-        text: '首页',
+        text: '管理',
         iconPath: './assets/tabbar/home.png',
         selectedIconPath: './assets/tabbar/home-active.png',
       },

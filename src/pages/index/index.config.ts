@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '星厨房'
+  navigationBarTitleText: '管理'
 })
