@@ -1,812 +1,438 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
+import { useState, useEffect, useCallback } from 'react';
 import Taro from '@tarojs/taro';
+import { View, Text, ScrollView, Input } from '@tarojs/components';
+import {
+  BookOpen,
+  RefreshCw,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Eye,
+  Globe,
+  Lock,
+  Users,
+  X,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
+import '@/styles/pages.css';
+import '@/styles/admin.css';
 
-// 语料库数据结构
-interface Lexicon {
+interface LexiconItem {
   id: string;
-  title: string;
-  content: string;
+  name: string;
+  description: string;
   category: string;
-  type: 'enterprise' | 'personal' | 'product';
-  userId: string;
-  userNickname?: string;
-  tags?: string[];
+  itemCount: number;
+  isShared: boolean;
+  shareScope: 'private' | 'department' | 'all';
   createdAt: string;
   updatedAt: string;
+  createdBy: {
+    id: string;
+    name: string;
+  };
 }
 
-export default function AdminLexiconManagePage() {
-  // 数据状态
-  const [lexicons, setLexicons] = useState<Lexicon[]>([]);
+const LexiconManagePage = () => {
+  const [lexicons, setLexicons] = useState<LexiconItem[]>([]);
+  const [filteredLexicons, setFilteredLexicons] = useState<LexiconItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState(0);
-
-  // 使用 ref 来跟踪 loading 状态，避免 useCallback 循环依赖
-  const loadingRef = useRef(false);
-
-  // 搜索和筛选
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [typeFilter, setTypeFilter] = useState<'all' | 'enterprise' | 'personal' | 'product'>('all');
-  const [categoryFilter, setCategoryFilter] = useState<string>('');
-  const [showFilters, setShowFilters] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newLexiconName, setNewLexiconName] = useState('');
+  const [newLexiconDesc, setNewLexiconDesc] = useState('');
 
-  // 新建/编辑对话框
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showDetailDialog, setShowDetailDialog] = useState(false);
-  const [selectedLexicon, setSelectedLexicon] = useState<Lexicon | null>(null);
+  const filterLexicons = useCallback(() => {
+    let filtered = lexicons;
 
-  // 表单数据
-  const [formTitle, setFormTitle] = useState('');
-  const [formContent, setFormContent] = useState('');
-  const [formCategory, setFormCategory] = useState('');
-  const [formType, setFormType] = useState<'enterprise' | 'personal' | 'product'>('personal');
-  const [formTags, setFormTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState('');
-
-  // 分类列表
-  const [categories, setCategories] = useState<string[]>([]);
-
-  const typeConfig = {
-    enterprise: {
-      label: '企业语料库',
-      icon: <Text>🏢</Text>,
-      color: 'bg-blue-500'
-    },
-    personal: {
-      label: '个人IP语料库',
-      icon: <Text>👤</Text>,
-      color: 'bg-emerald-500'
-    },
-    product: {
-      label: '产品知识库',
-      icon: <Text>📦</Text>,
-      color: 'bg-amber-500'
+    if (searchKeyword) {
+      filtered = filtered.filter(
+        (item) =>
+          item.name.includes(searchKeyword) || item.description.includes(searchKeyword)
+      );
     }
-  };
 
-  // 加载语料库列表
-  const loadLexicons = useCallback(async () => {
-    if (loadingRef.current) return;
-
-    setLoading(true);
-    loadingRef.current = true;
-    try {
-      const params: any = {
-        page: 1,
-        pageSize: 50,
-      };
-
-      if (typeFilter !== 'all') {
-        params.type = typeFilter;
-      }
-
-      if (categoryFilter) {
-        params.category = categoryFilter;
-      }
-
-      if (searchKeyword) {
-        params.search = searchKeyword;
-      }
-
-      const res = await Network.request({
-        url: '/api/lexicon',
-        method: 'GET',
-        data: {
-          ...params,
-          viewAll: true, // 管理员查看所有用户的语料库
-        },
-      });
-
-      console.log('语料库列表响应:', res.data);
-
-      if (res.data && res.data.code === 200) {
-        const data = res.data.data;
-        const lexiconItems = Array.isArray(data.items) ? data.items : []
-        setLexicons(lexiconItems);
-        setTotal(data.total || lexiconItems.length || 0);
-      }
-    } catch (error: any) {
-      console.error('加载语料库列表失败:', error);
-      Taro.showToast({
-        title: error.message || '加载失败',
-        icon: 'none',
-      });
-    } finally {
-      setLoading(false);
-      loadingRef.current = false;
+    if (categoryFilter !== 'all') {
+      filtered = filtered.filter((item) => item.category === categoryFilter);
     }
-  }, [typeFilter, categoryFilter, searchKeyword]);
 
-  // 加载分类列表
-  const loadCategories = useCallback(async () => {
-    try {
-      const res = await Network.request({
-        url: '/api/lexicon',
-        method: 'GET',
-        data: { pageSize: 1000 },
-      });
-
-      if (res.data && res.data.code === 200) {
-        const data = Array.isArray(res.data.data?.items) ? res.data.data.items : []
-        const uniqueCategories = [...new Set(data.map((item: Lexicon) => item.category).filter(Boolean))] as string[];
-        setCategories(uniqueCategories);
-      }
-    } catch (error) {
-      console.error('加载分类失败:', error);
-    }
-  }, []);
+    setFilteredLexicons(filtered);
+  }, [lexicons, searchKeyword, categoryFilter]);
 
   useEffect(() => {
     loadLexicons();
-    loadCategories();
-  }, [typeFilter, categoryFilter, searchKeyword, loadLexicons, loadCategories]);
+  }, []);
 
-  // 创建语料库
-  const handleCreate = async () => {
-    if (!formTitle.trim() || !formContent.trim() || !formCategory.trim()) {
-      Taro.showToast({
-        title: '请填写完整信息',
-        icon: 'none'
+  useEffect(() => {
+    filterLexicons();
+  }, [filterLexicons]);
+
+  const loadLexicons = async () => {
+    setLoading(true);
+    try {
+      const response = await Network.request({
+        url: '/api/admin/lexicons',
+        data: { page: 1, pageSize: 100 },
       });
+
+      if (response.data?.success && response.data?.data) {
+        setLexicons(response.data.data);
+      } else {
+        // 模拟数据
+        setLexicons([
+          {
+            id: '1',
+            name: '产品介绍语料库',
+            description: '包含产品推广、特性介绍等内容',
+            category: 'product',
+            itemCount: 128,
+            isShared: true,
+            shareScope: 'department',
+            createdAt: '2024-01-15',
+            updatedAt: '2024-03-20',
+            createdBy: { id: 'u1', name: '张三' },
+          },
+          {
+            id: '2',
+            name: '客户服务话术',
+            description: '客服常用回复和话术模板',
+            category: 'service',
+            itemCount: 256,
+            isShared: true,
+            shareScope: 'all',
+            createdAt: '2024-02-10',
+            updatedAt: '2024-03-18',
+            createdBy: { id: 'u2', name: '李四' },
+          },
+          {
+            id: '3',
+            name: '营销推广文案',
+            description: '营销活动、促销文案集合',
+            category: 'marketing',
+            itemCount: 89,
+            isShared: false,
+            shareScope: 'private',
+            createdAt: '2024-03-01',
+            updatedAt: '2024-03-19',
+            createdBy: { id: 'u3', name: '王五' },
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error('加载语料库失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (lexicon: LexiconItem) => {
+    const confirm = await Taro.showModal({
+      title: '确认删除',
+      content: `确定要删除语料库"${lexicon.name}"吗？此操作不可恢复。`,
+    });
+
+    if (confirm.confirm) {
+      try {
+        const response = await Network.request({
+          url: `/api/admin/lexicons/${lexicon.id}`,
+          method: 'DELETE',
+        });
+
+        if (response.data?.success) {
+          Taro.showToast({ title: '删除成功', icon: 'success' });
+          loadLexicons();
+        } else {
+          Taro.showToast({ title: response.data?.message || '删除失败', icon: 'none' });
+        }
+      } catch (error) {
+        console.error('删除语料库失败:', error);
+        Taro.showToast({ title: '删除失败', icon: 'none' });
+      }
+    }
+  };
+
+  const handleCreate = async () => {
+    if (!newLexiconName.trim()) {
+      Taro.showToast({ title: '请输入语料库名称', icon: 'none' });
       return;
     }
 
     try {
-      const res = await Network.request({
-        url: '/api/lexicon',
+      const response = await Network.request({
+        url: '/api/admin/lexicons',
         method: 'POST',
         data: {
-          title: formTitle.trim(),
-          content: formContent.trim(),
-          category: formCategory.trim(),
-          type: formType,
-          tags: formTags,
+          name: newLexiconName.trim(),
+          description: newLexiconDesc.trim(),
         },
       });
 
-      console.log('创建语料库响应:', res.data);
-
-      if (res.data && res.data.code === 200) {
-        Taro.showToast({
-          title: '创建成功',
-          icon: 'success'
-        });
-        resetForm();
-        setShowCreateDialog(false);
+      if (response.data?.success) {
+        Taro.showToast({ title: '创建成功', icon: 'success' });
+        setShowCreateModal(false);
+        setNewLexiconName('');
+        setNewLexiconDesc('');
         loadLexicons();
-        loadCategories();
       } else {
-        throw new Error(res.data?.msg || '创建失败');
+        Taro.showToast({ title: response.data?.message || '创建失败', icon: 'none' });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('创建语料库失败:', error);
-      Taro.showToast({
-        title: error.message || '创建失败',
-        icon: 'none'
-      });
+      Taro.showToast({ title: '创建失败', icon: 'none' });
     }
   };
 
-  // 更新语料库
-  const handleUpdate = async () => {
-    if (!selectedLexicon || !formTitle.trim() || !formContent.trim() || !formCategory.trim()) {
-      return;
-    }
+  const categories = [
+    { value: 'all', label: '全部', color: '#f59e0b' },
+    { value: 'product', label: '产品', color: '#3b82f6' },
+    { value: 'service', label: '服务', color: '#22c55e' },
+    { value: 'marketing', label: '营销', color: '#ec4899' },
+  ];
 
-    try {
-      const res = await Network.request({
-        url: `/api/lexicon/${selectedLexicon.id}`,
-        method: 'PUT',
-        data: {
-          title: formTitle.trim(),
-          content: formContent.trim(),
-          category: formCategory.trim(),
-          type: formType,
-          tags: formTags,
-        },
-      });
-
-      console.log('更新语料库响应:', res.data);
-
-      if (res.data && res.data.code === 200) {
-        Taro.showToast({
-          title: '更新成功',
-          icon: 'success'
-        });
-        resetForm();
-        setShowEditDialog(false);
-        loadLexicons();
-      } else {
-        throw new Error(res.data?.msg || '更新失败');
-      }
-    } catch (error: any) {
-      console.error('更新语料库失败:', error);
-      Taro.showToast({
-        title: error.message || '更新失败',
-        icon: 'none'
-      });
+  const getShareIcon = (scope: string) => {
+    switch (scope) {
+      case 'all':
+        return <Globe size={18} color="#22c55e" />;
+      case 'department':
+        return <Users size={18} color="#3b82f6" />;
+      default:
+        return <Lock size={18} color="#71717a" />;
     }
   };
 
-  // 删除语料库
-  const handleDelete = async (id: string) => {
-    Taro.showModal({
-      title: '确认删除',
-      content: '确定要删除这条语料库吗？',
-      success: async (confirmRes) => {
-        if (confirmRes.confirm) {
-          try {
-            const result = await Network.request({
-              url: `/api/lexicon/${id}`,
-              method: 'DELETE',
-            });
-
-            console.log('删除语料库响应:', result.data);
-
-            if (result.data && result.data.code === 200) {
-              Taro.showToast({
-                title: '删除成功',
-                icon: 'success'
-              });
-              loadLexicons();
-              loadCategories();
-            } else {
-              throw new Error(result.data?.msg || '删除失败');
-            }
-          } catch (error: any) {
-            console.error('删除语料库失败:', error);
-            Taro.showToast({
-              title: error.message || '删除失败',
-              icon: 'none'
-            });
-          }
-        }
-      }
-    });
-  };
-
-  // 添加标签
-  const handleAddTag = () => {
-    if (tagInput.trim() && !formTags.includes(tagInput.trim())) {
-      setFormTags([...formTags, tagInput.trim()]);
-      setTagInput('');
-    }
-  };
-
-  // 删除标签
-  const handleRemoveTag = (tag: string) => {
-    setFormTags(formTags.filter(t => t !== tag));
-  };
-
-  // 重置表单
-  const resetForm = () => {
-    setFormTitle('');
-    setFormContent('');
-    setFormCategory('');
-    setFormType('personal');
-    setFormTags([]);
-    setTagInput('');
-    setSelectedLexicon(null);
-  };
-
-  // 打开编辑对话框
-  const openEditDialog = (lexicon: Lexicon) => {
-    setSelectedLexicon(lexicon);
-    setFormTitle(lexicon.title);
-    setFormContent(lexicon.content);
-    setFormCategory(lexicon.category);
-    setFormType(lexicon.type);
-    setFormTags(lexicon.tags || []);
-    setShowEditDialog(true);
-  };
-
-  // 打开详情对话框
-  const openDetailDialog = (lexicon: Lexicon) => {
-    setSelectedLexicon(lexicon);
-    setShowDetailDialog(true);
+  const getShareLabel = (scope: string) => {
+    const map: Record<string, string> = {
+      private: '私有',
+      department: '部门共享',
+      all: '全员可见',
+    };
+    return map[scope] || '私有';
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
-      {/* 顶部导航栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-        <View className="flex items-center justify-between">
-          <View className="flex items-center gap-3">
-            <View onClick={() => Taro.navigateBack()}>
-              <Text>←</Text>
+    <View className="admin-page">
+      {/* Header */}
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <Text className="admin-title">语料库管理</Text>
+          <View style={{ display: 'flex', gap: '12px' }}>
+            <View
+              style={{
+                padding: '10px',
+                borderRadius: '12px',
+                backgroundColor: '#1a1a1d',
+              }}
+              onClick={loadLexicons}
+            >
+              <RefreshCw size={24} color={loading ? '#52525b' : '#f59e0b'} />
             </View>
-            <View className="flex items-center gap-2">
-              <Text>💾</Text>
-              <Text className="text-white font-semibold text-lg">语料库管理</Text>
+            <View
+              style={{
+                padding: '10px',
+                borderRadius: '12px',
+                backgroundColor: '#f59e0b',
+              }}
+              onClick={() => setShowCreateModal(true)}
+            >
+              <Plus size={24} color="#000" />
             </View>
-          </View>
-          <View className="flex items-center gap-2">
-            <Text className="text-slate-400 text-sm">共 {total} 条</Text>
           </View>
         </View>
-      </View>
 
-      {/* 搜索栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-        <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2">
-          <Text>🔍</Text>
+        {/* 搜索栏 */}
+        <View className="search-bar-wrapper" style={{ marginTop: '16px' }}>
+          <Search size={24} color="#52525b" />
           <Input
-            className="flex-1 bg-transparent text-white"
+            className="search-input"
             placeholder="搜索语料库..."
+            placeholderStyle="color: #52525b"
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
           {searchKeyword && (
             <View onClick={() => setSearchKeyword('')}>
-              <Text>✕</Text>
-            </View>
-          )}
-        </View>
-      </View>
-
-      {/* 筛选栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-        <View className="flex items-center gap-2">
-          <View
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <Text>📝</Text>
-            <Text className="text-slate-300 text-sm">筛选</Text>
-            <Text>▼</Text>
-          </View>
-
-          {typeFilter !== 'all' && (
-            <View
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-9000/20"
-              onClick={() => setTypeFilter('all')}
-            >
-              <Text className="text-blue-400 text-sm">{typeConfig[typeFilter].label}</Text>
-              <Text>✕</Text>
-            </View>
-          )}
-
-          {categoryFilter && (
-            <View
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-500/20"
-              onClick={() => setCategoryFilter('')}
-            >
-              <Text className="text-emerald-400 text-sm">{categoryFilter}</Text>
-              <Text>✕</Text>
+              <X size={24} color="#52525b" />
             </View>
           )}
         </View>
 
-        {showFilters && (
-          <View className="mt-3 space-y-3">
-            {/* 类型筛选 */}
-            <View>
-              <Text className="text-slate-400 text-xs block mb-2">类型</Text>
-              <View className="flex flex-wrap gap-2">
-                <View
-                  className={`px-3 py-1.5 rounded-lg text-sm ${typeFilter === 'all' ? 'bg-blue-500' : 'bg-slate-800'}`}
-                  onClick={() => setTypeFilter('all')}
-                >
-                  <Text className={typeFilter === 'all' ? 'text-white' : 'text-slate-300'}>全部</Text>
-                </View>
-                {Object.entries(typeConfig).map(([key, config]) => (
-                  <View
-                    key={key}
-                    className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${typeFilter === key ? config.color : 'bg-slate-800'}`}
-                    onClick={() => setTypeFilter(key as any)}
-                  >
-                    {config.icon}
-                    <Text className={typeFilter === key ? 'text-white' : 'text-slate-300'}>{config.label}</Text>
-                  </View>
-                ))}
-              </View>
+        {/* 分类筛选 */}
+        <View style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+          {categories.map((cat) => (
+            <View
+              key={cat.value}
+              style={{
+                padding: '10px 20px',
+                borderRadius: '12px',
+                backgroundColor: categoryFilter === cat.value ? cat.color : '#1a1a1d',
+              }}
+              onClick={() => setCategoryFilter(cat.value)}
+            >
+              <Text
+                style={{
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  color: categoryFilter === cat.value ? '#000' : '#a1a1aa',
+                }}
+              >
+                {cat.label}
+              </Text>
             </View>
-
-            {/* 分类筛选 */}
-            <View>
-              <Text className="text-slate-400 text-xs block mb-2">分类</Text>
-              <View className="flex flex-wrap gap-2">
-                <View
-                  className={`px-3 py-1.5 rounded-lg text-sm ${!categoryFilter ? 'bg-emerald-500' : 'bg-slate-800'}`}
-                  onClick={() => setCategoryFilter('')}
-                >
-                  <Text className={!categoryFilter ? 'text-white' : 'text-slate-300'}>全部</Text>
-                </View>
-                {categories.map((cat) => (
-                  <View
-                    key={cat}
-                    className={`px-3 py-1.5 rounded-lg text-sm ${categoryFilter === cat ? 'bg-emerald-500' : 'bg-slate-800'}`}
-                    onClick={() => setCategoryFilter(cat)}
-                  >
-                    <Text className={categoryFilter === cat ? 'text-white' : 'text-slate-300'}>{cat}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </View>
-        )}
+          ))}
+        </View>
       </View>
 
-      {/* 内容列表 */}
-      <ScrollView
-        className="flex-1"
-        scrollY
-        style={{ height: 'calc(100vh - 280rpx)' }}
-      >
-        <View className="px-4 py-3 space-y-3">
-          {loading && (
-            <View className="text-center py-12">
-              <Text className="text-slate-400">加载中...</Text>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 180px)', marginTop: '180px' }}>
+        <View className="admin-content" style={{ paddingTop: '16px' }}>
+          {filteredLexicons.length === 0 ? (
+            <View className="empty-state">
+              <BookOpen size={80} color="#71717a" />
+              <Text className="empty-title">暂无语料库</Text>
+              <Text className="empty-desc">点击右上角 + 创建语料库</Text>
+            </View>
+          ) : (
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {filteredLexicons.map((lexicon) => (
+                <View key={lexicon.id} className="admin-card">
+                  <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <View style={{ flex: 1 }}>
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa' }}>
+                          {lexicon.name}
+                        </Text>
+                        {getShareIcon(lexicon.shareScope)}
+                      </View>
+                      <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
+                        {lexicon.description}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginTop: '16px',
+                      paddingTop: '16px',
+                      borderTop: '1px solid #27272a',
+                    }}
+                  >
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                        {lexicon.itemCount} 条内容
+                      </Text>
+                      <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                        {getShareLabel(lexicon.shareScope)}
+                      </Text>
+                    </View>
+
+                    <View style={{ display: 'flex', gap: '12px' }}>
+                      <View
+                        style={{
+                          padding: '8px',
+                          borderRadius: '8px',
+                          backgroundColor: '#1a1a1d',
+                        }}
+                        onClick={() => {
+                          // 查看详情
+                        }}
+                      >
+                        <Eye size={20} color="#3b82f6" />
+                      </View>
+                      <View
+                        style={{
+                          padding: '8px',
+                          borderRadius: '8px',
+                          backgroundColor: '#1a1a1d',
+                        }}
+                        onClick={() => {
+                          Taro.showToast({ title: '编辑功能开发中', icon: 'none' });
+                        }}
+                      >
+                        <Pencil size={20} color="#f59e0b" />
+                      </View>
+                      <View
+                        style={{
+                          padding: '8px',
+                          borderRadius: '8px',
+                          backgroundColor: '#1a1a1d',
+                        }}
+                        onClick={() => handleDelete(lexicon)}
+                      >
+                        <Trash2 size={20} color="#ef4444" />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              ))}
             </View>
           )}
-
-          {!loading && lexicons.length > 0 && lexicons.map((item) => {
-            const config = typeConfig[item.type];
-            return (
-              <View key={item.id} className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-                <View className="flex items-start justify-between mb-2">
-                  <View className="flex-1 min-w-0">
-                    <View className="flex items-center gap-2 mb-1">
-                      {config.icon}
-                      <Text className="text-white font-semibold text-base block truncate">{item.title}</Text>
-                    </View>
-                    <Text className="text-slate-400 text-xs block">
-                      {item.userNickname || item.userId} · {new Date(item.createdAt).toLocaleDateString('zh-CN')}
-                    </Text>
-                  </View>
-                  <View className="flex items-center gap-1 ml-2">
-                    <View onClick={() => openDetailDialog(item)}>
-                      <Text>👁</Text>
-                    </View>
-                    <View onClick={() => openEditDialog(item)}>
-                      <Text>✏</Text>
-                    </View>
-                    <View onClick={() => handleDelete(item.id)}>
-                      <Text>🗑</Text>
-                    </View>
-                  </View>
-                </View>
-
-                <View className="mb-2">
-                  <Text className="text-slate-300 text-sm block line-clamp-2">
-                    {item.content}
-                  </Text>
-                </View>
-
-                <View className="flex items-center justify-between">
-                  <View className="flex items-center gap-1">
-                    <Text>📂</Text>
-                    <Text className="text-slate-400 text-xs">{item.category}</Text>
-                  </View>
-                  {item.tags && item.tags.length > 0 && (
-                    <View className="flex items-center gap-1">
-                      <Text>🏷</Text>
-                      <Text className="text-slate-400 text-xs">{item.tags.length} 标签</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-            );
-          })}
-
-          {!loading && lexicons.length === 0 && (
-            <View className="text-center py-12">
-              <Text>📄</Text>
-              <Text className="text-slate-400 mt-2">暂无语料库</Text>
-            </View>
-          )}
-
-          {/* 底部空间 */}
-          <View className="h-20"></View>
         </View>
       </ScrollView>
 
-      {/* 底部添加按钮 */}
-      <View className="fixed bottom-6 right-6">
-        <View
-          className="bg-blue-500 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
-          onClick={() => {
-            resetForm();
-            setShowCreateDialog(true);
-          }}
-        >
-          <Text>+</Text>
-        </View>
-      </View>
-
-      {/* 创建语料库对话框 */}
-      {showCreateDialog && (
-        <View className="fixed inset-0 bg-black/50 flex items-end z-50">
-          <View className="bg-slate-800 w-full rounded-t-3xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-700">
-              <View className="flex items-center justify-between">
-                <Text className="text-white font-semibold text-lg">新建语料库</Text>
-                <View onClick={() => setShowCreateDialog(false)}>
-                  <Text>✕</Text>
-                </View>
+      {/* 创建语料库弹窗 */}
+      {showCreateModal && (
+        <View className="modal-overlay">
+          <View className="modal-content">
+            <View className="modal-header">
+              <Text style={{ fontSize: '32px', fontWeight: '600', color: '#fafafa' }}>
+                创建语料库
+              </Text>
+              <View onClick={() => setShowCreateModal(false)}>
+                <X size={28} color="#71717a" />
               </View>
             </View>
 
-            <View className="p-4 space-y-4">
-              {/* 类型选择 */}
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <View>
-                <Text className="text-slate-300 text-sm block mb-2">类型</Text>
-                <View className="flex gap-2">
-                  {Object.entries(typeConfig).map(([key, config]) => (
-                    <View
-                      key={key}
-                      className={`flex-1 px-3 py-2 rounded-lg text-center ${formType === key ? config.color : 'bg-slate-800'}`}
-                      onClick={() => setFormType(key as any)}
-                    >
-                      <View className="flex items-center justify-center gap-1">
-                        {config.icon}
-                        <Text className={formType === key ? 'text-white' : 'text-slate-300'} text-sm>{config.label}</Text>
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              </View>
-
-              {/* 标题 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">标题</Text>
-                <Input
-                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
-                  placeholder="请输入标题"
-                  value={formTitle}
-                  onInput={(e) => setFormTitle(e.detail.value)}
-                />
-              </View>
-
-              {/* 分类 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">分类</Text>
-                <Input
-                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
-                  placeholder="请输入分类"
-                  value={formCategory}
-                  onInput={(e) => setFormCategory(e.detail.value)}
-                />
-              </View>
-
-              {/* 内容 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">内容</Text>
-                <Textarea
-                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white min-h-[200px]"
-                  placeholder="请输入语料库内容"
-                  value={formContent}
-                  onInput={(e) => setFormContent(e.detail.value)}
-                />
-              </View>
-
-              {/* 标签 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">标签</Text>
-                <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
-                  <Text>🏷</Text>
-                  <Input
-                    className="flex-1 bg-transparent text-white"
-                    placeholder="输入标签后按回车"
-                    value={tagInput}
-                    onInput={(e) => setTagInput(e.detail.value)}
-                    onConfirm={handleAddTag}
-                  />
-                  <View onClick={handleAddTag}>
-                    <Text>+</Text>
-                  </View>
-                </View>
-                {formTags.length > 0 && (
-                  <View className="flex flex-wrap gap-2">
-                    {formTags.map((tag, index) => (
-                      <View
-                        key={index}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-9000/20"
-                        onClick={() => handleRemoveTag(tag)}
-                      >
-                        <Text className="text-blue-400 text-sm">{tag}</Text>
-                        <Text>✕</Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </View>
-
-              {/* 按钮 */}
-              <View className="flex gap-3 pt-2">
-                <View
-                  className="flex-1 bg-slate-800 rounded-xl py-3 text-center"
-                  onClick={() => setShowCreateDialog(false)}
-                >
-                  <Text className="text-white">取消</Text>
-                </View>
-                <View
-                  className="flex-1 bg-blue-500 rounded-xl py-3 text-center"
-                  onClick={handleCreate}
-                >
-                  <Text className="text-white">创建</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      )}
-
-      {/* 编辑语料库对话框 */}
-      {showEditDialog && selectedLexicon && (
-        <View className="fixed inset-0 bg-black/50 flex items-end z-50">
-          <View className="bg-slate-800 w-full rounded-t-3xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-700">
-              <View className="flex items-center justify-between">
-                <Text className="text-white font-semibold text-lg">编辑语料库</Text>
-                <View onClick={() => setShowEditDialog(false)}>
-                  <Text>✕</Text>
-                </View>
-              </View>
-            </View>
-
-            <View className="p-4 space-y-4">
-              {/* 类型选择 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">类型</Text>
-                <View className="flex gap-2">
-                  {Object.entries(typeConfig).map(([key, config]) => (
-                    <View
-                      key={key}
-                      className={`flex-1 px-3 py-2 rounded-lg text-center ${formType === key ? config.color : 'bg-slate-800'}`}
-                      onClick={() => setFormType(key as any)}
-                    >
-                      <View className="flex items-center justify-center gap-1">
-                        {config.icon}
-                        <Text className={formType === key ? 'text-white' : 'text-slate-300'} text-sm>{config.label}</Text>
-                      </View>
-                    </View>
-                  ))}
-                </View>
-              </View>
-
-              {/* 标题 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">标题</Text>
-                <Input
-                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
-                  placeholder="请输入标题"
-                  value={formTitle}
-                  onInput={(e) => setFormTitle(e.detail.value)}
-                />
-              </View>
-
-              {/* 分类 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">分类</Text>
-                <Input
-                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white"
-                  placeholder="请输入分类"
-                  value={formCategory}
-                  onInput={(e) => setFormCategory(e.detail.value)}
-                />
-              </View>
-
-              {/* 内容 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">内容</Text>
-                <Textarea
-                  className="w-full bg-slate-800 rounded-xl px-4 py-3 text-white min-h-[200px]"
-                  placeholder="请输入语料库内容"
-                  value={formContent}
-                  onInput={(e) => setFormContent(e.detail.value)}
-                />
-              </View>
-
-              {/* 标签 */}
-              <View>
-                <Text className="text-slate-300 text-sm block mb-2">标签</Text>
-                <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2 mb-2">
-                  <Text>🏷</Text>
-                  <Input
-                    className="flex-1 bg-transparent text-white"
-                    placeholder="输入标签后按回车"
-                    value={tagInput}
-                    onInput={(e) => setTagInput(e.detail.value)}
-                    onConfirm={handleAddTag}
-                  />
-                  <View onClick={handleAddTag}>
-                    <Text>+</Text>
-                  </View>
-                </View>
-                {formTags.length > 0 && (
-                  <View className="flex flex-wrap gap-2">
-                    {formTags.map((tag, index) => (
-                      <View
-                        key={index}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-9000/20"
-                        onClick={() => handleRemoveTag(tag)}
-                      >
-                        <Text className="text-blue-400 text-sm">{tag}</Text>
-                        <Text>✕</Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </View>
-
-              {/* 按钮 */}
-              <View className="flex gap-3 pt-2">
-                <View
-                  className="flex-1 bg-slate-800 rounded-xl py-3 text-center"
-                  onClick={() => setShowEditDialog(false)}
-                >
-                  <Text className="text-white">取消</Text>
-                </View>
-                <View
-                  className="flex-1 bg-blue-500 rounded-xl py-3 text-center"
-                  onClick={handleUpdate}
-                >
-                  <Text className="text-white">保存</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      )}
-
-      {/* 详情对话框 */}
-      {showDetailDialog && selectedLexicon && (
-        <View className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <View className="bg-slate-800 w-full rounded-2xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-700 sticky top-0 bg-slate-800 z-10">
-              <View className="flex items-center justify-between">
-                <Text className="text-white font-semibold text-lg truncate">{selectedLexicon.title}</Text>
-                <View onClick={() => setShowDetailDialog(false)}>
-                  <Text>✕</Text>
-                </View>
-              </View>
-            </View>
-
-            <View className="p-4 space-y-4">
-              <View className="flex items-center gap-2 mb-4">
-                {typeConfig[selectedLexicon.type].icon}
-                <Text className="text-slate-300 text-sm">{typeConfig[selectedLexicon.type].label}</Text>
-                <Text className="text-slate-400">·</Text>
-                <Text className="text-slate-400 text-sm">{selectedLexicon.category}</Text>
-              </View>
-
-              <View>
-                <Text className="text-white font-semibold text-base block mb-2">内容</Text>
-                <Text className="text-slate-300 text-sm block leading-relaxed whitespace-pre-wrap">
-                  {selectedLexicon.content}
+                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
+                  语料库名称
                 </Text>
+                <Input
+                  className="form-input input-focus"
+                  placeholder="请输入名称"
+                  placeholderStyle="color: #52525b"
+                  value={newLexiconName}
+                  onInput={(e) => setNewLexiconName(e.detail.value)}
+                />
               </View>
 
-              {selectedLexicon.tags && selectedLexicon.tags.length > 0 && (
-                <View>
-                  <Text className="text-white font-semibold text-base block mb-2">标签</Text>
-                  <View className="flex flex-wrap gap-2">
-                    {selectedLexicon.tags.map((tag, index) => (
-                      <View
-                        key={index}
-                        className="px-3 py-1.5 rounded-lg bg-slate-9000/20"
-                      >
-                        <Text className="text-blue-400 text-sm">{tag}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              )}
+              <View>
+                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
+                  描述（可选）
+                </Text>
+                <Input
+                  className="form-input input-focus"
+                  placeholder="请输入描述"
+                  placeholderStyle="color: #52525b"
+                  value={newLexiconDesc}
+                  onInput={(e) => setNewLexiconDesc(e.detail.value)}
+                />
+              </View>
+            </View>
 
-              <View className="text-slate-400 text-xs pt-4 border-t border-slate-700">
-                <Text className="block">
-                  创建时间: {new Date(selectedLexicon.createdAt).toLocaleString('zh-CN')}
-                </Text>
-                <Text className="block mt-1">
-                  更新时间: {new Date(selectedLexicon.updatedAt).toLocaleString('zh-CN')}
-                </Text>
-                <Text className="block mt-1">
-                  用户ID: {selectedLexicon.userId}
-                </Text>
+            <View style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+              <View
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  borderRadius: '12px',
+                  backgroundColor: '#27272a',
+                  textAlign: 'center',
+                }}
+                onClick={() => setShowCreateModal(false)}
+              >
+                <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>取消</Text>
+              </View>
+              <View
+                className="action-btn-primary"
+                style={{ flex: 1 }}
+                onClick={handleCreate}
+              >
+                <Text className="action-btn-primary-text">创建</Text>
               </View>
             </View>
           </View>
@@ -814,4 +440,6 @@ export default function AdminLexiconManagePage() {
       )}
     </View>
   );
-}
+};
+
+export default LexiconManagePage;

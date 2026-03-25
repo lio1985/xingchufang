@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, Textarea, Image } from '@tarojs/components';
+import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
-import StarIcon from '@/components/StarIcon';
 
 interface Message {
   role: 'user' | 'assistant';

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { showToast, showLoading, hideLoading, chooseImage, navigateBack } from '@tarojs/taro';
-import { View, Text, Input, ScrollView, Image } from '@tarojs/components';
+import { View, Text, Input, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+
 type ImportMethod = 'manual' | 'excel' | 'screenshot';
 type AccordionKey = 'basic' | 'traffic' | 'interaction' | 'commerce' | null;
 

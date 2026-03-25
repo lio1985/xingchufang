@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
+
 interface RecycleStore {
   id: string;
   store_name: string;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Taro, { showToast, showModal } from '@tarojs/taro'
 import { View, Text, Textarea, Input, Button } from '@tarojs/components'
+import { X } from 'lucide-react-taro'
 import { Network } from '@/network'
 
 interface Lexicon {

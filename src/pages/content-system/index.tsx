@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 
 interface ContentItem {
@@ -76,11 +76,13 @@ const ContentSystemPage = () => {
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
       {/* Header */}
-      <View style={{ 
-        background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
-        padding: '48px 32px 32px',
-        borderBottom: '1px solid #27272a'
-      }}>
+      <View 
+        style={{ 
+          background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
+          padding: '48px 32px 32px',
+          borderBottom: '1px solid #27272a'
+        }}
+      >
         <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
           <View style={{ padding: '8px' }} onClick={() => Taro.navigateBack()}>
             <Text style={{ fontSize: '32px', color: '#fafafa' }}>←</Text>
@@ -103,19 +105,23 @@ const ContentSystemPage = () => {
               }}
               onClick={() => setSelectedStatus(status.key)}
             >
-              <Text style={{ 
-                fontSize: '24px', 
-                fontWeight: '600',
-                color: selectedStatus === status.key ? '#000' : '#a1a1aa',
-                display: 'block'
-              }}>
+              <Text 
+                style={{ 
+                  fontSize: '24px', 
+                  fontWeight: '600',
+                  color: selectedStatus === status.key ? '#000' : '#a1a1aa',
+                  display: 'block'
+                }}
+              >
                 {counts[status.key as keyof typeof counts]}
               </Text>
-              <Text style={{ 
-                fontSize: '18px', 
-                color: selectedStatus === status.key ? '#000' : '#71717a',
-                marginTop: '4px'
-              }}>
+              <Text 
+                style={{ 
+                  fontSize: '18px', 
+                  color: selectedStatus === status.key ? '#000' : '#71717a',
+                  marginTop: '4px'
+                }}
+              >
                 {status.label}
               </Text>
             </View>
@@ -156,21 +162,25 @@ const ContentSystemPage = () => {
             >
               <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ 
-                    fontSize: '28px', 
-                    fontWeight: '600', 
-                    color: '#fafafa',
-                    display: 'block',
-                    marginBottom: '8px'
-                  }}>
+                  <Text 
+                    style={{ 
+                      fontSize: '28px', 
+                      fontWeight: '600', 
+                      color: '#fafafa',
+                      display: 'block',
+                      marginBottom: '8px'
+                    }}
+                  >
                     {content.title}
                   </Text>
                   <View style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    <View style={{
-                      padding: '6px 12px',
-                      backgroundColor: statusConfig[content.status].bg,
-                      borderRadius: '8px'
-                    }}>
+                    <View 
+                      style={{
+                        padding: '6px 12px',
+                        backgroundColor: statusConfig[content.status].bg,
+                        borderRadius: '8px'
+                      }}
+                    >
                       <Text style={{ fontSize: '20px', color: statusConfig[content.status].color }}>
                         {statusConfig[content.status].label}
                       </Text>

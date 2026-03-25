@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro, { useRouter } from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Textarea, Picker } from '@tarojs/components';
 import { Network } from '@/network';
+
 interface Customer {
   id?: string;
   name: string;

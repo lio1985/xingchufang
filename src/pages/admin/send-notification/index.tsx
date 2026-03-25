@@ -1,8 +1,18 @@
 import { useState } from 'react';
-import { showToast } from '@tarojs/taro';
-import { View, Text, Textarea, Input, Radio } from '@tarojs/components';
+import { View, Text, ScrollView, Textarea, Input } from '@tarojs/components';
+import Taro from '@tarojs/taro';
+import {
+  Bell,
+  Sparkles,
+  Gift,
+  Globe,
+  User,
+  Send,
+  CircleCheck,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
-import './index.less';
+import '@/styles/pages.css';
+import '@/styles/admin.css';
 
 type NotificationType = 'system' | 'activity' | 'update';
 type TargetType = 'all' | 'single';
@@ -14,7 +24,7 @@ const notificationTypes = [
     desc: '重要系统公告',
     icon: Bell,
     iconColor: '#3b82f6',
-    bgColor: '#dbeafe',
+    bgColor: 'rgba(59, 130, 246, 0.1)',
   },
   {
     value: 'activity' as const,
@@ -22,7 +32,7 @@ const notificationTypes = [
     desc: '推广活动信息',
     icon: Sparkles,
     iconColor: '#ec4899',
-    bgColor: '#fce7f3',
+    bgColor: 'rgba(236, 72, 153, 0.1)',
   },
   {
     value: 'update' as const,
@@ -30,7 +40,7 @@ const notificationTypes = [
     desc: '版本更新说明',
     icon: Gift,
     iconColor: '#f59e0b',
-    bgColor: '#fef3c7',
+    bgColor: 'rgba(245, 158, 11, 0.1)',
   },
 ];
 
@@ -40,8 +50,8 @@ const targetTypes = [
     label: '全部用户',
     desc: '发送给所有用户',
     icon: Globe,
-    iconColor: '#10b981',
-    bgColor: '#d1fae5',
+    iconColor: '#22c55e',
+    bgColor: 'rgba(34, 197, 94, 0.1)',
   },
   {
     value: 'single' as const,
@@ -49,7 +59,7 @@ const targetTypes = [
     desc: '发送给特定用户',
     icon: User,
     iconColor: '#6366f1',
-    bgColor: '#e0e7ff',
+    bgColor: 'rgba(99, 102, 241, 0.1)',
   },
 ];
 
@@ -63,17 +73,17 @@ const SendNotificationPage = () => {
 
   const handleSend = async () => {
     if (!title.trim()) {
-      showToast({ title: '请输入标题', icon: 'none' });
+      Taro.showToast({ title: '请输入标题', icon: 'none' });
       return;
     }
 
     if (!content.trim()) {
-      showToast({ title: '请输入内容', icon: 'none' });
+      Taro.showToast({ title: '请输入内容', icon: 'none' });
       return;
     }
 
     if (targetType === 'single' && !targetUsers.trim()) {
-      showToast({ title: '请输入目标用户ID', icon: 'none' });
+      Taro.showToast({ title: '请输入目标用户ID', icon: 'none' });
       return;
     }
 
@@ -102,180 +112,256 @@ const SendNotificationPage = () => {
       console.log('发送通知响应:', response.data);
 
       if (response.data?.success) {
-        showToast({ title: '发送成功', icon: 'success' });
+        Taro.showToast({ title: '发送成功', icon: 'success' });
         setTitle('');
         setContent('');
         setTargetUsers('');
       } else {
-        showToast({ title: response.data?.message || '发送失败', icon: 'none' });
+        Taro.showToast({ title: response.data?.message || '发送失败', icon: 'none' });
       }
     } catch (error) {
       console.error('发送通知失败:', error);
-      showToast({ title: '发送失败，请重试', icon: 'none' });
+      Taro.showToast({ title: '发送失败，请重试', icon: 'none' });
     } finally {
       setSending(false);
     }
   };
 
+  const selectedNotificationType = notificationTypes.find((t) => t.value === type);
+  const selectedTargetType = targetTypes.find((t) => t.value === targetType);
+
   return (
-    <View className="send-notification-page">
-      {/* 头部 */}
-      <View className="header">
-        <Text className="header-title">发送通知</Text>
-        <Text className="header-subtitle">向用户推送系统消息和活动资讯</Text>
+    <View className="admin-page">
+      {/* Header */}
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <Text className="admin-title">发送通知</Text>
+        </View>
+        <Text style={{ fontSize: '22px', color: '#71717a', marginTop: '8px' }}>
+          向用户推送系统消息和活动资讯
+        </Text>
       </View>
 
-      <View className="form-section">
-        {/* 标题输入 */}
-        <View className="form-item">
-          <Text className="label">
-            通知标题
-            <Text className="required">*</Text>
-          </Text>
-          <View className="input-wrapper">
-            <Input
-              className="input"
-              placeholder="请输入通知标题"
-              value={title}
-              onInput={(e) => setTitle(e.detail.value)}
-              maxlength={100}
-            />
-          </View>
-        </View>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 100px)', marginTop: '100px' }}>
+        <View className="admin-content" style={{ paddingTop: '16px' }}>
+          {/* 通知类型选择 */}
+          <View className="admin-card">
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+              通知类型
+            </Text>
 
-        {/* 内容输入 */}
-        <View className="form-item">
-          <Text className="label">
-            通知内容
-            <Text className="required">*</Text>
-          </Text>
-          <View className="textarea-wrapper">
-            <Textarea
-              className="textarea"
-              placeholder="请输入通知内容，清晰简洁地描述通知要点..."
-              value={content}
-              onInput={(e) => setContent(e.detail.value)}
-              maxlength={500}
-            />
-          </View>
-          <Text className="char-count">{content.length}/500</Text>
-        </View>
-
-        {/* 通知类型 */}
-        <View className="form-item">
-          <Text className="label">通知类型</Text>
-          <View className="radio-group">
-            {notificationTypes.map((item) => {
-              const Icon = item.icon;
-              const isActive = type === item.value;
-              return (
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {notificationTypes.map((item) => (
                 <View
                   key={item.value}
-                  className={`radio-card ${isActive ? 'active' : ''}`}
+                  className={`user-list-item ${type === item.value ? 'card-hover' : ''}`}
+                  style={{
+                    borderLeft: type === item.value ? `4px solid ${item.iconColor}` : undefined,
+                  }}
                   onClick={() => setType(item.value)}
                 >
-                  <Text>📻</Text>
                   <View
-                    className="radio-icon system"
-                    style={{ backgroundColor: item.bgColor }}
+                    style={{
+                      width: '56px',
+                      height: '56px',
+                      borderRadius: '14px',
+                      backgroundColor: item.bgColor,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
                   >
-                    <Icon size={24} color={item.iconColor} />
+                    <item.icon size={28} color={item.iconColor} />
                   </View>
-                  <View className="radio-content">
-                    <Text className="radio-title">{item.label}</Text>
-                    <Text className="radio-desc">{item.desc}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                      {item.label}
+                    </Text>
+                    <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '2px' }}>{item.desc}</Text>
                   </View>
+                  {type === item.value && <CircleCheck size={24} color={item.iconColor} />}
                 </View>
-              );
-            })}
-          </View>
-        </View>
-
-        {/* 发送对象 */}
-        <View className="form-item">
-          <Text className="label">发送对象</Text>
-          <View className="radio-group">
-            {targetTypes.map((item) => {
-              const Icon = item.icon;
-              const isActive = targetType === item.value;
-              return (
-                <View
-                  key={item.value}
-                  className={`radio-card ${isActive ? 'active' : ''}`}
-                  onClick={() => setTargetType(item.value)}
-                >
-                  <Text>📻</Text>
-                  <View
-                    className="radio-icon all"
-                    style={{ backgroundColor: item.bgColor }}
-                  >
-                    <Icon size={24} color={item.iconColor} />
-                  </View>
-                  <View className="radio-content">
-                    <Text className="radio-title">{item.label}</Text>
-                    <Text className="radio-desc">{item.desc}</Text>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-        </View>
-
-        {/* 指定用户输入 */}
-        {targetType === 'single' && (
-          <View className="form-item">
-            <Text className="label">
-              目标用户ID
-              <Text className="required">*</Text>
-            </Text>
-            <View className="textarea-wrapper">
-              <Textarea
-                className="textarea"
-                placeholder="输入用户ID，多个用户用逗号分隔&#10;例如：user123, user456, user789"
-                value={targetUsers}
-                onInput={(e) => setTargetUsers(e.detail.value)}
-              />
+              ))}
             </View>
           </View>
-        )}
-      </View>
 
-      {/* 发送按钮 */}
-      <View className="action-section">
-        <View
-          className={`send-btn ${sending ? 'disabled' : ''}`}
-          onClick={!sending ? handleSend : undefined}
-        >
-          <Text>📤</Text>
-          <Text className="send-text">{sending ? '发送中...' : '发送通知'}</Text>
-        </View>
-      </View>
+          {/* 目标用户选择 */}
+          <View className="admin-card">
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+              目标用户
+            </Text>
 
-      {/* 使用说明 */}
-      <View className="tips-section">
-        <View className="tips-header">
-          <Text>ℹ</Text>
-          <Text className="tips-title">使用说明</Text>
+            <View style={{ display: 'flex', gap: '12px' }}>
+              {targetTypes.map((item) => (
+                <View
+                  key={item.value}
+                  style={{
+                    flex: 1,
+                    padding: '20px',
+                    borderRadius: '16px',
+                    backgroundColor: targetType === item.value ? item.bgColor : '#1a1a1d',
+                    border: `2px solid ${targetType === item.value ? item.iconColor : '#27272a'}`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '12px',
+                  }}
+                  onClick={() => setTargetType(item.value)}
+                >
+                  <View
+                    style={{
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '12px',
+                      backgroundColor: targetType === item.value ? item.bgColor : '#27272a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <item.icon size={28} color={targetType === item.value ? item.iconColor : '#71717a'} />
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: '24px',
+                      fontWeight: '600',
+                      color: targetType === item.value ? item.iconColor : '#a1a1aa',
+                    }}
+                  >
+                    {item.label}
+                  </Text>
+                  <Text style={{ fontSize: '18px', color: '#52525b' }}>{item.desc}</Text>
+                </View>
+              ))}
+            </View>
+
+            {targetType === 'single' && (
+              <View style={{ marginTop: '16px' }}>
+                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
+                  用户ID（多个用逗号分隔）
+                </Text>
+                <Input
+                  className="form-input"
+                  placeholder="输入用户ID，多个用逗号分隔"
+                  placeholderStyle="color: #52525b"
+                  value={targetUsers}
+                  onInput={(e) => setTargetUsers(e.detail.value)}
+                />
+              </View>
+            )}
+          </View>
+
+          {/* 通知内容 */}
+          <View className="admin-card">
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+              通知内容
+            </Text>
+
+            <View className="form-group">
+              <Text className="form-label">
+                标题 <Text style={{ color: '#ef4444' }}>*</Text>
+              </Text>
+              <Input
+                className="form-input input-focus"
+                placeholder="请输入通知标题"
+                placeholderStyle="color: #52525b"
+                value={title}
+                onInput={(e) => setTitle(e.detail.value)}
+                maxlength={100}
+              />
+            </View>
+
+            <View className="form-group">
+              <Text className="form-label">
+                内容 <Text style={{ color: '#ef4444' }}>*</Text>
+              </Text>
+              <View
+                style={{
+                  backgroundColor: '#1a1a1d',
+                  borderRadius: '16px',
+                  border: '1px solid #27272a',
+                }}
+              >
+                <Textarea
+                  style={{
+                    width: '100%',
+                    minHeight: '200px',
+                    padding: '20px',
+                    fontSize: '28px',
+                    color: '#fafafa',
+                    backgroundColor: 'transparent',
+                  }}
+                  placeholder="请输入通知内容..."
+                  placeholderStyle="color: #52525b"
+                  value={content}
+                  onInput={(e) => setContent(e.detail.value)}
+                  maxlength={500}
+                />
+              </View>
+              <Text style={{ fontSize: '20px', color: '#52525b', marginTop: '8px', textAlign: 'right' }}>
+                {content.length}/500
+              </Text>
+            </View>
+          </View>
+
+          {/* 预览 */}
+          <View className="admin-card">
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+              预览效果
+            </Text>
+
+            <View
+              style={{
+                backgroundColor: '#1a1a1d',
+                borderRadius: '16px',
+                padding: '20px',
+                border: '1px solid #27272a',
+              }}
+            >
+              <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <View
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '10px',
+                    backgroundColor: selectedNotificationType?.bgColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {selectedNotificationType && (
+                    <selectedNotificationType.icon size={20} color={selectedNotificationType.iconColor} />
+                  )}
+                </View>
+                <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa' }}>
+                  {title || '通知标题'}
+                </Text>
+              </View>
+              <Text style={{ fontSize: '22px', color: '#a1a1aa', lineHeight: '1.6' }}>
+                {content || '通知内容将显示在这里...'}
+              </Text>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+                <Text style={{ fontSize: '18px', color: '#52525b' }}>
+                  目标: {selectedTargetType?.label}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* 发送按钮 */}
+          <View
+            className="action-btn-primary"
+            style={{ marginTop: '20px', opacity: sending ? 0.6 : 1 }}
+            onClick={handleSend}
+          >
+            <Send size={28} color="#000" />
+            <Text className="action-btn-primary-text" style={{ marginLeft: '8px' }}>
+              {sending ? '发送中...' : '发送通知'}
+            </Text>
+          </View>
         </View>
-        <View className="tips-list">
-          <View className="tips-item">
-            <Text className="item-number">1</Text>
-            <Text className="item-text">系统通知：用于发布重要系统公告和维护通知</Text>
-          </View>
-          <View className="tips-item">
-            <Text className="item-number">2</Text>
-            <Text className="item-text">活动通知：用于推广优惠活动、限时特惠等营销内容</Text>
-          </View>
-          <View className="tips-item">
-            <Text className="item-number">3</Text>
-            <Text className="item-text">更新通知：用于版本更新说明和新功能介绍</Text>
-          </View>
-          <View className="tips-item">
-            <Text className="item-number">4</Text>
-            <Text className="item-text">指定用户：输入用户ID，多个用户用英文逗号分隔</Text>
-          </View>
-        </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };

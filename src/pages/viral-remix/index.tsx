@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
-import { View, Text, Checkbox, CheckboxGroup, Textarea } from '@tarojs/components'
+import { View, Text, CheckboxGroup, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
 
 interface ViralAnalysis {

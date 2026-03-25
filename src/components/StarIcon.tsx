@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
 
 interface StarIconProps {
   size?: number;

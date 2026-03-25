@@ -1,6 +1,19 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
+import {
+  RefreshCw,
+  FileText,
+  Link2,
+  Globe,
+  Activity,
+  TrendingUp,
+  Users,
+  Building2,
+  ChevronRight,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
+import '@/styles/pages.css';
+import '@/styles/admin.css';
 
 interface ShareStats {
   totalLexicons: number;
@@ -18,7 +31,6 @@ export default function AdminShareStatsPage() {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<ShareStats | null>(null);
 
-  // 加载统计数据
   const loadStats = async () => {
     setLoading(true);
     try {
@@ -42,151 +54,214 @@ export default function AdminShareStatsPage() {
     loadStats();
   }, []);
 
-  // 计算共享率
   const getShareRate = () => {
     if (!stats || stats.totalLexicons === 0) return 0;
     return Math.round((stats.sharedLexicons / stats.totalLexicons) * 100);
   };
 
+  const statCards = [
+    {
+      icon: FileText,
+      label: '总语料库',
+      value: stats?.totalLexicons || 0,
+      color: '#3b82f6',
+      bg: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+    },
+    {
+      icon: Link2,
+      label: '已共享',
+      value: stats?.sharedLexicons || 0,
+      color: '#22c55e',
+      bg: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+    },
+    {
+      icon: Globe,
+      label: '全局共享',
+      value: stats?.globalShared || 0,
+      color: '#a855f7',
+      bg: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
+    },
+    {
+      icon: Activity,
+      label: '近7天操作',
+      value: stats?.recentShareActions || 0,
+      color: '#f59e0b',
+      bg: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    },
+  ];
+
   return (
-    <View className="min-h-screen bg-slate-900">
-      {/* 顶部导航栏 */}
-      <View className="sticky top-0 z-10 bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
-        <Text className="text-white text-lg font-bold">共享统计</Text>
-        <View
-          className={`p-2 rounded-lg bg-slate-800 ${loading ? 'opacity-50' : ''}`}
-          onClick={loadStats}
-        >
-          <Text>🔄</Text>
+    <View className="admin-page">
+      {/* Header */}
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <Text className="admin-title">共享统计</Text>
+          <View
+            style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}
+            onClick={loadStats}
+          >
+            <RefreshCw size={24} color={loading ? '#52525b' : '#f59e0b'} />
+          </View>
         </View>
       </View>
 
-      <ScrollView scrollY className="flex-1 px-4 py-4">
-        {/* 核心统计卡片 */}
-        <View className="grid grid-cols-2 gap-3 mb-4">
-          <View className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-4">
-            <View className="flex items-center gap-2 mb-2">
-              <Text>📄</Text>
-              <Text className="text-white/80 text-sm">总语料库</Text>
-            </View>
-            <Text className="text-white text-3xl font-bold">{stats?.totalLexicons || 0}</Text>
-          </View>
-          <View className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl p-4">
-            <View className="flex items-center gap-2 mb-2">
-              <Text>🔗</Text>
-              <Text className="text-white/80 text-sm">已共享</Text>
-            </View>
-            <Text className="text-white text-3xl font-bold">{stats?.sharedLexicons || 0}</Text>
-          </View>
-          <View className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-4">
-            <View className="flex items-center gap-2 mb-2">
-              <Text>🌐</Text>
-              <Text className="text-white/80 text-sm">全局共享</Text>
-            </View>
-            <Text className="text-white text-3xl font-bold">{stats?.globalShared || 0}</Text>
-          </View>
-          <View className="bg-gradient-to-br from-orange-600 to-orange-700 rounded-xl p-4">
-            <View className="flex items-center gap-2 mb-2">
-              <Text>📊</Text>
-              <Text className="text-white/80 text-sm">近7天操作</Text>
-            </View>
-            <Text className="text-white text-3xl font-bold">{stats?.recentShareActions || 0}</Text>
-          </View>
-        </View>
-
-        {/* 共享率概览 */}
-        <View className="bg-slate-800 rounded-xl p-4 mb-4 border border-slate-700">
-          <View className="flex items-center justify-between mb-3">
-            <Text className="text-white font-semibold">共享率概览</Text>
-            <Text>📈</Text>
-          </View>
-          <View className="bg-slate-800 rounded-lg p-4">
-            <View className="flex items-center justify-between mb-2">
-              <Text className="text-gray-400 text-sm">语料库共享率</Text>
-              <Text className="text-white text-2xl font-bold">{getShareRate()}%</Text>
-            </View>
-            <View className="w-full bg-slate-700 rounded-full h-2">
+      <ScrollView scrollY style={{ height: 'calc(100vh - 80px)', marginTop: '80px' }}>
+        <View className="admin-content" style={{ paddingTop: '16px' }}>
+          {/* 核心统计卡片 */}
+          <View className="stats-grid">
+            {statCards.map((card, index) => (
               <View
-                className="bg-gradient-to-r from-blue-500 to-emerald-500 h-2 rounded-full"
-                style={{ width: `${getShareRate()}%` }}
-              ></View>
-            </View>
+                key={index}
+                className="stat-card"
+                style={{ background: card.bg, border: 'none' }}
+              >
+                <View
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '12px',
+                  }}
+                >
+                  <card.icon size={24} color="#fff" />
+                </View>
+                <Text style={{ fontSize: '40px', fontWeight: '700', color: '#fff', display: 'block' }}>
+                  {card.value}
+                </Text>
+                <Text style={{ fontSize: '22px', color: 'rgba(255,255,255,0.7)', marginTop: '4px' }}>
+                  {card.label}
+                </Text>
+              </View>
+            ))}
           </View>
-        </View>
 
-        {/* 共享范围分布 */}
-        {stats?.shareScopeStats && (
-          <View className="bg-slate-800 rounded-xl p-4 mb-4 border border-slate-700">
-            <View className="flex items-center gap-2 mb-3">
-              <Text>📈</Text>
-              <Text className="text-white font-semibold">共享范围分布</Text>
+          {/* 共享率概览 */}
+          <View className="admin-card">
+            <View className="admin-card-header">
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <TrendingUp size={24} color="#f59e0b" />
+                <Text className="admin-card-title">共享率概览</Text>
+              </View>
             </View>
-            <View className="space-y-3">
-              <View>
-                <View className="flex justify-between mb-1">
-                  <Text className="text-gray-400 text-sm">指定用户</Text>
-                  <Text className="text-white text-sm">{stats.shareScopeStats.custom || 0}</Text>
-                </View>
-                <View className="w-full bg-slate-800 rounded-full h-2">
-                  <View
-                    className="bg-blue-500 h-2 rounded-full"
-                    style={{
-                      width: stats.sharedLexicons > 0
-                        ? `${((stats.shareScopeStats.custom || 0) / stats.sharedLexicons) * 100}%`
-                        : '0%',
-                    }}
-                  ></View>
-                </View>
+
+            <View style={{ padding: '16px 0' }}>
+              <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <Text style={{ fontSize: '22px', color: '#71717a' }}>语料库共享率</Text>
+                <Text style={{ fontSize: '32px', fontWeight: '700', color: '#fafafa' }}>{getShareRate()}%</Text>
               </View>
-              <View>
-                <View className="flex justify-between mb-1">
-                  <Text className="text-gray-400 text-sm">所有人</Text>
-                  <Text className="text-white text-sm">{stats.shareScopeStats.all || 0}</Text>
-                </View>
-                <View className="w-full bg-slate-800 rounded-full h-2">
-                  <View
-                    className="bg-emerald-500 h-2 rounded-full"
-                    style={{
-                      width: stats.sharedLexicons > 0
-                        ? `${((stats.shareScopeStats.all || 0) / stats.sharedLexicons) * 100}%`
-                        : '0%',
-                    }}
-                  ></View>
-                </View>
-              </View>
-              <View>
-                <View className="flex justify-between mb-1">
-                  <Text className="text-gray-400 text-sm">同部门</Text>
-                  <Text className="text-white text-sm">{stats.shareScopeStats.department || 0}</Text>
-                </View>
-                <View className="w-full bg-slate-800 rounded-full h-2">
-                  <View
-                    className="bg-purple-500 h-2 rounded-full"
-                    style={{
-                      width: stats.sharedLexicons > 0
-                        ? `${((stats.shareScopeStats.department || 0) / stats.sharedLexicons) * 100}%`
-                        : '0%',
-                    }}
-                  ></View>
-                </View>
+              <View
+                style={{
+                  width: '100%',
+                  height: '8px',
+                  borderRadius: '4px',
+                  backgroundColor: '#27272a',
+                  overflow: 'hidden',
+                }}
+              >
+                <View
+                  style={{
+                    width: `${getShareRate()}%`,
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #3b82f6 0%, #22c55e 100%)',
+                    borderRadius: '4px',
+                  }}
+                />
               </View>
             </View>
           </View>
-        )}
 
-        {/* 统计说明 */}
-        <View className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-          <Text className="text-gray-400 text-xs leading-relaxed">
-            • 总语料库：系统中的所有语料库总数{'\n'}
-            • 已共享：已开启共享功能的语料库数量{'\n'}
-            • 全局共享：管理员设置为全局共享的语料库数量{'\n'}
-            • 近7天操作：最近7天内的共享操作次数{'\n'}
-            • 共享率：已共享语料库占总语料库的比例
-          </Text>
+          {/* 共享范围分布 */}
+          {stats?.shareScopeStats && (
+            <View className="admin-card">
+              <View className="admin-card-header">
+                <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Users size={24} color="#f59e0b" />
+                  <Text className="admin-card-title">共享范围分布</Text>
+                </View>
+              </View>
+
+              <View style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {[
+                  { key: 'custom', label: '指定用户', icon: Users, color: '#3b82f6' },
+                  { key: 'all', label: '所有人', icon: Globe, color: '#22c55e' },
+                  { key: 'department', label: '同部门', icon: Building2, color: '#a855f7' },
+                ].map((item) => {
+                  const count = stats.shareScopeStats[item.key as keyof typeof stats.shareScopeStats] || 0;
+                  const percentage = stats.sharedLexicons > 0 ? Math.round((count / stats.sharedLexicons) * 100) : 0;
+
+                  return (
+                    <View key={item.key}>
+                      <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <item.icon size={18} color={item.color} />
+                          <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>{item.label}</Text>
+                        </View>
+                        <Text style={{ fontSize: '22px', color: '#fafafa' }}>{count}</Text>
+                      </View>
+                      <View
+                        style={{
+                          width: '100%',
+                          height: '6px',
+                          borderRadius: '3px',
+                          backgroundColor: '#27272a',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: `${percentage}%`,
+                            height: '100%',
+                            backgroundColor: item.color,
+                            borderRadius: '3px',
+                          }}
+                        />
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+
+          {/* 快速操作 */}
+          <View className="admin-card">
+            <View className="admin-card-header">
+              <Text className="admin-card-title">快速操作</Text>
+            </View>
+
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <View
+                className="user-list-item"
+                onClick={() => {
+                  // 跳转到共享管理
+                }}
+              >
+                <View style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                  <Link2 size={24} color="#3b82f6" />
+                  <Text style={{ fontSize: '26px', color: '#fafafa' }}>管理共享权限</Text>
+                </View>
+                <ChevronRight size={24} color="#52525b" />
+              </View>
+
+              <View
+                className="user-list-item"
+                onClick={() => {
+                  // 跳转到语料库管理
+                }}
+              >
+                <View style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                  <FileText size={24} color="#22c55e" />
+                  <Text style={{ fontSize: '26px', color: '#fafafa' }}>查看语料库</Text>
+                </View>
+                <ChevronRight size={24} color="#52525b" />
+              </View>
+            </View>
+          </View>
         </View>
-
-        {/* 底部空间 */}
-        <View className="h-20"></View>
       </ScrollView>
     </View>
   );

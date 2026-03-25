@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Input, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
+
 const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
 
 // 笔记数据结构

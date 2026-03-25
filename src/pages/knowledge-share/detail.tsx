@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, Audio } from '@tarojs/components';
+import { View, Text, ScrollView, Audio } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { Network } from '@/network';

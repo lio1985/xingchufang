@@ -1,6 +1,6 @@
 import Taro, { useLoad } from '@tarojs/taro';
 import { useState } from 'react';
-import { View, Text, Image, Input } from '@tarojs/components';
+import { View, Text, Input } from '@tarojs/components';
 import { Network } from '@/network';
 
 interface KnowledgeShareItem {

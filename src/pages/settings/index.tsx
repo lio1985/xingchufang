@@ -1,14 +1,6 @@
 import { useState } from 'react';
-import { View, Text, Switch, Input } from '@tarojs/components';
+import { View, Text, Switch } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-
-interface SettingItem {
-  icon: string;
-  label: string;
-  value?: string;
-  type: 'navigate' | 'switch' | 'input';
-  onClick?: () => void;
-}
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
@@ -18,7 +10,7 @@ const SettingsPage = () => {
     soundEffect: false
   });
 
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo] = useState({
     name: '星厨房主理人',
     phone: '138****8888',
     avatar: ''
@@ -154,7 +146,8 @@ const SettingsPage = () => {
         background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
         padding: '48px 32px 32px',
         borderBottom: '1px solid #27272a'
-      }}>
+      }}
+      >
         <Text style={{ fontSize: '36px', fontWeight: '700', color: '#fafafa' }}>
           设置
         </Text>
@@ -170,7 +163,8 @@ const SettingsPage = () => {
           display: 'flex',
           alignItems: 'center',
           gap: '24px'
-        }}>
+        }}
+        >
           <View style={{
             width: '120px',
             height: '120px',
@@ -180,7 +174,8 @@ const SettingsPage = () => {
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '48px'
-          }}>
+          }}
+          >
             👩‍🍳
           </View>
           <View style={{ flex: 1 }}>
@@ -196,7 +191,8 @@ const SettingsPage = () => {
               backgroundColor: 'rgba(245, 158, 11, 0.1)',
               borderRadius: '8px',
               marginTop: '12px'
-            }}>
+            }}
+            >
               <Text style={{ fontSize: '20px', color: '#f59e0b' }}>⭐ 高级会员</Text>
             </View>
           </View>
@@ -212,14 +208,16 @@ const SettingsPage = () => {
             borderRadius: '24px',
             padding: '8px 28px',
             border: '1px solid #27272a'
-          }}>
+          }}
+          >
             <Text style={{ 
               fontSize: '22px', 
               color: '#71717a',
               paddingTop: '20px',
               paddingBottom: '12px',
               display: 'block'
-            }}>
+            }}
+            >
               {section.title}
             </Text>
             {section.items.map((item, itemIndex) => renderSettingItem(item, itemIndex))}

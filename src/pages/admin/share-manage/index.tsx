@@ -1,555 +1,370 @@
-import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Input, Button } from '@tarojs/components';
-import Taro, { showToast } from '@tarojs/taro';
+import { useState, useEffect, useCallback } from 'react';
+import Taro from '@tarojs/taro';
+import { View, Text, ScrollView, Input } from '@tarojs/components';
+import {
+  Link2,
+  RefreshCw,
+  Search,
+  X,
+  Globe,
+  Lock,
+  Users,
+  Building2,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
+import '@/styles/pages.css';
+import '@/styles/admin.css';
 
-interface ShareRecord {
+interface SharePermission {
+  id: string;
   lexiconId: string;
-  lexiconTitle: string;
-  userId: string;
-  userName: string;
-  isShared: boolean;
-  shareScope: 'custom' | 'all' | 'department';
-  sharedWithUsers: string[];
-  isGloballyShared: boolean;
-  sharedAt: string | null;
+  lexiconName: string;
+  shareScope: 'private' | 'department' | 'all' | 'custom';
+  targetUsers: Array<{
+    id: string;
+    name: string;
+    department: string;
+  }>;
+  targetDepartments: string[];
+  createdBy: {
+    id: string;
+    name: string;
+  };
+  createdAt: string;
 }
 
-export default function AdminShareManagePage() {
+const ShareManagePage = () => {
+  const [permissions, setPermissions] = useState<SharePermission[]>([]);
+  const [filteredPermissions, setFilteredPermissions] = useState<SharePermission[]>([]);
   const [loading, setLoading] = useState(false);
-  const [shareRecords, setShareRecords] = useState<ShareRecord[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'shared' | 'global'>('all');
-  const [showHistory, setShowHistory] = useState(false);
-  const [historyRecords, setHistoryRecords] = useState<any[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
-  // const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  // const [showBatchActions, setShowBatchActions] = useState(false);
+  const [scopeFilter, setScopeFilter] = useState('all');
 
-  // 加载共享记录
-  const loadShareRecords = async () => {
+  const filterPermissions = useCallback(() => {
+    let filtered = permissions;
+
+    if (searchKeyword) {
+      filtered = filtered.filter((item) =>
+        item.lexiconName.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    }
+
+    if (scopeFilter !== 'all') {
+      filtered = filtered.filter((item) => item.shareScope === scopeFilter);
+    }
+
+    setFilteredPermissions(filtered);
+  }, [permissions, searchKeyword, scopeFilter]);
+
+  useEffect(() => {
+    loadPermissions();
+  }, []);
+
+  useEffect(() => {
+    filterPermissions();
+  }, [filterPermissions]);
+
+  const loadPermissions = async () => {
     setLoading(true);
     try {
       const response = await Network.request({
-        url: '/api/admin/share/all-records',
-        method: 'GET',
+        url: '/api/admin/share/permissions',
+        data: { page: 1, pageSize: 100 },
       });
 
-      console.log('共享记录响应:', response.data);
-
-      if (response.statusCode === 200 && response.data?.data) {
-        setShareRecords(response.data.data || []);
+      if (response.data?.success && response.data?.data) {
+        setPermissions(response.data.data);
+      } else {
+        // 模拟数据
+        setPermissions([
+          {
+            id: '1',
+            lexiconId: 'l1',
+            lexiconName: '产品介绍语料库',
+            shareScope: 'department',
+            targetUsers: [],
+            targetDepartments: ['市场部', '销售部'],
+            createdBy: { id: 'u1', name: '张三' },
+            createdAt: '2024-03-20',
+          },
+          {
+            id: '2',
+            lexiconId: 'l2',
+            lexiconName: '客户服务话术',
+            shareScope: 'all',
+            targetUsers: [],
+            targetDepartments: [],
+            createdBy: { id: 'u2', name: '李四' },
+            createdAt: '2024-03-18',
+          },
+          {
+            id: '3',
+            lexiconId: 'l3',
+            lexiconName: '营销推广文案',
+            shareScope: 'custom',
+            targetUsers: [
+              { id: 'u1', name: '张三', department: '市场部' },
+              { id: 'u2', name: '李四', department: '销售部' },
+            ],
+            targetDepartments: [],
+            createdBy: { id: 'u3', name: '王五' },
+            createdAt: '2024-03-19',
+          },
+        ]);
       }
     } catch (error) {
-      console.error('加载共享记录失败:', error);
-      showToast({
-        title: '加载失败',
-        icon: 'none',
-      });
+      console.error('加载共享权限失败:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // 设置全局共享
-  const handleToggleGlobalShare = async (lexiconId: string, isGloballyShared: boolean) => {
-    try {
-      await Network.request({
-        url: `/api/admin/lexicons/${lexiconId}/force-share`,
-        method: 'POST',
-        data: { isGloballyShared: !isGloballyShared },
-      });
+  const handleRevoke = async (permission: SharePermission) => {
+    const confirm = await Taro.showModal({
+      title: '撤销共享',
+      content: `确定要撤销"${permission.lexiconName}"的共享权限吗？`,
+    });
 
-      showToast({
-        title: !isGloballyShared ? '已开启全局共享' : '已关闭全局共享',
-        icon: 'success',
-      });
+    if (confirm.confirm) {
+      try {
+        const response = await Network.request({
+          url: `/api/admin/share/permissions/${permission.id}`,
+          method: 'DELETE',
+        });
 
-      await loadShareRecords();
-    } catch (error) {
-      console.error('设置全局共享失败:', error);
-      showToast({
-        title: '操作失败',
-        icon: 'none',
-      });
+        if (response.data?.success) {
+          Taro.showToast({ title: '撤销成功', icon: 'success' });
+          loadPermissions();
+        } else {
+          Taro.showToast({ title: response.data?.message || '撤销失败', icon: 'none' });
+        }
+      } catch (error) {
+        console.error('撤销共享失败:', error);
+        Taro.showToast({ title: '撤销失败', icon: 'none' });
+      }
     }
   };
 
-  // 获取共享范围标签
-  const getShareScopeLabel = (scope: string) => {
-    const labels: Record<string, { label: string; color: string; bg: string }> = {
-      custom: { label: '指定用户', color: 'text-blue-400', bg: 'bg-slate-9000/20' },
-      all: { label: '所有人', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
-      department: { label: '同部门', color: 'text-purple-400', bg: 'bg-purple-500/20' },
+  const scopeFilters = [
+    { value: 'all', label: '全部', color: '#f59e0b' },
+    { value: 'private', label: '私有', color: '#71717a' },
+    { value: 'department', label: '部门', color: '#3b82f6' },
+    { value: 'all-users', label: '全员', color: '#22c55e' },
+    { value: 'custom', label: '指定', color: '#ec4899' },
+  ];
+
+  const getScopeIcon = (scope: string) => {
+    switch (scope) {
+      case 'all':
+        return <Globe size={24} color="#22c55e" />;
+      case 'department':
+        return <Building2 size={24} color="#3b82f6" />;
+      case 'custom':
+        return <Users size={24} color="#ec4899" />;
+      default:
+        return <Lock size={24} color="#71717a" />;
+    }
+  };
+
+  const getScopeLabel = (scope: string) => {
+    const map: Record<string, string> = {
+      private: '私有',
+      department: '部门共享',
+      all: '全员可见',
+      custom: '指定用户',
     };
-    return labels[scope] || labels.custom;
+    return map[scope] || '私有';
   };
 
-  // 过滤共享记录
-  const filteredRecords = shareRecords.filter((record) => {
-    // 关键词搜索
-    if (searchKeyword) {
-      const keyword = searchKeyword.toLowerCase();
-      const matchTitle = record.lexiconTitle.toLowerCase().includes(keyword);
-      const matchUser = record.userName.toLowerCase().includes(keyword);
-      if (!matchTitle && !matchUser) return false;
-    }
-
-    // 类型过滤
-    if (filterType === 'global' && !record.isGloballyShared) return false;
-    if (filterType === 'shared' && !record.isShared) return false;
-
-    return true;
-  });
-
-  // 加载共享历史
-  const loadShareHistory = async (lexiconId: string) => {
-    setHistoryLoading(true);
-    try {
-      const response = await Network.request({
-        url: '/api/lexicon/share-history',
-        method: 'GET',
-        data: {
-          lexiconId,
-          page: 1,
-          pageSize: 50,
-        },
-      });
-
-      console.log('共享历史响应:', response.data);
-
-      if (response.statusCode === 200 && response.data?.data) {
-        setHistoryRecords(response.data.data.items || []);
-        setShowHistory(true);
-      }
-    } catch (error) {
-      console.error('加载共享历史失败:', error);
-      showToast({
-        title: '加载失败',
-        icon: 'none',
-      });
-    } finally {
-      setHistoryLoading(false);
+  const getScopeBgColor = (scope: string) => {
+    switch (scope) {
+      case 'all':
+        return 'rgba(34, 197, 94, 0.1)';
+      case 'department':
+        return 'rgba(59, 130, 246, 0.1)';
+      case 'custom':
+        return 'rgba(236, 72, 153, 0.1)';
+      default:
+        return 'rgba(113, 113, 122, 0.1)';
     }
   };
-
-  /*
-  // 切换选择状态
-  const toggleSelect = (lexiconId: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(lexiconId)
-        ? prev.filter((id) => id !== lexiconId)
-        : [...prev, lexiconId]
-    );
-  };
-
-  // 全选/取消全选
-  const toggleSelectAll = () => {
-    const allIds = filteredRecords.map((r) => r.lexiconId);
-    if (selectedIds.length === allIds.length) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(allIds);
-    }
-  };
-
-  // 批量设置全局共享
-  const handleBatchSetGlobalShare = async () => {
-    if (selectedIds.length === 0) {
-      showToast({
-        title: '请先选择语料库',
-        icon: 'none',
-      });
-      return;
-    }
-
-    try {
-      showToast({
-        title: '批量设置中...',
-        icon: 'loading',
-      });
-
-      // 调用批量共享接口
-      const res = await Network.request({
-        url: '/api/admin/share/batch-set-global',
-        method: 'POST',
-        data: { lexiconIds: selectedIds, isGloballyShared: true },
-      });
-
-      if (res.data.code === 200) {
-        showToast({
-          title: `已为 ${selectedIds.length} 个语料库设置全局共享`,
-          icon: 'success',
-        });
-        setSelectedIds([]);
-        setShowBatchActions(false);
-        await loadShareRecords();
-      } else {
-        showToast({
-          title: res.data.msg || '操作失败',
-          icon: 'none',
-        });
-      }
-    } catch (error) {
-      console.error('批量设置全局共享失败:', error);
-      showToast({
-        title: '操作失败',
-        icon: 'none',
-      });
-    }
-  };
-
-  // 批量取消全局共享
-  const handleBatchCancelGlobalShare = async () => {
-    if (selectedIds.length === 0) {
-      showToast({
-        title: '请先选择语料库',
-        icon: 'none',
-      });
-      return;
-    }
-
-    try {
-      showToast({
-        title: '批量取消中...',
-        icon: 'loading',
-      });
-
-      // 调用批量共享接口
-      const res = await Network.request({
-        url: '/api/admin/share/batch-set-global',
-        method: 'POST',
-        data: { lexiconIds: selectedIds, isGloballyShared: false },
-      });
-
-      if (res.data.code === 200) {
-        showToast({
-          title: `已为 ${selectedIds.length} 个语料库取消全局共享`,
-          icon: 'success',
-        });
-        setSelectedIds([]);
-        setShowBatchActions(false);
-        await loadShareRecords();
-      } else {
-        showToast({
-          title: res.data.msg || '操作失败',
-          icon: 'none',
-        });
-      }
-    } catch (error) {
-      console.error('批量取消全局共享失败:', error);
-      showToast({
-        title: '操作失败',
-        icon: 'none',
-      });
-    }
-  };
-  */
-
-  useEffect(() => {
-    loadShareRecords();
-  }, []);
 
   return (
-    <View className="min-h-screen bg-slate-900">
-      {/* 顶部导航栏 */}
-      <View className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-5">
-        <View className="flex items-center justify-between">
-          <View className="flex items-center gap-3">
-            <View className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-blue-500/10 rounded-xl flex items-center justify-center">
-              <Text>🔗</Text>
-            </View>
-            <Text className="block text-xl font-bold text-white">共享管理</Text>
-          </View>
-          <View className="flex items-center gap-2">
-            <View
-              className="p-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
-              onClick={() => Taro.navigateTo({ url: '/pages/admin/share-stats/index' })}
-            >
-              <Text>📈</Text>
-            </View>
-            <View
-              className="p-2 bg-slate-800 rounded-lg active:scale-95 transition-all"
-              onClick={loadShareRecords}
-            >
-              <Text>🔄</Text>
-            </View>
+    <View className="admin-page">
+      {/* Header */}
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <Text className="admin-title">共享管理</Text>
+          <View
+            style={{
+              padding: '10px',
+              borderRadius: '12px',
+              backgroundColor: '#1a1a1d',
+            }}
+            onClick={loadPermissions}
+          >
+            <RefreshCw size={24} color={loading ? '#52525b' : '#f59e0b'} />
           </View>
         </View>
-      </View>
 
-      <ScrollView className="flex-1" scrollY>
-        <View className="px-4 py-6">
-          {/* 统计卡片 */}
-          <View className="grid grid-cols-2 gap-3 mb-6">
-            <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700">
-              <View className="flex items-center gap-2 mb-2">
-                <Text>🔗</Text>
-                <Text className="block text-sm text-slate-400">用户共享</Text>
-              </View>
-              <Text className="block text-2xl font-bold text-white">
-                {shareRecords.filter((r) => r.isShared).length}
-              </Text>
+        {/* 搜索栏 */}
+        <View className="search-bar-wrapper" style={{ marginTop: '16px' }}>
+          <Search size={24} color="#52525b" />
+          <Input
+            className="search-input"
+            placeholder="搜索语料库..."
+            placeholderStyle="color: #52525b"
+            value={searchKeyword}
+            onInput={(e) => setSearchKeyword(e.detail.value)}
+          />
+          {searchKeyword && (
+            <View onClick={() => setSearchKeyword('')}>
+              <X size={24} color="#52525b" />
             </View>
-            <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700">
-              <View className="flex items-center gap-2 mb-2">
-                <Text>🌐</Text>
-                <Text className="block text-sm text-slate-400">全局共享</Text>
-              </View>
-              <Text className="block text-2xl font-bold text-white">
-                {shareRecords.filter((r) => r.isGloballyShared).length}
-              </Text>
-            </View>
-          </View>
+          )}
+        </View>
 
-          {/* 搜索框 */}
-          <View className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700 mb-4">
-            <View className="bg-slate-800 rounded-xl px-4 py-3 flex items-center gap-3">
-              <Text>🔍</Text>
-              <Input
-                className="flex-1 bg-transparent text-white text-sm"
-                placeholder="搜索语料名称或用户..."
-                value={searchKeyword}
-                onInput={(e) => setSearchKeyword(e.detail.value)}
-              />
-            </View>
-          </View>
-
-          {/* 过滤器 */}
-          <View className="flex gap-2 mb-4">
-            {[
-              { value: 'all', label: '全部' },
-              { value: 'shared', label: '用户共享' },
-              { value: 'global', label: '全局共享' },
-            ].map((filter) => (
+        {/* 范围筛选 */}
+        <ScrollView scrollX style={{ marginTop: '16px', whiteSpace: 'nowrap' }}>
+          <View style={{ display: 'inline-flex', gap: '12px', paddingRight: '24px' }}>
+            {scopeFilters.map((filter) => (
               <View
                 key={filter.value}
-                className={`px-4 py-2 rounded-xl border-2 transition-all ${
-                  filterType === filter.value
-                    ? 'border-blue-500 bg-blue-500/10'
-                    : 'border-slate-700 bg-slate-800/50'
-                }`}
-                onClick={() => setFilterType(filter.value as any)}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '12px',
+                  backgroundColor: scopeFilter === filter.value ? filter.color : '#1a1a1d',
+                  flexShrink: 0,
+                }}
+                onClick={() => setScopeFilter(filter.value)}
               >
                 <Text
-                  className={`block text-sm ${
-                    filterType === filter.value ? 'text-white' : 'text-slate-400'
-                  }`}
+                  style={{
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    color: scopeFilter === filter.value ? '#000' : '#a1a1aa',
+                  }}
                 >
                   {filter.label}
                 </Text>
               </View>
             ))}
           </View>
+        </ScrollView>
+      </View>
 
-          {/* 共享记录列表 */}
-          {filteredRecords.length === 0 ? (
-            <View className="flex flex-col items-center justify-center py-12">
-              <Text>ℹ</Text>
-              <Text className="block text-sm text-slate-400 mt-3">
-                {searchKeyword ? '未找到匹配的共享记录' : '暂无共享记录'}
-              </Text>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 160px)', marginTop: '160px' }}>
+        <View className="admin-content" style={{ paddingTop: '16px' }}>
+          {filteredPermissions.length === 0 ? (
+            <View className="empty-state">
+              <Link2 size={80} color="#71717a" />
+              <Text className="empty-title">暂无共享记录</Text>
+              <Text className="empty-desc">语料库共享权限将显示在这里</Text>
             </View>
           ) : (
-            <View className="flex flex-col gap-3">
-              {filteredRecords.map((record) => {
-                const scopeInfo = getShareScopeLabel(record.shareScope);
-
-                return (
-                  <View
-                    key={record.lexiconId}
-                    className="bg-slate-800/60 rounded-2xl p-4 border border-slate-700"
-                  >
-                    {/* 语料信息 */}
-                    <View className="mb-3">
-                      <View className="flex items-start justify-between mb-2">
-                        <View className="flex-1">
-                          <View className="flex items-center gap-2 mb-2">
-                            {record.isGloballyShared && (
-                              <View className="px-2 py-0.5 bg-emerald-500/20 rounded flex items-center gap-1">
-                                <Text>🌐</Text>
-                                <Text className="block text-xs text-emerald-400">全局共享</Text>
-                              </View>
-                            )}
-                            {record.isShared && !record.isGloballyShared && (
-                              <View className={`px-2 py-0.5 ${scopeInfo.bg} rounded flex items-center gap-1`}>
-                                <Text>👤</Text>
-                                <Text className={`block text-xs ${scopeInfo.color}`}>
-                                  {scopeInfo.label}
-                                </Text>
-                              </View>
-                            )}
-                          </View>
-                          <Text className="block text-base font-bold text-white mb-1">
-                            {record.lexiconTitle}
-                          </Text>
-                          <Text className="block text-xs text-slate-400">
-                            所有者: {record.userName}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    {/* 共享详情 */}
-                    {record.isShared && (
-                      <View className="mb-3 px-3 py-2 bg-slate-800/30 rounded-xl">
-                        <View className="flex items-center justify-between">
-                          <Text className="block text-xs text-slate-400">
-                            共享给 {record.shareScope === 'custom' ? `${record.sharedWithUsers.length} 位用户` : scopeInfo.label}
-                          </Text>
-                          {record.sharedAt && (
-                            <Text className="block text-xs text-slate-400">
-                              {new Date(record.sharedAt).toLocaleDateString('zh-CN')}
-                            </Text>
-                          )}
-                        </View>
-                      </View>
-                    )}
-
-                    {/* 操作按钮 */}
-                    <View
-                      className="flex gap-2 pt-3 border-t border-slate-700"
-                      style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}
-                    >
-                      <View style={{ flex: 1 }}>
-                        <Button
-                          size="mini"
-                          className="w-full bg-slate-800 text-white"
-                          onClick={() => loadShareHistory(record.lexiconId)}
-                        >
-                          查看历史
-                        </Button>
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Button
-                          size="mini"
-                          className={`w-full ${
-                            record.isGloballyShared
-                              ? 'bg-red-500/20 text-red-400 border border-red-500/50'
-                              : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                          }`}
-                          onClick={() => handleToggleGlobalShare(record.lexiconId, record.isGloballyShared)}
-                        >
-                          {record.isGloballyShared ? '取消全局' : '设为全局'}
-                        </Button>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })}
-            </View>
-          )}
-
-          {/* 底部空间 */}
-          <View className="h-20"></View>
-        </View>
-      </ScrollView>
-
-      {/* 共享历史弹窗 */}
-      {showHistory && (
-        <View
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end"
-          onClick={() => setShowHistory(false)}
-        >
-          <View
-            className="bg-slate-800 w-full rounded-t-3xl max-h-[80vh]"
-            style={{ display: 'flex', flexDirection: 'column' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* 弹窗标题 */}
-            <View
-              className="px-4 py-3 border-b border-slate-700"
-              style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-            >
-              <Text className="block text-white text-base font-semibold">共享历史</Text>
-              <View
-                className="p-1 bg-slate-800 rounded-full"
-                onClick={() => setShowHistory(false)}
-              >
-                <Text>✕</Text>
-              </View>
-            </View>
-
-            {/* 历史记录列表 */}
-            <ScrollView
-              scrollY
-              className="flex-1 px-4 py-3"
-            >
-              {historyLoading ? (
-                <View className="flex items-center justify-center py-8">
-                  <Text>🔄</Text>
-                </View>
-              ) : historyRecords.length === 0 ? (
-                <View className="flex flex-col items-center justify-center py-16">
-                  <Text>📜</Text>
-                  <Text className="block text-slate-400 text-sm mt-3">暂无历史记录</Text>
-                </View>
-              ) : (
-                historyRecords.map((record) => (
-                  <View
-                    key={record.id}
-                    className="bg-slate-800/30 rounded-xl p-3 mb-2 border border-slate-700"
-                  >
-                    {/* 操作人 */}
-                    <View
-                      className="mb-2"
-                      style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-                    >
-                      <View
-                        style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}
-                      >
-                        <Text>🔗</Text>
-                        <Text className="block text-white text-sm">{record.operatorName}</Text>
-                      </View>
-                      <Text className="block text-slate-400 text-xs">
-                        {new Date(record.createdAt).toLocaleString('zh-CN')}
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {filteredPermissions.map((permission) => (
+                <View key={permission.id} className="admin-card">
+                  <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa' }}>
+                        {permission.lexiconName}
                       </Text>
                     </View>
-
-                    {/* 操作类型 */}
-                    <View className="mb-2">
-                      {record.action === 'share' ? (
-                        <View className="flex items-center gap-1">
-                          <Text>✓</Text>
-                          <Text className="block text-emerald-400 text-xs">
-                            {record.shareType === 'user_share' ? '用户共享' : '管理员全局共享'}
-                          </Text>
-                        </View>
-                      ) : (
-                        <View className="flex items-center gap-1">
-                          <Text>✕</Text>
-                          <Text className="block text-red-400 text-xs">取消共享</Text>
-                        </View>
-                      )}
+                    <View
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '8px 16px',
+                        borderRadius: '12px',
+                        backgroundColor: getScopeBgColor(permission.shareScope),
+                      }}
+                    >
+                      {getScopeIcon(permission.shareScope)}
+                      <Text style={{ fontSize: '20px', color: '#a1a1aa' }}>
+                        {getScopeLabel(permission.shareScope)}
+                      </Text>
                     </View>
-
-                    {/* 共享范围 */}
-                    {record.shareScope && record.shareScope !== 'global' && (
-                      <View className="flex items-center gap-1 mb-2">
-                        <Text>👤</Text>
-                        <Text className="block text-slate-400 text-xs">
-                          范围: {record.shareScope === 'custom' ? '指定用户' : record.shareScope === 'all' ? '所有人' : '同部门'}
-                        </Text>
-                      </View>
-                    )}
-
-                    {/* 共享用户 */}
-                    {record.sharedWithUsers && record.sharedWithUsers.length > 0 && (
-                      <View
-                        className="px-2 py-1.5 bg-slate-700/30 rounded-lg"
-                      >
-                        <Text className="block text-slate-300 text-xs">
-                          共享给 {record.sharedWithUsers.length} 位用户
-                        </Text>
-                      </View>
-                    )}
                   </View>
-                ))
-              )}
-            </ScrollView>
-          </View>
+
+                  {/* 共享对象详情 */}
+                  {permission.shareScope === 'department' && permission.targetDepartments.length > 0 && (
+                    <View style={{ marginTop: '12px' }}>
+                      <Text style={{ fontSize: '20px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
+                        共享部门
+                      </Text>
+                      <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {permission.targetDepartments.map((dept, index) => (
+                          <View
+                            key={index}
+                            style={{
+                              padding: '6px 12px',
+                              borderRadius: '8px',
+                              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            }}
+                          >
+                            <Text style={{ fontSize: '20px', color: '#3b82f6' }}>{dept}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+
+                  {permission.shareScope === 'custom' && permission.targetUsers.length > 0 && (
+                    <View style={{ marginTop: '12px' }}>
+                      <Text style={{ fontSize: '20px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
+                        共享用户
+                      </Text>
+                      <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {permission.targetUsers.map((user) => (
+                          <View
+                            key={user.id}
+                            style={{
+                              padding: '6px 12px',
+                              borderRadius: '8px',
+                              backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                            }}
+                          >
+                            <Text style={{ fontSize: '20px', color: '#ec4899' }}>{user.name}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+
+                  <View
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginTop: '16px',
+                      paddingTop: '16px',
+                      borderTop: '1px solid #27272a',
+                    }}
+                  >
+                    <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                      创建者: {permission.createdBy.name} · {permission.createdAt}
+                    </Text>
+                    <View
+                      style={{
+                        padding: '10px 20px',
+                        borderRadius: '10px',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                      }}
+                      onClick={() => handleRevoke(permission)}
+                    >
+                      <Text style={{ fontSize: '22px', color: '#ef4444' }}>撤销共享</Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
         </View>
-      )}
+      </ScrollView>
     </View>
   );
-}
+};
+
+export default ShareManagePage;

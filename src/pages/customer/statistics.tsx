@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+
 interface OverviewStats {
   total: number;
   statusDistribution: { normal: number; atRisk: number; lost: number };

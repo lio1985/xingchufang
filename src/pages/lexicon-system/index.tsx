@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
-import { View, Text, Textarea, Checkbox, CheckboxGroup } from '@tarojs/components'
+import { View, Text, Textarea, CheckboxGroup } from '@tarojs/components'
 import { Network } from '@/network'
 
 interface Lexicon {

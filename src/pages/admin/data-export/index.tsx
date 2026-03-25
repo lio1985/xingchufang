@@ -1,7 +1,24 @@
 import React, { useState } from 'react';
 import Taro, { useLoad } from '@tarojs/taro';
-import { View, Text, Button, ScrollView, Picker } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
+import {
+  RefreshCw,
+  Download,
+  FileCode,
+  FileSpreadsheet,
+  Users,
+  BookOpen,
+  ScrollText,
+  Database,
+  Clock,
+  CircleCheck,
+  CircleX,
+  LoaderCircle,
+  Settings,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
+import '@/styles/pages.css';
+import '@/styles/admin.css';
 
 type ExportDataType = 'users' | 'lexicons' | 'logs' | 'all';
 type ExportFormat = 'json' | 'csv';
@@ -54,14 +71,12 @@ const DataExportPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [activeTab, setActiveTab] = useState<'create' | 'history'>('create');
-  const [timeRangeType, setTimeRangeType] = useState<'all' | '7days' | '30days' | 'month' | 'custom'>('all');
 
   useLoad(() => {
     loadStats();
     loadHistory();
   });
 
-  // 加载统计数据
   const loadStats = async () => {
     try {
       const res = await Network.request({
@@ -76,7 +91,6 @@ const DataExportPage: React.FC = () => {
     }
   };
 
-  // 加载历史记录
   const loadHistory = async () => {
     setLoading(true);
     try {
@@ -98,7 +112,6 @@ const DataExportPage: React.FC = () => {
     }
   };
 
-  // 创建导出任务
   const handleExport = async () => {
     setExporting(true);
     try {
@@ -109,573 +122,303 @@ const DataExportPage: React.FC = () => {
       });
 
       if (res.data.code === 200) {
-        Taro.showToast({
-          title: '导出任务创建成功',
-          icon: 'success',
-        });
-
-        // 切换到历史记录页面
+        Taro.showToast({ title: '导出任务创建成功', icon: 'success' });
         setActiveTab('history');
         loadHistory();
         loadStats();
       } else {
-        Taro.showToast({
-          title: res.data.msg || '创建失败',
-          icon: 'none',
-        });
+        Taro.showToast({ title: res.data.msg || '创建失败', icon: 'none' });
       }
     } catch (error) {
       console.error('创建导出任务失败:', error);
-      Taro.showToast({
-        title: '创建失败',
-        icon: 'none',
-      });
+      Taro.showToast({ title: '创建失败', icon: 'none' });
     } finally {
       setExporting(false);
     }
   };
 
-  // 处理时间范围类型变化
-  const handleTimeRangeTypeChange = (type: 'all' | '7days' | '30days' | 'month' | 'custom') => {
-    setTimeRangeType(type);
+  const dataTypeOptions = [
+    { value: 'all', label: '全部数据', icon: Database, color: '#f59e0b' },
+    { value: 'users', label: '用户数据', icon: Users, color: '#3b82f6' },
+    { value: 'lexicons', label: '语料库', icon: BookOpen, color: '#22c55e' },
+    { value: 'logs', label: '操作日志', icon: ScrollText, color: '#a855f7' },
+  ];
 
-    let newConfig = { ...config };
+  const formatOptions = [
+    { value: 'json', label: 'JSON', icon: FileCode, color: '#f59e0b' },
+    { value: 'csv', label: 'CSV', icon: FileSpreadsheet, color: '#22c55e' },
+  ];
 
-    if (type === 'all') {
-      newConfig.timeRange = undefined;
-    } else if (type === '7days') {
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 7);
-      newConfig.timeRange = {
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: endDate.toISOString().split('T')[0],
-      };
-    } else if (type === '30days') {
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 30);
-      newConfig.timeRange = {
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: endDate.toISOString().split('T')[0],
-      };
-    } else if (type === 'month') {
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(1);
-      startDate.setMonth(startDate.getMonth() - 1);
-      newConfig.timeRange = {
-        startDate: startDate.toISOString().split('T')[0],
-        endDate: endDate.toISOString().split('T')[0],
-      };
-    }
-
-    setConfig(newConfig);
-  };
-
-  // 开始日期选择
-  const handleStartDateChange = (e: any) => {
-    const selectedDate = e.detail.value;
-    const startDate = new Date(selectedDate).toISOString().split('T')[0];
-
-    let newConfig = { ...config };
-    if (!newConfig.timeRange) {
-      newConfig.timeRange = { startDate, endDate: '' };
-    } else {
-      newConfig.timeRange.startDate = startDate;
-    }
-
-    setConfig(newConfig);
-  };
-
-  // 结束日期选择
-  const handleEndDateChange = (e: any) => {
-    const selectedDate = e.detail.value;
-    const endDate = new Date(selectedDate).toISOString().split('T')[0];
-
-    let newConfig = { ...config };
-    if (!newConfig.timeRange) {
-      newConfig.timeRange = { startDate: '', endDate };
-    } else {
-      newConfig.timeRange.endDate = endDate;
-    }
-
-    setConfig(newConfig);
-  };
-
-  // 刷新任务状态
-  const refreshTaskStatus = async (taskId: string) => {
-    try {
-      const res = await Network.request({
-        url: `/api/admin/data-export/task/${taskId}`,
-      });
-
-      if (res.data.code === 200) {
-        const updatedTask = res.data.data;
-        setTasks((prev) =>
-          prev.map((task) =>
-            task.id === taskId ? updatedTask : task
-          )
-        );
-        loadStats();
-      }
-    } catch (error) {
-      console.error('刷新任务状态失败:', error);
-    }
-  };
-
-  // 下载文件
-  const handleDownload = async (taskId: string) => {
-    try {
-      Taro.showToast({
-        title: '获取下载链接...',
-        icon: 'loading',
-      });
-
-      const res = await Network.request({
-        url: `/api/admin/data-export/download/${taskId}`,
-      });
-
-      if (res.data.code === 200) {
-        const { downloadUrl } = res.data.data;
-
-        // 使用 Network 下载
-        await Network.downloadFile({
-          url: downloadUrl,
-        });
-
-        Taro.showToast({
-          title: '下载成功',
-          icon: 'success',
-        });
-      } else {
-        Taro.showToast({
-          title: res.data.msg || '获取下载链接失败',
-          icon: 'none',
-        });
-      }
-    } catch (error) {
-      console.error('下载失败:', error);
-      Taro.showToast({
-        title: '下载失败',
-        icon: 'none',
-      });
-    }
-  };
-
-  // 格式化文件大小
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-  };
-
-  // 格式化时间
-  const formatTime = (timeStr: string) => {
-    const date = new Date(timeStr);
-    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-  };
-
-  // 获取状态图标
   const getStatusIcon = (status: ExportTaskStatus) => {
     switch (status) {
-      case 'pending':
-      case 'processing':
-        return <Text>⏳</Text>;
       case 'completed':
-        return <Text>✓</Text>;
+        return <CircleCheck size={20} color="#22c55e" />;
       case 'failed':
-        return <Text>✕</Text>;
+        return <CircleX size={20} color="#ef4444" />;
+      case 'processing':
+        return <LoaderCircle size={20} color="#3b82f6" />;
       default:
-        return null;
+        return <Clock size={20} color="#71717a" />;
     }
   };
 
-  // 获取状态颜色
-  const getStatusColor = (status: ExportTaskStatus) => {
-    switch (status) {
-      case 'pending':
-        return 'text-yellow-500';
-      case 'processing':
-        return 'text-blue-500';
-      case 'completed':
-        return 'text-green-500';
-      case 'failed':
-        return 'text-red-500';
-      default:
-        return 'text-gray-500';
-    }
+  const getStatusText = (status: ExportTaskStatus) => {
+    const map: Record<ExportTaskStatus, string> = {
+      pending: '等待中',
+      processing: '处理中',
+      completed: '已完成',
+      failed: '失败',
+    };
+    return map[status];
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
-    <View className="min-h-full bg-slate-900">
-      {/* 顶部导航 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-        <Text className="block text-lg font-semibold text-white">数据导出</Text>
-      </View>
-
-      {/* 统计卡片 */}
-      <View className="p-4">
-        <View className="grid grid-cols-2 gap-3">
-          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-            <Text className="block text-gray-400 text-sm mb-1">总任务数</Text>
-            <Text className="block text-white text-2xl font-bold">{stats.totalTasks}</Text>
-          </View>
-          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-            <Text className="block text-gray-400 text-sm mb-1">已完成</Text>
-            <Text className="block text-green-400 text-2xl font-bold">{stats.completedTasks}</Text>
-          </View>
-          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-            <Text className="block text-gray-400 text-sm mb-1">处理中</Text>
-            <Text className="block text-blue-400 text-2xl font-bold">{stats.pendingTasks}</Text>
-          </View>
-          <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-            <Text className="block text-gray-400 text-sm mb-1">失败</Text>
-            <Text className="block text-red-400 text-2xl font-bold">{stats.failedTasks}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Tab 切换 */}
-      <View className="flex border-b border-slate-700 bg-slate-800">
-        <View
-          className={`flex-1 text-center py-3 cursor-pointer ${
-            activeTab === 'create' ? 'border-b-2 border-blue-400' : ''
-          }`}
-          onClick={() => setActiveTab('create')}
-        >
-          <Text
-            className={`block ${
-              activeTab === 'create' ? 'text-blue-400' : 'text-gray-400'
-            }`}
+    <View className="admin-page">
+      {/* Header */}
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <Text className="admin-title">数据导出</Text>
+          <View
+            style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}
+            onClick={() => {
+              loadStats();
+              loadHistory();
+            }}
           >
-            创建导出
-          </Text>
+            <RefreshCw size={24} color={loading ? '#52525b' : '#f59e0b'} />
+          </View>
         </View>
-        <View
-          className={`flex-1 text-center py-3 cursor-pointer ${
-            activeTab === 'history' ? 'border-b-2 border-blue-400' : ''
-          }`}
-          onClick={() => setActiveTab('history')}
-        >
-          <Text
-            className={`block ${
-              activeTab === 'history' ? 'text-blue-400' : 'text-gray-400'
-            }`}
-          >
-            导出历史
-          </Text>
-        </View>
-      </View>
 
-      {/* 内容区域 */}
-      {activeTab === 'create' && (
-        <ScrollView scrollY className="flex-1 px-4 py-4">
-          {/* 数据类型选择 */}
-          <View className="mb-4">
-            <Text className="block text-gray-300 text-sm mb-2">数据类型</Text>
-            <View className="grid grid-cols-2 gap-3">
-              <View
-                className={`rounded-xl p-3 border cursor-pointer ${
-                  config.dataType === 'all'
-                    ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-700 bg-slate-800'
-                }`}
-                onClick={() => setConfig({ ...config, dataType: 'all' })}
-              >
-                <Text>📄</Text>
-                <Text className="block text-white text-sm font-medium">全部数据</Text>
-              </View>
-              <View
-                className={`rounded-xl p-3 border cursor-pointer ${
-                  config.dataType === 'users'
-                    ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-700 bg-slate-800'
-                }`}
-                onClick={() => setConfig({ ...config, dataType: 'users' })}
-              >
-                <Text>👤</Text>
-                <Text className="block text-white text-sm font-medium">用户数据</Text>
-              </View>
-              <View
-                className={`rounded-xl p-3 border cursor-pointer ${
-                  config.dataType === 'lexicons'
-                    ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-700 bg-slate-800'
-                }`}
-                onClick={() => setConfig({ ...config, dataType: 'lexicons' })}
-              >
-                <Text>🔗</Text>
-                <Text className="block text-white text-sm font-medium">语料库</Text>
-              </View>
-              <View
-                className={`rounded-xl p-3 border cursor-pointer ${
-                  config.dataType === 'logs'
-                    ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-700 bg-slate-800'
-                }`}
-                onClick={() => setConfig({ ...config, dataType: 'logs' })}
-              >
-                <Text>📜</Text>
-                <Text className="block text-white text-sm font-medium">操作日志</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* 格式选择 */}
-          <View className="mb-4">
-            <Text className="block text-gray-300 text-sm mb-2">导出格式</Text>
-            <View className="flex gap-3">
-              <View
-                className={`flex-1 rounded-xl p-3 border cursor-pointer ${
-                  config.format === 'json'
-                    ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-700 bg-slate-800'
-                }`}
-                onClick={() => setConfig({ ...config, format: 'json' })}
-              >
-                <Text
-                  className={`block text-center ${
-                    config.format === 'json' ? 'text-blue-400' : 'text-gray-400'
-                  } text-sm`}
-                >
-                  JSON
-                </Text>
-              </View>
-              <View
-                className={`flex-1 rounded-xl p-3 border cursor-pointer ${
-                  config.format === 'csv'
-                    ? 'border-blue-400 bg-blue-400/10'
-                    : 'border-slate-700 bg-slate-800'
-                }`}
-                onClick={() => setConfig({ ...config, format: 'csv' })}
-              >
-                <Text
-                  className={`block text-center ${
-                    config.format === 'csv' ? 'text-blue-400' : 'text-gray-400'
-                  } text-sm`}
-                >
-                  CSV
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* 时间范围 */}
-          <View className="mb-6">
-            <Text className="block text-gray-300 text-sm mb-2">时间范围</Text>
-
-            {/* 快捷时间范围选择 */}
-            <View className="grid grid-cols-3 gap-2 mb-3">
-              <View
-                className={`rounded-lg p-2 text-center cursor-pointer ${
-                  timeRangeType === 'all'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-800 text-gray-400 border border-slate-700'
-                }`}
-                onClick={() => handleTimeRangeTypeChange('all')}
-              >
-                <Text className="block text-xs">全部时间</Text>
-              </View>
-              <View
-                className={`rounded-lg p-2 text-center cursor-pointer ${
-                  timeRangeType === '7days'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-800 text-gray-400 border border-slate-700'
-                }`}
-                onClick={() => handleTimeRangeTypeChange('7days')}
-              >
-                <Text className="block text-xs">最近7天</Text>
-              </View>
-              <View
-                className={`rounded-lg p-2 text-center cursor-pointer ${
-                  timeRangeType === '30days'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-800 text-gray-400 border border-slate-700'
-                }`}
-                onClick={() => handleTimeRangeTypeChange('30days')}
-              >
-                <Text className="block text-xs">最近30天</Text>
-              </View>
-              <View
-                className={`rounded-lg p-2 text-center cursor-pointer ${
-                  timeRangeType === 'month'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-800 text-gray-400 border border-slate-700'
-                }`}
-                onClick={() => handleTimeRangeTypeChange('month')}
-              >
-                <Text className="block text-xs">上个月</Text>
-              </View>
-              <View
-                className={`rounded-lg p-2 text-center cursor-pointer ${
-                  timeRangeType === 'custom'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-800 text-gray-400 border border-slate-700'
-                }`}
-                onClick={() => handleTimeRangeTypeChange('custom')}
-              >
-                <Text className="block text-xs">自定义</Text>
-              </View>
-            </View>
-
-            {/* 自定义日期选择 */}
-            {timeRangeType === 'custom' && (
-              <View className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-                <View className="mb-3">
-                  <Text className="block text-gray-400 text-xs mb-2">开始日期</Text>
-                  <Picker
-                    mode="date"
-                    value={config.timeRange?.startDate || ''}
-                    onChange={handleStartDateChange}
-                  >
-                    <View className="flex items-center justify-between bg-slate-800 rounded-lg px-3 py-2">
-                      <Text className="block text-white text-sm">
-                        {config.timeRange?.startDate || '选择开始日期'}
-                      </Text>
-                      <Text>📅</Text>
-                    </View>
-                  </Picker>
-                </View>
-                <View>
-                  <Text className="block text-gray-400 text-xs mb-2">结束日期</Text>
-                  <Picker
-                    mode="date"
-                    value={config.timeRange?.endDate || ''}
-                    onChange={handleEndDateChange}
-                  >
-                    <View className="flex items-center justify-between bg-slate-800 rounded-lg px-3 py-2">
-                      <Text className="block text-white text-sm">
-                        {config.timeRange?.endDate || '选择结束日期'}
-                      </Text>
-                      <Text>📅</Text>
-                    </View>
-                  </Picker>
-                </View>
-              </View>
-            )}
-
-            {/* 显示当前选择的时间范围 */}
-            {config.timeRange && (
-              <View className="mt-2 bg-slate-800/50 rounded-lg px-3 py-2">
-                <Text className="block text-gray-400 text-xs">
-                  {config.timeRange.startDate} 至 {config.timeRange.endDate}
-                </Text>
-              </View>
-            )}
-          </View>
-
-          {/* 导出按钮 */}
-          <View>
-            <Button
-              className="w-full bg-blue-500 text-white rounded-xl py-3"
-              onClick={handleExport}
-              disabled={exporting}
-            >
-              {exporting ? '创建中...' : '开始导出'}
-            </Button>
-          </View>
-        </ScrollView>
-      )}
-
-      {activeTab === 'history' && (
-        <ScrollView scrollY className="flex-1 px-4 py-4">
-          <View className="flex items-center justify-between mb-3">
-            <Text className="block text-gray-400 text-sm">导出历史</Text>
+        {/* Tab 切换 */}
+        <View style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+          {[
+            { key: 'create', label: '创建导出' },
+            { key: 'history', label: '导出历史' },
+          ].map((tab) => (
             <View
-              className="flex items-center gap-1 cursor-pointer"
-              onClick={() => loadHistory()}
+              key={tab.key}
+              style={{
+                flex: 1,
+                padding: '14px',
+                borderRadius: '12px',
+                backgroundColor: activeTab === tab.key ? '#f59e0b' : '#1a1a1d',
+                textAlign: 'center',
+              }}
+              onClick={() => setActiveTab(tab.key as any)}
             >
-              <Text className="block text-blue-400 text-sm">刷新</Text>
-            </View>
-          </View>
-
-          {loading ? (
-            <View className="flex items-center justify-center py-8">
-              <Text>⏳</Text>
-            </View>
-          ) : tasks.length === 0 ? (
-            <View className="flex flex-col items-center justify-center py-16">
-              <Text>⬇</Text>
-              <Text className="block text-gray-500 text-sm">暂无导出记录</Text>
-            </View>
-          ) : (
-            tasks.map((task) => (
-              <View
-                key={task.id}
-                className="bg-slate-800 rounded-xl p-4 mb-3 border border-slate-700"
+              <Text
+                style={{
+                  fontSize: '24px',
+                  fontWeight: '600',
+                  color: activeTab === tab.key ? '#000' : '#a1a1aa',
+                }}
               >
-                {/* 任务头部 */}
-                <View className="flex items-center justify-between mb-2">
-                  <View className="flex items-center gap-2">
-                    {getStatusIcon(task.status)}
-                    <Text
-                      className={`block text-sm ${getStatusColor(task.status)}`}
-                    >
-                      {task.status === 'pending' && '等待中'}
-                      {task.status === 'processing' && '处理中'}
-                      {task.status === 'completed' && '已完成'}
-                      {task.status === 'failed' && '失败'}
-                    </Text>
+                {tab.label}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <ScrollView scrollY style={{ height: 'calc(100vh - 160px)', marginTop: '160px' }}>
+        <View className="admin-content" style={{ paddingTop: '16px' }}>
+          {activeTab === 'create' ? (
+            <>
+              {/* 统计概览 */}
+              <View className="stats-grid">
+                <View className="stat-card">
+                  <View className="stat-icon-wrapper stat-icon-primary">
+                    <Download size={24} color="#f59e0b" />
                   </View>
-                  {task.status === 'processing' && (
-                    <View
-                      className="flex items-center gap-1 cursor-pointer"
-                      onClick={() => refreshTaskStatus(task.id)}
-                    >
-                      <Text>⏳</Text>
-                      <Text className="block text-blue-400 text-xs">刷新</Text>
-                    </View>
-                  )}
+                  <Text className="stat-value">{stats.totalTasks}</Text>
+                  <Text className="stat-label">总导出次数</Text>
                 </View>
 
-                {/* 任务信息 */}
-                <View className="mb-3">
-                  <Text className="block text-white text-sm font-medium mb-1">
-                    {task.fileName}
-                  </Text>
-                  <Text className="block text-gray-400 text-xs">
-                    {formatTime(task.createdAt)}
-                  </Text>
+                <View className="stat-card">
+                  <View className="stat-icon-wrapper stat-icon-success">
+                    <CircleCheck size={24} color="#22c55e" />
+                  </View>
+                  <Text className="stat-value">{stats.completedTasks}</Text>
+                  <Text className="stat-label">已完成</Text>
                 </View>
-
-                {/* 任务统计 */}
-                <View className="flex items-center gap-4 text-xs text-gray-400 mb-3">
-                  <View className="flex items-center gap-1">
-                    <Text>📄</Text>
-                    <Text className="block">{task.recordCount} 条记录</Text>
-                  </View>
-                  <View className="flex items-center gap-1">
-                    <Text>⬇</Text>
-                    <Text className="block">{formatFileSize(task.fileSize)}</Text>
-                  </View>
-                </View>
-
-                {/* 错误信息 */}
-                {task.status === 'failed' && task.error && (
-                  <View className="bg-red-400/10 rounded-lg p-2 mb-3">
-                    <Text className="block text-red-400 text-xs">{task.error}</Text>
-                  </View>
-                )}
-
-                {/* 操作按钮 */}
-                {task.status === 'completed' && (
-                  <Button
-                    size="mini"
-                    type="primary"
-                    className="w-full"
-                    onClick={() => handleDownload(task.id)}
-                  >
-                    下载文件
-                  </Button>
-                )}
               </View>
-            ))
+
+              {/* 数据类型选择 */}
+              <View className="admin-card">
+                <View className="admin-card-header">
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Settings size={24} color="#f59e0b" />
+                    <Text className="admin-card-title">导出设置</Text>
+                  </View>
+                </View>
+
+                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '12px', display: 'block' }}>
+                  选择数据类型
+                </Text>
+
+                <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {dataTypeOptions.map((option) => (
+                    <View
+                      key={option.value}
+                      className={`user-list-item ${config.dataType === option.value ? 'card-hover' : ''}`}
+                      style={{
+                        borderLeft: config.dataType === option.value ? `4px solid ${option.color}` : undefined,
+                      }}
+                      onClick={() => setConfig({ ...config, dataType: option.value as ExportDataType })}
+                    >
+                      <View
+                        style={{
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '12px',
+                          backgroundColor: `${option.color}20`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <option.icon size={24} color={option.color} />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                          {option.label}
+                        </Text>
+                      </View>
+                      {config.dataType === option.value && (
+                        <CircleCheck size={24} color={option.color} />
+                      )}
+                    </View>
+                  ))}
+                </View>
+
+                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '12px', marginTop: '20px', display: 'block' }}>
+                  选择格式
+                </Text>
+
+                <View style={{ display: 'flex', gap: '12px' }}>
+                  {formatOptions.map((option) => (
+                    <View
+                      key={option.value}
+                      style={{
+                        flex: 1,
+                        padding: '16px',
+                        borderRadius: '12px',
+                        backgroundColor: config.format === option.value ? `${option.color}20` : '#1a1a1d',
+                        border: `2px solid ${config.format === option.value ? option.color : '#27272a'}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                      }}
+                      onClick={() => setConfig({ ...config, format: option.value as ExportFormat })}
+                    >
+                      <option.icon size={24} color={config.format === option.value ? option.color : '#71717a'} />
+                      <Text
+                        style={{
+                          fontSize: '24px',
+                          fontWeight: '600',
+                          color: config.format === option.value ? option.color : '#a1a1aa',
+                        }}
+                      >
+                        {option.label}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              {/* 导出按钮 */}
+              <View
+                className="action-btn-primary"
+                style={{ marginTop: '20px', opacity: exporting ? 0.6 : 1 }}
+                onClick={handleExport}
+              >
+                <Download size={28} color="#000" />
+                <Text className="action-btn-primary-text" style={{ marginLeft: '8px' }}>
+                  {exporting ? '创建中...' : '开始导出'}
+                </Text>
+              </View>
+            </>
+          ) : (
+            <>
+              {/* 导出历史 */}
+              <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+                导出历史
+              </Text>
+
+              {tasks.length === 0 ? (
+                <View className="empty-state">
+                  <Download size={80} color="#71717a" />
+                  <Text className="empty-title">暂无导出记录</Text>
+                </View>
+              ) : (
+                <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {tasks.map((task) => (
+                    <View key={task.id} className="admin-card">
+                      <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          {getStatusIcon(task.status)}
+                          <View>
+                            <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                              {task.fileName}
+                            </Text>
+                            <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
+                              {task.recordCount} 条记录 · {formatFileSize(task.fileSize)}
+                            </Text>
+                          </View>
+                        </View>
+
+                        {task.status === 'completed' && (
+                          <View
+                            style={{
+                              padding: '10px 20px',
+                              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                              borderRadius: '10px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                            }}
+                            onClick={() => {
+                              // 下载文件
+                              Taro.showToast({ title: '开始下载', icon: 'success' });
+                            }}
+                          >
+                            <Download size={18} color="#f59e0b" />
+                            <Text style={{ fontSize: '22px', color: '#f59e0b' }}>下载</Text>
+                          </View>
+                        )}
+                      </View>
+
+                      <View style={{ marginTop: '12px', display: 'flex', gap: '16px' }}>
+                        <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                          {new Date(task.createdAt).toLocaleString('zh-CN')}
+                        </Text>
+                        <View
+                          className={`status-badge ${
+                            task.status === 'completed'
+                              ? 'status-active'
+                              : task.status === 'failed'
+                              ? 'status-disabled'
+                              : 'status-pending'
+                          }`}
+                        >
+                          {getStatusText(task.status)}
+                        </View>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </>
           )}
-        </ScrollView>
-      )}
+        </View>
+      </ScrollView>
     </View>
   );
 };
