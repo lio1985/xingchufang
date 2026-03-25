@@ -1,11 +1,3 @@
 export default typeof definePageConfig === 'function'
-  ? definePageConfig({
-      navigationBarTitleText: '待拍清单',
-      navigationBarBackgroundColor: '#ffffff',
-      navigationBarTextStyle: 'black'
-    })
-  : {
-      navigationBarTitleText: '待拍清单',
-      navigationBarBackgroundColor: '#ffffff',
-      navigationBarTextStyle: 'black'
-    };
+  ? definePageConfig({ navigationBarTitleText: '个人收藏', backgroundColor: '#0a0a0b' })
+  : { navigationBarTitleText: '个人收藏', backgroundColor: '#0a0a0b' };

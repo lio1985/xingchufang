@@ -1,3 +1,3 @@
 export default typeof definePageConfig === 'function'
-  ? definePageConfig({ navigationBarTitleText: '热点资讯' })
-  : { navigationBarTitleText: '热点资讯' }
+  ? definePageConfig({ navigationBarTitleText: '课程培训', backgroundColor: '#0a0a0b' })
+  : { navigationBarTitleText: '课程培训', backgroundColor: '#0a0a0b' };

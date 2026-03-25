@@ -1,11 +1,3 @@
 export default typeof definePageConfig === 'function'
-  ? definePageConfig({
-      navigationBarTitleText: '知识分享',
-      navigationBarBackgroundColor: '#1e293b',
-      navigationBarTextStyle: 'white'
-    })
-  : {
-      navigationBarTitleText: '知识分享',
-      navigationBarBackgroundColor: '#1e293b',
-      navigationBarTextStyle: 'white'
-    };
+  ? definePageConfig({ navigationBarTitleText: '公司资料', backgroundColor: '#0a0a0b' })
+  : { navigationBarTitleText: '公司资料', backgroundColor: '#0a0a0b' };
