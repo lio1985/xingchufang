@@ -99,9 +99,9 @@ export default defineAppConfig({
 
       {
         pagePath: 'pages/hotspot/index',
-        text: '热力图',
-        iconPath: './assets/tabbar/flame.png',
-        selectedIconPath: './assets/tabbar/flame-active.png',
+        text: '创作',
+        iconPath: './assets/tabbar/pen.png',
+        selectedIconPath: './assets/tabbar/pen-active.png',
       },
       {
         pagePath: 'pages/ai-chat/index',
