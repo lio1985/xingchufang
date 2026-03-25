@@ -1,7 +1,19 @@
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Textarea, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { Network } from '@/network';
+import {
+  ChevronLeft,
+  Save,
+  X,
+  Image as ImageIcon,
+  FileText,
+  Mic,
+  Trash2,
+  Upload,
+  Tag,
+  FolderOpen,
+} from 'lucide-react-taro';
 
 interface Attachment {
   fileKey: string;
@@ -12,10 +24,20 @@ interface Attachment {
   mimeType: string;
 }
 
+// 分类选项
+const categoryOptions = [
+  { id: 'equipment', name: '商厨设备维修维保' },
+  { id: 'policies', name: '公司规章制度' },
+  { id: 'sales', name: '销售技巧' },
+  { id: 'product', name: '产品知识' },
+  { id: 'other', name: '其他' },
+];
+
 const KnowledgeShareCreatePage = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -31,7 +53,6 @@ const KnowledgeShareCreatePage = () => {
   const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
 
   useEffect(() => {
-    // CRITICAL: 只在小程序端初始化 RecorderManager
     if (isWeapp) {
       const manager = Taro.getRecorderManager();
 
@@ -60,7 +81,7 @@ const KnowledgeShareCreatePage = () => {
 
   // 录音计时器
   useEffect(() => {
-    let interval: any;
+    let interval: ReturnType<typeof setInterval>;
     if (isRecording) {
       interval = setInterval(() => {
         setRecordingTime((prev) => prev + 1);
@@ -138,7 +159,6 @@ const KnowledgeShareCreatePage = () => {
       });
 
       if (res.tempFilePaths && res.tempFilePaths.length > 0) {
-        // CRITICAL: tempFiles 在某些平台（如 H5）可能是 undefined
         const files = res.tempFilePaths.map((path, index) => {
           const tempFile = (res.tempFiles?.[index] as any);
           return {
@@ -330,7 +350,7 @@ const KnowledgeShareCreatePage = () => {
         data: {
           title: title.trim(),
           content: content.trim(),
-          category: category.trim() || '其他',
+          category: category || '其他',
           tags,
           attachments,
         }
@@ -375,170 +395,249 @@ const KnowledgeShareCreatePage = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const selectedCategoryName = categoryOptions.find(c => c.id === category)?.name || '请选择分类';
+
   return (
-    <View className="min-h-screen bg-slate-900">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '100px' }}>
       {/* 顶部导航栏 */}
-      <View className="bg-slate-800 px-4 py-4 flex items-center justify-between border-b border-slate-700">
-        <View
-          className="flex items-center gap-2"
-          onClick={() => Taro.navigateBack()}
-        >
-          <Text>←</Text>
+      <View style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '48px',
+        backgroundColor: '#141416',
+        borderBottom: '1px solid #27272a',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 16px',
+        zIndex: 100
+      }}
+      >
+        <View style={{ display: 'flex', alignItems: 'center' }} onClick={() => Taro.navigateBack()}>
+          <ChevronLeft size={24} color="#ffffff" />
         </View>
-        <View className="flex items-center gap-2">
-          <Text>📖</Text>
-          <Text className="block text-lg font-bold text-white">创建知识分享</Text>
-        </View>
+        <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>新建知识</Text>
         <View
-          className={`px-4 py-2 rounded-lg flex items-center gap-1.5 ${loading || uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
+          style={{
+            padding: '8px 16px',
+            borderRadius: '8px',
+            backgroundColor: loading || uploading ? '#27272a' : '#f59e0b',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}
           onClick={handleSave}
         >
-          <Text>💾</Text>
-          <Text className="block text-sm text-white">
-            {loading ? '保存中...' : uploading ? '上传中...' : '保存'}
+          <Save size={16} color={loading || uploading ? '#71717a' : '#0a0a0b'} />
+          <Text style={{ fontSize: '14px', fontWeight: '500', color: loading || uploading ? '#71717a' : '#0a0a0b' }}>
+            {loading ? '保存中' : '保存'}
           </Text>
         </View>
       </View>
 
       {/* 表单内容 */}
-      <ScrollView className="flex-1" scrollY>
-        <View className="p-4">
+      <ScrollView scrollY style={{ marginTop: '48px', height: 'calc(100vh - 148px)' }}>
+        <View style={{ padding: '20px' }}>
           {/* 标题输入 */}
-          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
-            <Text className="block text-sm font-semibold text-white mb-3">标题</Text>
-            <View className="bg-slate-800 rounded-lg px-4 py-3">
-              <input
-                className="w-full bg-transparent text-white text-base placeholder-slate-400 outline-none"
-                placeholder="请输入知识分享标题"
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+            <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>标题 *</Text>
+            <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+              <Input
+                style={{ width: '100%', backgroundColor: 'transparent', color: '#ffffff', fontSize: '15px' }}
+                placeholder="请输入知识标题"
+                placeholderStyle="color: #52525b"
                 value={title}
-                maxLength={100}
-                onInput={(e) => setTitle((e.target as HTMLInputElement).value)}
+                maxlength={100}
+                onInput={(e) => setTitle(e.detail.value)}
               />
             </View>
-            <Text className="block text-xs text-slate-400 mt-2 text-right">{title.length}/100</Text>
+            <Text style={{ fontSize: '12px', color: '#52525b', textAlign: 'right', display: 'block', marginTop: '8px' }}>{title.length}/100</Text>
           </View>
 
-          {/* 分类输入 */}
-          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
-            <Text className="block text-sm font-semibold text-white mb-3">分类</Text>
-            <View className="bg-slate-800 rounded-lg px-4 py-3">
-              <input
-                className="w-full bg-transparent text-white text-base placeholder-slate-400 outline-none"
-                placeholder="如：运营技巧、内容创作等"
-                value={category}
-                maxLength={50}
-                onInput={(e) => setCategory((e.target as HTMLInputElement).value)}
-              />
+          {/* 分类选择 */}
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+            <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>分类</Text>
+            <View
+              style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              onClick={() => setShowCategoryPicker(!showCategoryPicker)}
+            >
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <FolderOpen size={16} color="#71717a" />
+                <Text style={{ fontSize: '15px', color: category ? '#ffffff' : '#52525b' }}>{selectedCategoryName}</Text>
+              </View>
             </View>
+
+            {/* 分类选项 */}
+            {showCategoryPicker && (
+              <View style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {categoryOptions.map((cat) => (
+                  <View
+                    key={cat.id}
+                    style={{
+                      padding: '12px',
+                      borderRadius: '8px',
+                      backgroundColor: category === cat.id ? 'rgba(245, 158, 11, 0.2)' : '#0a0a0b',
+                      border: category === cat.id ? '1px solid #f59e0b' : '1px solid transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}
+                    onClick={() => { setCategory(cat.id); setShowCategoryPicker(false); }}
+                  >
+                    <Text style={{ fontSize: '14px', color: category === cat.id ? '#f59e0b' : '#a1a1aa' }}>{cat.name}</Text>
+                    {category === cat.id && <Text style={{ color: '#f59e0b' }}>✓</Text>}
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
 
           {/* 标签输入 */}
-          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
-            <Text className="block text-sm font-semibold text-white mb-3">标签（最多5个）</Text>
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Tag size={14} color="#f59e0b" />
+                <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff' }}>标签</Text>
+              </View>
+              <Text style={{ fontSize: '12px', color: '#52525b' }}>最多5个</Text>
+            </View>
+
+            {/* 已添加的标签 */}
             {tags.length > 0 && (
-              <View className="flex flex-wrap gap-2 mb-3">
+              <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
                 {tags.map((tag, index) => (
                   <View
                     key={index}
-                    className="bg-slate-9000/20 border border-sky-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '16px',
+                      backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                      border: '1px solid rgba(245, 158, 11, 0.3)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
                   >
-                    <Text className="block text-sm text-blue-300">{tag}</Text>
-                    <View
-                      className="flex items-center justify-center w-4 h-4 rounded-full bg-blue-500/50"
-                      onClick={() => handleRemoveTag(index)}
-                    >
-                      <Text>✕</Text>
+                    <Text style={{ fontSize: '13px', color: '#f59e0b' }}>{tag}</Text>
+                    <View onClick={() => handleRemoveTag(index)}>
+                      <X size={14} color="#f59e0b" />
                     </View>
                   </View>
                 ))}
               </View>
             )}
-            <View className="bg-slate-800 rounded-lg px-4 py-3 flex items-center gap-2">
-              <input
-                className="flex-1 bg-transparent text-white text-sm placeholder-slate-400 outline-none"
-                placeholder="输入标签后按回车添加"
+
+            {/* 标签输入框 */}
+            <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Input
+                style={{ flex: 1, backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
+                placeholder="输入标签"
+                placeholderStyle="color: #52525b"
                 value={tagInput}
-                maxLength={20}
-                onInput={(e) => setTagInput((e.target as HTMLInputElement).value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddTag();
-                  }
-                }}
+                maxlength={20}
+                onInput={(e) => setTagInput(e.detail.value)}
               />
               <View
-                className={`px-3 py-1.5 rounded-lg ${tagInput.trim() ? 'bg-blue-500' : 'bg-slate-700'}`}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  backgroundColor: tagInput.trim() ? '#f59e0b' : '#27272a'
+                }}
                 onClick={handleAddTag}
               >
-                <Text className="block text-xs text-white">添加</Text>
+                <Text style={{ fontSize: '13px', color: tagInput.trim() ? '#0a0a0b' : '#71717a' }}>添加</Text>
               </View>
             </View>
           </View>
 
           {/* 附件上传 */}
-          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
-            <View className="flex items-center justify-between mb-3">
-              <Text className="block text-sm font-semibold text-white">附件</Text>
-              <Text className="block text-xs text-slate-400">
-                {attachments.length}/20
-              </Text>
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Upload size={14} color="#3b82f6" />
+                <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff' }}>附件</Text>
+              </View>
+              <Text style={{ fontSize: '12px', color: '#52525b' }}>{attachments.length}/20</Text>
             </View>
 
             {/* 上传按钮 */}
-            <View className="flex flex-wrap gap-2 mb-3">
+            <View style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
               <View
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  backgroundColor: uploading ? '#27272a' : 'rgba(59, 130, 246, 0.2)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}
                 onClick={handleChooseImage}
               >
-                <Text>🖼</Text>
-                <Text className="block text-sm text-white">图片</Text>
+                <ImageIcon size={16} color="#3b82f6" />
+                <Text style={{ fontSize: '13px', color: '#3b82f6' }}>图片</Text>
               </View>
               <View
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  backgroundColor: uploading ? '#27272a' : 'rgba(34, 197, 94, 0.2)',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}
                 onClick={handleChooseFile}
               >
-                <Text>📄</Text>
-                <Text className="block text-sm text-white">文件</Text>
+                <FileText size={16} color="#22c55e" />
+                <Text style={{ fontSize: '13px', color: '#22c55e' }}>文件</Text>
               </View>
               {isWeapp && (
                 <View
-                  className={`px-4 py-2 rounded-lg flex items-center gap-2 ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '8px',
+                    backgroundColor: isRecording ? 'rgba(239, 68, 68, 0.2)' : 'rgba(168, 85, 247, 0.2)',
+                    border: isRecording ? '1px solid rgba(239, 68, 68, 0.5)' : '1px solid rgba(168, 85, 247, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
                   onClick={isRecording ? handleStopRecord : handleStartRecord}
                 >
-                  {isRecording ? (
-                    <>
-                      <Text>🎤</Text>
-                      <Text className="block text-sm text-white">{formatRecordingTime(recordingTime)}</Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text>🎤</Text>
-                      <Text className="block text-sm text-white">录音</Text>
-                    </>
-                  )}
+                  <Mic size={16} color={isRecording ? '#ef4444' : '#a855f7'} />
+                  <Text style={{ fontSize: '13px', color: isRecording ? '#ef4444' : '#a855f7' }}>
+                    {isRecording ? formatRecordingTime(recordingTime) : '录音'}
+                  </Text>
                 </View>
               )}
             </View>
 
             {/* 录音预览 */}
             {audioPath && (
-              <View className="bg-slate-800 rounded-lg p-3 mb-3">
-                <View className="flex items-center justify-between">
-                  <View className="flex items-center gap-2">
-                    <Text className="block text-sm text-blue-300">录音已就绪</Text>
+              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', marginBottom: '12px' }}>
+                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Mic size={16} color="#a855f7" />
+                    <Text style={{ fontSize: '13px', color: '#a855f7' }}>录音已就绪</Text>
                   </View>
-                  <View className="flex items-center gap-2">
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <View
-                      className={`px-3 py-1.5 rounded-lg ${uploading ? 'bg-slate-700 opacity-50' : 'bg-blue-500'}`}
+                      style={{ padding: '6px 12px', borderRadius: '6px', backgroundColor: '#a855f7' }}
                       onClick={handleUploadAudio}
                     >
-                      <Text className="block text-xs text-white">上传</Text>
+                      <Text style={{ fontSize: '12px', color: '#ffffff' }}>上传</Text>
                     </View>
-                    <View
-                      className="p-1.5 rounded-lg bg-slate-700"
-                      onClick={handleRemoveAudio}
-                    >
-                      <Text>✕</Text>
+                    <View onClick={handleRemoveAudio}>
+                      <Trash2 size={16} color="#71717a" />
                     </View>
                   </View>
                 </View>
@@ -547,36 +646,40 @@ const KnowledgeShareCreatePage = () => {
 
             {/* 附件列表 */}
             {attachments.length > 0 && (
-              <View className="space-y-2">
+              <View style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {attachments.map((attachment, index) => (
                   <View
                     key={index}
-                    className="bg-slate-800 rounded-lg p-3 flex items-center gap-3"
+                    style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}
                   >
-                    {attachment.fileType === 'image' ? (
-                      <Text>🖼</Text>
-                    ) : attachment.fileType === 'audio' ? (
-                      <View className="w-12 h-12 rounded bg-slate-700 flex items-center justify-center">
-                        <Text>🎤</Text>
-                      </View>
-                    ) : (
-                      <View className="w-12 h-12 rounded bg-slate-700 flex items-center justify-center">
-                        <Text>📄</Text>
-                      </View>
-                    )}
-                    <View className="flex-1 min-w-0">
-                      <Text className="block text-sm text-white truncate">
+                    <View style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '8px',
+                      backgroundColor: attachment.fileType === 'image' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    >
+                      {attachment.fileType === 'image' ? (
+                        <ImageIcon size={18} color="#3b82f6" />
+                      ) : attachment.fileType === 'audio' ? (
+                        <Mic size={18} color="#a855f7" />
+                      ) : (
+                        <FileText size={18} color="#22c55e" />
+                      )}
+                    </View>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={{ fontSize: '13px', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
                         {attachment.fileName}
                       </Text>
-                      <Text className="block text-xs text-slate-400">
+                      <Text style={{ fontSize: '11px', color: '#52525b', display: 'block', marginTop: '2px' }}>
                         {formatFileSize(attachment.fileSize)}
                       </Text>
                     </View>
-                    <View
-                      className="p-1.5 rounded-lg bg-slate-700"
-                      onClick={() => handleRemoveAttachment(index)}
-                    >
-                      <Text>🗑</Text>
+                    <View onClick={() => handleRemoveAttachment(index)}>
+                      <Trash2 size={16} color="#71717a" />
                     </View>
                   </View>
                 ))}
@@ -585,28 +688,78 @@ const KnowledgeShareCreatePage = () => {
 
             {/* 提示文本 */}
             {attachments.length === 0 && !audioPath && !isRecording && (
-              <Text className="block text-xs text-slate-400 text-center py-4">
-                支持上传图片、文档等文件，小程序支持录音
-              </Text>
+              <View style={{ padding: '16px', textAlign: 'center' }}>
+                <Text style={{ fontSize: '12px', color: '#52525b' }}>支持上传图片、文档，小程序支持录音</Text>
+              </View>
             )}
           </View>
 
           {/* 内容输入 */}
-          <View className="bg-slate-800 rounded-xl border border-slate-700 p-4 mb-4">
-            <Text className="block text-sm font-semibold text-white mb-3">内容</Text>
-            <View className="bg-slate-800 rounded-lg p-4">
-              <textarea
-                className="w-full min-h-[300px] bg-transparent text-white text-base placeholder-slate-400 outline-none leading-relaxed"
-                placeholder="请详细描述您的知识分享内容..."
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+            <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>内容 *</Text>
+            <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+              <Textarea
+                style={{ width: '100%', minHeight: '200px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px', lineHeight: '22px' }}
+                placeholder="请详细描述您的知识内容..."
+                placeholderStyle="color: #52525b"
                 value={content}
-                maxLength={5000}
-                onInput={(e) => setContent((e.target as HTMLTextAreaElement).value)}
+                maxlength={5000}
+                onInput={(e) => setContent(e.detail.value)}
               />
             </View>
-            <Text className="block text-xs text-slate-400 mt-2 text-right">{content.length}/5000</Text>
+            <Text style={{ fontSize: '12px', color: '#52525b', textAlign: 'right', display: 'block', marginTop: '8px' }}>{content.length}/5000</Text>
           </View>
         </View>
       </ScrollView>
+
+      {/* 底部操作栏 */}
+      <View style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#141416',
+        borderTop: '1px solid #27272a',
+        padding: '12px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px'
+      }}
+      >
+        <View
+          style={{
+            flex: 1,
+            height: '44px',
+            borderRadius: '12px',
+            backgroundColor: '#27272a',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onClick={() => Taro.navigateBack()}
+        >
+          <Text style={{ fontSize: '15px', color: '#a1a1aa' }}>取消</Text>
+        </View>
+        <View
+          style={{
+            flex: 2,
+            height: '44px',
+            borderRadius: '12px',
+            backgroundColor: loading || uploading ? '#27272a' : '#f59e0b',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+          onClick={handleSave}
+        >
+          <Save size={18} color={loading || uploading ? '#71717a' : '#0a0a0b'} />
+          <Text style={{ fontSize: '15px', fontWeight: '600', color: loading || uploading ? '#71717a' : '#0a0a0b' }}>
+            {loading ? '保存中...' : uploading ? '上传中...' : '发布知识'}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
