@@ -10,6 +10,7 @@ import {
   Download,
   UserPlus,
   IdCard,
+  Pencil,
 } from 'lucide-react-taro';
 
 const TabProfilePage = () => {
@@ -73,7 +74,6 @@ const TabProfilePage = () => {
       success: (res) => {
         if (res.confirm) {
           Taro.showLoading({ title: '导出中...' });
-          // TODO: 调用后端导出接口
           setTimeout(() => {
             Taro.hideLoading();
             Taro.showToast({ title: '导出成功', icon: 'success' });
@@ -83,10 +83,20 @@ const TabProfilePage = () => {
     });
   };
 
+  const handleEditProfile = () => {
+    Taro.showToast({ title: '编辑资料功能开发中', icon: 'none' });
+  };
+
   return (
     <View className="min-h-screen bg-[#0a0a0b]">
-      {/* 用户信息区 */}
+      {/* 页面头部 */}
       <View className="px-6 pt-12 pb-6 bg-gradient-to-b from-[#141416] to-[#0a0a0b]">
+        <Text className="block text-3xl font-bold text-white mb-2">我</Text>
+        <Text className="block text-zinc-500 text-base">个人中心与设置</Text>
+      </View>
+
+      {/* 用户信息区 */}
+      <View className="px-6 pb-4">
         {isLoggedIn ? (
           <View className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5">
             <View className="flex items-center mb-4">
@@ -98,14 +108,22 @@ const TabProfilePage = () => {
                 />
               ) : (
                 <View className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mr-4 border border-amber-500/30">
-                  <User size={32} color="#f59e0b" />
+                  <User size={28} color="#f59e0b" />
                 </View>
               )}
               <View className="flex-1">
-                <Text className="block text-xl font-semibold text-white mb-1">
-                  {userInfo?.nickname || userInfo?.username || '用户'}
-                </Text>
-                <Text className="block text-sm text-zinc-500">
+                <View className="flex items-center">
+                  <Text className="text-xl font-semibold text-white">
+                    {userInfo?.nickname || userInfo?.username || '用户'}
+                  </Text>
+                  <View 
+                    className="ml-2 px-2 py-0.5 bg-zinc-800 rounded"
+                    onClick={handleEditProfile}
+                  >
+                    <Pencil size={12} color="#71717a" />
+                  </View>
+                </View>
+                <Text className="block text-sm text-zinc-500 mt-1">
                   {isAdmin ? '管理员' : '普通用户'}
                 </Text>
               </View>
@@ -113,7 +131,7 @@ const TabProfilePage = () => {
             
             {/* ID 显示 */}
             <View className="flex items-center pt-3 border-t border-zinc-800">
-              <IdCard size={16} color="#71717a" />
+              <IdCard size={14} color="#52525b" />
               <Text className="ml-2 text-sm text-zinc-500">用户ID：</Text>
               <Text className="text-sm text-zinc-400 font-mono">
                 {userInfo?.id || '-'}
@@ -127,91 +145,87 @@ const TabProfilePage = () => {
               className="flex items-center justify-center py-4 bg-amber-500/20 border border-amber-500/30 rounded-2xl active:bg-amber-500/30"
               onClick={handleLogin}
             >
-              <User size={22} color="#f59e0b" />
-              <Text className="ml-2 text-lg text-amber-400 font-medium">登录账号</Text>
+              <User size={20} color="#f59e0b" />
+              <Text className="ml-2 text-base text-amber-400 font-medium">登录账号</Text>
             </View>
             {/* 注册按钮 */}
             <View
-              className="flex items-center justify-center py-4 bg-zinc-800/40 border border-zinc-700/50 rounded-2xl active:bg-zinc-700/50"
+              className="flex items-center justify-center py-4 bg-zinc-900/60 border border-zinc-800 rounded-2xl active:bg-zinc-800/60"
               onClick={handleRegister}
             >
-              <UserPlus size={22} color="#a1a1aa" />
-              <Text className="ml-2 text-lg text-zinc-300">注册新账号</Text>
+              <UserPlus size={20} color="#71717a" />
+              <Text className="ml-2 text-base text-zinc-300">注册新账号</Text>
             </View>
           </View>
         )}
       </View>
 
-      {/* 功能列表 */}
-      <View className="px-6 py-4">
+      {/* 数据管理 */}
+      <View className="px-6 py-3">
         <Text className="block text-sm text-zinc-600 mb-3 px-1">数据管理</Text>
-        <View className="flex flex-col gap-3">
+        <View className="flex flex-col gap-2">
           {/* 数据看板 */}
           <View
-            className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 flex items-center active:bg-zinc-800/60"
+            className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4 flex items-center active:bg-zinc-800/60"
             onClick={() => handleNav('/pages/data-stats/index')}
           >
-            <View className="w-11 h-11 rounded-xl flex items-center justify-center mr-4 bg-blue-500/15">
-              <ChartBarBig size={22} color="#3b82f6" />
+            <View className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 bg-blue-500/15">
+              <ChartBarBig size={20} color="#3b82f6" />
             </View>
             <View className="flex-1">
               <Text className="block text-base font-medium text-white">数据看板</Text>
-              <Text className="block text-sm text-zinc-500 mt-0.5">查看运营数据统计</Text>
+              <Text className="block text-xs text-zinc-500 mt-0.5">查看运营数据统计</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={16} color="#52525b" />
           </View>
 
           {/* 数据导出 */}
           <View
-            className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 flex items-center active:bg-zinc-800/60"
+            className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4 flex items-center active:bg-zinc-800/60"
             onClick={handleExportData}
           >
-            <View className="w-11 h-11 rounded-xl flex items-center justify-center mr-4 bg-green-500/15">
-              <Download size={22} color="#22c55e" />
+            <View className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 bg-green-500/15">
+              <Download size={20} color="#22c55e" />
             </View>
             <View className="flex-1">
               <Text className="block text-base font-medium text-white">数据导出</Text>
-              <Text className="block text-sm text-zinc-500 mt-0.5">导出您的所有数据</Text>
+              <Text className="block text-xs text-zinc-500 mt-0.5">导出您的所有数据</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={16} color="#52525b" />
           </View>
         </View>
       </View>
 
-      {/* 设置区域 */}
-      <View className="px-6 py-4">
+      {/* 系统 */}
+      <View className="px-6 py-3">
         <Text className="block text-sm text-zinc-600 mb-3 px-1">系统</Text>
-        <View className="flex flex-col gap-3">
-          {/* 系统设置 */}
+        <View className="flex flex-col gap-2">
+          {/* 设置 */}
           <View
-            className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 flex items-center active:bg-zinc-800/60"
+            className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4 flex items-center active:bg-zinc-800/60"
             onClick={() => handleNav('/pages/settings/index')}
           >
-            <View className="w-11 h-11 rounded-xl flex items-center justify-center mr-4 bg-zinc-600/30">
-              <Settings size={22} color="#71717a" />
+            <View className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 bg-zinc-700/50">
+              <Settings size={20} color="#a1a1aa" />
             </View>
             <View className="flex-1">
               <Text className="block text-base font-medium text-white">设置</Text>
-              <Text className="block text-sm text-zinc-500 mt-0.5">账号与系统设置</Text>
+              <Text className="block text-xs text-zinc-500 mt-0.5">账号与系统设置</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={16} color="#52525b" />
           </View>
         </View>
       </View>
 
       {/* 退出登录 */}
       {isLoggedIn && (
-        <View className="px-6 py-4">
+        <View className="px-6 py-3">
           <View
-            className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 flex items-center active:bg-zinc-800/60"
+            className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4 flex items-center justify-center active:bg-zinc-800/60"
             onClick={handleLogout}
           >
-            <View className="w-11 h-11 rounded-xl flex items-center justify-center mr-4 bg-red-500/15">
-              <LogOut size={22} color="#ef4444" />
-            </View>
-            <View className="flex-1">
-              <Text className="block text-base font-medium text-red-400">退出登录</Text>
-            </View>
+            <LogOut size={18} color="#ef4444" />
+            <Text className="ml-2 text-base text-red-400">退出登录</Text>
           </View>
         </View>
       )}
