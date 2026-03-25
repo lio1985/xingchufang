@@ -2,10 +2,10 @@ export default typeof definePageConfig === 'function'
   ? definePageConfig({
       navigationBarTitleText: '消息中心',
       enablePullDownRefresh: true,
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#0a0a0b',
     })
   : {
       navigationBarTitleText: '消息中心',
       enablePullDownRefresh: true,
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#0a0a0b',
     };

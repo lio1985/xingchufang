@@ -1,8 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import Taro, { showToast, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
-import { View, Text } from '@tarojs/components';
+import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro';
+import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
-import './index.less';
+import {
+  Bell,
+  BellRing,
+  Info,
+  Megaphone,
+  RefreshCw,
+  Check,
+  ChevronRight,
+} from 'lucide-react-taro';
 
 interface Notification {
   id: string;
@@ -23,7 +31,7 @@ const NotificationPage = () => {
   // 获取通知列表
   const fetchNotifications = useCallback(async (pageNum = 1, isLoadMore = false) => {
     if (loading) return;
-    
+
     setLoading(true);
     try {
       const response = await Network.request({
@@ -31,23 +39,23 @@ const NotificationPage = () => {
         method: 'GET',
       });
 
-      console.log('通知列表响应:', response.data);
+      console.log('[Notification] 响应:', response.data);
 
       if (response.data?.success) {
         const { list, pagination } = response.data.data;
-        
+
         if (isLoadMore) {
           setNotifications(prev => [...prev, ...list]);
         } else {
           setNotifications(list);
         }
-        
+
         setUnreadCount(response.data.data.unreadCount);
         setHasMore(list.length === 20 && pagination.total > pageNum * 20);
       }
     } catch (error) {
-      console.error('获取通知失败:', error);
-      showToast({ title: '获取通知失败', icon: 'none' });
+      console.error('[Notification] 获取失败:', error);
+      Taro.showToast({ title: '获取通知失败', icon: 'none' });
     } finally {
       setLoading(false);
     }
@@ -62,7 +70,6 @@ const NotificationPage = () => {
       });
 
       if (response.data?.success) {
-        // 更新本地状态
         setNotifications(prev =>
           prev.map(n =>
             n.id === notificationId ? { ...n, isRead: true } : n
@@ -71,7 +78,7 @@ const NotificationPage = () => {
         setUnreadCount(prev => Math.max(0, prev - 1));
       }
     } catch (error) {
-      console.error('标记已读失败:', error);
+      console.error('[Notification] 标记已读失败:', error);
     }
   };
 
@@ -86,16 +93,15 @@ const NotificationPage = () => {
       });
 
       if (response.data?.success) {
-        // 更新本地状态
         setNotifications(prev =>
           prev.map(n => ({ ...n, isRead: true }))
         );
         setUnreadCount(0);
-        showToast({ title: '已全部标记为已读', icon: 'success' });
+        Taro.showToast({ title: '已全部标记为已读', icon: 'success' });
       }
     } catch (error) {
-      console.error('标记全部已读失败:', error);
-      showToast({ title: '操作失败', icon: 'none' });
+      console.error('[Notification] 标记全部已读失败:', error);
+      Taro.showToast({ title: '操作失败', icon: 'none' });
     }
   };
 
@@ -103,13 +109,13 @@ const NotificationPage = () => {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'system':
-        return <Text>🔔</Text>;
+        return <Bell size={20} color="#3b82f6" />;
       case 'activity':
-        return <Text>ℹ</Text>;
+        return <Megaphone size={20} color="#f59e0b" />;
       case 'update':
-        return <Text>ℹ</Text>;
+        return <RefreshCw size={20} color="#22c55e" />;
       default:
-        return <Text>💬</Text>;
+        return <Info size={20} color="#71717a" />;
     }
   };
 
@@ -117,13 +123,27 @@ const NotificationPage = () => {
   const getTypeName = (type: string) => {
     switch (type) {
       case 'system':
-        return '系统';
+        return '系统通知';
       case 'activity':
-        return '活动';
+        return '活动通知';
       case 'update':
-        return '更新';
+        return '更新通知';
       default:
         return '消息';
+    }
+  };
+
+  // 获取类型颜色
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'system':
+        return '#3b82f6';
+      case 'activity':
+        return '#f59e0b';
+      case 'update':
+        return '#22c55e';
+      default:
+        return '#71717a';
     }
   };
 
@@ -132,24 +152,20 @@ const NotificationPage = () => {
     const date = new Date(timeStr);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
-    
-    // 小于1小时
+
     if (diff < 3600000) {
       const minutes = Math.floor(diff / 60000);
       return minutes < 1 ? '刚刚' : `${minutes}分钟前`;
     }
-    
-    // 小于24小时
+
     if (diff < 86400000) {
       return `${Math.floor(diff / 3600000)}小时前`;
     }
-    
-    // 小于7天
+
     if (diff < 604800000) {
       return `${Math.floor(diff / 86400000)}天前`;
     }
-    
-    // 其他情况显示日期
+
     return date.toLocaleDateString('zh-CN', {
       month: 'short',
       day: 'numeric',
@@ -180,82 +196,149 @@ const NotificationPage = () => {
   }, []);
 
   return (
-    <View className="notification-page">
-      {/* 头部 */}
-      <View className="header">
-        <View className="title-section">
-          <Text className="title">消息中心</Text>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
+      {/* 页面头部 */}
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+        <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ display: 'flex', alignItems: 'center' }}>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>消息中心</Text>
+            {unreadCount > 0 && (
+              <View style={{
+                marginLeft: '8px',
+                backgroundColor: '#ef4444',
+                borderRadius: '10px',
+                padding: '2px 8px',
+                minWidth: '20px',
+                textAlign: 'center'
+              }}
+              >
+                <Text style={{ fontSize: '12px', color: '#ffffff' }}>{unreadCount > 99 ? '99+' : unreadCount}</Text>
+              </View>
+            )}
+          </View>
           {unreadCount > 0 && (
-            <View className="unread-badge">
-              <Text className="unread-count">{unreadCount}</Text>
+            <View
+              style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+              onClick={markAllAsRead}
+            >
+              <Check size={14} color="#f59e0b" />
+              <Text style={{ fontSize: '13px', color: '#f59e0b' }}>全部已读</Text>
             </View>
           )}
         </View>
-        {unreadCount > 0 && (
-          <View className="read-all-btn" onClick={markAllAsRead}>
-            <Text>✓</Text>
-            <Text className="read-all-text">全部已读</Text>
-          </View>
-        )}
       </View>
 
       {/* 通知列表 */}
-      <View className="notification-list">
+      <ScrollView scrollY style={{ height: 'calc(100vh - 140px)' }}>
         {notifications.length === 0 ? (
-          <View className="empty-state">
-            <Text>🔔</Text>
-            <Text className="empty-text">暂无消息</Text>
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' }}>
+            <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#18181b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BellRing size={32} color="#52525b" />
+            </View>
+            <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '16px' }}>暂无消息</Text>
+            <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginTop: '4px' }}>新的消息将会显示在这里</Text>
           </View>
         ) : (
-          notifications.map((notification) => (
-            <View
-              key={notification.id}
-              className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
-              onClick={() => markAsRead(notification.id)}
-            >
-              <View className="notification-icon">
-                {getTypeIcon(notification.type)}
-              </View>
-              
-              <View className="notification-content">
-                <View className="notification-header">
-                  <View className="notification-title-row">
-                    {!notification.isRead && <View className="unread-dot" />}
-                    <Text className="notification-title">{notification.title}</Text>
+          <View style={{ padding: '0 20px' }}>
+            {notifications.map((notification) => (
+              <View
+                key={notification.id}
+                style={{
+                  backgroundColor: '#18181b',
+                  border: notification.isRead ? '1px solid #27272a' : '1px solid rgba(245, 158, 11, 0.3)',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  marginBottom: '12px'
+                }}
+                onClick={() => markAsRead(notification.id)}
+              >
+                <View style={{ display: 'flex', gap: '12px' }}>
+                  {/* 图标 */}
+                  <View style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '10px',
+                    backgroundColor: `rgba(${getTypeColor(notification.type) === '#3b82f6' ? '59, 130, 246' : getTypeColor(notification.type) === '#f59e0b' ? '245, 158, 11' : '34, 197, 94'}, 0.2)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                  >
+                    {getTypeIcon(notification.type)}
                   </View>
-                  <Text className="notification-time">
-                    {formatTime(notification.createdAt)}
-                  </Text>
-                </View>
-                
-                <Text className="notification-body" numberOfLines={2}>
-                  {notification.content}
-                </Text>
-                
-                <View className="notification-footer">
-                  <Text className="notification-type">
-                    {getTypeName(notification.type)}
-                  </Text>
-                  <Text>{">"}</Text>
+
+                  {/* 内容 */}
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 }}>
+                        {!notification.isRead && (
+                          <View style={{ width: '6px', height: '6px', borderRadius: '3px', backgroundColor: '#f59e0b', flexShrink: 0 }} />
+                        )}
+                        <Text style={{
+                          fontSize: '15px',
+                          fontWeight: notification.isRead ? '400' : '600',
+                          color: '#ffffff',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                        >
+                          {notification.title}
+                        </Text>
+                      </View>
+                      <Text style={{ fontSize: '12px', color: '#52525b', flexShrink: 0, marginLeft: '8px' }}>
+                        {formatTime(notification.createdAt)}
+                      </Text>
+                    </View>
+
+                    <Text style={{
+                      fontSize: '13px',
+                      color: '#a1a1aa',
+                      display: 'block',
+                      marginBottom: '10px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                    >
+                      {notification.content}
+                    </Text>
+
+                    <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <View style={{
+                        padding: '4px 10px',
+                        borderRadius: '4px',
+                        backgroundColor: `rgba(${getTypeColor(notification.type) === '#3b82f6' ? '59, 130, 246' : getTypeColor(notification.type) === '#f59e0b' ? '245, 158, 11' : '34, 197, 94'}, 0.15)`
+                      }}
+                      >
+                        <Text style={{ fontSize: '11px', color: getTypeColor(notification.type) }}>
+                          {getTypeName(notification.type)}
+                        </Text>
+                      </View>
+                      <ChevronRight size={16} color="#52525b" />
+                    </View>
+                  </View>
                 </View>
               </View>
-            </View>
-          ))
-        )}
-      </View>
+            ))}
 
-      {/* 加载更多 */}
-      {loading && (
-        <View className="loading-more">
-          <Text className="loading-text">加载中...</Text>
-        </View>
-      )}
-      
-      {!hasMore && notifications.length > 0 && (
-        <View className="no-more">
-          <Text className="no-more-text">没有更多消息了</Text>
-        </View>
-      )}
+            {/* 加载状态 */}
+            {loading && (
+              <View style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+                <Text style={{ fontSize: '13px', color: '#71717a' }}>加载中...</Text>
+              </View>
+            )}
+
+            {/* 没有更多 */}
+            {!hasMore && notifications.length > 0 && (
+              <View style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+                <Text style={{ fontSize: '12px', color: '#52525b' }}>没有更多消息了</Text>
+              </View>
+            )}
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };

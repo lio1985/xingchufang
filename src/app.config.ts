@@ -108,6 +108,12 @@ export default defineAppConfig({
         selectedIconPath: './assets/tabbar/pen-tool-active.png',
       },
       {
+        pagePath: 'pages/notification/index',
+        text: '消息',
+        iconPath: './assets/tabbar/bell.png',
+        selectedIconPath: './assets/tabbar/bell-active.png',
+      },
+      {
         pagePath: 'pages/tab-profile/index',
         text: '我',
         iconPath: './assets/tabbar/user.png',
