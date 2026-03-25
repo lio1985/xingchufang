@@ -19,7 +19,7 @@ export default defineAppConfig({
     'pages/admin-knowledge-share/index',
     'pages/news/index',
     'pages/ai-chat/index',
-    'pages/systems/index',
+
     'pages/lexicon-system/index',
     'pages/lexicon-manage/index',
     'pages/viral-system/index',
@@ -96,12 +96,7 @@ export default defineAppConfig({
         iconPath: './assets/tabbar/home.png',
         selectedIconPath: './assets/tabbar/home-active.png',
       },
-      {
-        pagePath: 'pages/systems/index',
-        text: '工具箱',
-        iconPath: './assets/tabbar/layers.png',
-        selectedIconPath: './assets/tabbar/layers-active.png',
-      },
+
       {
         pagePath: 'pages/hotspot/index',
         text: '热力图',
