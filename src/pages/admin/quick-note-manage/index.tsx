@@ -1,7 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Input, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import {
+  ChevronLeft,
+  RefreshCw,
+  Sparkles,
+  Search,
+  X,
+  Tag,
+  Pin,
+  Star,
+  Trash2,
+  User,
+  Clock,
+  FileText,
+  Mic,
+  Check,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
+import '@/styles/pages.css';
+import '@/styles/admin.css';
 
 const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
 
@@ -55,7 +73,6 @@ export default function AdminQuickNoteManagePage() {
   const loadData = useCallback(() => {
     setLoading(true);
     try {
-      // 尝试从后端加载所有用户的笔记
       Network.request({
         url: '/api/quick-notes/admin/all',
         method: 'GET',
@@ -69,7 +86,6 @@ export default function AdminQuickNoteManagePage() {
         }
       }).catch((error: any) => {
         console.error('从后端加载笔记失败:', error);
-        // 如果后端加载失败，尝试从本地存储加载（兼容旧版本）
         try {
           const localNotes = Taro.getStorageSync('notes') || [];
           setNotes(localNotes);
@@ -94,7 +110,6 @@ export default function AdminQuickNoteManagePage() {
   useEffect(() => {
     let filtered = [...notes];
 
-    // 搜索过滤
     if (searchKeyword) {
       const keyword = searchKeyword.toLowerCase();
       filtered = filtered.filter(note =>
@@ -103,12 +118,10 @@ export default function AdminQuickNoteManagePage() {
       );
     }
 
-    // 标签过滤
     if (activeTag) {
       filtered = filtered.filter(note => note.tags.includes(activeTag));
     }
 
-    // 排序：置顶优先，然后按时间倒序
     filtered.sort((a, b) => {
       if (a.isPinned !== b.isPinned) return b.isPinned ? 1 : -1;
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
@@ -117,16 +130,13 @@ export default function AdminQuickNoteManagePage() {
     setFilteredNotes(filtered);
   }, [notes, searchKeyword, activeTag]);
 
-  // 切换星标
   const toggleStar = async (noteId: string) => {
     try {
-      // 更新本地状态
       const updatedNotes = notes.map(note =>
         note.id === noteId ? { ...note, isStarred: !note.isStarred } : note
       );
       setNotes(updatedNotes);
 
-      // 同步到后端
       await Network.request({
         url: `/api/quick-notes/${noteId}/toggle-star`,
         method: 'POST',
@@ -134,21 +144,17 @@ export default function AdminQuickNoteManagePage() {
     } catch (error: any) {
       console.error('切换星标失败:', error);
       Taro.showToast({ title: '操作失败', icon: 'none' });
-      // 恢复状态
       setNotes(notes);
     }
   };
 
-  // 切换置顶
   const togglePin = async (noteId: string) => {
     try {
-      // 更新本地状态
       const updatedNotes = notes.map(note =>
         note.id === noteId ? { ...note, isPinned: !note.isPinned } : note
       );
       setNotes(updatedNotes);
 
-      // 同步到后端
       await Network.request({
         url: `/api/quick-notes/${noteId}/toggle-pin`,
         method: 'POST',
@@ -156,12 +162,10 @@ export default function AdminQuickNoteManagePage() {
     } catch (error: any) {
       console.error('切换置顶失败:', error);
       Taro.showToast({ title: '操作失败', icon: 'none' });
-      // 恢复状态
       setNotes(notes);
     }
   };
 
-  // 删除笔记
   const handleDelete = async (noteId: string) => {
     Taro.showModal({
       title: '确认删除',
@@ -169,12 +173,10 @@ export default function AdminQuickNoteManagePage() {
       success: async (res) => {
         if (res.confirm) {
           try {
-            // 更新本地状态
             const updatedNotes = notes.filter(note => note.id !== noteId);
             setNotes(updatedNotes);
             updateAllTags(updatedNotes);
 
-            // 同步到后端
             await Network.request({
               url: `/api/quick-notes/${noteId}`,
               method: 'DELETE',
@@ -184,7 +186,6 @@ export default function AdminQuickNoteManagePage() {
           } catch (error: any) {
             console.error('删除笔记失败:', error);
             Taro.showToast({ title: '删除失败', icon: 'none' });
-            // 恢复状态
             setNotes(notes);
             updateAllTags(notes);
           }
@@ -193,7 +194,6 @@ export default function AdminQuickNoteManagePage() {
     });
   };
 
-  // 批量删除
   const handleBatchDelete = async () => {
     if (selectedNoteIds.length === 0) {
       Taro.showToast({ title: '请选择要删除的笔记', icon: 'none' });
@@ -206,14 +206,12 @@ export default function AdminQuickNoteManagePage() {
       success: async (res) => {
         if (res.confirm) {
           try {
-            // 更新本地状态
             const updatedNotes = notes.filter(note => !selectedNoteIds.includes(note.id));
             setNotes(updatedNotes);
             updateAllTags(updatedNotes);
             setSelectedNoteIds([]);
             setIsBatchMode(false);
 
-            // 同步到后端
             await Network.request({
               url: '/api/quick-notes/admin/batch',
               method: 'DELETE',
@@ -230,7 +228,6 @@ export default function AdminQuickNoteManagePage() {
     });
   };
 
-  // 切换批量选择
   const toggleSelect = (noteId: string) => {
     setSelectedNoteIds(prev =>
       prev.includes(noteId)
@@ -239,13 +236,11 @@ export default function AdminQuickNoteManagePage() {
     );
   };
 
-  // 查看详情
   const openDetail = (note: Note) => {
     setSelectedNote(note);
     setShowDetailDialog(true);
   };
 
-  // 预览图片
   const previewImage = (images: string[], index: number) => {
     Taro.previewImage({
       urls: images,
@@ -253,58 +248,61 @@ export default function AdminQuickNoteManagePage() {
     });
   };
 
-  // 格式化时间
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    if (days === 0) {
-      return '今天';
-    } else if (days === 1) {
-      return '昨天';
-    } else if (days < 7) {
-      return `${days}天前`;
-    } else {
-      return date.toLocaleDateString('zh-CN');
-    }
+    if (days === 0) return '今天';
+    if (days === 1) return '昨天';
+    if (days < 7) return `${days}天前`;
+    return date.toLocaleDateString('zh-CN');
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
-      {/* 顶部导航栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-        <View className="flex items-center justify-between">
-          <View className="flex items-center gap-3">
+    <View className="admin-page">
+      {/* Header */}
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View onClick={() => Taro.navigateBack()}>
-              <Text>←</Text>
+              <ChevronLeft size={32} color="#fafafa" />
             </View>
-            <View className="flex items-center gap-2">
-              <Text>✨</Text>
-              <Text className="text-white font-semibold text-lg">灵感速记管理</Text>
-            </View>
+            <Sparkles size={28} color="#f59e0b" />
+            <Text className="admin-title">灵感速记管理</Text>
           </View>
-          <View className="flex items-center gap-2">
+          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {isBatchMode ? (
               <View
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/20"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  borderRadius: '12px',
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                }}
                 onClick={handleBatchDelete}
               >
-                <Text>🗑</Text>
-                <Text className="text-red-400 text-sm">删除 {selectedNoteIds.length}</Text>
+                <Trash2 size={20} color="#ef4444" />
+                <Text style={{ fontSize: '22px', color: '#ef4444' }}>删除 {selectedNoteIds.length}</Text>
               </View>
             ) : (
-              <Text className="text-slate-400 text-sm">共 {notes.length} 条</Text>
+              <Text style={{ fontSize: '22px', color: '#71717a' }}>共 {notes.length} 条</Text>
             )}
             <View
-              className="bg-slate-800 px-3 py-1.5 rounded-lg"
+              style={{
+                padding: '10px 20px',
+                borderRadius: '12px',
+                backgroundColor: '#1a1a1d',
+              }}
               onClick={() => {
                 setIsBatchMode(!isBatchMode);
                 setSelectedNoteIds([]);
               }}
             >
-              <Text className="text-slate-300 text-sm">
+              <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>
                 {isBatchMode ? '退出' : '批量'}
               </Text>
             </View>
@@ -313,18 +311,19 @@ export default function AdminQuickNoteManagePage() {
       </View>
 
       {/* 搜索栏 */}
-      <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-        <View className="bg-slate-800 rounded-xl px-4 py-2 flex items-center gap-2">
-          <Text>🔍</Text>
+      <View style={{ backgroundColor: '#0a0a0b', padding: '16px 24px', borderBottom: '1px solid #18181b' }}>
+        <View className="search-bar-wrapper">
+          <Search size={24} color="#52525b" />
           <Input
-            className="flex-1 bg-transparent text-white"
+            className="search-input"
             placeholder="搜索笔记..."
+            placeholderStyle="color: #52525b"
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
           {searchKeyword && (
             <View onClick={() => setSearchKeyword('')}>
-              <Text>✕</Text>
+              <X size={24} color="#52525b" />
             </View>
           )}
         </View>
@@ -332,26 +331,34 @@ export default function AdminQuickNoteManagePage() {
 
       {/* 标签筛选 */}
       {allTags.length > 0 && (
-        <View className="bg-slate-800 px-4 py-3 border-b border-slate-700">
-          <ScrollView
-            scrollX
-            className="whitespace-nowrap"
-          >
-            <View className="flex gap-2">
+        <View style={{ backgroundColor: '#0a0a0b', padding: '16px 24px', borderBottom: '1px solid #18181b' }}>
+          <ScrollView scrollX style={{ whiteSpace: 'nowrap' }}>
+            <View style={{ display: 'inline-flex', gap: '12px' }}>
               <View
-                className={`px-3 py-1.5 rounded-lg text-sm ${!activeTag ? 'bg-amber-500' : 'bg-slate-800'}`}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '12px',
+                  backgroundColor: !activeTag ? '#f59e0b' : '#1a1a1d',
+                }}
                 onClick={() => setActiveTag('')}
               >
-                <Text className={!activeTag ? 'text-white' : 'text-slate-300'}>全部</Text>
+                <Text style={{ fontSize: '22px', color: !activeTag ? '#000' : '#a1a1aa' }}>全部</Text>
               </View>
               {allTags.map((tag) => (
                 <View
                   key={tag}
-                  className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 ${activeTag === tag ? 'bg-amber-500' : 'bg-slate-800'}`}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: '12px',
+                    backgroundColor: activeTag === tag ? '#f59e0b' : '#1a1a1d',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
                   onClick={() => setActiveTag(tag)}
                 >
-                  <Text>🏷</Text>
-                  <Text className={activeTag === tag ? 'text-white' : 'text-slate-300'}>{tag}</Text>
+                  <Tag size={18} color={activeTag === tag ? '#000' : '#71717a'} />
+                  <Text style={{ fontSize: '22px', color: activeTag === tag ? '#000' : '#a1a1aa' }}>{tag}</Text>
                 </View>
               ))}
             </View>
@@ -360,117 +367,112 @@ export default function AdminQuickNoteManagePage() {
       )}
 
       {/* 内容列表 */}
-      <ScrollView
-        className="flex-1"
-        scrollY
-        style={{ height: 'calc(100vh - 280rpx)' }}
-      >
-        <View className="px-4 py-3 space-y-3">
+      <ScrollView scrollY style={{ height: 'calc(100vh - 160px)', marginTop: '160px' }}>
+        <View className="admin-content" style={{ paddingTop: '16px' }}>
           {loading && (
-            <View className="text-center py-12">
-              <Text className="text-slate-400">加载中...</Text>
+            <View className="empty-state">
+              <RefreshCw size={60} color="#52525b" />
+              <Text className="empty-title">加载中...</Text>
             </View>
           )}
 
           {!loading && filteredNotes.length > 0 && filteredNotes.map((note) => (
             <View
               key={note.id}
-              className={`bg-slate-800 rounded-xl p-4 border border-slate-700 ${note.isPinned ? 'border-amber-500/30' : ''}`}
+              className="admin-card"
+              style={{
+                borderLeft: note.isPinned ? '4px solid #f59e0b' : undefined,
+              }}
             >
-              <View className="flex items-start gap-3">
-                {/* 批量选择复选框 */}
+              <View style={{ display: 'flex', gap: '16px' }}>
                 {isBatchMode && (
                   <View
-                    className="mt-1"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '6px',
+                      border: '2px solid',
+                      borderColor: selectedNoteIds.includes(note.id) ? '#f59e0b' : '#27272a',
+                      backgroundColor: selectedNoteIds.includes(note.id) ? '#f59e0b' : 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
                     onClick={() => toggleSelect(note.id)}
                   >
-                    {selectedNoteIds.includes(note.id) ? (
-                      <Text>✓</Text>
-                    ) : (
-                      <Text>□</Text>
-                    )}
+                    {selectedNoteIds.includes(note.id) && <Check size={16} color="#000" />}
                   </View>
                 )}
 
-                <View className="flex-1 min-w-0">
-                  {/* 标题和操作按钮 */}
-                  <View className="flex items-start justify-between mb-2">
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                     <View
-                      className="flex-1 min-w-0"
+                      style={{ flex: 1, minWidth: 0 }}
                       onClick={() => openDetail(note)}
                     >
-                      <Text className="text-white font-semibold text-base block truncate">{note.title}</Text>
+                      <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {note.title}
+                      </Text>
                     </View>
 
                     {!isBatchMode && (
-                      <View className="flex items-center gap-1 ml-2">
-                        {note.isPinned && (
-                          <Text>📍</Text>
-                        )}
+                      <View style={{ display: 'flex', gap: '12px', marginLeft: '12px' }}>
+                        {note.isPinned && <Pin size={20} color="#f59e0b" />}
                         <View onClick={() => toggleStar(note.id)}>
-                          {note.isStarred ? (
-                            <Text>⭐</Text>
-                          ) : (
-                            <Text>⭐</Text>
-                          )}
+                          <Star size={20} color={note.isStarred ? '#f59e0b' : '#52525b'} fill={note.isStarred ? '#f59e0b' : 'none'} />
                         </View>
                         <View onClick={() => togglePin(note.id)}>
-                          <Text>📍</Text>
+                          <Pin size={20} color={note.isPinned ? '#f59e0b' : '#52525b'} />
                         </View>
                         <View onClick={() => handleDelete(note.id)}>
-                          <Text>🗑</Text>
+                          <Trash2 size={20} color="#ef4444" />
                         </View>
                       </View>
                     )}
                   </View>
 
-                  {/* 用户信息 */}
                   {note.userNickname && (
-                    <View className="flex items-center gap-1 mb-2">
-                      <Text>👤</Text>
-                      <Text className="text-slate-400 text-xs">{note.userNickname}</Text>
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                      <User size={18} color="#71717a" />
+                      <Text style={{ fontSize: '20px', color: '#71717a' }}>{note.userNickname}</Text>
                     </View>
                   )}
 
-                  {/* 内容 */}
-                  <View className="mb-2" onClick={() => openDetail(note)}>
-                    <Text className="text-slate-300 text-sm block line-clamp-2">
+                  <View onClick={() => openDetail(note)} style={{ marginBottom: '12px' }}>
+                    <Text style={{ fontSize: '22px', color: '#a1a1aa', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {note.content}
                     </Text>
                   </View>
 
-                  {/* 图片预览 */}
                   {note.images && note.images.length > 0 && (
-                    <View className="mb-2">
-                      <View className="flex gap-2 overflow-x-auto">
-                        {note.images.slice(0, 3).map((image, index) => (
-                          <Image
-                            key={index}
-                            src={image}
-                            mode="aspectFill"
-                            className="w-20 h-20 rounded-lg flex-shrink-0"
-                            onClick={() => previewImage(note.images!, index)}
-                          />
-                        ))}
-                        {note.images.length > 3 && (
-                          <View className="w-20 h-20 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
-                            <Text className="text-slate-400 text-sm">+{note.images.length - 3}</Text>
-                          </View>
-                        )}
-                      </View>
+                    <View style={{ marginBottom: '12px', display: 'flex', gap: '8px', overflowX: 'auto' }}>
+                      {note.images.slice(0, 3).map((image, index) => (
+                        <Image
+                          key={index}
+                          src={image}
+                          mode="aspectFill"
+                          style={{ width: '80px', height: '80px', borderRadius: '12px', flexShrink: 0 }}
+                          onClick={() => previewImage(note.images!, index)}
+                        />
+                      ))}
+                      {note.images.length > 3 && (
+                        <View style={{ width: '80px', height: '80px', borderRadius: '12px', backgroundColor: '#1a1a1d', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <Text style={{ fontSize: '22px', color: '#71717a' }}>+{note.images.length - 3}</Text>
+                        </View>
+                      )}
                     </View>
                   )}
 
-                  {/* 底部信息 */}
-                  <View className="flex items-center justify-between">
-                    <View className="flex items-center gap-1">
-                      <Text>🕐</Text>
-                      <Text className="text-slate-400 text-xs">{formatDate(note.updatedAt)}</Text>
+                  <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Clock size={18} color="#52525b" />
+                      <Text style={{ fontSize: '20px', color: '#52525b' }}>{formatDate(note.updatedAt)}</Text>
                     </View>
                     {note.tags && note.tags.length > 0 && (
-                      <View className="flex items-center gap-1">
-                        <Text>🏷</Text>
-                        <Text className="text-slate-400 text-xs">{note.tags.join(', ')}</Text>
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Tag size={18} color="#52525b" />
+                        <Text style={{ fontSize: '20px', color: '#52525b' }}>{note.tags.join(', ')}</Text>
                       </View>
                     )}
                   </View>
@@ -480,88 +482,76 @@ export default function AdminQuickNoteManagePage() {
           ))}
 
           {!loading && filteredNotes.length === 0 && (
-            <View className="text-center py-12">
-              <Text>📄</Text>
-              <Text className="text-slate-400 mt-2">
+            <View className="empty-state">
+              <FileText size={80} color="#52525b" />
+              <Text className="empty-title">
                 {searchKeyword || activeTag ? '未找到匹配的笔记' : '暂无笔记'}
               </Text>
             </View>
           )}
-
-          {/* 底部空间 */}
-          <View className="h-20"></View>
         </View>
       </ScrollView>
 
       {/* 详情对话框 */}
       {showDetailDialog && selectedNote && (
-        <View className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <View className="bg-slate-800 w-full rounded-2xl max-h-[80vh] overflow-y-auto">
-            <View className="p-4 border-b border-slate-700 sticky top-0 bg-slate-800 z-10">
-              <View className="flex items-center justify-between">
-                <View className="flex items-center gap-2 flex-1 min-w-0">
-                  {selectedNote.isPinned && (
-                    <Text>📍</Text>
-                  )}
-                  {selectedNote.isStarred && (
-                    <Text>⭐</Text>
-                  )}
-                  <Text className="text-white font-semibold text-lg truncate">{selectedNote.title}</Text>
+        <View className="modal-overlay">
+          <View className="modal-content" style={{ maxHeight: '80vh' }}>
+            <View className="modal-header">
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
+                {selectedNote.isPinned && <Pin size={24} color="#f59e0b" />}
+                {selectedNote.isStarred && <Star size={24} color="#f59e0b" fill="#f59e0b" />}
+                <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {selectedNote.title}
+                </Text>
+              </View>
+              <View style={{ display: 'flex', gap: '12px' }}>
+                <View onClick={() => {
+                  toggleStar(selectedNote.id);
+                  setSelectedNote({ ...selectedNote, isStarred: !selectedNote.isStarred });
+                }}
+                >
+                  <Star size={24} color={selectedNote.isStarred ? '#f59e0b' : '#71717a'} fill={selectedNote.isStarred ? '#f59e0b' : 'none'} />
                 </View>
-                <View className="flex items-center gap-2">
-                  <View onClick={() => {
-                    toggleStar(selectedNote.id);
-                    setSelectedNote({ ...selectedNote, isStarred: !selectedNote.isStarred });
-                  }}
-                  >
-                    {selectedNote.isStarred ? (
-                      <Text>⭐</Text>
-                    ) : (
-                      <Text>⭐</Text>
-                    )}
-                  </View>
-                  <View onClick={() => {
-                    togglePin(selectedNote.id);
-                    setSelectedNote({ ...selectedNote, isPinned: !selectedNote.isPinned });
-                  }}
-                  >
-                    <Text>📍</Text>
-                  </View>
-                  <View onClick={() => setShowDetailDialog(false)}>
-                    <Text>✕</Text>
-                  </View>
+                <View onClick={() => {
+                  togglePin(selectedNote.id);
+                  setSelectedNote({ ...selectedNote, isPinned: !selectedNote.isPinned });
+                }}
+                >
+                  <Pin size={24} color={selectedNote.isPinned ? '#f59e0b' : '#71717a'} />
+                </View>
+                <View onClick={() => setShowDetailDialog(false)}>
+                  <X size={28} color="#71717a" />
                 </View>
               </View>
             </View>
 
-            <View className="p-4 space-y-4">
-              {/* 用户信息 */}
+            <View style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {selectedNote.userNickname && (
-                <View className="flex items-center gap-2">
-                  <Text>👤</Text>
-                  <Text className="text-slate-400 text-sm">{selectedNote.userNickname}</Text>
+                <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <User size={20} color="#71717a" />
+                  <Text style={{ fontSize: '22px', color: '#71717a' }}>{selectedNote.userNickname}</Text>
                 </View>
               )}
 
-              {/* 内容 */}
               <View>
-                <Text className="text-white font-semibold text-base block mb-2">内容</Text>
-                <Text className="text-slate-300 text-sm block leading-relaxed whitespace-pre-wrap">
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>内容</Text>
+                <Text style={{ fontSize: '22px', color: '#a1a1aa', display: 'block', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
                   {selectedNote.content}
                 </Text>
               </View>
 
-              {/* 图片 */}
               {selectedNote.images && selectedNote.images.length > 0 && (
                 <View>
-                  <Text className="text-white font-semibold text-base block mb-2">图片 ({selectedNote.images.length})</Text>
-                  <View className="grid grid-cols-3 gap-2">
+                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>
+                    图片 ({selectedNote.images.length})
+                  </Text>
+                  <View style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
                     {selectedNote.images.map((image, index) => (
                       <Image
                         key={index}
                         src={image}
                         mode="aspectFill"
-                        className="w-full aspect-square rounded-lg"
+                        style={{ width: '100%', aspectRatio: '1', borderRadius: '12px' }}
                         onClick={() => previewImage(selectedNote.images!, index)}
                       />
                     ))}
@@ -569,51 +559,48 @@ export default function AdminQuickNoteManagePage() {
                 </View>
               )}
 
-              {/* 音频 */}
               {selectedNote.audio && (
                 <View>
-                  <Text className="text-white font-semibold text-base block mb-2">语音</Text>
-                  <View className="bg-slate-800 rounded-xl p-3 flex items-center gap-2">
-                    <Text>🎤</Text>
-                    <Text className="text-slate-300 text-sm flex-1">语音记录</Text>
+                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>语音</Text>
+                  <View style={{ backgroundColor: '#1a1a1d', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Mic size={24} color="#f59e0b" />
+                    <Text style={{ fontSize: '22px', color: '#a1a1aa', flex: 1 }}>语音记录</Text>
                     {isWeapp && (
                       <View
-                        className="bg-amber-500 px-3 py-1.5 rounded-lg"
+                        style={{ padding: '10px 20px', backgroundColor: '#f59e0b', borderRadius: '12px' }}
                         onClick={() => {
                           Taro.playVoice({ filePath: selectedNote.audio! });
                         }}
                       >
-                        <Text className="text-white text-sm">播放</Text>
+                        <Text style={{ fontSize: '22px', color: '#000' }}>播放</Text>
                       </View>
                     )}
                   </View>
                 </View>
               )}
 
-              {/* 标签 */}
               {selectedNote.tags && selectedNote.tags.length > 0 && (
                 <View>
-                  <Text className="text-white font-semibold text-base block mb-2">标签</Text>
-                  <View className="flex flex-wrap gap-2">
+                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>标签</Text>
+                  <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     {selectedNote.tags.map((tag, index) => (
-                      <View key={index} className="px-3 py-1.5 rounded-lg bg-amber-500/20">
-                        <Text className="text-amber-400 text-sm">{tag}</Text>
+                      <View key={index} style={{ padding: '8px 16px', borderRadius: '12px', backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
+                        <Text style={{ fontSize: '22px', color: '#f59e0b' }}>{tag}</Text>
                       </View>
                     ))}
                   </View>
                 </View>
               )}
 
-              {/* 时间信息 */}
-              <View className="text-slate-400 text-xs pt-4 border-t border-slate-700 space-y-1">
-                <Text className="block">
+              <View style={{ fontSize: '20px', color: '#52525b', paddingTop: '16px', borderTop: '1px solid #27272a', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Text style={{ display: 'block' }}>
                   创建时间: {new Date(selectedNote.createdAt).toLocaleString('zh-CN')}
                 </Text>
-                <Text className="block">
+                <Text style={{ display: 'block' }}>
                   更新时间: {new Date(selectedNote.updatedAt).toLocaleString('zh-CN')}
                 </Text>
                 {selectedNote.userId && (
-                  <Text className="block">
+                  <Text style={{ display: 'block' }}>
                     用户ID: {selectedNote.userId}
                   </Text>
                 )}
