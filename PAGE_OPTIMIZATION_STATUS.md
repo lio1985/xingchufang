@@ -27,6 +27,43 @@
    - src/pages/data-stats/index.tsx: 修复 `selectedPeriod` 变量名错误，使用 `as const` 修复 `trend` 类型
    - src/pages/index/index.tsx: 修复图标类型定义，使用 `typeof Lightbulb`
 
+4. **systems 页面优化**（第四轮）
+   - 替换所有 emoji 为 Lucide 图标
+   - 将 slate 系列颜色替换为 zinc 系列
+   - 添加 Lucide 图标导入
+   - 移除未使用的 ChevronRight 导入
+   - 使用 CircleQuestionMark 替代不存在的 HelpCircle
+
+### 验证状态
+- ✅ ESLint 检查通过
+- ✅ TypeScript 编译通过
+- ✅ 服务器启动成功
+- ✅ HTTP 服务正常响应
+
+## TypeScript 错误修复（第三轮）
+
+### 已修复问题
+1. **ScrollView 属性错误** - 移除 `showHorizontalScrollIndicator` 属性（Taro 不支持）
+   - src/pages/content-creation/index.tsx
+   - src/pages/customer-management/index.tsx
+   - src/pages/quick-note/index.tsx
+   - src/pages/recycling-order/index.tsx
+   - src/pages/index/index.tsx
+
+2. **缺少图标导入** - 添加 Lucide 图标导入
+   - src/pages/customer/churn-analysis.tsx (Phone, MapPin, MessageSquare, Mail, CircleEllipsis, MoveHorizontal)
+   - src/pages/customer/churn-warning.tsx (ShieldX, ShieldAlert, Phone, MapPin, MessageSquare, Mail, CircleEllipsis)
+   - src/pages/customer/detail.tsx (Check, TrendingUp)
+   - src/pages/customer/index.tsx (Check, TrendingUp)
+   - src/pages/customer/statistics.tsx (Users, Calendar, Activity, Target)
+   - src/pages/recycle/detail.tsx (Target, Activity, TrendingUp, Check, Store)
+   - src/pages/recycle/index.tsx (Target, Activity, TrendingUp, Check, Store)
+   - src/pages/viral-system/index.tsx (Sparkles, Check)
+
+3. **类型错误修复**
+   - src/pages/data-stats/index.tsx: 修复 `selectedPeriod` 变量名错误，使用 `as const` 修复 `trend` 类型
+   - src/pages/index/index.tsx: 修复图标类型定义，使用 `typeof Lightbulb`
+
 ### 验证状态
 - ✅ ESLint 检查通过
 - ✅ TypeScript 编译通过
