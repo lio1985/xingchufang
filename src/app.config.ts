@@ -18,16 +18,12 @@ export default defineAppConfig({
     'pages/knowledge-share/detail',
     'pages/admin-knowledge-share/index',
     'pages/news/index',
-    'pages/ai-chat/index',
-
     'pages/lexicon-system/index',
     'pages/lexicon-manage/index',
     'pages/viral-system/index',
     'pages/viral-favorites/index',
     'pages/viral-remix/index',
     'pages/input-sources/index',
-    'pages/hotspot/index',
-    'pages/hotspot-detail/index',
     'pages/hot-topic-generation/index',
     'pages/hot-script-generation/index',
     'pages/favorite-list/index',
@@ -95,19 +91,6 @@ export default defineAppConfig({
         text: '管理',
         iconPath: './assets/tabbar/home.png',
         selectedIconPath: './assets/tabbar/home-active.png',
-      },
-
-      {
-        pagePath: 'pages/hotspot/index',
-        text: '创作',
-        iconPath: './assets/tabbar/pen.png',
-        selectedIconPath: './assets/tabbar/pen-active.png',
-      },
-      {
-        pagePath: 'pages/ai-chat/index',
-        text: '工作室',
-        iconPath: './assets/tabbar/message-square.png',
-        selectedIconPath: './assets/tabbar/message-square-active.png',
       }
     ]
   }
