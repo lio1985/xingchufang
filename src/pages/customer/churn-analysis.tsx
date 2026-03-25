@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { Phone, MapPin, MessageSquare, Mail, CircleEllipsis, MoveHorizontal } from 'lucide-react-taro';
 
 interface HandleResultStats {
   totalWarnings: number;

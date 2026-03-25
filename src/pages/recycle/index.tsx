@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import { Target, Activity, TrendingUp, Check, Store } from 'lucide-react-taro';
 
 interface RecycleStore {
   id: string;

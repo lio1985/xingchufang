@@ -163,7 +163,7 @@ const QuickNotePage = () => {
 
         {/* 标签筛选 */}
         {allTags.length > 0 && (
-          <ScrollView scrollX className="tags-scroll" showHorizontalScrollIndicator={false}>
+          <ScrollView scrollX className="tags-scroll">
             <View className="tags-container">
               <View
                 className={`tag-item ${!searchKeyword ? 'tag-item-active' : ''}`}

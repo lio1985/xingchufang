@@ -211,7 +211,7 @@ const RecyclingOrderPage = () => {
         </View>
 
         {/* 状态统计 */}
-        <ScrollView scrollX className="order-stats" showHorizontalScrollIndicator={false}>
+        <ScrollView scrollX className="order-stats">
           {[
             { key: '全部', count: stats.total, activeColor: '#fafafa' },
             { key: 'pending', count: stats.pending, activeColor: '#f59e0b' },
@@ -235,7 +235,7 @@ const RecyclingOrderPage = () => {
         </ScrollView>
 
         {/* 分类筛选 */}
-        <ScrollView scrollX showHorizontalScrollIndicator={false}>
+        <ScrollView scrollX>
           <View style={{ display: 'flex', gap: '12px', paddingRight: '32px', marginTop: '16px' }}>
             {categories.map((cat) => (
               <View
@@ -382,7 +382,7 @@ const RecyclingOrderPage = () => {
 
             <View className="form-group">
               <Text className="form-label">物品类别</Text>
-              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+              <ScrollView scrollX>
                 <View style={{ display: 'flex', gap: '12px' }}>
                   {categories.slice(1).map((cat) => (
                     <View

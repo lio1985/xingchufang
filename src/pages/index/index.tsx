@@ -19,7 +19,7 @@ interface Feature {
   id: string;
   title: string;
   desc: string;
-  icon: React.ComponentType<{ size?: number; color?: string; className?: string }>;
+  icon: typeof Lightbulb;
   color: string;
   bgColor: string;
   path: string;
@@ -180,7 +180,7 @@ const Index = () => {
         </View>
 
         {/* 快捷入口 */}
-        <ScrollView scrollX className="quick-access" showHorizontalScrollIndicator={false}>
+        <ScrollView scrollX className="quick-access">
           <View className="quick-access-scroll">
             {QUICK_ACCESS.map((item, index) => {
               const Icon = item.icon;

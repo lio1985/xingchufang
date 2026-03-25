@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
+import { Sparkles, Check } from 'lucide-react-taro'
 
 type Step = 'input' | 'analyzing' | 'completed'
 

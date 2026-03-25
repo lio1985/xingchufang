@@ -57,7 +57,7 @@ const DataStatsPage = () => {
   const loadStats = () => {
     setLoading(true);
     setTimeout(() => {
-      const mockData = generateMockData(selectedPeriod);
+      const mockData = generateMockData(period);
       setStats(mockData);
       setLoading(false);
     }, 500);
@@ -74,10 +74,10 @@ const DataStatsPage = () => {
       totalCustomers: baseCustomers + Math.floor(Math.random() * 15),
       contentCount: Math.floor(Math.random() * 30) + 10,
       trends: [
-        { label: '营收', value: baseRevenue, change: 12.5, trend: 'up' },
-        { label: '订单', value: baseOrders, change: 8.3, trend: 'up' },
-        { label: '客户', value: baseCustomers, change: -2.1, trend: 'down' },
-        { label: '内容', value: Math.floor(Math.random() * 30) + 10, change: 0, trend: 'stable' },
+        { label: '营收', value: baseRevenue, change: 12.5, trend: 'up' as const },
+        { label: '订单', value: baseOrders, change: 8.3, trend: 'up' as const },
+        { label: '客户', value: baseCustomers, change: -2.1, trend: 'down' as const },
+        { label: '内容', value: Math.floor(Math.random() * 30) + 10, change: 0, trend: 'stable' as const },
       ],
       chartData: Array.from({ length: periodType === 'today' ? 24 : 7 }, (_, i) => ({
         date:

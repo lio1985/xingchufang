@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
+import { ShieldX, ShieldAlert, Phone, MapPin, MessageSquare, Mail, CircleEllipsis } from 'lucide-react-taro';
 
 interface ChurnRiskAssessment {
   customerId: string;

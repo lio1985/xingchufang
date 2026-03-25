@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import { Check, TrendingUp } from 'lucide-react-taro';
 
 interface Customer {
   id: string;

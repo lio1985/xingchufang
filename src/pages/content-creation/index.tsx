@@ -188,7 +188,7 @@ const ContentCreationPage = () => {
             {/* 内容类型 */}
             <View style={{ marginBottom: '24px' }}>
               <Text className="form-label">内容类型</Text>
-              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+              <ScrollView scrollX>
                 <View className="config-grid">
                   {contentTypes.map((type) => (
                     <View
@@ -206,7 +206,7 @@ const ContentCreationPage = () => {
             {/* 语调风格 */}
             <View style={{ marginBottom: '24px' }}>
               <Text className="form-label">语调风格</Text>
-              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+              <ScrollView scrollX>
                 <View className="config-grid">
                   {tones.map((t) => (
                     <View
@@ -224,7 +224,7 @@ const ContentCreationPage = () => {
             {/* 目标受众 */}
             <View style={{ marginBottom: '24px' }}>
               <Text className="form-label">目标受众</Text>
-              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+              <ScrollView scrollX>
                 <View className="config-grid">
                   {audiences.map((aud) => (
                     <View
@@ -242,7 +242,7 @@ const ContentCreationPage = () => {
             {/* 时长 */}
             <View style={{ marginBottom: '24px' }}>
               <Text className="form-label">时长</Text>
-              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+              <ScrollView scrollX>
                 <View className="config-grid">
                   {durations.map((d) => (
                     <View
@@ -260,7 +260,7 @@ const ContentCreationPage = () => {
             {/* 画面风格 */}
             <View>
               <Text className="form-label">画面风格</Text>
-              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+              <ScrollView scrollX>
                 <View className="config-grid">
                   {styles.map((s) => (
                     <View

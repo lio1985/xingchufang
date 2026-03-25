@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
+import { Users, Calendar, Activity, Target } from 'lucide-react-taro';
 
 interface OverviewStats {
   total: number;

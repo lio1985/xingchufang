@@ -186,7 +186,7 @@ const CustomerManagementPage = () => {
         </View>
 
         {/* 来源筛选 */}
-        <ScrollView scrollX className="source-filter-scroll" showHorizontalScrollIndicator={false}>
+        <ScrollView scrollX className="source-filter-scroll">
           <View className="source-filter-container">
             {sources.map((source) => (
               <View
@@ -308,7 +308,7 @@ const CustomerManagementPage = () => {
 
             <View className="form-group">
               <Text className="form-label">来源</Text>
-              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+              <ScrollView scrollX>
                 <View style={{ display: 'flex', gap: '12px' }}>
                   {sources.slice(1).map((source) => (
                     <View
