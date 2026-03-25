@@ -2,6 +2,7 @@ import { View, Text, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState } from 'react';
 import { Network } from '@/network';
+import { Lightbulb, User, Lock, Eye, EyeOff } from 'lucide-react-taro';
 import './index.css';
 
 const LoginPage = () => {
@@ -9,12 +10,13 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleLogin = async () => {
     if (!username || !password) {
       Taro.showToast({
         title: '请输入账号和密码',
-        icon: 'none'
+        icon: 'none',
       });
       return;
     }
@@ -23,7 +25,7 @@ const LoginPage = () => {
 
     const formData = {
       username: username.trim(),
-      password: password.trim()
+      password: password.trim(),
     };
 
     const loginUrl = '/api/user/login-with-password';
@@ -36,7 +38,7 @@ const LoginPage = () => {
       const res = await Network.request({
         url: loginUrl,
         method: 'POST',
-        data: formData
+        data: formData,
       });
 
       console.log('登录接口返回=', res);
@@ -85,21 +87,20 @@ const LoginPage = () => {
       Taro.showToast({
         title: '登录成功',
         icon: 'success',
-        duration: 2000
+        duration: 2000,
       });
 
       setTimeout(() => {
         console.log('[登录] 执行跳转到首页');
         Taro.switchTab({ url: '/pages/index/index' });
       }, 500);
-
     } catch (error: any) {
       console.error('登录接口异常=', error);
 
       Taro.showToast({
         title: error.message || '登录失败，请重试',
         icon: 'none',
-        duration: 3000
+        duration: 3000,
       });
     } finally {
       console.log('[登录] 设置 loading = false');
@@ -116,228 +117,100 @@ const LoginPage = () => {
   };
 
   return (
-    <View style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#0a0a0b',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <View className="login-container">
       {/* 背景装饰 */}
-      <View style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '400px',
-        background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%)',
-        pointerEvents: 'none'
-      }} />
+      <View className="login-bg-decoration" />
 
       {/* Logo 区域 */}
-      <View style={{ 
-        paddingTop: '120px', 
-        paddingLeft: '48px',
-        paddingRight: '48px'
-      }}>
-        <View style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '16px',
-          marginBottom: '16px'
-        }}>
-          <View style={{
-            width: '80px',
-            height: '80px',
-            background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
-            borderRadius: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '40px'
-          }}>
-            ⭐
+      <View className="login-header">
+        <View className="logo-row">
+          <View className="logo-icon">
+            <Lightbulb size={40} color="#000" />
           </View>
-          <View>
-            <Text style={{ 
-              fontSize: '48px', 
-              fontWeight: '700', 
-              color: '#fafafa',
-              letterSpacing: '-0.02em'
-            }}>
-              星厨房
-            </Text>
-            <Text style={{ 
-              fontSize: '24px', 
-              color: '#71717a',
-              letterSpacing: '0.1em'
-            }}>
-              STAR KITCHEN
-            </Text>
+          <View className="logo-text-group">
+            <Text className="logo-title">星厨房</Text>
+            <Text className="logo-subtitle">STAR KITCHEN</Text>
           </View>
         </View>
-        <Text style={{ 
-          fontSize: '28px', 
-          color: '#a1a1aa',
-          marginTop: '16px'
-        }}>
-          欢迎回来，创作者
-        </Text>
+        <Text className="login-welcome">欢迎回来，创作者</Text>
       </View>
 
       {/* 登录表单 */}
-      <View style={{ 
-        flex: 1,
-        padding: '48px 32px 0'
-      }}>
+      <View className="login-form">
         {/* 账号输入 */}
-        <View style={{ marginBottom: '24px' }}>
-          <Text style={{ 
-            fontSize: '24px', 
-            color: '#a1a1aa',
-            marginBottom: '12px',
-            display: 'block'
-          }}>
-            账号
-          </Text>
-          <View style={{
-            backgroundColor: '#141416',
-            borderRadius: '16px',
-            border: '1px solid #27272a',
-            padding: '24px'
-          }}>
+        <View className="form-group">
+          <Text className="form-label">账号</Text>
+          <View className={`input-wrapper ${focusedField === 'username' ? 'input-wrapper-focused' : ''}`}>
+            <User size={24} color="#71717a" className="input-icon" />
             <Input
-              style={{ 
-                fontSize: '28px', 
-                color: '#fafafa',
-                width: '100%'
-              }}
+              className="input-field"
               placeholder="请输入账号"
               placeholderStyle="color: #52525b"
               value={username}
+              onFocus={() => setFocusedField('username')}
+              onBlur={() => setFocusedField(null)}
               onInput={(e) => setUsername(e.detail.value)}
             />
           </View>
         </View>
 
         {/* 密码输入 */}
-        <View style={{ marginBottom: '16px' }}>
-          <Text style={{ 
-            fontSize: '24px', 
-            color: '#a1a1aa',
-            marginBottom: '12px',
-            display: 'block'
-          }}>
-            密码
-          </Text>
-          <View style={{
-            backgroundColor: '#141416',
-            borderRadius: '16px',
-            border: '1px solid #27272a',
-            padding: '24px',
-            display: 'flex',
-            alignItems: 'center'
-          }}>
+        <View className="form-group">
+          <Text className="form-label">密码</Text>
+          <View className={`input-wrapper ${focusedField === 'password' ? 'input-wrapper-focused' : ''}`}>
+            <Lock size={24} color="#71717a" className="input-icon" />
             <Input
-              style={{ 
-                flex: 1,
-                fontSize: '28px', 
-                color: '#fafafa'
-              }}
+              className="input-field"
               password={!showPassword}
               placeholder="请输入密码"
               placeholderStyle="color: #52525b"
               value={password}
+              onFocus={() => setFocusedField('password')}
+              onBlur={() => setFocusedField(null)}
               onInput={(e) => setPassword(e.detail.value)}
             />
-            <Text 
-              style={{ 
-                fontSize: '24px', 
-                color: '#f59e0b',
-                paddingLeft: '16px'
-              }}
+            <View
+              className="password-toggle"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? '🙈' : '👁'}
-            </Text>
+              {showPassword ? (
+                <EyeOff size={24} color="#f59e0b" />
+              ) : (
+                <Eye size={24} color="#f59e0b" />
+              )}
+            </View>
           </View>
         </View>
 
         {/* 忘记密码 */}
-        <View style={{ 
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '48px'
-        }}>
-          <Text 
-            style={{ 
-              fontSize: '24px', 
-              color: '#71717a'
-            }}
-            onClick={handleChangePassword}
-          >
+        <View className="forgot-password">
+          <Text className="forgot-password-link" onClick={handleChangePassword}>
             忘记密码？
           </Text>
         </View>
 
         {/* 登录按钮 */}
         <View
-          style={{
-            background: loading 
-              ? '#27272a' 
-              : 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
-            borderRadius: '16px',
-            padding: '28px',
-            textAlign: 'center',
-            marginBottom: '32px'
-          }}
+          className={`login-btn ${loading ? 'login-btn-disabled' : ''}`}
           onClick={loading ? undefined : handleLogin}
         >
-          <Text style={{ 
-            fontSize: '32px', 
-            fontWeight: '600',
-            color: loading ? '#52525b' : '#000'
-          }}>
+          <Text className={`login-btn-text ${loading ? 'login-btn-text-disabled' : ''}`}>
             {loading ? '登录中...' : '登录'}
           </Text>
         </View>
 
         {/* 注册入口 */}
-        <View style={{ 
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
-          <Text style={{ 
-            fontSize: '24px', 
-            color: '#71717a'
-          }}>
-            还没有账号？
-          </Text>
-          <Text 
-            style={{ 
-              fontSize: '24px', 
-              color: '#f59e0b',
-              fontWeight: '500'
-            }}
-            onClick={handleRegister}
-          >
+        <View className="register-section">
+          <Text className="register-text">还没有账号？</Text>
+          <Text className="register-link" onClick={handleRegister}>
             立即注册
           </Text>
         </View>
       </View>
 
       {/* 底部版权 */}
-      <View style={{ 
-        padding: '48px 32px',
-        textAlign: 'center'
-      }}>
-        <Text style={{ 
-          fontSize: '20px', 
-          color: '#3f3f46'
-        }}>
-          星厨房 · 让创作更高效
-        </Text>
+      <View className="login-footer">
+        <Text className="footer-text">星厨房 · 让创作更高效</Text>
       </View>
     </View>
   );

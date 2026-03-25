@@ -1,26 +1,110 @@
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
+import {
+  Lightbulb,
+  Target,
+  Sparkles,
+  Activity,
+  Users,
+  Recycle,
+  BookOpen,
+  Settings,
+  ChevronRight,
+  Shield,
+} from 'lucide-react-taro';
+import './index.css';
 
 interface Feature {
   id: string;
   title: string;
   desc: string;
-  icon: string;
+  icon: React.ComponentType<{ size?: number; color?: string; className?: string }>;
   color: string;
   bgColor: string;
   path: string;
 }
 
 const FEATURES: Feature[] = [
-  { id: 'quick-note', title: '灵感速记', desc: '快速捕捉创作灵感', icon: '💡', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.1)', path: '/pages/quick-note/index' },
-  { id: 'customer', title: '客资管理', desc: '客户资料高效管理', icon: '👥', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.1)', path: '/pages/customer-management/index' },
-  { id: 'recycle', title: '厨具回收', desc: '回收业务全流程', icon: '🔄', color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.1)', path: '/pages/recycling-order/index' },
-  { id: 'topic', title: '选题策划', desc: '发现热门选题', icon: '🎯', color: '#06b6d4', bgColor: 'rgba(6, 182, 212, 0.1)', path: '/pages/topic-planning/index' },
-  { id: 'content', title: '内容创作', desc: '高效产出优质内容', icon: '✨', color: '#8b5cf6', bgColor: 'rgba(139, 92, 246, 0.1)', path: '/pages/content-creation/index' },
-  { id: 'stats', title: '数据统计', desc: '数据分析洞察', icon: '📊', color: '#ec4899', bgColor: 'rgba(236, 72, 153, 0.1)', path: '/pages/data-stats/index' },
-  { id: 'knowledge', title: '知识分享', desc: '团队经验沉淀', icon: '📚', color: '#a855f7', bgColor: 'rgba(168, 85, 247, 0.1)', path: '/pages/knowledge-share/index' },
-  { id: 'settings', title: '系统设置', desc: '个性化配置', icon: '⚙️', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.1)', path: '/pages/settings/index' },
+  {
+    id: 'quick-note',
+    title: '灵感速记',
+    desc: '快速捕捉创作灵感',
+    icon: Lightbulb,
+    color: '#f59e0b',
+    bgColor: 'rgba(245, 158, 11, 0.1)',
+    path: '/pages/quick-note/index',
+  },
+  {
+    id: 'customer',
+    title: '客资管理',
+    desc: '客户资料高效管理',
+    icon: Users,
+    color: '#22c55e',
+    bgColor: 'rgba(34, 197, 94, 0.1)',
+    path: '/pages/customer-management/index',
+  },
+  {
+    id: 'recycle',
+    title: '厨具回收',
+    desc: '回收业务全流程',
+    icon: Recycle,
+    color: '#3b82f6',
+    bgColor: 'rgba(59, 130, 246, 0.1)',
+    path: '/pages/recycling-order/index',
+  },
+  {
+    id: 'topic',
+    title: '选题策划',
+    desc: '发现热门选题',
+    icon: Target,
+    color: '#06b6d4',
+    bgColor: 'rgba(6, 182, 212, 0.1)',
+    path: '/pages/topic-planning/index',
+  },
+  {
+    id: 'content',
+    title: '内容创作',
+    desc: '高效产出优质内容',
+    icon: Sparkles,
+    color: '#8b5cf6',
+    bgColor: 'rgba(139, 92, 246, 0.1)',
+    path: '/pages/content-creation/index',
+  },
+  {
+    id: 'stats',
+    title: '数据统计',
+    desc: '数据分析洞察',
+    icon: Activity,
+    color: '#ec4899',
+    bgColor: 'rgba(236, 72, 153, 0.1)',
+    path: '/pages/data-stats/index',
+  },
+  {
+    id: 'knowledge',
+    title: '知识分享',
+    desc: '团队经验沉淀',
+    icon: BookOpen,
+    color: '#a855f7',
+    bgColor: 'rgba(168, 85, 247, 0.1)',
+    path: '/pages/knowledge-share/index',
+  },
+  {
+    id: 'settings',
+    title: '系统设置',
+    desc: '个性化配置',
+    icon: Settings,
+    color: '#71717a',
+    bgColor: 'rgba(113, 113, 122, 0.1)',
+    path: '/pages/settings/index',
+  },
+];
+
+const QUICK_ACCESS = [
+  { label: '灵感速记', icon: Lightbulb, path: '/pages/quick-note/index' },
+  { label: '选题策划', icon: Target, path: '/pages/topic-planning/index' },
+  { label: '内容创作', icon: Sparkles, path: '/pages/content-creation/index' },
+  { label: '数据统计', icon: Activity, path: '/pages/data-stats/index' },
 ];
 
 const Index = () => {
@@ -67,66 +151,27 @@ const Index = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
+    <View className="page-container">
       {/* Header */}
-      <View style={{ 
-        background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
-        padding: '48px 32px 32px',
-        borderBottom: '1px solid #27272a'
-      }}>
-        <View style={{ marginBottom: '32px' }}>
+      <View className="page-header">
+        <View className="header-top">
           {/* Logo 和标题 */}
-          <View style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-            <View style={{
-              width: '48px',
-              height: '48px',
-              background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '12px'
-            }}>
-              <Text style={{ fontSize: '24px' }}>⭐</Text>
+          <View className="logo-container">
+            <View className="logo-icon">
+              <Lightbulb size={24} color="#000" />
             </View>
-            <Text style={{ fontSize: '36px', fontWeight: '700', color: '#fafafa' }}>
-              星厨房
-            </Text>
+            <Text className="page-title">星厨房</Text>
           </View>
-          <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>
-              {greeting}，创作者
-            </Text>
-            <View style={{ display: 'flex', gap: '12px' }}>
+          <View className="greeting-section">
+            <Text className="greeting-text">{greeting}，创作者</Text>
+            <View className="action-buttons">
               {isAdmin && (
-                <View 
-                  style={{
-                    padding: '12px 20px',
-                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(245, 158, 11, 0.3)'
-                  }}
-                  onClick={handleAdmin}
-                >
-                  <Text style={{ fontSize: '24px', color: '#f59e0b', fontWeight: '500' }}>
-                    后台
-                  </Text>
+                <View className="action-btn action-btn-primary" onClick={handleAdmin}>
+                  <Shield size={20} color="#f59e0b" />
                 </View>
               )}
-              <View 
-                style={{
-                  padding: '12px 20px',
-                  backgroundColor: '#141416',
-                  borderRadius: '12px',
-                  border: '1px solid #27272a'
-                }}
-                onClick={handleLogin}
-              >
-                <Text style={{ 
-                  fontSize: '24px', 
-                  fontWeight: '500',
-                  color: isLoggedIn ? '#22c55e' : '#fafafa'
-                }}>
+              <View className="action-btn" onClick={handleLogin}>
+                <Text style={{ fontSize: '24px', color: isLoggedIn ? '#22c55e' : '#fafafa' }}>
                   {isLoggedIn ? '已登录' : '登录'}
                 </Text>
               </View>
@@ -135,101 +180,55 @@ const Index = () => {
         </View>
 
         {/* 快捷入口 */}
-        <ScrollView 
-          scrollX 
-          style={{ width: '100%' }}
-          showHorizontalScrollIndicator={false}
-        >
-          <View style={{ display: 'flex', gap: '16px', paddingRight: '32px' }}>
-            {[
-              { label: '灵感速记', icon: '💡', path: '/pages/quick-note/index' },
-              { label: '选题策划', icon: '🎯', path: '/pages/topic-planning/index' },
-              { label: '内容创作', icon: '✨', path: '/pages/content-creation/index' },
-              { label: '数据统计', icon: '📊', path: '/pages/data-stats/index' },
-            ].map((item, index) => (
-              <View
-                key={index}
-                style={{
-                  flexShrink: 0,
-                  padding: '16px 24px',
-                  backgroundColor: '#141416',
-                  borderRadius: '16px',
-                  border: '1px solid #27272a',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}
-                onClick={() => handleNav(item.path)}
-              >
-                <Text style={{ fontSize: '28px' }}>{item.icon}</Text>
-                <Text style={{ fontSize: '24px', color: '#fafafa', fontWeight: '500' }}>
-                  {item.label}
-                </Text>
-              </View>
-            ))}
+        <ScrollView scrollX className="quick-access" showHorizontalScrollIndicator={false}>
+          <View className="quick-access-scroll">
+            {QUICK_ACCESS.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <View
+                  key={index}
+                  className="quick-access-item"
+                  onClick={() => handleNav(item.path)}
+                >
+                  <Icon size={28} color="#f59e0b" />
+                  <Text className="quick-access-text">{item.label}</Text>
+                </View>
+              );
+            })}
           </View>
         </ScrollView>
       </View>
 
       {/* 功能列表 */}
-      <View style={{ padding: '32px' }}>
-        <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa', marginBottom: '24px', display: 'block' }}>
-          全部功能
-        </Text>
+      <View className="feature-section">
+        <Text className="section-title">全部功能</Text>
 
-        {FEATURES.map((item) => (
-          <View
-            key={item.id}
-            style={{
-              backgroundColor: '#141416',
-              borderRadius: '20px',
-              padding: '28px',
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              border: '1px solid #27272a'
-            }}
-            onClick={() => handleNav(item.path)}
-          >
-            <View style={{
-              width: '96px',
-              height: '96px',
-              borderRadius: '20px',
-              backgroundColor: item.bgColor,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '24px',
-              fontSize: '48px'
-            }}>
-              {item.icon}
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ 
-                fontSize: '32px', 
-                fontWeight: '600', 
-                color: '#fafafa',
-                marginBottom: '8px',
-                display: 'block'
-              }}>
-                {item.title}
-              </Text>
-              <Text style={{ fontSize: '24px', color: '#71717a', display: 'block' }}>
-                {item.desc}
-              </Text>
-            </View>
-            <Text style={{ fontSize: '28px', color: '#3f3f46', fontWeight: '300' }}>
-              →
-            </Text>
-          </View>
-        ))}
+        <View className="feature-list">
+          {FEATURES.map((item) => {
+            const Icon = item.icon;
+            return (
+              <View
+                key={item.id}
+                className="feature-card"
+                onClick={() => handleNav(item.path)}
+              >
+                <View className="feature-icon-wrapper" style={{ backgroundColor: item.bgColor }}>
+                  <Icon size={44} color={item.color} />
+                </View>
+                <View className="feature-content">
+                  <Text className="feature-title">{item.title}</Text>
+                  <Text className="feature-desc">{item.desc}</Text>
+                </View>
+                <ChevronRight size={28} color="#3f3f46" />
+              </View>
+            );
+          })}
+        </View>
       </View>
 
       {/* 底部提示 */}
-      <View style={{ padding: '32px', textAlign: 'center' }}>
-        <Text style={{ fontSize: '20px', color: '#52525b' }}>
-          星厨房 · 让创作更高效
-        </Text>
+      <View className="footer-tip">
+        <Text className="footer-text">星厨房 · 让创作更高效</Text>
       </View>
     </View>
   );
