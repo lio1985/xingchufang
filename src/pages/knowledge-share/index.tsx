@@ -1,7 +1,19 @@
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect, useCallback } from 'react';
+import {
+  ChevronLeft,
+  Plus,
+  Search,
+  BookOpen,
+  Eye,
+  Heart,
+  RefreshCw,
+  Tag,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
+import '@/styles/pages.css';
+import './index.css';
 
 interface KnowledgeItem {
   id: string;
@@ -27,8 +39,8 @@ const KnowledgeSharePage = () => {
         url: '/api/knowledge-shares',
         method: 'GET',
         data: {
-          keyword: searchKeyword
-        }
+          keyword: searchKeyword,
+        },
       });
 
       if (res.data?.code === 200) {
@@ -51,7 +63,7 @@ const KnowledgeSharePage = () => {
 
   const handleViewDetail = (item: KnowledgeItem) => {
     Taro.navigateTo({
-      url: `/pages/knowledge-share/detail?id=${item.id}`
+      url: `/pages/knowledge-share/detail?id=${item.id}`,
     });
   };
 
@@ -78,111 +90,101 @@ const KnowledgeSharePage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-slate-900">
-      {/* 顶部标题栏 */}
-      <View className="bg-slate-800 px-4 py-4 flex items-center justify-between border-b border-slate-700">
-        <View className="flex items-center gap-2">
-          <Text>📖</Text>
-          <Text className="block text-xl font-bold text-white">知识分享</Text>
-        </View>
-        <View
-          className="bg-blue-500 px-3 py-1.5 rounded-lg flex items-center gap-1 active:opacity-80"
-          onClick={handleCreateKnowledge}
-        >
-          <Text>+</Text>
-          <Text className="block text-sm text-white">分享</Text>
-        </View>
-      </View>
-
-      {/* 搜索栏 */}
-      <View className="px-4 py-3 bg-slate-800">
-        <View className="bg-slate-800 rounded-xl px-4 py-2.5 flex items-center gap-2">
-          <Text>🔍</Text>
-          <View className="flex-1">
-            <input
-              className="w-full bg-transparent text-white text-sm placeholder-slate-400 outline-none"
-              placeholder="搜索知识内容..."
-              value={searchKeyword}
-              onInput={(e) => setSearchKeyword((e.target as HTMLInputElement).value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  loadKnowledgeList();
-                }
-              }}
-            />
+    <View className="knowledge-share-page">
+      {/* Header */}
+      <View className="page-header">
+        <View className="header-top">
+          <View className="header-left">
+            <View className="back-button" onClick={() => Taro.navigateBack()}>
+              <ChevronLeft size={32} color="#fafafa" />
+            </View>
+            <View className="header-title-group">
+              <Text className="header-title">知识分享</Text>
+              <Text className="header-subtitle">{knowledgeList.length} 条知识</Text>
+            </View>
           </View>
+
+          <View className="primary-action-btn" onClick={handleCreateKnowledge}>
+            <Plus size={40} color="#000" />
+          </View>
+        </View>
+
+        {/* 搜索框 */}
+        <View className="search-box">
+          <Search size={28} color="#71717a" />
+          <Input
+            className="search-input"
+            placeholder="搜索知识内容..."
+            placeholderStyle="color: #52525b"
+            value={searchKeyword}
+            onInput={(e) => setSearchKeyword(e.detail.value)}
+            onConfirm={() => loadKnowledgeList()}
+          />
         </View>
       </View>
 
       {/* 知识列表 */}
-      <ScrollView className="flex-1" scrollY>
-        <View className="p-4">
+      <ScrollView className="flex-1" scrollY style={{ height: 'calc(100vh - 200px)' }}>
+        <View className="content-area">
           {loading ? (
-            <View className="text-center py-20">
-              <Text className="block text-sm text-slate-400">加载中...</Text>
+            <View className="loading-state">
+              <RefreshCw size={64} color="#f59e0b" />
+              <Text className="loading-text">加载中...</Text>
             </View>
           ) : knowledgeList.length === 0 ? (
-            <View className="text-center py-20">
-              <Text>📖</Text>
-              <Text className="block text-sm text-slate-400 mt-4">暂无知识分享</Text>
-              <View
-                className="inline-block mt-4 px-6 py-2 bg-slate-9000/20 border border-sky-500/30 rounded-lg"
-                onClick={handleCreateKnowledge}
-              >
-                <Text className="block text-sm text-blue-400">创建第一条知识分享</Text>
+            <View className="empty-state">
+              <View className="empty-icon">
+                <BookOpen size={56} color="#f59e0b" />
               </View>
+              <Text className="empty-title">
+                {searchKeyword ? '没有找到相关知识' : '暂无知识分享'}
+              </Text>
+              {!searchKeyword && (
+                <Text className="empty-action" onClick={handleCreateKnowledge}>
+                  创建第一条知识分享
+                </Text>
+              )}
             </View>
           ) : (
-            <View className="flex flex-col gap-3">
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {knowledgeList.map((item) => (
                 <View
                   key={item.id}
-                  className="bg-slate-800 rounded-xl border border-slate-700 p-4 active:scale-[0.99] transition-transform"
+                  className="knowledge-card"
                   onClick={() => handleViewDetail(item)}
                 >
-                  {/* 标题 */}
-                  <Text className="block text-lg font-semibold text-white mb-2">
-                    {item.title}
-                  </Text>
+                  <View className="knowledge-header">
+                    <Text className="knowledge-title">{item.title}</Text>
+                    {item.category && (
+                      <View className="knowledge-category">{item.category}</View>
+                    )}
+                  </View>
 
-                  {/* 内容摘要 */}
-                  <Text className="block text-sm text-slate-400 mb-3 line-clamp-2">
-                    {item.content}
-                  </Text>
-
-                  {/* 标签 */}
                   {item.tags && item.tags.length > 0 && (
-                    <View className="flex flex-wrap gap-2 mb-3">
+                    <View className="knowledge-tags">
                       {item.tags.slice(0, 3).map((tag, idx) => (
-                        <View
-                          key={idx}
-                          className="bg-slate-800 px-2 py-1 rounded"
-                        >
-                          <Text className="block text-xs text-slate-300">{tag}</Text>
+                        <View key={idx} className="knowledge-tag">
+                          <Tag size={14} color="#71717a" />
+                          <Text style={{ marginLeft: '4px', fontSize: '20px' }}>{tag}</Text>
                         </View>
                       ))}
                     </View>
                   )}
 
-                  {/* 底部信息 */}
-                  <View className="flex items-center justify-between text-slate-400">
-                    <View className="flex items-center gap-4">
-                      <Text className="block text-xs">{item.author}</Text>
-                      <View className="flex items-center gap-1">
-                        <Text>🕐</Text>
-                        <Text className="block text-xs">{formatTime(item.createdAt)}</Text>
+                  <Text className="knowledge-content">{item.content}</Text>
+
+                  <View className="knowledge-footer">
+                    <View className="knowledge-meta">
+                      <View className="knowledge-meta-item">
+                        <Eye size={18} color="#52525b" />
+                        <Text>{item.viewCount}</Text>
+                      </View>
+                      <View className="knowledge-meta-item">
+                        <Heart size={18} color="#52525b" />
+                        <Text>{item.likeCount}</Text>
                       </View>
                     </View>
-                    <View className="flex items-center gap-3">
-                      <View className="flex items-center gap-1">
-                        <Text>👁</Text>
-                        <Text className="block text-xs">{item.viewCount}</Text>
-                      </View>
-                      <View className="flex items-center gap-1">
-                        <Text>👍</Text>
-                        <Text className="block text-xs">{item.likeCount}</Text>
-                      </View>
-                    </View>
+                    <Text className="knowledge-time">{formatTime(item.createdAt)}</Text>
                   </View>
                 </View>
               ))}

@@ -1,7 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import {
+  ChevronLeft,
+  Plus,
+  Search,
+  Package,
+  Scale,
+  DollarSign,
+  CircleCheck,
+  CircleX,
+  X,
+  RefreshCw,
+  Inbox,
+  ArrowRight,
+} from 'lucide-react-taro';
 import { Network } from '@/network';
+import '@/styles/pages.css';
+import './index.css';
 
 interface Order {
   id: string;
@@ -22,7 +38,7 @@ const statusMap = {
   pending: { label: '待处理', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
   processing: { label: '处理中', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
   completed: { label: '已完成', color: '#22c55e', bg: 'rgba(34, 197, 94, 0.1)' },
-  cancelled: { label: '已取消', color: '#71717a', bg: 'rgba(113, 113, 122, 0.1)' }
+  cancelled: { label: '已取消', color: '#71717a', bg: 'rgba(113, 113, 122, 0.1)' },
 };
 
 const categories = ['全部', '废旧衣物', '电子产品', '金属', '塑料', '纸张', '玻璃', '其他'];
@@ -43,8 +59,32 @@ const RecyclingOrderPage = () => {
     brand: '',
     weight: '',
     price: '',
-    remark: ''
+    remark: '',
   });
+
+  const filterOrders = useCallback(() => {
+    let filtered = orders;
+
+    if (selectedStatus !== '全部') {
+      filtered = filtered.filter((o) => o.status === selectedStatus);
+    }
+
+    if (selectedCategory !== '全部') {
+      filtered = filtered.filter((o) => o.category === selectedCategory);
+    }
+
+    if (searchKeyword) {
+      const keyword = searchKeyword.toLowerCase();
+      filtered = filtered.filter(
+        (o) =>
+          o.orderNo.toLowerCase().includes(keyword) ||
+          o.customerName.toLowerCase().includes(keyword) ||
+          o.customerPhone.includes(keyword)
+      );
+    }
+
+    setFilteredOrders(filtered);
+  }, [orders, selectedStatus, selectedCategory, searchKeyword]);
 
   useEffect(() => {
     loadOrders();
@@ -52,14 +92,14 @@ const RecyclingOrderPage = () => {
 
   useEffect(() => {
     filterOrders();
-  }, [orders, selectedStatus, selectedCategory, searchKeyword]);
+  }, [filterOrders]);
 
   const loadOrders = async () => {
     setLoading(true);
     try {
       const res = await Network.request({
         url: '/api/recycling-orders',
-        method: 'GET'
+        method: 'GET',
       });
 
       if (res.data.code === 200) {
@@ -72,29 +112,6 @@ const RecyclingOrderPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterOrders = () => {
-    let filtered = orders;
-
-    if (selectedStatus !== '全部') {
-      filtered = filtered.filter(o => o.status === selectedStatus);
-    }
-
-    if (selectedCategory !== '全部') {
-      filtered = filtered.filter(o => o.category === selectedCategory);
-    }
-
-    if (searchKeyword) {
-      const keyword = searchKeyword.toLowerCase();
-      filtered = filtered.filter(o =>
-        o.orderNo.toLowerCase().includes(keyword) ||
-        o.customerName.toLowerCase().includes(keyword) ||
-        o.customerPhone.includes(keyword)
-      );
-    }
-
-    setFilteredOrders(filtered);
   };
 
   const handleAddOrder = () => {
@@ -118,7 +135,7 @@ const RecyclingOrderPage = () => {
       price: parseFloat(newOrder.price) || 0,
       status: 'pending',
       createdAt: new Date().toISOString(),
-      remark: newOrder.remark.trim()
+      remark: newOrder.remark.trim(),
     };
 
     const updated = [order, ...orders];
@@ -126,14 +143,20 @@ const RecyclingOrderPage = () => {
     Taro.setStorageSync('recyclingOrders', updated);
     Taro.showToast({ title: '添加成功', icon: 'success' });
 
-    setNewOrder({ customerName: '', customerPhone: '', category: '废旧衣物', brand: '', weight: '', price: '', remark: '' });
+    setNewOrder({
+      customerName: '',
+      customerPhone: '',
+      category: '废旧衣物',
+      brand: '',
+      weight: '',
+      price: '',
+      remark: '',
+    });
     setShowAddDialog(false);
   };
 
   const handleUpdateStatus = (orderId: string, newStatus: Order['status']) => {
-    const updated = orders.map(o =>
-      o.id === orderId ? { ...o, status: newStatus } : o
-    );
+    const updated = orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o));
     setOrders(updated);
     Taro.setStorageSync('recyclingOrders', updated);
     Taro.showToast({ title: '状态已更新', icon: 'success' });
@@ -142,9 +165,9 @@ const RecyclingOrderPage = () => {
   const getStatusCounts = () => {
     return {
       total: orders.length,
-      pending: orders.filter(o => o.status === 'pending').length,
-      processing: orders.filter(o => o.status === 'processing').length,
-      completed: orders.filter(o => o.status === 'completed').length
+      pending: orders.filter((o) => o.status === 'pending').length,
+      processing: orders.filter((o) => o.status === 'processing').length,
+      completed: orders.filter((o) => o.status === 'completed').length,
     };
   };
 
@@ -156,33 +179,30 @@ const RecyclingOrderPage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
+    <View className="recycling-order-page">
       {/* Header */}
-      <View style={{ 
-        background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
-        padding: '48px 32px 32px',
-        borderBottom: '1px solid #27272a'
-      }}>
-        <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-          <View style={{ padding: '8px' }} onClick={() => Taro.navigateBack()}>
-            <Text style={{ fontSize: '32px', color: '#fafafa' }}>←</Text>
+      <View className="page-header">
+        <View className="header-top">
+          <View className="header-left">
+            <View className="back-button" onClick={() => Taro.navigateBack()}>
+              <ChevronLeft size={32} color="#fafafa" />
+            </View>
+            <View className="header-title-group">
+              <Text className="header-title">回收订单</Text>
+              <Text className="header-subtitle">{orders.length} 个订单</Text>
+            </View>
           </View>
-          <Text style={{ fontSize: '36px', fontWeight: '700', color: '#fafafa' }}>回收订单</Text>
+
+          <View className="primary-action-btn" onClick={() => setShowAddDialog(true)}>
+            <Plus size={40} color="#000" />
+          </View>
         </View>
 
         {/* 搜索框 */}
-        <View style={{
-          backgroundColor: '#1a1a1d',
-          borderRadius: '16px',
-          padding: '20px 24px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          marginBottom: '20px'
-        }}>
-          <Text style={{ fontSize: '28px', color: '#71717a' }}>🔍</Text>
+        <View className="search-box">
+          <Search size={28} color="#71717a" />
           <Input
-            style={{ flex: 1, fontSize: '28px', color: '#fafafa' }}
+            className="search-input"
             placeholder="搜索订单/客户..."
             placeholderStyle="color: #52525b"
             value={searchKeyword}
@@ -191,38 +211,32 @@ const RecyclingOrderPage = () => {
         </View>
 
         {/* 状态统计 */}
-        <View style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+        <ScrollView scrollX className="order-stats" showHorizontalScrollIndicator={false}>
           {[
-            { key: '全部', count: stats.total, color: '#fafafa' },
-            { key: 'pending', count: stats.pending, color: '#f59e0b' },
-            { key: 'processing', count: stats.processing, color: '#3b82f6' },
-            { key: 'completed', count: stats.completed, color: '#22c55e' }
+            { key: '全部', count: stats.total, activeColor: '#fafafa' },
+            { key: 'pending', count: stats.pending, activeColor: '#f59e0b' },
+            { key: 'processing', count: stats.processing, activeColor: '#3b82f6' },
+            { key: 'completed', count: stats.completed, activeColor: '#22c55e' },
           ].map((item) => (
             <View
               key={item.key}
-              style={{
-                flex: 1,
-                padding: '16px',
-                backgroundColor: selectedStatus === item.key ? item.color : '#141416',
-                borderRadius: '12px',
-                textAlign: 'center',
-                border: selectedStatus === item.key ? 'none' : '1px solid #27272a'
-              }}
+              className={`stat-card ${selectedStatus === item.key ? 'stat-card-active' : ''}`}
+              style={selectedStatus === item.key ? { borderColor: item.activeColor } : {}}
               onClick={() => setSelectedStatus(item.key)}
             >
-              <Text style={{ fontSize: '28px', fontWeight: '600', color: selectedStatus === item.key ? '#000' : item.color, display: 'block' }}>
+              <Text className="stat-number" style={selectedStatus === item.key ? { color: item.activeColor } : {}}>
                 {item.count}
               </Text>
-              <Text style={{ fontSize: '20px', color: selectedStatus === item.key ? '#000' : '#71717a', marginTop: '4px' }}>
+              <Text className="stat-label">
                 {item.key === '全部' ? '全部' : statusMap[item.key as keyof typeof statusMap].label}
               </Text>
             </View>
           ))}
-        </View>
+        </ScrollView>
 
         {/* 分类筛选 */}
         <ScrollView scrollX showHorizontalScrollIndicator={false}>
-          <View style={{ display: 'flex', gap: '12px', paddingRight: '32px' }}>
+          <View style={{ display: 'flex', gap: '12px', paddingRight: '32px', marginTop: '16px' }}>
             {categories.map((cat) => (
               <View
                 key={cat}
@@ -232,7 +246,7 @@ const RecyclingOrderPage = () => {
                   backgroundColor: selectedCategory === cat ? '#f59e0b' : '#141416',
                   color: selectedCategory === cat ? '#000' : '#a1a1aa',
                   borderRadius: '10px',
-                  fontSize: '22px'
+                  fontSize: '22px',
                 }}
                 onClick={() => setSelectedCategory(cat)}
               >
@@ -244,115 +258,87 @@ const RecyclingOrderPage = () => {
       </View>
 
       {/* 订单列表 */}
-      <View style={{ padding: '32px' }}>
+      <View className="content-area">
         {loading ? (
-          <View style={{ textAlign: 'center', paddingTop: '120px' }}>
-            <Text style={{ fontSize: '64px' }}>⏳</Text>
-            <Text style={{ fontSize: '28px', color: '#71717a', marginTop: '24px' }}>加载中...</Text>
+          <View className="loading-state">
+            <RefreshCw size={64} color="#f59e0b" />
+            <Text className="loading-text">加载中...</Text>
           </View>
         ) : filteredOrders.length === 0 ? (
-          <View style={{ textAlign: 'center', paddingTop: '120px' }}>
-            <Text style={{ fontSize: '80px' }}>♻️</Text>
-            <Text style={{ fontSize: '28px', color: '#71717a', marginTop: '24px' }}>暂无订单</Text>
+          <View className="empty-state">
+            <Inbox size={80} color="#71717a" />
+            <Text className="empty-title">
+              {searchKeyword ? '没有找到相关订单' : '暂无订单'}
+            </Text>
           </View>
         ) : (
           filteredOrders.map((order) => (
-            <View
-              key={order.id}
-              style={{
-                backgroundColor: '#141416',
-                borderRadius: '20px',
-                padding: '28px',
-                marginBottom: '16px',
-                border: '1px solid #27272a'
-              }}
-            >
-              <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                <View>
-                  <Text style={{ fontSize: '24px', color: '#71717a' }}>订单号</Text>
-                  <Text style={{ fontSize: '26px', color: '#fafafa', marginTop: '4px' }}>{order.orderNo}</Text>
+            <View key={order.id} className="order-card">
+              <View className="order-header">
+                <View style={{ flex: 1 }}>
+                  <Text className="order-no">{order.orderNo}</Text>
+                  <Text className="order-customer">{order.customerName}</Text>
                 </View>
-                <View style={{
-                  padding: '8px 16px',
-                  backgroundColor: statusMap[order.status].bg,
-                  borderRadius: '8px'
-                }}>
-                  <Text style={{ fontSize: '22px', color: statusMap[order.status].color }}>
-                    {statusMap[order.status].label}
-                  </Text>
+                <View
+                  className={`order-status-badge status-${order.status}`}
+                >
+                  {statusMap[order.status].label}
                 </View>
               </View>
 
-              <View style={{ 
-                display: 'flex', 
-                gap: '12px', 
-                marginBottom: '16px',
-                flexWrap: 'wrap'
-              }}>
-                <View style={{ padding: '8px 12px', backgroundColor: '#1a1a1d', borderRadius: '8px' }}>
-                  <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>📦 {order.category}</Text>
+              <View style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '16px 0' }}>
+                <View className="info-tag">
+                  <Package size={18} color="#a1a1aa" />
+                  <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>{order.category}</Text>
                 </View>
-                <View style={{ padding: '8px 12px', backgroundColor: '#1a1a1d', borderRadius: '8px' }}>
-                  <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>⚖️ {order.weight}kg</Text>
+                <View className="info-tag">
+                  <Scale size={18} color="#a1a1aa" />
+                  <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>{order.weight}kg</Text>
                 </View>
-                <View style={{ padding: '8px 12px', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px' }}>
-                  <Text style={{ fontSize: '22px', color: '#f59e0b' }}>💰 ¥{order.price}</Text>
+                <View className="info-tag" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
+                  <DollarSign size={18} color="#f59e0b" />
+                  <Text style={{ fontSize: '22px', color: '#f59e0b' }}>¥{order.price}</Text>
                 </View>
               </View>
 
-              <View style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '16px 20px',
-                backgroundColor: '#1a1a1d',
-                borderRadius: '12px',
-                marginBottom: '16px'
-              }}>
-                <View>
-                  <Text style={{ fontSize: '28px', color: '#fafafa' }}>{order.customerName}</Text>
-                  <Text style={{ fontSize: '24px', color: '#71717a', marginTop: '4px' }}>{order.customerPhone}</Text>
-                </View>
-                <View style={{ display: 'flex', gap: '12px' }}>
-                  <Text style={{ fontSize: '28px' }} onClick={() => Taro.makePhoneCall({ phoneNumber: order.customerPhone })}>📞</Text>
-                  <Text style={{ fontSize: '28px' }} onClick={() => Taro.setClipboardData({ data: order.customerPhone })}>📋</Text>
-                </View>
+              <View className="order-info-row">
+                <Text className="order-info-label">客户电话</Text>
+                <Text className="order-info-value">{order.customerPhone}</Text>
               </View>
 
-              {order.remark && (
-                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '16px' }}>
-                  💡 {order.remark}
-                </Text>
-              )}
+              <View className="order-info-row">
+                <Text className="order-info-label">创建时间</Text>
+                <Text className="order-info-value">{formatDate(order.createdAt)}</Text>
+              </View>
 
-              <Text style={{ fontSize: '20px', color: '#52525b', marginBottom: '16px' }}>
-                📅 {formatDate(order.createdAt)}
-              </Text>
-
-              {/* 操作按钮 */}
               {order.status === 'pending' && (
-                <View style={{ display: 'flex', gap: '12px' }}>
-                  <View 
-                    style={{ flex: 1, padding: '16px', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderRadius: '12px', textAlign: 'center' }}
-                    onClick={() => handleUpdateStatus(order.id, 'processing')}
-                  >
-                    <Text style={{ fontSize: '26px', color: '#f59e0b' }}>开始处理</Text>
-                  </View>
-                  <View 
-                    style={{ flex: 1, padding: '16px', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px', textAlign: 'center' }}
+                <View className="order-actions">
+                  <View
+                    className="order-action-btn order-action-secondary"
                     onClick={() => handleUpdateStatus(order.id, 'cancelled')}
                   >
-                    <Text style={{ fontSize: '26px', color: '#ef4444' }}>取消订单</Text>
+                    <CircleX size={20} color="#71717a" />
+                    <Text style={{ marginLeft: '8px' }}>取消</Text>
+                  </View>
+                  <View
+                    className="order-action-btn order-action-primary"
+                    onClick={() => handleUpdateStatus(order.id, 'processing')}
+                  >
+                    <ArrowRight size={20} color="#000" />
+                    <Text style={{ marginLeft: '8px' }}>开始处理</Text>
                   </View>
                 </View>
               )}
+
               {order.status === 'processing' && (
-                <View style={{ display: 'flex', gap: '12px' }}>
-                  <View 
-                    style={{ flex: 1, padding: '16px', backgroundColor: 'rgba(34, 197, 94, 0.1)', borderRadius: '12px', textAlign: 'center' }}
+                <View className="order-actions">
+                  <View
+                    className="order-action-btn order-action-primary"
+                    style={{ width: '100%' }}
                     onClick={() => handleUpdateStatus(order.id, 'completed')}
                   >
-                    <Text style={{ fontSize: '26px', color: '#22c55e' }}>✅ 完成回收</Text>
+                    <CircleCheck size={20} color="#000" />
+                    <Text style={{ marginLeft: '8px' }}>完成订单</Text>
                   </View>
                 </View>
               )}
@@ -361,151 +347,101 @@ const RecyclingOrderPage = () => {
         )}
       </View>
 
-      {/* 悬浮添加按钮 */}
-      <View 
-        style={{
-          position: 'fixed',
-          right: '32px',
-          bottom: '140px',
-          width: '112px',
-          height: '112px',
-          background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
-          borderRadius: '32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '48px',
-          boxShadow: '0 8px 32px rgba(245, 158, 11, 0.3)',
-          zIndex: 100
-        }}
-        onClick={() => setShowAddDialog(true)}
-      >
-        +
-      </View>
-
       {/* 新增订单弹窗 */}
       {showAddDialog && (
-        <View style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          display: 'flex',
-          alignItems: 'flex-end',
-          zIndex: 1000
-        }}
-          onClick={() => setShowAddDialog(false)}
-        >
-          <View 
-            style={{
-              width: '100%',
-              backgroundColor: '#141416',
-              borderRadius: '32px 32px 0 0',
-              padding: '32px',
-              maxHeight: '85vh'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-              <Text style={{ fontSize: '32px', fontWeight: '600', color: '#fafafa' }}>新建回收订单</Text>
-              <Text style={{ fontSize: '28px', color: '#71717a' }} onClick={() => setShowAddDialog(false)}>✕</Text>
+        <View className="modal-overlay" onClick={() => setShowAddDialog(false)}>
+          <View className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <View className="modal-header">
+              <Text className="modal-title">新建订单</Text>
+              <View onClick={() => setShowAddDialog(false)}>
+                <X size={28} color="#71717a" />
+              </View>
             </View>
 
-            <ScrollView scrollY style={{ maxHeight: 'calc(85vh - 200px)' }}>
-              <View style={{ marginBottom: '24px' }}>
-                <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>客户姓名 *</Text>
-                <Input
-                  style={{ backgroundColor: '#1a1a1d', borderRadius: '16px', padding: '20px 24px', fontSize: '28px', color: '#fafafa', border: '1px solid #27272a' }}
-                  placeholder="请输入姓名"
-                  placeholderStyle="color: #52525b"
-                  value={newOrder.customerName}
-                  onInput={(e) => setNewOrder({ ...newOrder, customerName: e.detail.value })}
-                />
-              </View>
+            <View className="form-group">
+              <Text className="form-label">客户姓名</Text>
+              <Input
+                className="form-input"
+                placeholder="请输入客户姓名"
+                placeholderStyle="color: #52525b"
+                value={newOrder.customerName}
+                onInput={(e) => setNewOrder({ ...newOrder, customerName: e.detail.value })}
+              />
+            </View>
 
-              <View style={{ marginBottom: '24px' }}>
-                <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>手机号 *</Text>
-                <Input
-                  style={{ backgroundColor: '#1a1a1d', borderRadius: '16px', padding: '20px 24px', fontSize: '28px', color: '#fafafa', border: '1px solid #27272a' }}
-                  placeholder="请输入手机号"
-                  placeholderStyle="color: #52525b"
-                  type="number"
-                  value={newOrder.customerPhone}
-                  onInput={(e) => setNewOrder({ ...newOrder, customerPhone: e.detail.value })}
-                />
-              </View>
+            <View className="form-group">
+              <Text className="form-label">客户电话</Text>
+              <Input
+                className="form-input"
+                placeholder="请输入客户电话"
+                placeholderStyle="color: #52525b"
+                value={newOrder.customerPhone}
+                onInput={(e) => setNewOrder({ ...newOrder, customerPhone: e.detail.value })}
+              />
+            </View>
 
-              <View style={{ marginBottom: '24px' }}>
-                <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>回收类别</Text>
-                <ScrollView scrollX showHorizontalScrollIndicator={false}>
-                  <View style={{ display: 'flex', gap: '12px' }}>
-                    {categories.slice(1).map((cat) => (
-                      <View
-                        key={cat}
-                        style={{
-                          flexShrink: 0,
-                          padding: '12px 20px',
-                          backgroundColor: newOrder.category === cat ? '#f59e0b' : '#1a1a1d',
-                          color: newOrder.category === cat ? '#000' : '#a1a1aa',
-                          borderRadius: '12px',
-                          fontSize: '24px'
-                        }}
-                        onClick={() => setNewOrder({ ...newOrder, category: cat })}
-                      >
-                        {cat}
-                      </View>
-                    ))}
-                  </View>
-                </ScrollView>
-              </View>
-
-              <View style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>重量(kg)</Text>
-                  <Input
-                    style={{ backgroundColor: '#1a1a1d', borderRadius: '16px', padding: '20px 24px', fontSize: '28px', color: '#fafafa', border: '1px solid #27272a' }}
-                    placeholder="0"
-                    placeholderStyle="color: #52525b"
-                    type="digit"
-                    value={newOrder.weight}
-                    onInput={(e) => setNewOrder({ ...newOrder, weight: e.detail.value })}
-                  />
+            <View className="form-group">
+              <Text className="form-label">物品类别</Text>
+              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+                <View style={{ display: 'flex', gap: '12px' }}>
+                  {categories.slice(1).map((cat) => (
+                    <View
+                      key={cat}
+                      style={{
+                        flexShrink: 0,
+                        padding: '12px 20px',
+                        backgroundColor: newOrder.category === cat ? '#f59e0b' : '#1a1a1d',
+                        borderRadius: '12px',
+                        fontSize: '24px',
+                        color: newOrder.category === cat ? '#000' : '#a1a1aa',
+                      }}
+                      onClick={() => setNewOrder({ ...newOrder, category: cat })}
+                    >
+                      {cat}
+                    </View>
+                  ))}
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>预估金额(¥)</Text>
-                  <Input
-                    style={{ backgroundColor: '#1a1a1d', borderRadius: '16px', padding: '20px 24px', fontSize: '28px', color: '#fafafa', border: '1px solid #27272a' }}
-                    placeholder="0"
-                    placeholderStyle="color: #52525b"
-                    type="digit"
-                    value={newOrder.price}
-                    onInput={(e) => setNewOrder({ ...newOrder, price: e.detail.value })}
-                  />
-                </View>
-              </View>
+              </ScrollView>
+            </View>
 
-              <View style={{ marginBottom: '32px' }}>
-                <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>备注</Text>
-                <Input
-                  style={{ backgroundColor: '#1a1a1d', borderRadius: '16px', padding: '20px 24px', fontSize: '28px', color: '#fafafa', border: '1px solid #27272a' }}
-                  placeholder="添加备注信息..."
-                  placeholderStyle="color: #52525b"
-                  value={newOrder.remark}
-                  onInput={(e) => setNewOrder({ ...newOrder, remark: e.detail.value })}
-                />
-              </View>
+            <View className="form-group">
+              <Text className="form-label">重量（kg）</Text>
+              <Input
+                className="form-input"
+                placeholder="请输入重量"
+                placeholderStyle="color: #52525b"
+                type="number"
+                value={newOrder.weight}
+                onInput={(e) => setNewOrder({ ...newOrder, weight: e.detail.value })}
+              />
+            </View>
 
-              <View
-                style={{
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
-                  borderRadius: '16px',
-                  padding: '28px',
-                  textAlign: 'center'
-                }}
-                onClick={handleAddOrder}
-              >
-                <Text style={{ fontSize: '32px', fontWeight: '600', color: '#000' }}>创建订单</Text>
-              </View>
-            </ScrollView>
+            <View className="form-group">
+              <Text className="form-label">价格（元）</Text>
+              <Input
+                className="form-input"
+                placeholder="请输入价格"
+                placeholderStyle="color: #52525b"
+                type="number"
+                value={newOrder.price}
+                onInput={(e) => setNewOrder({ ...newOrder, price: e.detail.value })}
+              />
+            </View>
+
+            <View className="form-group">
+              <Text className="form-label">备注</Text>
+              <Input
+                className="form-input"
+                placeholder="请输入备注（选填）"
+                placeholderStyle="color: #52525b"
+                value={newOrder.remark}
+                onInput={(e) => setNewOrder({ ...newOrder, remark: e.detail.value })}
+              />
+            </View>
+
+            <View className="action-btn-primary" onClick={handleAddOrder}>
+              <Text className="action-btn-primary-text">创建订单</Text>
+            </View>
           </View>
         </View>
       )}

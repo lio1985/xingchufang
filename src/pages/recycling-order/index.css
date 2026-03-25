@@ -1,0 +1,180 @@
+/* 回收订单页面样式 */
+
+.recycling-order-page {
+  min-height: 100vh;
+  background-color: var(--background);
+  padding-bottom: 120px;
+}
+
+/* 订单统计卡片 */
+.order-stats {
+  display: flex;
+  gap: 12px;
+  padding: 20px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.stat-card {
+  flex-shrink: 0;
+  width: 160px;
+  padding: 20px 16px;
+  background-color: var(--background-elevated);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--foreground);
+  display: block;
+}
+
+.stat-label {
+  font-size: 22px;
+  color: var(--foreground-muted);
+  display: block;
+  margin-top: 4px;
+}
+
+.stat-card-active {
+  border-color: var(--primary);
+  background-color: var(--primary-subtle);
+}
+
+.stat-card-active .stat-number {
+  color: var(--primary);
+}
+
+/* 订单卡片 */
+.order-card {
+  background-color: var(--background-elevated);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.order-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+}
+
+.order-card:active {
+  transform: scale(0.98);
+}
+
+/* 订单头部 */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.order-no {
+  font-size: 22px;
+  color: var(--foreground-muted);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.order-customer {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* 订单状态标签 */
+.order-status-badge {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.status-pending {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.status-processing {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.status-completed {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.status-cancelled {
+  background-color: rgba(113, 113, 122, 0.1);
+  color: #71717a;
+}
+
+/* 订单信息 */
+.order-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.order-info-row:last-child {
+  border-bottom: none;
+}
+
+.order-info-label {
+  font-size: 24px;
+  color: var(--foreground-muted);
+}
+
+.order-info-value {
+  font-size: 24px;
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.order-price {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* 订单操作 */
+.order-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.order-action-btn {
+  flex: 1;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.order-action-btn:active {
+  transform: scale(0.95);
+}
+
+.order-action-secondary {
+  background-color: var(--background-subtle);
+  color: var(--foreground-muted);
+}
+
+.order-action-primary {
+  background-color: var(--primary);
+  color: #000;
+  font-weight: 600;
+}
