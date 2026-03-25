@@ -35,6 +35,7 @@ import { RecycleManagementModule } from './recycle-management/recycle-management
 import { TeamModule } from './team/team.module';
 import { NotificationModule } from './notification/notification.module';
 import { LiveDataModule } from './live-data/live-data.module';
+import { EquipmentOrdersModule } from './equipment-orders/equipment-orders.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { LiveDataModule } from './live-data/live-data.module';
     TeamModule,
     NotificationModule,
     LiveDataModule,
+    EquipmentOrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

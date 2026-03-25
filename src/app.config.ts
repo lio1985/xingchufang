@@ -74,6 +74,10 @@ export default defineAppConfig({
     'pages/knowledge/product-manual/detail',
     'pages/knowledge/design-knowledge/index',
     'pages/knowledge/design-knowledge/detail',
+    'pages/equipment-orders/index',
+    'pages/equipment-orders/detail',
+    'pages/equipment-orders/create',
+    'pages/notification-center/index',
   ],
   window: {
     backgroundTextStyle: 'light',
