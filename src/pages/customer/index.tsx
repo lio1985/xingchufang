@@ -9,6 +9,7 @@ import {
   Plus,
   Search,
   ChevronRight,
+  ChevronLeft,
   TrendingUp,
   CircleCheck,
   CircleX,
@@ -150,9 +151,17 @@ export default function CustomerList() {
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
       {/* 页面头部 */}
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
-        <View style={{ display: 'flex', alignItems: 'center' }}>
-          <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>获客登记</Text>
-          <Text style={{ fontSize: '14px', color: '#71717a', marginLeft: '12px' }}>客户信息管理</Text>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <View
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => Taro.navigateBack()}
+          >
+            <ChevronLeft size={24} color="#fafafa" />
+          </View>
+          <View>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>获客登记</Text>
+            <Text style={{ fontSize: '14px', color: '#71717a' }}>客户信息管理</Text>
+          </View>
         </View>
       </View>
 

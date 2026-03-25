@@ -18,6 +18,7 @@ import {
   FileText,
   Shield,
   ChevronRight,
+  ChevronLeft,
   LogOut,
   Crown,
 } from 'lucide-react-taro';
@@ -89,9 +90,18 @@ const SettingsPage = () => {
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '100px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416', borderBottom: '1px solid #27272a' }}>
-        <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>设置</Text>
-        <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>账号与系统设置</Text>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416', borderBottom: '1px solid #27272a', position: 'relative' }}>
+        <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
+          <View
+            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+            onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
+          >
+            <ChevronLeft size={24} color="#f59e0b" />
+            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+          </View>
+        </View>
+        <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block', textAlign: 'center' }}>设置</Text>
+        <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px', textAlign: 'center' }}>账号与系统设置</Text>
       </View>
 
       {/* 用户信息卡片 */}

@@ -6,6 +6,7 @@ import {
   Package,
   Eye,
   ChevronRight,
+  ChevronLeft,
   Plus,
   Clock,
   Phone,
@@ -103,9 +104,17 @@ const EquipmentOrdersPage = () => {
       {/* 页面头部 */}
       <View style={{ padding: '48px 20px 16px', backgroundColor: '#141416', borderBottom: '1px solid #27272a' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <ShoppingCart size={24} color="#f59e0b" />
-            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>设备接单系统</Text>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <View
+              style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onClick={() => Taro.navigateBack()}
+            >
+              <ChevronLeft size={24} color="#fafafa" />
+            </View>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShoppingCart size={24} color="#f59e0b" />
+              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>设备接单系统</Text>
+            </View>
           </View>
           <View
             style={{
@@ -122,7 +131,7 @@ const EquipmentOrdersPage = () => {
             <Text style={{ fontSize: '14px', fontWeight: '500', color: '#0a0a0b' }}>发布</Text>
           </View>
         </View>
-        <Text style={{ fontSize: '13px', color: '#71717a' }}>客户求购 / 设备转让信息接单</Text>
+        <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '52px' }}>客户求购 / 设备转让信息接单</Text>
       </View>
 
       {/* 类型筛选 */}

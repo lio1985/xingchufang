@@ -10,6 +10,7 @@ import {
   X,
   FileText,
   Clock,
+  ChevronLeft,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -167,7 +168,17 @@ export default function LexiconManagePage() {
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '100px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416', borderBottom: '1px solid #27272a' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416', borderBottom: '1px solid #27272a', position: 'relative' }}>
+        {/* 返回按钮 */}
+        <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
+          <View
+            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+            onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
+          >
+            <ChevronLeft size={24} color="#f59e0b" />
+            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+          </View>
+        </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View

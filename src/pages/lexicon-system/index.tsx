@@ -12,6 +12,7 @@ import {
   Sparkles,
   Info,
   User,
+  ChevronLeft,
 } from 'lucide-react-taro';
 
 interface Lexicon {
@@ -139,7 +140,17 @@ export default function LexiconSystemPage() {
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416', position: 'relative' }}>
+        {/* 返回按钮 */}
+        <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
+          <View
+            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+            onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
+          >
+            <ChevronLeft size={24} color="#f59e0b" />
+            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+          </View>
+        </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View
