@@ -5,6 +5,7 @@ import {
   Store,
   User,
   Clock,
+  ShoppingCart,
 } from 'lucide-react-taro';
 
 const TabCustomerPage = () => {
@@ -58,6 +59,33 @@ const TabCustomerPage = () => {
             </View>
             <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '12px' }}>整店回收</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>回收业务管理</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* 设备接单入口 */}
+      <View style={{ padding: '12px 20px 0' }}>
+        <View
+          style={{
+            backgroundColor: '#18181b',
+            border: '1px solid #27272a',
+            borderRadius: '12px',
+            padding: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+          }}
+          onClick={() => handleNav('/pages/equipment-orders/index')}
+        >
+          <View style={{ width: '56px', height: '56px', borderRadius: '12px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <ShoppingCart size={28} color="#f59e0b" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: '17px', fontWeight: '600', color: '#ffffff', display: 'block' }}>设备接单系统</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>客户求购 / 设备转让信息接单</Text>
+          </View>
+          <View style={{ padding: '6px 12px', borderRadius: '12px', backgroundColor: 'rgba(245, 158, 11, 0.2)', flexShrink: 0 }}>
+            <Text style={{ fontSize: '12px', color: '#f59e0b', fontWeight: '500' }}>待接单</Text>
           </View>
         </View>
       </View>

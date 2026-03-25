@@ -20,6 +20,7 @@ import {
   ScrollText,
   Building2,
   UsersRound,
+  ShoppingCart,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import '@/styles/pages.css';
@@ -520,6 +521,21 @@ export default function AdminDashboardPage() {
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
                   管理团队和成员
+                </Text>
+              </View>
+
+              <View
+                className="stat-card"
+                onClick={() => Taro.navigateTo({ url: '/pages/equipment-orders/index' })}
+              >
+                <View className="stat-icon-wrapper stat-icon-primary">
+                  <ShoppingCart size={24} color="#f59e0b" />
+                </View>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                  设备订单
+                </Text>
+                <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
+                  求购转让管理
                 </Text>
               </View>
             </View>
