@@ -13,125 +13,125 @@ const TabCustomerPage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b] pb-20">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View className="px-5 pt-14 pb-8 bg-[#141416]">
-        <Text className="block text-2xl font-bold text-white">客资管理</Text>
-        <Text className="block text-zinc-500 text-sm mt-2">管理客户与回收业务</Text>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+        <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>客资管理</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>管理客户与回收业务</Text>
       </View>
 
       {/* 数据概览 */}
-      <View className="px-5 -mt-4">
-        <View className="flex gap-3">
-          <View className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-            <Text className="block text-2xl font-bold text-white">12</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">今日新增</Text>
+      <View style={{ padding: '0 20px', marginTop: '-16px' }}>
+        <View style={{ display: 'flex', gap: '12px' }}>
+          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>12</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>今日新增</Text>
           </View>
-          <View className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-            <Text className="block text-2xl font-bold text-amber-400">8</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">待跟进</Text>
+          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#f59e0b' }}>8</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>待跟进</Text>
           </View>
         </View>
       </View>
 
       {/* 功能入口 */}
-      <View className="px-5 mt-6">
-        <Text className="block text-xs text-zinc-600 mb-3 font-medium">功能入口</Text>
-        <View className="flex gap-3">
+      <View style={{ padding: '24px 20px 0' }}>
+        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>功能入口</Text>
+        <View style={{ display: 'flex', gap: '12px' }}>
           <View
-            className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl p-5 items-center active:bg-zinc-800"
+            style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/customer/index')}
           >
-            <View className="w-12 h-12 rounded-xl bg-emerald-500/20 items-center justify-center">
+            <View style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <UserPlus size={24} color="#22c55e" />
             </View>
-            <Text className="block text-base font-medium text-white mt-3">获客登记</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">客户信息录入</Text>
+            <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '12px' }}>获客登记</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>客户信息录入</Text>
           </View>
 
           <View
-            className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl p-5 items-center active:bg-zinc-800"
+            style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/recycle/index')}
           >
-            <View className="w-12 h-12 rounded-xl bg-blue-500/20 items-center justify-center">
+            <View style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Store size={24} color="#3b82f6" />
             </View>
-            <Text className="block text-base font-medium text-white mt-3">整店回收</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">回收业务管理</Text>
+            <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '12px' }}>整店回收</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>回收业务管理</Text>
           </View>
         </View>
       </View>
 
       {/* 最近客户 */}
-      <View className="px-5 mt-6">
-        <View className="flex items-center justify-between mb-3">
-          <Text className="text-xs text-zinc-600 font-medium">最近客户</Text>
+      <View style={{ padding: '24px 20px 0' }}>
+        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500' }}>最近客户</Text>
           <Text 
-            className="text-xs text-amber-400"
+            style={{ fontSize: '12px', color: '#f59e0b' }}
             onClick={() => handleNav('/pages/customer/index')}
           >
             查看全部
           </Text>
         </View>
         
-        <View className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 客户项1 */}
           <View
-            className="flex items-center px-4 py-3 border-b border-zinc-800 active:bg-zinc-800"
+            style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #27272a' }}
             onClick={() => handleNav('/pages/customer/detail?id=1')}
           >
-            <View className="w-10 h-10 rounded-full bg-zinc-800 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
             </View>
-            <View className="flex-1 ml-3">
-              <Text className="text-base text-white">张三</Text>
-              <View className="flex items-center mt-1">
+            <View style={{ flex: 1, marginLeft: '12px' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff' }}>张三</Text>
+              <View style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                 <Clock size={12} color="#52525b" />
-                <Text className="text-xs text-zinc-500 ml-1">2024-01-15</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: '4px' }}>2024-01-15</Text>
               </View>
             </View>
-            <View className="px-2 py-1 bg-amber-500/20 rounded">
-              <Text className="text-xs text-amber-400">待跟进</Text>
+            <View style={{ padding: '4px 8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', borderRadius: '4px' }}>
+              <Text style={{ fontSize: '12px', color: '#f59e0b' }}>待跟进</Text>
             </View>
           </View>
 
           {/* 客户项2 */}
           <View
-            className="flex items-center px-4 py-3 border-b border-zinc-800 active:bg-zinc-800"
+            style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #27272a' }}
             onClick={() => handleNav('/pages/customer/detail?id=2')}
           >
-            <View className="w-10 h-10 rounded-full bg-zinc-800 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
             </View>
-            <View className="flex-1 ml-3">
-              <Text className="text-base text-white">李四</Text>
-              <View className="flex items-center mt-1">
+            <View style={{ flex: 1, marginLeft: '12px' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff' }}>李四</Text>
+              <View style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                 <Clock size={12} color="#52525b" />
-                <Text className="text-xs text-zinc-500 ml-1">2024-01-14</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: '4px' }}>2024-01-14</Text>
               </View>
             </View>
-            <View className="px-2 py-1 bg-green-500/20 rounded">
-              <Text className="text-xs text-green-400">已成交</Text>
+            <View style={{ padding: '4px 8px', backgroundColor: 'rgba(34, 197, 94, 0.2)', borderRadius: '4px' }}>
+              <Text style={{ fontSize: '12px', color: '#22c55e' }}>已成交</Text>
             </View>
           </View>
 
           {/* 客户项3 */}
           <View
-            className="flex items-center px-4 py-3 active:bg-zinc-800"
+            style={{ display: 'flex', alignItems: 'center', padding: '12px 16px' }}
             onClick={() => handleNav('/pages/customer/detail?id=3')}
           >
-            <View className="w-10 h-10 rounded-full bg-zinc-800 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
             </View>
-            <View className="flex-1 ml-3">
-              <Text className="text-base text-white">王五</Text>
-              <View className="flex items-center mt-1">
+            <View style={{ flex: 1, marginLeft: '12px' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff' }}>王五</Text>
+              <View style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                 <Clock size={12} color="#52525b" />
-                <Text className="text-xs text-zinc-500 ml-1">2024-01-13</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: '4px' }}>2024-01-13</Text>
               </View>
             </View>
-            <View className="px-2 py-1 bg-blue-500/20 rounded">
-              <Text className="text-xs text-blue-400">跟进中</Text>
+            <View style={{ padding: '4px 8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', borderRadius: '4px' }}>
+              <Text style={{ fontSize: '12px', color: '#3b82f6' }}>跟进中</Text>
             </View>
           </View>
         </View>

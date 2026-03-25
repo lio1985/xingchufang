@@ -82,90 +82,90 @@ const TabProfilePage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b] pb-20">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View className="px-5 pt-14 pb-8 bg-[#141416]">
-        <Text className="block text-2xl font-bold text-white">我</Text>
-        <Text className="block text-zinc-500 text-sm mt-2">个人中心与设置</Text>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+        <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>我</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>个人中心与设置</Text>
       </View>
 
       {/* 用户信息区 */}
-      <View className="px-5 -mt-4">
+      <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         {isLoggedIn ? (
-          <View className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-            <View className="flex items-center">
+          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <View style={{ display: 'flex', alignItems: 'center' }}>
               {userInfo?.avatar ? (
                 <Image
                   src={userInfo.avatar}
-                  className="w-14 h-14 rounded-full border-2 border-amber-500/30"
+                  style={{ width: '56px', height: '56px', borderRadius: '50%', border: '2px solid rgba(245, 158, 11, 0.3)' }}
                   mode="aspectFill"
                 />
               ) : (
-                <View className="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-500/30 items-center justify-center">
+                <View style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <User size={24} color="#f59e0b" />
                 </View>
               )}
-              <View className="flex-1 ml-4">
-                <Text className="text-lg font-semibold text-white">
+              <View style={{ flex: 1, marginLeft: '16px' }}>
+                <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>
                   {userInfo?.nickname || userInfo?.username || '用户'}
                 </Text>
-                <Text className="text-xs text-zinc-500 mt-1">
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>
                   ID: {userInfo?.id || '-'} · {isAdmin ? '管理员' : '普通用户'}
                 </Text>
               </View>
             </View>
           </View>
         ) : (
-          <View className="flex gap-3">
+          <View style={{ display: 'flex', gap: '12px' }}>
             <View
-              className="flex-1 bg-amber-500/20 border border-amber-500/30 rounded-xl py-4 items-center justify-center active:bg-amber-500/30"
+              style={{ flex: 1, backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               onClick={handleLogin}
             >
               <User size={20} color="#f59e0b" />
-              <Text className="text-sm text-amber-400 font-medium mt-1">登录账号</Text>
+              <Text style={{ fontSize: '14px', color: '#f59e0b', fontWeight: '500', marginTop: '4px' }}>登录账号</Text>
             </View>
             <View
-              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl py-4 items-center justify-center active:bg-zinc-800"
+              style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               onClick={handleRegister}
             >
               <UserPlus size={20} color="#71717a" />
-              <Text className="text-sm text-zinc-300 mt-1">注册账号</Text>
+              <Text style={{ fontSize: '14px', color: '#a1a1aa', marginTop: '4px' }}>注册账号</Text>
             </View>
           </View>
         )}
       </View>
 
       {/* 数据管理 */}
-      <View className="px-5 mt-6">
-        <Text className="block text-xs text-zinc-600 mb-3 font-medium">数据管理</Text>
+      <View style={{ padding: '24px 20px 0' }}>
+        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>数据管理</Text>
         
-        <View className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 数据看板 */}
           <View
-            className="flex items-center px-4 py-4 border-b border-zinc-800 active:bg-zinc-800"
+            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #27272a' }}
             onClick={() => handleNav('/pages/data-stats/index')}
           >
-            <View className="w-10 h-10 rounded-lg bg-blue-500/20 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <ChartBarBig size={20} color="#3b82f6" />
             </View>
-            <View className="flex-1 ml-3">
-              <Text className="text-base text-white font-medium">数据看板</Text>
-              <Text className="text-xs text-zinc-500 mt-1">查看运营数据统计</Text>
+            <View style={{ flex: 1, marginLeft: '12px' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>数据看板</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>查看运营数据统计</Text>
             </View>
             <ChevronRight size={18} color="#52525b" />
           </View>
 
           {/* 数据导出 */}
           <View
-            className="flex items-center px-4 py-4 active:bg-zinc-800"
+            style={{ display: 'flex', alignItems: 'center', padding: '16px' }}
             onClick={handleExportData}
           >
-            <View className="w-10 h-10 rounded-lg bg-green-500/20 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Download size={20} color="#22c55e" />
             </View>
-            <View className="flex-1 ml-3">
-              <Text className="text-base text-white font-medium">数据导出</Text>
-              <Text className="text-xs text-zinc-500 mt-1">导出您的所有数据</Text>
+            <View style={{ flex: 1, marginLeft: '12px' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>数据导出</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>导出您的所有数据</Text>
             </View>
             <ChevronRight size={18} color="#52525b" />
           </View>
@@ -173,21 +173,21 @@ const TabProfilePage = () => {
       </View>
 
       {/* 系统 */}
-      <View className="px-5 mt-6">
-        <Text className="block text-xs text-zinc-600 mb-3 font-medium">系统</Text>
+      <View style={{ padding: '24px 20px 0' }}>
+        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>系统</Text>
         
-        <View className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 设置 */}
           <View
-            className="flex items-center px-4 py-4 active:bg-zinc-800"
+            style={{ display: 'flex', alignItems: 'center', padding: '16px' }}
             onClick={() => handleNav('/pages/settings/index')}
           >
-            <View className="w-10 h-10 rounded-lg bg-zinc-700/50 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(63, 63, 70, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Settings size={20} color="#a1a1aa" />
             </View>
-            <View className="flex-1 ml-3">
-              <Text className="text-base text-white font-medium">设置</Text>
-              <Text className="text-xs text-zinc-500 mt-1">账号与系统设置</Text>
+            <View style={{ flex: 1, marginLeft: '12px' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>设置</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>账号与系统设置</Text>
             </View>
             <ChevronRight size={18} color="#52525b" />
           </View>
@@ -196,20 +196,20 @@ const TabProfilePage = () => {
 
       {/* 退出登录 */}
       {isLoggedIn && (
-        <View className="px-5 mt-6">
+        <View style={{ padding: '24px 20px 0' }}>
           <View
-            className="bg-zinc-900 border border-zinc-800 rounded-xl py-4 items-center justify-center active:bg-zinc-800"
+            style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={handleLogout}
           >
             <LogOut size={18} color="#ef4444" />
-            <Text className="text-sm text-red-400 ml-2">退出登录</Text>
+            <Text style={{ fontSize: '14px', color: '#ef4444', marginLeft: '8px' }}>退出登录</Text>
           </View>
         </View>
       )}
 
       {/* 版本信息 */}
-      <View className="items-center py-8">
-        <Text className="text-xs text-zinc-700">星厨房内容创作助手 v1.0.0</Text>
+      <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 0' }}>
+        <Text style={{ fontSize: '12px', color: '#3f3f46' }}>星厨房内容创作助手 v1.0.0</Text>
       </View>
     </View>
   );

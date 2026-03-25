@@ -15,121 +15,121 @@ const TabKnowledgePage = () => {
   };
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b] pb-20">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View className="px-5 pt-14 pb-8 bg-[#141416]">
-        <Text className="block text-2xl font-bold text-white">知识库</Text>
-        <Text className="block text-zinc-500 text-sm mt-2">企业知识沉淀与复用</Text>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+        <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>知识库</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>企业知识沉淀与复用</Text>
       </View>
 
       {/* 搜索栏 */}
-      <View className="px-5 -mt-4">
+      <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         <View 
-          className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 flex items-center"
+          style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}
           onClick={() => Taro.showToast({ title: '搜索功能开发中', icon: 'none' })}
         >
           <Search size={18} color="#71717a" />
-          <Text className="ml-2 text-sm text-zinc-500">搜索知识库内容...</Text>
+          <Text style={{ marginLeft: '8px', fontSize: '14px', color: '#71717a' }}>搜索知识库内容...</Text>
         </View>
       </View>
 
       {/* 知识分类 */}
-      <View className="px-5 mt-6">
-        <Text className="block text-xs text-zinc-600 mb-3 font-medium">知识分类</Text>
-        <View className="flex flex-wrap gap-3">
+      <View style={{ padding: '24px 20px 0' }}>
+        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
+        <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           <View
-            className="w-[calc(50%-6px)] bg-zinc-900 border border-zinc-800 rounded-xl p-4 items-center active:bg-zinc-800"
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/favorite-list/index')}
           >
-            <View className="w-10 h-10 rounded-lg bg-red-500/20 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Heart size={20} color="#ef4444" />
             </View>
-            <Text className="block text-base font-medium text-white mt-2">个人收藏</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">我的收藏内容</Text>
+            <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>个人收藏</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>我的收藏内容</Text>
           </View>
 
           <View
-            className="w-[calc(50%-6px)] bg-zinc-900 border border-zinc-800 rounded-xl p-4 items-center active:bg-zinc-800"
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/knowledge-share/index')}
           >
-            <View className="w-10 h-10 rounded-lg bg-purple-500/20 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Building2 size={20} color="#a855f7" />
             </View>
-            <Text className="block text-base font-medium text-white mt-2">公司资料</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">企业知识库</Text>
+            <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>公司资料</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>企业知识库</Text>
           </View>
 
           <View
-            className="w-[calc(50%-6px)] bg-zinc-900 border border-zinc-800 rounded-xl p-4 items-center active:bg-zinc-800"
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/lexicon-system/index')}
           >
-            <View className="w-10 h-10 rounded-lg bg-amber-500/20 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <MessageSquareText size={20} color="#f59e0b" />
             </View>
-            <Text className="block text-base font-medium text-white mt-2">个人语料</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">个人表达风格</Text>
+            <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>个人语料</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>个人表达风格</Text>
           </View>
 
           <View
-            className="w-[calc(50%-6px)] bg-zinc-900 border border-zinc-800 rounded-xl p-4 items-center active:bg-zinc-800"
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/news/index')}
           >
-            <View className="w-10 h-10 rounded-lg bg-cyan-500/20 items-center justify-center">
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(6, 182, 212, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <GraduationCap size={20} color="#06b6d4" />
             </View>
-            <Text className="block text-base font-medium text-white mt-2">课程培训</Text>
-            <Text className="block text-xs text-zinc-500 mt-1">学习与培训</Text>
+            <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>课程培训</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>学习与培训</Text>
           </View>
         </View>
       </View>
 
       {/* 最近学习 */}
-      <View className="px-5 mt-6">
-        <View className="flex items-center justify-between mb-3">
-          <Text className="text-xs text-zinc-600 font-medium">最近学习</Text>
+      <View style={{ padding: '24px 20px 0' }}>
+        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500' }}>最近学习</Text>
           <Text 
-            className="text-xs text-amber-400"
+            style={{ fontSize: '12px', color: '#f59e0b' }}
             onClick={() => handleNav('/pages/news/index')}
           >
             查看全部
           </Text>
         </View>
         
-        <View className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 课程项1 */}
           <View
-            className="px-4 py-4 border-b border-zinc-800 active:bg-zinc-800"
+            style={{ padding: '16px', borderBottom: '1px solid #27272a' }}
             onClick={() => handleNav('/pages/news/index')}
           >
-            <View className="flex items-center justify-between">
-              <Text className="text-base text-white font-medium">内容创作入门指南</Text>
-              <View className="flex items-center">
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>内容创作入门指南</Text>
+              <View style={{ display: 'flex', alignItems: 'center' }}>
                 <Play size={14} color="#f59e0b" />
-                <Text className="text-xs text-amber-400 ml-1">继续</Text>
+                <Text style={{ fontSize: '12px', color: '#f59e0b', marginLeft: '4px' }}>继续</Text>
               </View>
             </View>
-            <View className="h-1 bg-zinc-800 rounded-full mt-3 overflow-hidden">
-              <View className="h-full w-[60%] bg-amber-500 rounded-full" />
+            <View style={{ height: '4px', backgroundColor: '#27272a', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
+              <View style={{ height: '100%', width: '60%', backgroundColor: '#f59e0b', borderRadius: '2px' }} />
             </View>
-            <Text className="text-xs text-zinc-500 mt-2">已完成 7/12 课时 · 60%</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 7/12 课时 · 60%</Text>
           </View>
 
           {/* 课程项2 */}
           <View
-            className="px-4 py-4 active:bg-zinc-800"
+            style={{ padding: '16px' }}
             onClick={() => handleNav('/pages/news/index')}
           >
-            <View className="flex items-center justify-between">
-              <Text className="text-base text-white font-medium">客户沟通技巧</Text>
-              <View className="flex items-center">
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>客户沟通技巧</Text>
+              <View style={{ display: 'flex', alignItems: 'center' }}>
                 <Play size={14} color="#f59e0b" />
-                <Text className="text-xs text-amber-400 ml-1">继续</Text>
+                <Text style={{ fontSize: '12px', color: '#f59e0b', marginLeft: '4px' }}>继续</Text>
               </View>
             </View>
-            <View className="h-1 bg-zinc-800 rounded-full mt-3 overflow-hidden">
-              <View className="h-full w-[30%] bg-amber-500 rounded-full" />
+            <View style={{ height: '4px', backgroundColor: '#27272a', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
+              <View style={{ height: '100%', width: '30%', backgroundColor: '#f59e0b', borderRadius: '2px' }} />
             </View>
-            <Text className="text-xs text-zinc-500 mt-2">已完成 2/8 课时 · 30%</Text>
+            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 2/8 课时 · 30%</Text>
           </View>
         </View>
       </View>
