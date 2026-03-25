@@ -1,0 +1,174 @@
+/* 选题策划页面样式 */
+
+.topic-planning-page {
+  min-height: 100vh;
+  background-color: var(--background);
+  padding-bottom: 140px;
+}
+
+/* 选题卡片 */
+.topic-card {
+  background-color: var(--background-elevated);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-left-color: var(--border);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.topic-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+}
+
+.topic-card:active {
+  transform: scale(0.98);
+}
+
+.topic-card-selected {
+  border-left-color: var(--primary);
+}
+
+.topic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.topic-content {
+  flex: 1;
+}
+
+.topic-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--foreground);
+  display: block;
+  line-height: 1.4;
+}
+
+/* 选择框 */
+.checkbox {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: var(--background-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.checkbox:hover {
+  background-color: var(--primary-subtle);
+}
+
+.checkbox-checked {
+  background-color: var(--primary-subtle);
+}
+
+/* 标签组 */
+.topic-labels {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.topic-label {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+}
+
+.label-category {
+  background-color: var(--info-subtle);
+  color: var(--info);
+}
+
+.label-source {
+  background-color: var(--success-subtle);
+  color: var(--success);
+}
+
+/* 热度分数 */
+.hot-score {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+/* 操作栏 */
+.action-bar {
+  display: flex;
+  gap: '12px';
+  margin-bottom: 24px;
+}
+
+.action-btn {
+  padding: 12px 20px;
+  background-color: var(--background-elevated);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 24px;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.action-btn:hover {
+  background-color: var(--background-subtle);
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--background-elevated);
+  border-top: 1px solid var(--border);
+  padding: 24px 32px;
+  display: flex;
+  gap: 16px;
+  z-index: 100;
+}
+
+.bottom-bar-secondary {
+  flex: 1;
+  padding: 24px;
+  background-color: var(--background-subtle);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  text-align: center;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.bottom-bar-secondary:active {
+  transform: scale(0.98);
+}
+
+.bottom-bar-primary {
+  flex: 2;
+  padding: 24px;
+  background: linear-gradient(135deg, #f59e0b 0%, #fb923c 100%);
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.bottom-bar-primary:active {
+  transform: scale(0.98);
+}

@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Input, Textarea, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import {
+  ChevronLeft,
+  Sparkles,
+  Settings,
+  Copy,
+  RefreshCw,
+  FileText,
+  Loader,
+} from 'lucide-react-taro';
+import '@/styles/pages.css';
+import './index.css';
 
 const ContentCreationPage = () => {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
@@ -36,21 +47,19 @@ const ContentCreationPage = () => {
     setGeneratedContent('');
 
     try {
-      // 模拟生成过程
       const steps = [
         '正在分析选题方向...',
         '正在匹配目标受众...',
         '正在构思内容框架...',
         '正在生成创意文案...',
-        '正在优化表达方式...'
+        '正在优化表达方式...',
       ];
 
       for (let i = 0; i < steps.length; i++) {
         setLoadingStep(steps[i]);
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise((resolve) => setTimeout(resolve, 800));
       }
 
-      // 模拟生成的内容
       const mockContent = generateMockContent();
       setGeneratedContent(mockContent);
       Taro.showToast({ title: '生成成功', icon: 'success' });
@@ -101,11 +110,11 @@ const ContentCreationPage = () => {
       return;
     }
 
-    Taro.setClipboardData({ 
+    Taro.setClipboardData({
       data: generatedContent,
       success: () => {
         Taro.showToast({ title: '已复制到剪贴板', icon: 'success' });
-      }
+      },
     });
   };
 
@@ -123,34 +132,40 @@ const ContentCreationPage = () => {
           setStyle('自然真实');
           Taro.showToast({ title: '已重置', icon: 'success' });
         }
-      }
+      },
     });
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '32px' }}>
+    <View className="content-creation-page">
       {/* Header */}
-      <View style={{ 
-        background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
-        padding: '48px 32px 32px',
-        borderBottom: '1px solid #27272a'
-      }}>
-        <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-          <View style={{ padding: '8px' }} onClick={() => Taro.navigateBack()}>
-            <Text style={{ fontSize: '32px', color: '#fafafa' }}>←</Text>
+      <View className="page-header">
+        <View className="header-top" style={{ marginBottom: '24px' }}>
+          <View className="header-left">
+            <View className="back-button" onClick={() => Taro.navigateBack()}>
+              <ChevronLeft size={32} color="#fafafa" />
+            </View>
+            <Text className="header-title">内容创作</Text>
           </View>
-          <Text style={{ fontSize: '36px', fontWeight: '700', color: '#fafafa' }}>内容创作</Text>
         </View>
 
         {/* 已选选题 */}
         {selectedTopics.length > 0 && (
-          <View style={{
-            padding: '16px 20px',
-            backgroundColor: 'rgba(245, 158, 11, 0.1)',
-            borderRadius: '12px',
-            marginBottom: '16px'
-          }}>
-            <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
+          <View
+            style={{
+              padding: '16px 20px',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              borderRadius: '12px',
+            }}
+          >
+            <Text
+              style={{
+                fontSize: '22px',
+                color: '#71717a',
+                marginBottom: '8px',
+                display: 'block',
+              }}
+            >
               已选选题 ({selectedTopics.length})
             </Text>
             <Text style={{ fontSize: '26px', color: '#f59e0b' }}>
@@ -163,33 +178,22 @@ const ContentCreationPage = () => {
 
       <ScrollView scrollY style={{ paddingTop: '32px' }}>
         {/* 参数配置 */}
-        <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-          <View style={{ 
-            backgroundColor: '#141416',
-            borderRadius: '24px',
-            padding: '32px',
-            border: '1px solid #27272a'
-          }}>
-            <Text style={{ fontSize: '24px', color: '#71717a', marginBottom: '24px', display: 'block' }}>
-              ⚙️ 创作参数
-            </Text>
+        <View style={{ padding: '0 32px', marginBottom: '24px' }}>
+          <View className="config-section">
+            <View className="config-title">
+              <Settings size={24} color="#71717a" />
+              <Text>创作参数</Text>
+            </View>
 
             {/* 内容类型 */}
             <View style={{ marginBottom: '24px' }}>
-              <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>内容类型</Text>
+              <Text className="form-label">内容类型</Text>
               <ScrollView scrollX showHorizontalScrollIndicator={false}>
-                <View style={{ display: 'flex', gap: '12px' }}>
+                <View className="config-grid">
                   {contentTypes.map((type) => (
                     <View
                       key={type}
-                      style={{
-                        flexShrink: 0,
-                        padding: '12px 20px',
-                        backgroundColor: contentType === type ? '#f59e0b' : '#1a1a1d',
-                        color: contentType === type ? '#000' : '#a1a1aa',
-                        borderRadius: '12px',
-                        fontSize: '24px'
-                      }}
+                      className={`config-item ${contentType === type ? 'config-item-active' : ''}`}
                       onClick={() => setContentType(type)}
                     >
                       {type}
@@ -199,22 +203,15 @@ const ContentCreationPage = () => {
               </ScrollView>
             </View>
 
-            {/* 语气风格 */}
+            {/* 语调风格 */}
             <View style={{ marginBottom: '24px' }}>
-              <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>语气风格</Text>
+              <Text className="form-label">语调风格</Text>
               <ScrollView scrollX showHorizontalScrollIndicator={false}>
-                <View style={{ display: 'flex', gap: '12px' }}>
+                <View className="config-grid">
                   {tones.map((t) => (
                     <View
                       key={t}
-                      style={{
-                        flexShrink: 0,
-                        padding: '12px 20px',
-                        backgroundColor: tone === t ? '#f59e0b' : '#1a1a1d',
-                        color: tone === t ? '#000' : '#a1a1aa',
-                        borderRadius: '12px',
-                        fontSize: '24px'
-                      }}
+                      className={`config-item ${tone === t ? 'config-item-active' : ''}`}
                       onClick={() => setTone(t)}
                     >
                       {t}
@@ -226,20 +223,13 @@ const ContentCreationPage = () => {
 
             {/* 目标受众 */}
             <View style={{ marginBottom: '24px' }}>
-              <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>目标受众</Text>
+              <Text className="form-label">目标受众</Text>
               <ScrollView scrollX showHorizontalScrollIndicator={false}>
-                <View style={{ display: 'flex', gap: '12px' }}>
+                <View className="config-grid">
                   {audiences.map((aud) => (
                     <View
                       key={aud}
-                      style={{
-                        flexShrink: 0,
-                        padding: '12px 20px',
-                        backgroundColor: targetAudience === aud ? '#f59e0b' : '#1a1a1d',
-                        color: targetAudience === aud ? '#000' : '#a1a1aa',
-                        borderRadius: '12px',
-                        fontSize: '24px'
-                      }}
+                      className={`config-item ${targetAudience === aud ? 'config-item-active' : ''}`}
                       onClick={() => setTargetAudience(aud)}
                     >
                       {aud}
@@ -251,157 +241,91 @@ const ContentCreationPage = () => {
 
             {/* 时长 */}
             <View style={{ marginBottom: '24px' }}>
-              <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>视频时长</Text>
-              <View style={{ display: 'flex', gap: '12px' }}>
-                {durations.map((dur) => (
-                  <View
-                    key={dur}
-                    style={{
-                      flex: 1,
-                      padding: '12px',
-                      backgroundColor: duration === dur ? '#f59e0b' : '#1a1a1d',
-                      color: duration === dur ? '#000' : '#a1a1aa',
-                      borderRadius: '12px',
-                      fontSize: '22px',
-                      textAlign: 'center'
-                    }}
-                    onClick={() => setDuration(dur)}
-                  >
-                    {dur}
-                  </View>
-                ))}
-              </View>
+              <Text className="form-label">时长</Text>
+              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+                <View className="config-grid">
+                  {durations.map((d) => (
+                    <View
+                      key={d}
+                      className={`config-item ${duration === d ? 'config-item-active' : ''}`}
+                      onClick={() => setDuration(d)}
+                    >
+                      {d}
+                    </View>
+                  ))}
+                </View>
+              </ScrollView>
             </View>
 
             {/* 画面风格 */}
             <View>
-              <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>画面风格</Text>
-              <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                {styles.map((s) => (
-                  <View
-                    key={s}
-                    style={{
-                      padding: '12px 20px',
-                      backgroundColor: style === s ? '#f59e0b' : '#1a1a1d',
-                      color: style === s ? '#000' : '#a1a1aa',
-                      borderRadius: '12px',
-                      fontSize: '24px'
-                    }}
-                    onClick={() => setStyle(s)}
-                  >
-                    {s}
-                  </View>
-                ))}
-              </View>
+              <Text className="form-label">画面风格</Text>
+              <ScrollView scrollX showHorizontalScrollIndicator={false}>
+                <View className="config-grid">
+                  {styles.map((s) => (
+                    <View
+                      key={s}
+                      className={`config-item ${style === s ? 'config-item-active' : ''}`}
+                      onClick={() => setStyle(s)}
+                    >
+                      {s}
+                    </View>
+                  ))}
+                </View>
+              </ScrollView>
             </View>
           </View>
         </View>
 
         {/* 生成按钮 */}
-        <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-          <View
-            style={{
-              background: isGenerating 
-                ? '#52525b' 
-                : 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
-              borderRadius: '16px',
-              padding: '28px',
-              textAlign: 'center'
-            }}
-            onClick={isGenerating ? undefined : handleGenerate}
-          >
-            <Text style={{ 
-              fontSize: '32px', 
-              fontWeight: '600',
-              color: isGenerating ? '#a1a1aa' : '#000'
-            }}>
-              {isGenerating ? '⏳ 生成中...' : '🚀 一键生成内容'}
-            </Text>
-          </View>
-        </View>
-
-        {/* 加载状态 */}
-        {isGenerating && loadingStep && (
-          <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-            <View style={{
-              padding: '24px',
-              backgroundColor: '#141416',
-              borderRadius: '16px',
-              border: '1px solid #27272a',
-              textAlign: 'center'
-            }}>
-              <Text style={{ fontSize: '28px', color: '#f59e0b' }}>
-                {loadingStep}
+        <View style={{ padding: '0 32px', marginBottom: '24px' }}>
+          <View className="action-btn-primary" onClick={handleGenerate}>
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+              <Sparkles size={28} color="#000" />
+              <Text className="action-btn-primary-text">
+                {isGenerating ? '生成中...' : '开始生成'}
               </Text>
             </View>
           </View>
-        )}
+        </View>
 
         {/* 生成结果 */}
-        {generatedContent && (
-          <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-            <View style={{ 
-              backgroundColor: '#141416',
-              borderRadius: '24px',
-              padding: '32px',
-              border: '1px solid #27272a'
-            }}>
-              <View style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '24px'
-              }}>
-                <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa' }}>
-                  ✨ 生成结果
-                </Text>
-                <View style={{ display: 'flex', gap: '16px' }}>
-                  <Text 
-                    style={{ fontSize: '26px', color: '#f59e0b' }}
-                    onClick={handleReset}
-                  >
-                    🔄 重置
-                  </Text>
-                  <Text 
-                    style={{ fontSize: '26px', color: '#22c55e' }}
-                    onClick={handleSave}
-                  >
-                    📋 复制
-                  </Text>
-                </View>
+        {isGenerating ? (
+          <View style={{ padding: '0 32px', marginBottom: '24px' }}>
+            <View className="result-section">
+              <View className="generating-state">
+                <Loader size={64} color="#f59e0b" />
+                <Text className="generating-step">{loadingStep}</Text>
               </View>
-
-              <Text style={{ 
-                fontSize: '26px', 
-                color: '#a1a1aa',
-                lineHeight: '1.8',
-                whiteSpace: 'pre-wrap'
-              }}>
-                {generatedContent}
-              </Text>
             </View>
           </View>
-        )}
+        ) : generatedContent ? (
+          <View style={{ padding: '0 32px', marginBottom: '24px' }}>
+            <View className="result-section">
+              <View className="result-title">
+                <FileText size={24} color="#71717a" />
+                <Text>生成结果</Text>
+              </View>
+              
+              <Text className="result-content">{generatedContent}</Text>
 
-        {/* 功能提示 */}
-        <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-          <View style={{
-            padding: '24px',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            borderRadius: '16px',
-            border: '1px solid rgba(59, 130, 246, 0.2)'
-          }}>
-            <Text style={{ fontSize: '24px', color: '#3b82f6', display: 'block', marginBottom: '12px' }}>
-              💡 使用提示
-            </Text>
-            <Text style={{ fontSize: '22px', color: '#71717a', lineHeight: '1.6' }}>
-              1. 在"选题策划"页面选择要创作的内容主题{'\n'}
-              2. 根据需求调整创作参数{'\n'}
-              3. 点击生成后等待AI创作{'\n'}
-              4. 生成完成后可直接复制使用
-            </Text>
+              <View className="action-buttons">
+                <View className="action-button" onClick={handleReset}>
+                  <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <RefreshCw size={20} color="#a1a1aa" />
+                    <Text className="action-button-text">重新生成</Text>
+                  </View>
+                </View>
+                <View className="action-button action-button-primary" onClick={handleSave}>
+                  <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <Copy size={20} color="#000" />
+                    <Text className="action-button-text">复制内容</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
           </View>
-        </View>
+        ) : null}
       </ScrollView>
     </View>
   );

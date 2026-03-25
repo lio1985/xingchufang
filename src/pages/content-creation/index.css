@@ -1,0 +1,129 @@
+/* 内容创作页面样式 */
+
+.content-creation-page {
+  min-height: 100vh;
+  background-color: var(--background);
+  padding-bottom: 32px;
+}
+
+/* 参数配置区域 */
+.config-section {
+  background-color: var(--background-elevated);
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.config-title {
+  font-size: 24px;
+  color: var(--foreground-muted);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.config-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.config-item {
+  padding: 16px 24px;
+  background-color: var(--background-subtle);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 24px;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.config-item:hover {
+  border-color: var(--primary);
+}
+
+.config-item-active {
+  background-color: var(--primary-subtle);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* 生成结果区域 */
+.result-section {
+  background-color: var(--background-elevated);
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid var(--border);
+}
+
+.result-title {
+  font-size: 24px;
+  color: var(--foreground-muted);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-content {
+  font-size: 26px;
+  color: var(--foreground);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* 生成中状态 */
+.generating-state {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.generating-icon {
+  margin-bottom: 24px;
+}
+
+.generating-step {
+  font-size: 28px;
+  color: var(--foreground-muted);
+}
+
+/* 操作按钮组 */
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.action-button {
+  flex: 1;
+  padding: 20px;
+  background-color: var(--background-subtle);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  text-align: center;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.action-button:active {
+  transform: scale(0.98);
+}
+
+.action-button-text {
+  font-size: 26px;
+  color: var(--foreground-muted);
+}
+
+.action-button-primary {
+  background: linear-gradient(135deg, #f59e0b 0%, #fb923c 100%);
+  border: none;
+}
+
+.action-button-primary .action-button-text {
+  color: #000;
+  font-weight: 600;
+}
