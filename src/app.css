@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Tailwind CSS 4 配置 - 扫描源文件 */
+@source "../src/**/*.{js,ts,jsx,tsx}";
+
 /*
  * 星厨房主题 CSS 变量 - Warm Industrial 温暖工业风
  * 深色主题 + 琥珀金点缀
