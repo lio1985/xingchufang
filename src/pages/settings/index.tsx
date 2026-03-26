@@ -94,7 +94,7 @@ const SettingsPage = () => {
         <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
           <View
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
+            onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })}
           >
             <ChevronLeft size={24} color="#f59e0b" />
             <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
