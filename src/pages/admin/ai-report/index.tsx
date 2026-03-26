@@ -89,15 +89,15 @@ export default function AdminAIReportPage() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View className="back-button" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={32} color="#fafafa" />
+          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
+            <ChevronLeft size={20} color="#f59e0b" />
           </View>
           <Text className="admin-title">运营报告</Text>
           <View
-            style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}
+            className="admin-action-btn"
             onClick={loadLatestReport}
           >
-            <RefreshCw size={24} color="#f59e0b" />
+            <RefreshCw size={20} color="#f59e0b" />
           </View>
         </View>
       </View>

@@ -143,20 +143,16 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}>
-            <ChevronLeft size={24} color="#f59e0b" />
+          <View className="admin-back-btn" onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })}>
+            <ChevronLeft size={20} color="#f59e0b" />
           </View>
           <Text className="admin-title">数据监控</Text>
           <View
-            style={{
-              padding: '8px',
-              borderRadius: '12px',
-              backgroundColor: '#1a1a1d',
-              opacity: loading ? 0.5 : 1,
-            }}
+            className="admin-action-btn"
+            style={{ opacity: loading ? 0.5 : 1 }}
             onClick={handleRefresh}
           >
-            <RefreshCw size={24} color="#f59e0b" />
+            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
           </View>
         </View>
       </View>

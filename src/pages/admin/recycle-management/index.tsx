@@ -14,8 +14,7 @@ import {
   ChevronLeft,
   User,
   CircleAlert,
-  Award,
-  ChartBar
+  Award
 } from 'lucide-react-taro';
 
 interface GlobalStatistics {
@@ -231,18 +230,19 @@ export default function AdminRecycleManagementPage() {
   return (
     <View className="min-h-screen bg-[#0a0a0b]">
       {/* 顶部标题栏 */}
-      <View className="sticky top-0 z-10 bg-zinc-900 px-4 py-3 border-b border-zinc-800 flex justify-between items-center">
-        <View className="flex items-center gap-3">
-          <View className="p-2 rounded-lg bg-zinc-800/60 border border-zinc-700/50" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={18} color="#f59e0b" />
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
+            <ChevronLeft size={20} color="#f59e0b" />
           </View>
-          <View className="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center border border-amber-500/30">
-            <ChartBar size={20} color="#f59e0b" />
+          <Text className="admin-title">回收门店管理</Text>
+          <View
+            className="admin-action-btn"
+            style={{ opacity: loading ? 0.5 : 1 }}
+            onClick={handleRefresh}
+          >
+            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
           </View>
-          <Text className="text-white text-lg font-bold">回收门店管理</Text>
-        </View>
-        <View className={`p-2 rounded-lg bg-zinc-800/60 border border-zinc-700/50 ${loading ? 'opacity-50' : ''}`} onClick={handleRefresh}>
-          <RefreshCw size={18} color="#f59e0b" className={loading ? 'animate-spin' : ''} />
         </View>
       </View>
 

@@ -4,7 +4,6 @@ import Taro from '@tarojs/taro';
 import {
   ChevronLeft,
   RefreshCw,
-  Sparkles,
   Search,
   X,
   Tag,
@@ -265,15 +264,22 @@ export default function AdminQuickNoteManagePage() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <View onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#fafafa" />
-            </View>
-            <Sparkles size={28} color="#f59e0b" />
-            <Text className="admin-title">灵感速记管理</Text>
+          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
+            <ChevronLeft size={20} color="#f59e0b" />
           </View>
+          <Text className="admin-title">灵感速记管理</Text>
+          <View className="admin-action-btn" onClick={loadData}>
+            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+          </View>
+        </View>
+      </View>
+
+      {/* 搜索栏和操作区 */}
+      <View style={{ backgroundColor: '#0a0a0b', padding: '16px 24px', borderBottom: '1px solid #18181b' }}>
+        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+          <Text style={{ fontSize: '14px', color: '#71717a' }}>共 {notes.length} 条</Text>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {isBatchMode ? (
+            {isBatchMode && selectedNoteIds.length > 0 && (
               <View
                 style={{
                   display: 'flex',
@@ -286,32 +292,26 @@ export default function AdminQuickNoteManagePage() {
                 onClick={handleBatchDelete}
               >
                 <Trash2 size={20} color="#ef4444" />
-                <Text style={{ fontSize: '22px', color: '#ef4444' }}>删除 {selectedNoteIds.length}</Text>
+                <Text style={{ fontSize: '14px', color: '#ef4444' }}>删除 {selectedNoteIds.length}</Text>
               </View>
-            ) : (
-              <Text style={{ fontSize: '22px', color: '#71717a' }}>共 {notes.length} 条</Text>
             )}
             <View
               style={{
-                padding: '10px 20px',
+                padding: '8px 16px',
                 borderRadius: '12px',
-                backgroundColor: '#1a1a1d',
+                backgroundColor: isBatchMode ? '#ef4444' : '#1a1a1d',
               }}
               onClick={() => {
                 setIsBatchMode(!isBatchMode);
                 setSelectedNoteIds([]);
               }}
             >
-              <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>
+              <Text style={{ fontSize: '14px', color: isBatchMode ? '#fff' : '#a1a1aa' }}>
                 {isBatchMode ? '退出' : '批量'}
               </Text>
             </View>
           </View>
         </View>
-      </View>
-
-      {/* 搜索栏 */}
-      <View style={{ backgroundColor: '#0a0a0b', padding: '16px 24px', borderBottom: '1px solid #18181b' }}>
         <View className="search-bar-wrapper">
           <Search size={24} color="#52525b" />
           <Input

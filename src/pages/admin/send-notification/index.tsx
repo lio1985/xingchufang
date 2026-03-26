@@ -136,15 +136,13 @@ const SendNotificationPage = () => {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View onClick={() => Taro.navigateBack()} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}>
-            <ChevronLeft size={24} color="#f59e0b" />
+          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
+            <ChevronLeft size={20} color="#f59e0b" />
           </View>
           <Text className="admin-title">发送通知</Text>
-          <View style={{ width: '40px' }} />
+          <View style={{ width: '36px' }} />
         </View>
-        <Text style={{ fontSize: '22px', color: '#71717a', marginTop: '8px' }}>
-          向用户推送系统消息和活动资讯
-        </Text>
+        <Text className="admin-subtitle">向用户推送系统消息和活动资讯</Text>
       </View>
 
       <ScrollView scrollY style={{ height: 'calc(100vh - 100px)', marginTop: '100px' }}>

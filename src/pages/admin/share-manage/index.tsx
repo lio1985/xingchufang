@@ -195,19 +195,15 @@ const ShareManagePage = () => {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View onClick={() => Taro.navigateBack()} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}>
-            <ChevronLeft size={24} color="#f59e0b" />
+          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
+            <ChevronLeft size={20} color="#f59e0b" />
           </View>
           <Text className="admin-title">共享管理</Text>
           <View
-            style={{
-              padding: '10px',
-              borderRadius: '12px',
-              backgroundColor: '#1a1a1d',
-            }}
+            className="admin-action-btn"
             onClick={loadPermissions}
           >
-            <RefreshCw size={24} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
           </View>
         </View>
 
