@@ -9,6 +9,7 @@ import {
   LogOut,
   Download,
   UserPlus,
+  Crown,
 } from 'lucide-react-taro';
 
 const TabProfilePage = () => {
@@ -134,6 +135,74 @@ const TabProfilePage = () => {
           </View>
         )}
       </View>
+
+      {/* 管理员后台入口 - 仅管理员可见 */}
+      {isLoggedIn && isAdmin && (
+        <View style={{ padding: '0 20px', marginTop: '16px' }}>
+          <View
+            style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(124, 58, 237, 0.15) 100%)',
+              border: '1px solid rgba(139, 92, 246, 0.4)',
+              borderRadius: '16px',
+              padding: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+            onClick={() => handleNav('/pages/admin/dashboard/index')}
+          >
+            {/* 装饰性光效 */}
+            <View style={{
+              position: 'absolute',
+              top: '-20px',
+              right: '-20px',
+              width: '80px',
+              height: '80px',
+              background: 'radial-gradient(circle, rgba(167, 139, 250, 0.3) 0%, transparent 70%)',
+              borderRadius: '50%',
+            }}
+            />
+            
+            {/* 图标区域 */}
+            <View style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '14px',
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)',
+            }}
+            >
+              <Crown size={26} color="#ffffff" />
+            </View>
+            
+            {/* 文字区域 */}
+            <View style={{ flex: 1, marginLeft: '16px' }}>
+              <View style={{ display: 'flex', alignItems: 'center' }}>
+                <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>管理后台</Text>
+                <View style={{
+                  marginLeft: '8px',
+                  padding: '2px 8px',
+                  backgroundColor: 'rgba(167, 139, 250, 0.3)',
+                  borderRadius: '4px',
+                }}
+                >
+                  <Text style={{ fontSize: '10px', color: '#c4b5fd', fontWeight: '500' }}>专属</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: '13px', color: '#a78bfa', display: 'block', marginTop: '4px' }}>
+                管理用户、审核内容、查看系统数据
+              </Text>
+            </View>
+            
+            {/* 箭头 */}
+            <ChevronRight size={20} color="#a78bfa" />
+          </View>
+        </View>
+      )}
 
       {/* 数据管理 */}
       <View style={{ padding: '24px 20px 0' }}>
