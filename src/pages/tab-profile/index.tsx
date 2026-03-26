@@ -10,6 +10,12 @@ import {
   Download,
   UserPlus,
   Crown,
+  Users,
+  BookOpen,
+  Building2,
+  ShoppingCart,
+  FileChartColumn,
+  Bell,
 } from 'lucide-react-taro';
 
 const TabProfilePage = () => {
@@ -139,18 +145,16 @@ const TabProfilePage = () => {
       {/* 管理员后台入口 - 仅管理员可见 */}
       {isLoggedIn && isAdmin && (
         <View style={{ padding: '0 20px', marginTop: '16px' }}>
+          {/* 主入口卡片 */}
           <View
             style={{
               background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(124, 58, 237, 0.15) 100%)',
               border: '1px solid rgba(139, 92, 246, 0.4)',
               borderRadius: '16px',
               padding: '20px',
-              display: 'flex',
-              alignItems: 'center',
               position: 'relative',
               overflow: 'hidden',
             }}
-            onClick={() => handleNav('/pages/admin/dashboard/index')}
           >
             {/* 装饰性光效 */}
             <View style={{
@@ -164,42 +168,254 @@ const TabProfilePage = () => {
             }}
             />
             
-            {/* 图标区域 */}
-            <View style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)',
-            }}
+            {/* 标题栏 */}
+            <View
+              style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}
+              onClick={() => handleNav('/pages/admin/dashboard/index')}
             >
-              <Crown size={26} color="#ffffff" />
+              <View style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)',
+              }}
+              >
+                <Crown size={22} color="#ffffff" />
+              </View>
+              <View style={{ flex: 1, marginLeft: '12px' }}>
+                <View style={{ display: 'flex', alignItems: 'center' }}>
+                  <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>管理后台</Text>
+                  <View style={{
+                    marginLeft: '8px',
+                    padding: '2px 8px',
+                    backgroundColor: 'rgba(167, 139, 250, 0.3)',
+                    borderRadius: '4px',
+                  }}
+                  >
+                    <Text style={{ fontSize: '10px', color: '#c4b5fd', fontWeight: '500' }}>专属</Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: '12px', color: '#a78bfa', display: 'block', marginTop: '2px' }}>
+                  全局数据监控与系统管理
+                </Text>
+              </View>
+              <ChevronRight size={20} color="#a78bfa" />
             </View>
-            
-            {/* 文字区域 */}
-            <View style={{ flex: 1, marginLeft: '16px' }}>
-              <View style={{ display: 'flex', alignItems: 'center' }}>
-                <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>管理后台</Text>
+
+            {/* 功能快捷入口 */}
+            <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/admin/users/index')}
+              >
                 <View style={{
-                  marginLeft: '8px',
-                  padding: '2px 8px',
-                  backgroundColor: 'rgba(167, 139, 250, 0.3)',
-                  borderRadius: '4px',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(59, 130, 246, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
                 >
-                  <Text style={{ fontSize: '10px', color: '#c4b5fd', fontWeight: '500' }}>专属</Text>
+                  <Users size={14} color="#60a5fa" />
                 </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>用户管理</Text>
               </View>
-              <Text style={{ fontSize: '13px', color: '#a78bfa', display: 'block', marginTop: '4px' }}>
-                管理用户、审核内容、查看系统数据
-              </Text>
+
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/admin/customer-management/index')}
+              >
+                <View style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(34, 197, 94, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <User size={14} color="#4ade80" />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>客户管理</Text>
+              </View>
+
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/admin/recycle-management/index')}
+              >
+                <View style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(6, 182, 212, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <Building2 size={14} color="#22d3ee" />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>回收门店</Text>
+              </View>
+
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/equipment-orders/index')}
+              >
+                <View style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(245, 158, 11, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <ShoppingCart size={14} color="#fbbf24" />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>设备订单</Text>
+              </View>
+
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/admin/team-management/index')}
+              >
+                <View style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(168, 85, 247, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <Users size={14} color="#c084fc" />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>团队管理</Text>
+              </View>
+
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/admin/ai-report/index')}
+              >
+                <View style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(236, 72, 153, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <FileChartColumn size={14} color="#f472b6" />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>运营报告</Text>
+              </View>
+
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/admin/lexicon-manage/index')}
+              >
+                <View style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(16, 185, 129, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <BookOpen size={14} color="#34d399" />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>语料库</Text>
+              </View>
+
+              <View
+                style={{
+                  flex: '1 1 45%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNav('/pages/admin/send-notification/index')}
+              >
+                <View style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '6px',
+                  backgroundColor: 'rgba(251, 146, 60, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                  <Bell size={14} color="#fb923c" />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>发送通知</Text>
+              </View>
             </View>
-            
-            {/* 箭头 */}
-            <ChevronRight size={20} color="#a78bfa" />
           </View>
         </View>
       )}
