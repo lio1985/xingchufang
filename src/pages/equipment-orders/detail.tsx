@@ -10,6 +10,7 @@ import {
   User,
   CircleCheck,
   ArrowRight,
+  ChevronLeft,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -248,8 +249,18 @@ const OrderDetailPage = () => {
   return (
     <ScrollView scrollY style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
       {/* 头部状态卡片 */}
-      <View style={{ backgroundColor: '#141416', padding: '20px', borderBottom: '1px solid #27272a' }}>
-        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+      <View style={{ backgroundColor: '#141416', padding: '48px 20px 20px', borderBottom: '1px solid #27272a' }}>
+        {/* 返回按钮 */}
+        <View style={{ marginBottom: '16px' }}>
+          <View
+            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+            onClick={() => Taro.navigateBack()}
+          >
+            <ChevronLeft size={24} color="#f59e0b" />
+            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+          </View>
+        </View>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {order.order_type === 'purchase' ? (
             <ShoppingCart size={28} color="#3b82f6" />
           ) : (
@@ -265,7 +276,7 @@ const OrderDetailPage = () => {
         </View>
 
         {order.description && (
-          <View style={{ padding: '12px', backgroundColor: '#18181b', borderRadius: '8px', marginBottom: '12px' }}>
+          <View style={{ padding: '12px', backgroundColor: '#18181b', borderRadius: '8px', marginTop: '12px' }}>
             <Text style={{ fontSize: '14px', color: '#a1a1aa', lineHeight: '20px' }}>{order.description}</Text>
           </View>
         )}

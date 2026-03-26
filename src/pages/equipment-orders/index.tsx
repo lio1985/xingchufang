@@ -107,7 +107,7 @@ const EquipmentOrdersPage = () => {
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View
               style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              onClick={() => Taro.navigateBack()}
+              onClick={() => Taro.switchTab({ url: '/pages/tab-customer/index' })}
             >
               <ChevronLeft size={24} color="#fafafa" />
             </View>
