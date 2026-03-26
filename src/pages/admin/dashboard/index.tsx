@@ -12,6 +12,7 @@ import {
   Download,
   Bell,
   TrendingUp,
+  ChevronLeft,
   ChevronRight,
   TriangleAlert,
   FileChartColumn,
@@ -142,6 +143,9 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
+          <View onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}>
+            <ChevronLeft size={24} color="#f59e0b" />
+          </View>
           <Text className="admin-title">数据监控</Text>
           <View
             style={{

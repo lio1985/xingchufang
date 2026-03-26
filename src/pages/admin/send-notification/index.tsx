@@ -8,6 +8,7 @@ import {
   Globe,
   User,
   Send,
+  ChevronLeft,
   CircleCheck,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
@@ -135,7 +136,11 @@ const SendNotificationPage = () => {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
+          <View onClick={() => Taro.navigateBack()} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}>
+            <ChevronLeft size={24} color="#f59e0b" />
+          </View>
           <Text className="admin-title">发送通知</Text>
+          <View style={{ width: '40px' }} />
         </View>
         <Text style={{ fontSize: '22px', color: '#71717a', marginTop: '8px' }}>
           向用户推送系统消息和活动资讯

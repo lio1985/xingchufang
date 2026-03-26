@@ -6,6 +6,7 @@ import {
   ListFilter,
   RefreshCw,
   ChevronRight,
+  ChevronLeft,
   User,
   Shield,
   CircleCheck,
@@ -205,6 +206,9 @@ export default function AdminUsersPage() {
       {/* Header */}
       <View className="admin-header" style={{ paddingBottom: '16px' }}>
         <View className="admin-header-content">
+          <View onClick={() => Taro.navigateBack()} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}>
+            <ChevronLeft size={24} color="#f59e0b" />
+          </View>
           <Text className="admin-title">用户管理</Text>
           <View
             style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}

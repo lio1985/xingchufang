@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
+import Taro from '@tarojs/taro';
 import {
   RefreshCw,
   FileText,
@@ -9,6 +10,7 @@ import {
   TrendingUp,
   Users,
   Building2,
+  ChevronLeft,
   ChevronRight,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
@@ -95,6 +97,9 @@ export default function AdminShareStatsPage() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
+          <View onClick={() => Taro.navigateBack()} style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}>
+            <ChevronLeft size={24} color="#f59e0b" />
+          </View>
           <Text className="admin-title">共享统计</Text>
           <View
             style={{ padding: '8px', borderRadius: '12px', backgroundColor: '#1a1a1d' }}
