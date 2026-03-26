@@ -78,6 +78,7 @@ export default defineAppConfig({
     'pages/equipment-orders/detail',
     'pages/equipment-orders/create',
     'pages/notification-center/index',
+    'pages/ai-assistant/index',
   ],
   window: {
     backgroundTextStyle: 'light',
