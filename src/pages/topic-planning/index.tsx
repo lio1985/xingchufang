@@ -80,9 +80,9 @@ const TopicPlanningPage = () => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return '#ef4444';
-    if (score >= 60) return '#f59e0b';
-    if (score >= 40) return '#22c55e';
+    if (score >= 80) return '#f87171';
+    if (score >= 60) return '#38bdf8';
+    if (score >= 40) return '#4ade80';
     return '#71717a';
   };
 
@@ -93,7 +93,7 @@ const TopicPlanningPage = () => {
         <View className="header-top" style={{ marginBottom: '24px' }}>
           <View className="header-left">
             <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#fafafa" />
+              <ChevronLeft size={32} color="#f1f5f9" />
             </View>
             <Text className="header-title">选题策划</Text>
           </View>
@@ -104,7 +104,7 @@ const TopicPlanningPage = () => {
             共 {topicQuestions.length} 个选题
           </Text>
           {selectedTopics.length > 0 && (
-            <Text style={{ fontSize: '24px', color: '#f59e0b' }}>
+            <Text style={{ fontSize: '24px', color: '#38bdf8' }}>
               已选 {selectedTopics.length} 个
             </Text>
           )}
@@ -123,14 +123,14 @@ const TopicPlanningPage = () => {
           }}
         >
           <View className="action-btn" onClick={selectedTopics.length === topicQuestions.length ? handleClearAll : handleSelectAll}>
-            <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>
+            <Text style={{ fontSize: '24px', color: '#94a3b8' }}>
               {selectedTopics.length === topicQuestions.length ? '取消全选' : '全选'}
             </Text>
           </View>
           <View className="action-btn" onClick={loadData}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <RefreshCw size={20} color="#a1a1aa" />
-              <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>刷新</Text>
+              <RefreshCw size={20} color="#94a3b8" />
+              <Text style={{ fontSize: '24px', color: '#94a3b8' }}>刷新</Text>
             </View>
           </View>
         </View>
@@ -140,7 +140,7 @@ const TopicPlanningPage = () => {
       <View className="content-area">
         {loading ? (
           <View className="loading-state">
-            <RefreshCw size={64} color="#f59e0b" />
+            <RefreshCw size={64} color="#38bdf8" />
             <Text className="loading-text">加载中...</Text>
           </View>
         ) : topicQuestions.length === 0 ? (
@@ -163,7 +163,7 @@ const TopicPlanningPage = () => {
                 
                 <View className={`checkbox ${selectedTopics.includes(topic.question) ? 'checkbox-checked' : ''}`}>
                   {selectedTopics.includes(topic.question) && (
-                    <Check size={24} color="#f59e0b" />
+                    <Check size={24} color="#38bdf8" />
                   )}
                 </View>
               </View>
@@ -198,7 +198,7 @@ const TopicPlanningPage = () => {
       {selectedTopics.length > 0 && (
         <View className="bottom-bar">
           <View className="bottom-bar-secondary" onClick={handleClearAll}>
-            <Text style={{ fontSize: '28px', color: '#a1a1aa' }}>
+            <Text style={{ fontSize: '28px', color: '#94a3b8' }}>
               清空 ({selectedTopics.length})
             </Text>
           </View>

@@ -43,7 +43,7 @@ interface SalesStats {
 
 const statusMap = {
   normal: { label: '正常', color: '#34d399', bg: 'bg-emerald-500/20' },
-  atRisk: { label: '有风险', color: '#fbbf24', bg: 'bg-amber-500/20' },
+  atRisk: { label: '有风险', color: '#7dd3fc', bg: 'bg-amber-500/20' },
   lost: { label: '已流失', color: '#f87171', bg: 'bg-red-500/20' }
 };
 

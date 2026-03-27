@@ -178,14 +178,14 @@ export default function AdminAuditPage() {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">审计日志</Text>
           <View
             className="admin-action-btn"
             onClick={handleRefresh}
           >
-            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
 
@@ -195,7 +195,7 @@ export default function AdminAuditPage() {
           <Input
             className="search-input"
             placeholder="搜索用户、操作..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={searchText}
             onInput={(e) => handleSearch(e.detail.value)}
           />
@@ -203,7 +203,7 @@ export default function AdminAuditPage() {
             style={{
               padding: '8px',
               borderRadius: '8px',
-              backgroundColor: showFilters ? '#f59e0b' : '#1e293b',
+              backgroundColor: showFilters ? '#38bdf8' : '#1e293b',
             }}
             onClick={() => setShowFilters(!showFilters)}
           >
@@ -290,9 +290,9 @@ export default function AdminAuditPage() {
                   }}
                 >
                   {log.status === 'success' ? (
-                    <CircleCheck size={28} color="#22c55e" />
+                    <CircleCheck size={28} color="#4ade80" />
                   ) : (
-                    <CircleX size={28} color="#ef4444" />
+                    <CircleX size={28} color="#f87171" />
                   )}
                 </View>
 
@@ -309,8 +309,8 @@ export default function AdminAuditPage() {
                 </View>
 
                 <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Clock size={16} color="#52525b" />
-                  <Text style={{ fontSize: '20px', color: '#52525b' }}>{formatTime(log.createdAt)}</Text>
+                  <Clock size={16} color="#64748b" />
+                  <Text style={{ fontSize: '20px', color: '#64748b' }}>{formatTime(log.createdAt)}</Text>
                 </View>
               </View>
             ))
@@ -318,7 +318,7 @@ export default function AdminAuditPage() {
 
           {loading && (
             <View className="loading-state">
-              <RefreshCw size={48} color="#f59e0b" />
+              <RefreshCw size={48} color="#38bdf8" />
               <Text className="loading-text">加载中...</Text>
             </View>
           )}
@@ -339,12 +339,12 @@ export default function AdminAuditPage() {
             <View className="admin-card" style={{ marginBottom: '16px' }}>
               <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                 {selectedLog.status === 'success' ? (
-                  <CircleCheck size={32} color="#22c55e" />
+                  <CircleCheck size={32} color="#4ade80" />
                 ) : (
-                  <CircleX size={32} color="#ef4444" />
+                  <CircleX size={32} color="#f87171" />
                 )}
                 <View>
-                  <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                  <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                     {formatOperation(selectedLog.operation)}
                   </Text>
                   <View className={`status-badge ${getStatusBadgeClass(selectedLog.status)}`} style={{ marginTop: '4px' }}>
@@ -357,13 +357,13 @@ export default function AdminAuditPage() {
                 <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <User size={20} color="#71717a" />
                   <Text style={{ fontSize: '22px', color: '#71717a' }}>用户</Text>
-                  <Text style={{ fontSize: '22px', color: '#fafafa' }}>{selectedLog.username || selectedLog.userId}</Text>
+                  <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{selectedLog.username || selectedLog.userId}</Text>
                 </View>
 
                 <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Clock size={20} color="#71717a" />
                   <Text style={{ fontSize: '22px', color: '#71717a' }}>时间</Text>
-                  <Text style={{ fontSize: '22px', color: '#fafafa' }}>
+                  <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>
                     {new Date(selectedLog.createdAt).toLocaleString('zh-CN')}
                   </Text>
                 </View>
@@ -372,7 +372,7 @@ export default function AdminAuditPage() {
                   <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <Monitor size={20} color="#71717a" />
                     <Text style={{ fontSize: '22px', color: '#71717a' }}>IP</Text>
-                    <Text style={{ fontSize: '22px', color: '#fafafa' }}>{selectedLog.ipAddress}</Text>
+                    <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{selectedLog.ipAddress}</Text>
                   </View>
                 )}
 
@@ -380,7 +380,7 @@ export default function AdminAuditPage() {
                   <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <Info size={20} color="#71717a" />
                     <Text style={{ fontSize: '22px', color: '#71717a' }}>资源</Text>
-                    <Text style={{ fontSize: '22px', color: '#fafafa' }}>
+                    <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>
                       {selectedLog.resourceType}
                       {selectedLog.resourceId && ` / ${selectedLog.resourceId}`}
                     </Text>
@@ -397,8 +397,8 @@ export default function AdminAuditPage() {
                     }}
                   >
                     <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                      <TriangleAlert size={20} color="#ef4444" />
-                      <Text style={{ fontSize: '22px', fontWeight: '600', color: '#ef4444' }}>错误信息</Text>
+                      <TriangleAlert size={20} color="#f87171" />
+                      <Text style={{ fontSize: '22px', fontWeight: '600', color: '#f87171' }}>错误信息</Text>
                     </View>
                     <Text style={{ fontSize: '22px', color: '#fca5a5' }}>{selectedLog.errorMessage}</Text>
                   </View>

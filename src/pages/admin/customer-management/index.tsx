@@ -318,7 +318,7 @@ export default function AdminCustomerManagement() {
           onClick={() => drillDownToCustomers({})}
         >
           <View className="flex items-center gap-2 mb-2">
-            <User size={14} color="#3b82f6" />
+            <User size={14} color="#60a5fa" />
             <Text className="text-zinc-400 text-xs">总客户数</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{overview.totalCustomers}</Text>
@@ -363,7 +363,7 @@ export default function AdminCustomerManagement() {
           className="bg-gradient-to-br from-amber-600/20 to-amber-800/20 rounded-xl p-4 border border-amber-500/30"
         >
           <View className="flex items-center gap-2 mb-2">
-            <ChartBar size={14} color="#f59e0b" />
+            <ChartBar size={14} color="#38bdf8" />
             <Text className="text-zinc-400 text-xs">增长率</Text>
           </View>
           <Text className={`text-2xl font-bold ${globalStats.recentGrowth.growthRate >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -385,7 +385,7 @@ export default function AdminCustomerManagement() {
       <View className="grid grid-cols-2 gap-3 mb-4">
         <View className="bg-gradient-to-br from-red-600/20 to-red-800/20 rounded-xl p-4 border border-red-500/30">
           <View className="flex items-center gap-2 mb-2">
-            <ShieldX size={14} color="#ef4444" />
+            <ShieldX size={14} color="#f87171" />
             <Text className="text-zinc-400 text-xs">高危客户</Text>
           </View>
           <Text className="text-white text-2xl font-bold">{churnStats.red}</Text>
@@ -435,7 +435,7 @@ export default function AdminCustomerManagement() {
   // 渲染流失预警列表
   const renderChurnRiskList = () => {
     const riskLevelMap = {
-      red: { label: '高危', color: '#ef4444', bg: 'bg-red-500/20', border: 'border-red-500/30' },
+      red: { label: '高危', color: '#f87171', bg: 'bg-red-500/20', border: 'border-red-500/30' },
       orange: { label: '中危', color: '#f97316', bg: 'bg-orange-500/20', border: 'border-orange-500/30' },
       yellow: { label: '低危', color: '#eab308', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30' }
     };
@@ -567,7 +567,7 @@ export default function AdminCustomerManagement() {
     return (
       <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
         <View className="flex items-center gap-2 mb-4">
-          <FileText size={16} color="#f59e0b" />
+          <FileText size={16} color="#38bdf8" />
           <Text className="text-white font-semibold">客户状态分布</Text>
         </View>
 
@@ -634,7 +634,7 @@ export default function AdminCustomerManagement() {
       <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
         <View className="flex items-center justify-between mb-4">
           <View className="flex items-center gap-2">
-            <Trophy size={16} color="#f59e0b" />
+            <Trophy size={16} color="#38bdf8" />
             <Text className="text-white font-semibold">销售业绩排行 TOP5</Text>
           </View>
           <Text className="text-amber-500 text-xs" onClick={() => setActiveTab('sales')}>
@@ -708,7 +708,7 @@ export default function AdminCustomerManagement() {
                   : 'bg-zinc-700/50 border-zinc-600/50'
               }`}
             >
-              <TrendingUp size={12} color={statusFilter ? '#3b82f6' : '#71717a'} />
+              <TrendingUp size={12} color={statusFilter ? '#60a5fa' : '#71717a'} />
               <Text className={`text-xs ${statusFilter ? 'text-blue-400' : 'text-zinc-500'}`}>
                 {statusFilter ? statusMap[statusFilter as keyof typeof statusMap]?.label : '全部状态'}
               </Text>
@@ -901,11 +901,11 @@ export default function AdminCustomerManagement() {
               onClick={() => Taro.navigateBack()}
               className="w-8 h-8 rounded-full bg-zinc-800/60 flex items-center justify-center border border-zinc-700/50 active:scale-95"
             >
-              <ArrowLeft size={18} color="#f59e0b" />
+              <ArrowLeft size={18} color="#38bdf8" />
             </View>
             <View className="flex items-center gap-2">
               <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
-                <Users size={16} color="#f59e0b" />
+                <Users size={16} color="#38bdf8" />
               </View>
               <Text className="text-white text-xl font-bold">客户管理看板</Text>
             </View>

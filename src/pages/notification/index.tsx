@@ -109,11 +109,11 @@ const NotificationPage = () => {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'system':
-        return <Bell size={20} color="#3b82f6" />;
+        return <Bell size={20} color="#60a5fa" />;
       case 'activity':
-        return <Megaphone size={20} color="#f59e0b" />;
+        return <Megaphone size={20} color="#38bdf8" />;
       case 'update':
-        return <RefreshCw size={20} color="#22c55e" />;
+        return <RefreshCw size={20} color="#4ade80" />;
       default:
         return <Info size={20} color="#71717a" />;
     }
@@ -137,11 +137,11 @@ const NotificationPage = () => {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'system':
-        return '#3b82f6';
+        return '#60a5fa';
       case 'activity':
-        return '#f59e0b';
+        return '#38bdf8';
       case 'update':
-        return '#22c55e';
+        return '#4ade80';
       default:
         return '#71717a';
     }
@@ -205,7 +205,7 @@ const NotificationPage = () => {
             {unreadCount > 0 && (
               <View style={{
                 marginLeft: '8px',
-                backgroundColor: '#ef4444',
+                backgroundColor: '#f87171',
                 borderRadius: '10px',
                 padding: '2px 8px',
                 minWidth: '20px',
@@ -221,8 +221,8 @@ const NotificationPage = () => {
               style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
               onClick={markAllAsRead}
             >
-              <Check size={14} color="#f59e0b" />
-              <Text style={{ fontSize: '13px', color: '#f59e0b' }}>全部已读</Text>
+              <Check size={14} color="#38bdf8" />
+              <Text style={{ fontSize: '13px', color: '#38bdf8' }}>全部已读</Text>
             </View>
           )}
         </View>
@@ -233,10 +233,10 @@ const NotificationPage = () => {
         {notifications.length === 0 ? (
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' }}>
             <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <BellRing size={32} color="#52525b" />
+              <BellRing size={32} color="#64748b" />
             </View>
             <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '16px' }}>暂无消息</Text>
-            <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginTop: '4px' }}>新的消息将会显示在这里</Text>
+            <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginTop: '4px' }}>新的消息将会显示在这里</Text>
           </View>
         ) : (
           <View style={{ padding: '0 20px' }}>
@@ -258,7 +258,7 @@ const NotificationPage = () => {
                     width: '40px',
                     height: '40px',
                     borderRadius: '10px',
-                    backgroundColor: `rgba(${getTypeColor(notification.type) === '#3b82f6' ? '59, 130, 246' : getTypeColor(notification.type) === '#f59e0b' ? '245, 158, 11' : '34, 197, 94'}, 0.2)`,
+                    backgroundColor: `rgba(${getTypeColor(notification.type) === '#60a5fa' ? '59, 130, 246' : getTypeColor(notification.type) === '#38bdf8' ? '245, 158, 11' : '34, 197, 94'}, 0.2)`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -273,7 +273,7 @@ const NotificationPage = () => {
                     <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
                       <View style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 }}>
                         {!notification.isRead && (
-                          <View style={{ width: '6px', height: '6px', borderRadius: '3px', backgroundColor: '#f59e0b', flexShrink: 0 }} />
+                          <View style={{ width: '6px', height: '6px', borderRadius: '3px', backgroundColor: '#38bdf8', flexShrink: 0 }} />
                         )}
                         <Text style={{
                           fontSize: '15px',
@@ -287,14 +287,14 @@ const NotificationPage = () => {
                           {notification.title}
                         </Text>
                       </View>
-                      <Text style={{ fontSize: '12px', color: '#52525b', flexShrink: 0, marginLeft: '8px' }}>
+                      <Text style={{ fontSize: '12px', color: '#64748b', flexShrink: 0, marginLeft: '8px' }}>
                         {formatTime(notification.createdAt)}
                       </Text>
                     </View>
 
                     <Text style={{
                       fontSize: '13px',
-                      color: '#a1a1aa',
+                      color: '#94a3b8',
                       display: 'block',
                       marginBottom: '10px',
                       overflow: 'hidden',
@@ -309,14 +309,14 @@ const NotificationPage = () => {
                       <View style={{
                         padding: '4px 10px',
                         borderRadius: '4px',
-                        backgroundColor: `rgba(${getTypeColor(notification.type) === '#3b82f6' ? '59, 130, 246' : getTypeColor(notification.type) === '#f59e0b' ? '245, 158, 11' : '34, 197, 94'}, 0.15)`
+                        backgroundColor: `rgba(${getTypeColor(notification.type) === '#60a5fa' ? '59, 130, 246' : getTypeColor(notification.type) === '#38bdf8' ? '245, 158, 11' : '34, 197, 94'}, 0.15)`
                       }}
                       >
                         <Text style={{ fontSize: '11px', color: getTypeColor(notification.type) }}>
                           {getTypeName(notification.type)}
                         </Text>
                       </View>
-                      <ChevronRight size={16} color="#52525b" />
+                      <ChevronRight size={16} color="#64748b" />
                     </View>
                   </View>
                 </View>
@@ -333,7 +333,7 @@ const NotificationPage = () => {
             {/* 没有更多 */}
             {!hasMore && notifications.length > 0 && (
               <View style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
-                <Text style={{ fontSize: '12px', color: '#52525b' }}>没有更多消息了</Text>
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>没有更多消息了</Text>
               </View>
             )}
           </View>

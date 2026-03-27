@@ -34,9 +34,9 @@ const CreateOrderPage = () => {
 
   const priorityOptions = [
     { value: 'low', label: '低', color: '#71717a' },
-    { value: 'normal', label: '普通', color: '#3b82f6' },
-    { value: 'high', label: '高', color: '#f59e0b' },
-    { value: 'urgent', label: '紧急', color: '#ef4444' },
+    { value: 'normal', label: '普通', color: '#60a5fa' },
+    { value: 'high', label: '高', color: '#38bdf8' },
+    { value: 'urgent', label: '紧急', color: '#f87171' },
   ];
 
   const handleSubmit = async () => {
@@ -115,8 +115,8 @@ const CreateOrderPage = () => {
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
             onClick={() => Taro.navigateBack()}
           >
-            <ChevronLeft size={24} color="#f59e0b" />
-            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+            <ChevronLeft size={24} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
       </View>
@@ -131,13 +131,13 @@ const CreateOrderPage = () => {
               padding: '16px',
               borderRadius: '12px',
               backgroundColor: orderType === 'purchase' ? 'rgba(59, 130, 246, 0.2)' : '#111827',
-              border: orderType === 'purchase' ? '2px solid #3b82f6' : '2px solid transparent',
+              border: orderType === 'purchase' ? '2px solid #60a5fa' : '2px solid transparent',
             }}
             onClick={() => setOrderType('purchase')}
           >
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <ShoppingCart size={20} color={orderType === 'purchase' ? '#3b82f6' : '#71717a'} />
-              <Text style={{ fontSize: '15px', fontWeight: '600', color: orderType === 'purchase' ? '#3b82f6' : '#ffffff' }}>客户求购</Text>
+              <ShoppingCart size={20} color={orderType === 'purchase' ? '#60a5fa' : '#71717a'} />
+              <Text style={{ fontSize: '15px', fontWeight: '600', color: orderType === 'purchase' ? '#60a5fa' : '#ffffff' }}>客户求购</Text>
             </View>
             <Text style={{ fontSize: '12px', color: '#71717a' }}>客户发布的求购需求</Text>
           </View>
@@ -148,13 +148,13 @@ const CreateOrderPage = () => {
               padding: '16px',
               borderRadius: '12px',
               backgroundColor: orderType === 'transfer' ? 'rgba(34, 197, 94, 0.2)' : '#111827',
-              border: orderType === 'transfer' ? '2px solid #22c55e' : '2px solid transparent',
+              border: orderType === 'transfer' ? '2px solid #4ade80' : '2px solid transparent',
             }}
             onClick={() => setOrderType('transfer')}
           >
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <Package size={20} color={orderType === 'transfer' ? '#22c55e' : '#71717a'} />
-              <Text style={{ fontSize: '15px', fontWeight: '600', color: orderType === 'transfer' ? '#22c55e' : '#ffffff' }}>设备转让</Text>
+              <Package size={20} color={orderType === 'transfer' ? '#4ade80' : '#71717a'} />
+              <Text style={{ fontSize: '15px', fontWeight: '600', color: orderType === 'transfer' ? '#4ade80' : '#ffffff' }}>设备转让</Text>
             </View>
             <Text style={{ fontSize: '12px', color: '#71717a' }}>客户发布转让信息</Text>
           </View>
@@ -166,7 +166,7 @@ const CreateOrderPage = () => {
         <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>基本信息</Text>
         <View style={{ gap: '16px' }}>
           <View>
-            <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px' }}>标题 *</Text>
+            <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px' }}>标题 *</Text>
             <View style={{ backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
               <Textarea
                 style={{ width: '100%', minHeight: '60px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
@@ -179,7 +179,7 @@ const CreateOrderPage = () => {
           </View>
 
           <View>
-            <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px' }}>详细描述</Text>
+            <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px' }}>详细描述</Text>
             <View style={{ backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
               <Textarea
                 style={{ width: '100%', minHeight: '100px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
@@ -203,16 +203,16 @@ const CreateOrderPage = () => {
             onClick={handleSelectCategory}
           >
             <View>
-              <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>设备分类</Text>
+              <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>设备分类</Text>
               <Text style={{ fontSize: '14px', color: category ? '#ffffff' : '#71717a' }}>{category || '请选择分类'}</Text>
             </View>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
 
           {/* 品牌型号 */}
           <View style={{ display: 'flex', gap: '12px' }}>
             <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
-              <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>品牌</Text>
+              <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>品牌</Text>
               <Textarea
                 style={{ width: '100%', minHeight: '24px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
                 placeholder="如：海尔"
@@ -221,7 +221,7 @@ const CreateOrderPage = () => {
               />
             </View>
             <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
-              <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>型号</Text>
+              <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>型号</Text>
               <Textarea
                 style={{ width: '100%', minHeight: '24px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
                 placeholder="如：BCD-470"
@@ -238,13 +238,13 @@ const CreateOrderPage = () => {
               onClick={handleSelectCondition}
             >
               <View>
-                <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>设备状况</Text>
+                <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>设备状况</Text>
                 <Text style={{ fontSize: '14px', color: condition ? '#ffffff' : '#71717a' }}>{condition || '请选择'}</Text>
               </View>
-              <ChevronRight size={16} color="#52525b" />
+              <ChevronRight size={16} color="#64748b" />
             </View>
             <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
-              <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>期望价格</Text>
+              <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>期望价格</Text>
               <Textarea
                 style={{ width: '100%', minHeight: '24px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
                 placeholder="如：5000"
@@ -261,7 +261,7 @@ const CreateOrderPage = () => {
         <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>客户信息</Text>
         <View style={{ gap: '12px' }}>
           <View style={{ backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
-            <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>联系电话 *</Text>
+            <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>联系电话 *</Text>
             <Textarea
               style={{ width: '100%', minHeight: '24px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
               placeholder="请输入客户联系电话"
@@ -271,7 +271,7 @@ const CreateOrderPage = () => {
           </View>
           <View style={{ display: 'flex', gap: '12px' }}>
             <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
-              <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>微信号</Text>
+              <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>微信号</Text>
               <Textarea
                 style={{ width: '100%', minHeight: '24px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
                 placeholder="选填"
@@ -281,7 +281,7 @@ const CreateOrderPage = () => {
             </View>
           </View>
           <View style={{ backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
-            <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>地址</Text>
+            <Text style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>地址</Text>
             <Textarea
               style={{ width: '100%', minHeight: '24px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
               placeholder="选填"
@@ -332,7 +332,7 @@ const CreateOrderPage = () => {
           style={{
             padding: '14px',
             borderRadius: '12px',
-            backgroundColor: submitting ? '#52525b' : '#f59e0b',
+            backgroundColor: submitting ? '#64748b' : '#38bdf8',
             textAlign: 'center',
           }}
           onClick={submitting ? undefined : handleSubmit}

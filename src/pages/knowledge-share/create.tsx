@@ -423,7 +423,7 @@ const KnowledgeShareCreatePage = () => {
           style={{
             padding: '8px 16px',
             borderRadius: '8px',
-            backgroundColor: loading || uploading ? '#1e3a5f' : '#f59e0b',
+            backgroundColor: loading || uploading ? '#1e3a5f' : '#38bdf8',
             display: 'flex',
             alignItems: 'center',
             gap: '4px'
@@ -447,13 +447,13 @@ const KnowledgeShareCreatePage = () => {
               <Input
                 style={{ width: '100%', backgroundColor: 'transparent', color: '#ffffff', fontSize: '15px' }}
                 placeholder="请输入知识标题"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={title}
                 maxlength={100}
                 onInput={(e) => setTitle(e.detail.value)}
               />
             </View>
-            <Text style={{ fontSize: '12px', color: '#52525b', textAlign: 'right', display: 'block', marginTop: '8px' }}>{title.length}/100</Text>
+            <Text style={{ fontSize: '12px', color: '#64748b', textAlign: 'right', display: 'block', marginTop: '8px' }}>{title.length}/100</Text>
           </View>
 
           {/* 分类选择 */}
@@ -465,7 +465,7 @@ const KnowledgeShareCreatePage = () => {
             >
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <FolderOpen size={16} color="#71717a" />
-                <Text style={{ fontSize: '15px', color: category ? '#ffffff' : '#52525b' }}>{selectedCategoryName}</Text>
+                <Text style={{ fontSize: '15px', color: category ? '#ffffff' : '#64748b' }}>{selectedCategoryName}</Text>
               </View>
             </View>
 
@@ -479,15 +479,15 @@ const KnowledgeShareCreatePage = () => {
                       padding: '12px',
                       borderRadius: '8px',
                       backgroundColor: category === cat.id ? 'rgba(245, 158, 11, 0.2)' : '#0a0f1a',
-                      border: category === cat.id ? '1px solid #f59e0b' : '1px solid transparent',
+                      border: category === cat.id ? '1px solid #38bdf8' : '1px solid transparent',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between'
                     }}
                     onClick={() => { setCategory(cat.id); setShowCategoryPicker(false); }}
                   >
-                    <Text style={{ fontSize: '14px', color: category === cat.id ? '#f59e0b' : '#a1a1aa' }}>{cat.name}</Text>
-                    {category === cat.id && <Text style={{ color: '#f59e0b' }}>✓</Text>}
+                    <Text style={{ fontSize: '14px', color: category === cat.id ? '#38bdf8' : '#94a3b8' }}>{cat.name}</Text>
+                    {category === cat.id && <Text style={{ color: '#38bdf8' }}>✓</Text>}
                   </View>
                 ))}
               </View>
@@ -498,10 +498,10 @@ const KnowledgeShareCreatePage = () => {
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Tag size={14} color="#f59e0b" />
+                <Tag size={14} color="#38bdf8" />
                 <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff' }}>标签</Text>
               </View>
-              <Text style={{ fontSize: '12px', color: '#52525b' }}>最多5个</Text>
+              <Text style={{ fontSize: '12px', color: '#64748b' }}>最多5个</Text>
             </View>
 
             {/* 已添加的标签 */}
@@ -520,9 +520,9 @@ const KnowledgeShareCreatePage = () => {
                       gap: '6px'
                     }}
                   >
-                    <Text style={{ fontSize: '13px', color: '#f59e0b' }}>{tag}</Text>
+                    <Text style={{ fontSize: '13px', color: '#38bdf8' }}>{tag}</Text>
                     <View onClick={() => handleRemoveTag(index)}>
-                      <X size={14} color="#f59e0b" />
+                      <X size={14} color="#38bdf8" />
                     </View>
                   </View>
                 ))}
@@ -534,7 +534,7 @@ const KnowledgeShareCreatePage = () => {
               <Input
                 style={{ flex: 1, backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px' }}
                 placeholder="输入标签"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={tagInput}
                 maxlength={20}
                 onInput={(e) => setTagInput(e.detail.value)}
@@ -543,7 +543,7 @@ const KnowledgeShareCreatePage = () => {
                 style={{
                   padding: '6px 12px',
                   borderRadius: '6px',
-                  backgroundColor: tagInput.trim() ? '#f59e0b' : '#1e3a5f'
+                  backgroundColor: tagInput.trim() ? '#38bdf8' : '#1e3a5f'
                 }}
                 onClick={handleAddTag}
               >
@@ -556,10 +556,10 @@ const KnowledgeShareCreatePage = () => {
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Upload size={14} color="#3b82f6" />
+                <Upload size={14} color="#60a5fa" />
                 <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff' }}>附件</Text>
               </View>
-              <Text style={{ fontSize: '12px', color: '#52525b' }}>{attachments.length}/20</Text>
+              <Text style={{ fontSize: '12px', color: '#64748b' }}>{attachments.length}/20</Text>
             </View>
 
             {/* 上传按钮 */}
@@ -578,8 +578,8 @@ const KnowledgeShareCreatePage = () => {
                 }}
                 onClick={handleChooseImage}
               >
-                <ImageIcon size={16} color="#3b82f6" />
-                <Text style={{ fontSize: '13px', color: '#3b82f6' }}>图片</Text>
+                <ImageIcon size={16} color="#60a5fa" />
+                <Text style={{ fontSize: '13px', color: '#60a5fa' }}>图片</Text>
               </View>
               <View
                 style={{
@@ -595,8 +595,8 @@ const KnowledgeShareCreatePage = () => {
                 }}
                 onClick={handleChooseFile}
               >
-                <FileText size={16} color="#22c55e" />
-                <Text style={{ fontSize: '13px', color: '#22c55e' }}>文件</Text>
+                <FileText size={16} color="#4ade80" />
+                <Text style={{ fontSize: '13px', color: '#4ade80' }}>文件</Text>
               </View>
               {isWeapp && (
                 <View
@@ -613,8 +613,8 @@ const KnowledgeShareCreatePage = () => {
                   }}
                   onClick={isRecording ? handleStopRecord : handleStartRecord}
                 >
-                  <Mic size={16} color={isRecording ? '#ef4444' : '#a855f7'} />
-                  <Text style={{ fontSize: '13px', color: isRecording ? '#ef4444' : '#a855f7' }}>
+                  <Mic size={16} color={isRecording ? '#f87171' : '#a855f7'} />
+                  <Text style={{ fontSize: '13px', color: isRecording ? '#f87171' : '#a855f7' }}>
                     {isRecording ? formatRecordingTime(recordingTime) : '录音'}
                   </Text>
                 </View>
@@ -663,18 +663,18 @@ const KnowledgeShareCreatePage = () => {
                     }}
                     >
                       {attachment.fileType === 'image' ? (
-                        <ImageIcon size={18} color="#3b82f6" />
+                        <ImageIcon size={18} color="#60a5fa" />
                       ) : attachment.fileType === 'audio' ? (
                         <Mic size={18} color="#a855f7" />
                       ) : (
-                        <FileText size={18} color="#22c55e" />
+                        <FileText size={18} color="#4ade80" />
                       )}
                     </View>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: '13px', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
                         {attachment.fileName}
                       </Text>
-                      <Text style={{ fontSize: '11px', color: '#52525b', display: 'block', marginTop: '2px' }}>
+                      <Text style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '2px' }}>
                         {formatFileSize(attachment.fileSize)}
                       </Text>
                     </View>
@@ -689,7 +689,7 @@ const KnowledgeShareCreatePage = () => {
             {/* 提示文本 */}
             {attachments.length === 0 && !audioPath && !isRecording && (
               <View style={{ padding: '16px', textAlign: 'center' }}>
-                <Text style={{ fontSize: '12px', color: '#52525b' }}>支持上传图片、文档，小程序支持录音</Text>
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>支持上传图片、文档，小程序支持录音</Text>
               </View>
             )}
           </View>
@@ -701,13 +701,13 @@ const KnowledgeShareCreatePage = () => {
               <Textarea
                 style={{ width: '100%', minHeight: '200px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '14px', lineHeight: '22px' }}
                 placeholder="请详细描述您的知识内容..."
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={content}
                 maxlength={5000}
                 onInput={(e) => setContent(e.detail.value)}
               />
             </View>
-            <Text style={{ fontSize: '12px', color: '#52525b', textAlign: 'right', display: 'block', marginTop: '8px' }}>{content.length}/5000</Text>
+            <Text style={{ fontSize: '12px', color: '#64748b', textAlign: 'right', display: 'block', marginTop: '8px' }}>{content.length}/5000</Text>
           </View>
         </View>
       </ScrollView>
@@ -739,14 +739,14 @@ const KnowledgeShareCreatePage = () => {
           }}
           onClick={() => Taro.navigateBack()}
         >
-          <Text style={{ fontSize: '15px', color: '#a1a1aa' }}>取消</Text>
+          <Text style={{ fontSize: '15px', color: '#94a3b8' }}>取消</Text>
         </View>
         <View
           style={{
             flex: 2,
             height: '44px',
             borderRadius: '12px',
-            backgroundColor: loading || uploading ? '#1e3a5f' : '#f59e0b',
+            backgroundColor: loading || uploading ? '#1e3a5f' : '#38bdf8',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

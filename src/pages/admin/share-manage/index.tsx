@@ -147,19 +147,19 @@ const ShareManagePage = () => {
   };
 
   const scopeFilters = [
-    { value: 'all', label: '全部', color: '#f59e0b' },
+    { value: 'all', label: '全部', color: '#38bdf8' },
     { value: 'private', label: '私有', color: '#71717a' },
-    { value: 'department', label: '部门', color: '#3b82f6' },
-    { value: 'all-users', label: '全员', color: '#22c55e' },
+    { value: 'department', label: '部门', color: '#60a5fa' },
+    { value: 'all-users', label: '全员', color: '#4ade80' },
     { value: 'custom', label: '指定', color: '#ec4899' },
   ];
 
   const getScopeIcon = (scope: string) => {
     switch (scope) {
       case 'all':
-        return <Globe size={24} color="#22c55e" />;
+        return <Globe size={24} color="#4ade80" />;
       case 'department':
-        return <Building2 size={24} color="#3b82f6" />;
+        return <Building2 size={24} color="#60a5fa" />;
       case 'custom':
         return <Users size={24} color="#ec4899" />;
       default:
@@ -196,30 +196,30 @@ const ShareManagePage = () => {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">共享管理</Text>
           <View
             className="admin-action-btn"
             onClick={loadPermissions}
           >
-            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
 
         {/* 搜索栏 */}
         <View className="search-bar-wrapper" style={{ marginTop: '16px' }}>
-          <Search size={24} color="#52525b" />
+          <Search size={24} color="#64748b" />
           <Input
             className="search-input"
             placeholder="搜索语料库..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
           {searchKeyword && (
             <View onClick={() => setSearchKeyword('')}>
-              <X size={24} color="#52525b" />
+              <X size={24} color="#64748b" />
             </View>
           )}
         </View>
@@ -242,7 +242,7 @@ const ShareManagePage = () => {
                   style={{
                     fontSize: '22px',
                     fontWeight: '600',
-                    color: scopeFilter === filter.value ? '#000' : '#a1a1aa',
+                    color: scopeFilter === filter.value ? '#000' : '#94a3b8',
                   }}
                 >
                   {filter.label}
@@ -267,7 +267,7 @@ const ShareManagePage = () => {
                 <View key={permission.id} className="admin-card">
                   <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa' }}>
+                      <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>
                         {permission.lexiconName}
                       </Text>
                     </View>
@@ -282,7 +282,7 @@ const ShareManagePage = () => {
                       }}
                     >
                       {getScopeIcon(permission.shareScope)}
-                      <Text style={{ fontSize: '20px', color: '#a1a1aa' }}>
+                      <Text style={{ fontSize: '20px', color: '#94a3b8' }}>
                         {getScopeLabel(permission.shareScope)}
                       </Text>
                     </View>
@@ -304,7 +304,7 @@ const ShareManagePage = () => {
                               backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             }}
                           >
-                            <Text style={{ fontSize: '20px', color: '#3b82f6' }}>{dept}</Text>
+                            <Text style={{ fontSize: '20px', color: '#60a5fa' }}>{dept}</Text>
                           </View>
                         ))}
                       </View>
@@ -343,7 +343,7 @@ const ShareManagePage = () => {
                       borderTop: '1px solid #1e3a5f',
                     }}
                   >
-                    <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                    <Text style={{ fontSize: '20px', color: '#64748b' }}>
                       创建者: {permission.createdBy.name} · {permission.createdAt}
                     </Text>
                     <View
@@ -354,7 +354,7 @@ const ShareManagePage = () => {
                       }}
                       onClick={() => handleRevoke(permission)}
                     >
-                      <Text style={{ fontSize: '22px', color: '#ef4444' }}>撤销共享</Text>
+                      <Text style={{ fontSize: '22px', color: '#f87171' }}>撤销共享</Text>
                     </View>
                   </View>
                 </View>

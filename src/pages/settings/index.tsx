@@ -96,8 +96,8 @@ const SettingsPage = () => {
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
             onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })}
           >
-            <ChevronLeft size={24} color="#f59e0b" />
-            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+            <ChevronLeft size={24} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
         <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block', textAlign: 'center' }}>设置</Text>
@@ -123,7 +123,7 @@ const SettingsPage = () => {
               width: '52px',
               height: '52px',
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)',
+              background: 'linear-gradient(135deg, #38bdf8 0%, #fb923c 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -143,69 +143,69 @@ const SettingsPage = () => {
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {userInfo?.role === 'admin' && (
               <View style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', backgroundColor: 'rgba(245, 158, 11, 0.2)', borderRadius: '8px' }}>
-                <Crown size={12} color="#f59e0b" />
-                <Text style={{ fontSize: '11px', color: '#f59e0b', fontWeight: '500' }}>管理员</Text>
+                <Crown size={12} color="#38bdf8" />
+                <Text style={{ fontSize: '11px', color: '#38bdf8', fontWeight: '500' }}>管理员</Text>
               </View>
             )}
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
         </View>
       </View>
 
       {/* 账号设置 */}
       <View style={{ padding: '12px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>账号设置</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>账号设置</Text>
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleNav('/pages/change-password/index')}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Lock size={18} color="#ef4444" />
+              <Lock size={18} color="#f87171" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>修改密码</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px' }}
             onClick={() => handleToast('绑定手机')}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Smartphone size={18} color="#22c55e" />
+              <Smartphone size={18} color="#4ade80" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>绑定手机</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', marginRight: '4px' }}>
               {userInfo?.phone ? `${userInfo.phone.slice(0, 3)}****${userInfo.phone.slice(-4)}` : '未绑定'}
             </Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
         </View>
       </View>
 
       {/* 偏好设置 */}
       <View style={{ padding: '16px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>偏好设置</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>偏好设置</Text>
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           <View style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}>
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Bell size={18} color="#3b82f6" />
+              <Bell size={18} color="#60a5fa" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>消息通知</Text>
             <Switch
               checked={settings.notifications}
               onChange={(e) => setSettings({ ...settings, notifications: e.detail.value })}
-              color="#f59e0b"
+              color="#38bdf8"
             />
           </View>
           <View style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}>
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Save size={18} color="#f59e0b" />
+              <Save size={18} color="#38bdf8" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>自动保存</Text>
             <Switch
               checked={settings.autoSave}
               onChange={(e) => setSettings({ ...settings, autoSave: e.detail.value })}
-              color="#f59e0b"
+              color="#38bdf8"
             />
           </View>
           <View style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}>
@@ -216,7 +216,7 @@ const SettingsPage = () => {
             <Switch
               checked={settings.darkMode}
               onChange={(e) => setSettings({ ...settings, darkMode: e.detail.value })}
-              color="#f59e0b"
+              color="#38bdf8"
             />
           </View>
           <View style={{ display: 'flex', alignItems: 'center', padding: '14px 16px' }}>
@@ -227,7 +227,7 @@ const SettingsPage = () => {
             <Switch
               checked={settings.soundEffect}
               onChange={(e) => setSettings({ ...settings, soundEffect: e.detail.value })}
-              color="#f59e0b"
+              color="#38bdf8"
             />
           </View>
         </View>
@@ -235,54 +235,54 @@ const SettingsPage = () => {
 
       {/* 数据管理 */}
       <View style={{ padding: '16px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>数据管理</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>数据管理</Text>
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleToast('导出数据')}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Download size={18} color="#22c55e" />
+              <Download size={18} color="#4ade80" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>导出数据</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleToast('导入数据')}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Upload size={18} color="#3b82f6" />
+              <Upload size={18} color="#60a5fa" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>导入数据</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px' }}
             onClick={handleClearCache}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Trash2 size={18} color="#ef4444" />
+              <Trash2 size={18} color="#f87171" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>清理缓存</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
         </View>
       </View>
 
       {/* 其他 */}
       <View style={{ padding: '16px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>其他</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '8px', fontWeight: '500' }}>其他</Text>
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleToast('给我们评分')}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Star size={18} color="#f59e0b" />
+              <Star size={18} color="#38bdf8" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>给我们评分</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}
@@ -292,27 +292,27 @@ const SettingsPage = () => {
               <MessageCircle size={18} color="#06b6d4" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>意见反馈</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleToast('使用帮助')}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <CircleQuestionMark size={18} color="#22c55e" />
+              <CircleQuestionMark size={18} color="#4ade80" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>使用帮助</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleToast('用户协议')}
           >
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FileText size={18} color="#3b82f6" />
+              <FileText size={18} color="#60a5fa" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>用户协议</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px' }}
@@ -322,7 +322,7 @@ const SettingsPage = () => {
               <Shield size={18} color="#a855f7" />
             </View>
             <Text style={{ flex: 1, marginLeft: '12px', fontSize: '14px', color: '#ffffff' }}>隐私政策</Text>
-            <ChevronRight size={16} color="#52525b" />
+            <ChevronRight size={16} color="#64748b" />
           </View>
         </View>
       </View>
@@ -346,8 +346,8 @@ const SettingsPage = () => {
           }}
           onClick={handleLogout}
         >
-          <LogOut size={16} color="#ef4444" />
-          <Text style={{ fontSize: '14px', color: '#ef4444', marginLeft: '8px', fontWeight: '500' }}>退出登录</Text>
+          <LogOut size={16} color="#f87171" />
+          <Text style={{ fontSize: '14px', color: '#f87171', marginLeft: '8px', fontWeight: '500' }}>退出登录</Text>
         </View>
       </View>
     </View>

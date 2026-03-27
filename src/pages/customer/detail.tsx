@@ -43,14 +43,14 @@ interface FollowUp {
 }
 
 const statusConfig = {
-  normal: { label: '正常', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
-  at_risk: { label: '有风险', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
-  lost: { label: '已流失', color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.2)' }
+  normal: { label: '正常', color: '#4ade80', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  at_risk: { label: '有风险', color: '#38bdf8', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  lost: { label: '已流失', color: '#f87171', bgColor: 'rgba(239, 68, 68, 0.2)' }
 };
 
 const orderStatusConfig = {
-  in_progress: { label: '进行中', color: '#3b82f6' },
-  completed: { label: '已成交', color: '#22c55e' }
+  in_progress: { label: '进行中', color: '#60a5fa' },
+  completed: { label: '已成交', color: '#4ade80' }
 };
 
 export default function CustomerDetail() {
@@ -134,8 +134,8 @@ export default function CustomerDetail() {
           style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center' }}
           onClick={goToEdit}
         >
-          <Pencil size={16} color="#f59e0b" />
-          <Text style={{ fontSize: '14px', color: '#f59e0b', marginLeft: '4px' }}>编辑</Text>
+          <Pencil size={16} color="#38bdf8" />
+          <Text style={{ fontSize: '14px', color: '#38bdf8', marginLeft: '4px' }}>编辑</Text>
         </View>
       </View>
 
@@ -145,7 +145,7 @@ export default function CustomerDetail() {
           {/* 顶部：头像 + 姓名 + 状态 */}
           <View style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
             <View style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <User size={24} color="#f59e0b" />
+              <User size={24} color="#38bdf8" />
             </View>
             <View style={{ flex: 1, marginLeft: '16px' }}>
               <View style={{ display: 'flex', alignItems: 'center' }}>
@@ -162,7 +162,7 @@ export default function CustomerDetail() {
           <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid #1e3a5f' }}>
             <View>
               <Text style={{ fontSize: '12px', color: '#71717a' }}>预计金额</Text>
-              <Text style={{ fontSize: '24px', fontWeight: '700', color: '#22c55e', marginTop: '4px' }}>¥{(customer.estimated_amount || 0).toFixed(0)}万</Text>
+              <Text style={{ fontSize: '24px', fontWeight: '700', color: '#4ade80', marginTop: '4px' }}>¥{(customer.estimated_amount || 0).toFixed(0)}万</Text>
             </View>
             <View style={{ textAlign: 'right' }}>
               <Text style={{ fontSize: '12px', color: '#71717a' }}>订单状态</Text>
@@ -173,20 +173,20 @@ export default function CustomerDetail() {
 
         {/* 联系方式 */}
         <View style={{ marginBottom: '16px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>联系方式</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>联系方式</Text>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
             {/* 电话 */}
             {customer.phone && (
               <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }} onClick={handleCall}>
-                <Phone size={18} color="#22c55e" />
+                <Phone size={18} color="#4ade80" />
                 <Text style={{ flex: 1, fontSize: '15px', color: '#ffffff', marginLeft: '12px' }}>{customer.phone}</Text>
-                <Text style={{ fontSize: '13px', color: '#22c55e' }}>拨打</Text>
+                <Text style={{ fontSize: '13px', color: '#4ade80' }}>拨打</Text>
               </View>
             )}
             {/* 微信 */}
             {customer.wechat && (
               <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}>
-                <MessageCircle size={18} color="#52525b" />
+                <MessageCircle size={18} color="#64748b" />
                 <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '12px' }}>微信：</Text>
                 <Text style={{ fontSize: '15px', color: '#ffffff' }}>{customer.wechat}</Text>
               </View>
@@ -194,7 +194,7 @@ export default function CustomerDetail() {
             {/* 小红书 */}
             {customer.xiaohongshu && (
               <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}>
-                <User size={18} color="#52525b" />
+                <User size={18} color="#64748b" />
                 <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '12px' }}>小红书：</Text>
                 <Text style={{ fontSize: '15px', color: '#ffffff' }}>{customer.xiaohongshu}</Text>
               </View>
@@ -202,7 +202,7 @@ export default function CustomerDetail() {
             {/* 抖音 */}
             {customer.douyin && (
               <View style={{ display: 'flex', alignItems: 'center', padding: '16px' }}>
-                <User size={18} color="#52525b" />
+                <User size={18} color="#64748b" />
                 <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '12px' }}>抖音：</Text>
                 <Text style={{ fontSize: '15px', color: '#ffffff' }}>{customer.douyin}</Text>
               </View>
@@ -210,7 +210,7 @@ export default function CustomerDetail() {
             {/* 无联系方式 */}
             {!customer.phone && !customer.wechat && !customer.xiaohongshu && !customer.douyin && (
               <View style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: '14px', color: '#52525b' }}>暂无联系方式</Text>
+                <Text style={{ fontSize: '14px', color: '#64748b' }}>暂无联系方式</Text>
               </View>
             )}
           </View>
@@ -218,7 +218,7 @@ export default function CustomerDetail() {
 
         {/* 业务信息 */}
         <View style={{ marginBottom: '16px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>业务信息</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>业务信息</Text>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <View style={{ display: 'flex', marginBottom: '12px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', width: '80px' }}>餐饮类别</Text>
@@ -235,7 +235,7 @@ export default function CustomerDetail() {
             <View style={{ display: 'flex', marginBottom: '12px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', width: '80px' }}>所在城市</Text>
               <View style={{ display: 'flex', alignItems: 'center' }}>
-                <MapPin size={14} color="#52525b" />
+                <MapPin size={14} color="#64748b" />
                 <Text style={{ fontSize: '14px', color: '#ffffff', marginLeft: '4px' }}>{customer.city || '-'}</Text>
               </View>
             </View>
@@ -249,33 +249,33 @@ export default function CustomerDetail() {
         {/* 客户需求 */}
         {customer.requirements && (
           <View style={{ marginBottom: '16px' }}>
-            <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>客户需求</Text>
+            <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>客户需求</Text>
             <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-              <Text style={{ fontSize: '14px', color: '#a1a1aa', lineHeight: '22px' }}>{customer.requirements}</Text>
+              <Text style={{ fontSize: '14px', color: '#94a3b8', lineHeight: '22px' }}>{customer.requirements}</Text>
             </View>
           </View>
         )}
 
         {/* 跟进记录 */}
         <View style={{ marginBottom: '32px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>跟进记录</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>跟进记录</Text>
           {followUps.length > 0 ? (
             <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
               {followUps.map((item, index) => (
                 <View key={item.id} style={{ padding: '16px', borderBottom: index < followUps.length - 1 ? '1px solid #1e3a5f' : 'none' }}>
                   <View style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                    <Clock size={14} color="#52525b" />
+                    <Clock size={14} color="#64748b" />
                     <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: '4px' }}>{formatDate(item.follow_up_time)}</Text>
                     {item.follow_up_method && (
                       <View style={{ padding: '2px 6px', backgroundColor: 'rgba(59, 130, 246, 0.2)', borderRadius: '4px', marginLeft: '8px' }}>
-                        <Text style={{ fontSize: '11px', color: '#3b82f6' }}>{item.follow_up_method}</Text>
+                        <Text style={{ fontSize: '11px', color: '#60a5fa' }}>{item.follow_up_method}</Text>
                       </View>
                     )}
                   </View>
                   <Text style={{ fontSize: '14px', color: '#ffffff', lineHeight: '22px' }}>{item.content}</Text>
                   {item.next_follow_up_plan && (
                     <View style={{ marginTop: '8px', padding: '8px', backgroundColor: '#0a0f1a', borderRadius: '6px' }}>
-                      <Text style={{ fontSize: '12px', color: '#f59e0b' }}>下次跟进：{item.next_follow_up_plan}</Text>
+                      <Text style={{ fontSize: '12px', color: '#38bdf8' }}>下次跟进：{item.next_follow_up_plan}</Text>
                     </View>
                   )}
                 </View>
@@ -283,7 +283,7 @@ export default function CustomerDetail() {
             </View>
           ) : (
             <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: '14px', color: '#52525b' }}>暂无跟进记录</Text>
+              <Text style={{ fontSize: '14px', color: '#64748b' }}>暂无跟进记录</Text>
             </View>
           )}
         </View>

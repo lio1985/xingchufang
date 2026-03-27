@@ -26,10 +26,10 @@ interface Message {
 }
 
 const quickActions = [
-  { id: 'script', icon: FileText, label: '写脚本', color: '#f59e0b', prompt: '帮我写一个短视频脚本' },
+  { id: 'script', icon: FileText, label: '写脚本', color: '#38bdf8', prompt: '帮我写一个短视频脚本' },
   { id: 'copywriting', icon: PenTool, label: '写文案', color: '#8b5cf6', prompt: '帮我写一段产品文案' },
   { id: 'topic', icon: Target, label: '找选题', color: '#06b6d4', prompt: '帮我找一些热门选题' },
-  { id: 'idea', icon: Lightbulb, label: '灵感', color: '#22c55e', prompt: '给我一些创作灵感' },
+  { id: 'idea', icon: Lightbulb, label: '灵感', color: '#4ade80', prompt: '给我一些创作灵感' },
 ];
 
 export default function AIAssistantPage() {
@@ -232,8 +232,8 @@ export default function AIAssistantPage() {
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
             onClick={() => Taro.switchTab({ url: '/pages/tab-content/index' })}
           >
-            <ChevronLeft size={24} color="#f59e0b" />
-            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+            <ChevronLeft size={24} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -241,7 +241,7 @@ export default function AIAssistantPage() {
             width: '36px',
             height: '36px',
             borderRadius: '10px',
-            background: 'linear-gradient(135deg, #f59e0b, #f97316)',
+            background: 'linear-gradient(135deg, #38bdf8, #f97316)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -317,7 +317,7 @@ export default function AIAssistantPage() {
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #f59e0b, #f97316)',
+                background: 'linear-gradient(135deg, #38bdf8, #f97316)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -347,7 +347,7 @@ export default function AIAssistantPage() {
               maxWidth: '75%',
               padding: '12px 16px',
               borderRadius: message.role === 'user' ? '16px 4px 16px 16px' : '4px 16px 16px 16px',
-              backgroundColor: message.role === 'user' ? '#f59e0b' : '#111827',
+              backgroundColor: message.role === 'user' ? '#38bdf8' : '#111827',
               border: message.role === 'assistant' ? '1px solid #1e3a5f' : 'none',
             }}
             >
@@ -362,7 +362,7 @@ export default function AIAssistantPage() {
               </Text>
               <Text style={{
                 fontSize: '11px',
-                color: message.role === 'user' ? 'rgba(0,0,0,0.5)' : '#52525b',
+                color: message.role === 'user' ? 'rgba(0,0,0,0.5)' : '#64748b',
                 display: 'block',
                 marginTop: '6px',
               }}
@@ -396,7 +396,7 @@ export default function AIAssistantPage() {
               width: '36px',
               height: '36px',
               borderRadius: '10px',
-              background: 'linear-gradient(135deg, #f59e0b, #f97316)',
+              background: 'linear-gradient(135deg, #38bdf8, #f97316)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -412,7 +412,7 @@ export default function AIAssistantPage() {
             }}
             >
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <RefreshCw size={14} color="#f59e0b" className="animate-spin" />
+                <RefreshCw size={14} color="#38bdf8" className="animate-spin" />
                 <Text style={{ fontSize: '14px', color: '#71717a' }}>思考中...</Text>
               </View>
             </View>
@@ -466,7 +466,7 @@ export default function AIAssistantPage() {
                 backgroundColor: 'transparent',
               }}
               placeholder="输入你的问题..."
-              placeholderStyle="color: #52525b"
+              placeholderStyle="color: #64748b"
               value={inputText}
               onInput={(e) => setInputText(e.detail.value)}
               onConfirm={handleSend}
@@ -478,14 +478,14 @@ export default function AIAssistantPage() {
               width: '44px',
               height: '44px',
               borderRadius: '50%',
-              backgroundColor: inputText.trim() ? '#f59e0b' : '#1e3a5f',
+              backgroundColor: inputText.trim() ? '#38bdf8' : '#1e3a5f',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
             onClick={handleSend}
           >
-            <Send size={20} color={inputText.trim() ? '#000000' : '#52525b'} />
+            <Send size={20} color={inputText.trim() ? '#000000' : '#64748b'} />
           </View>
         </View>
       </View>

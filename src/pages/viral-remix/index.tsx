@@ -66,9 +66,9 @@ export default function ViralRemixPage() {
   const styleOptions: Array<{ value: ContentStyle; label: string; color: string }> = [
     { value: 'douyin', label: '抖音风格', color: '#ec4899' },
     { value: 'xiaohongshu', label: '小红书风格', color: '#f43f5e' },
-    { value: 'shipinhao', label: '视频号风格', color: '#3b82f6' },
+    { value: 'shipinhao', label: '视频号风格', color: '#60a5fa' },
     { value: 'gongzhonghao', label: '公众号文章', color: '#10b981' },
-    { value: 'pyq', label: '微信朋友圈', color: '#22c55e' }
+    { value: 'pyq', label: '微信朋友圈', color: '#4ade80' }
   ]
 
   useLoad((options) => {
@@ -205,10 +205,10 @@ export default function ViralRemixPage() {
             style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={() => Taro.navigateBack()}
           >
-            <ChevronLeft size={24} color="#fafafa" />
+            <ChevronLeft size={24} color="#f1f5f9" />
           </View>
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={24} color="#f59e0b" />
+            <Sparkles size={24} color="#38bdf8" />
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>二创改写</Text>
           </View>
         </View>
@@ -219,11 +219,11 @@ export default function ViralRemixPage() {
         {analysis && (
           <View style={{ backgroundColor: '#111827', borderRadius: '12px', border: '1px solid #1e3a5f', padding: '16px' }}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <BookOpen size={18} color="#f59e0b" />
+              <BookOpen size={18} color="#38bdf8" />
               <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>提取的文案</Text>
             </View>
             <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', maxHeight: '120px', overflow: 'hidden' }}>
-              <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '20px' }}>{analysis.transcript}</Text>
+              <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '20px' }}>{analysis.transcript}</Text>
             </View>
           </View>
         )}
@@ -232,12 +232,12 @@ export default function ViralRemixPage() {
         {analysis && (
           <View style={{ backgroundColor: '#111827', borderRadius: '12px', border: '1px solid #1e3a5f', padding: '16px' }}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <Lightbulb size={18} color="#22c55e" />
+              <Lightbulb size={18} color="#4ade80" />
               <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>爆款框架参考</Text>
             </View>
             <View style={{ backgroundColor: 'rgba(34, 197, 94, 0.15)', borderRadius: '8px', padding: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
-              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#22c55e', marginBottom: '4px', display: 'block' }}>{analysis.framework.type}</Text>
-              <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>{analysis.framework.description}</Text>
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#4ade80', marginBottom: '4px', display: 'block' }}>{analysis.framework.type}</Text>
+              <Text style={{ fontSize: '12px', color: '#94a3b8' }}>{analysis.framework.description}</Text>
             </View>
           </View>
         )}
@@ -246,7 +246,7 @@ export default function ViralRemixPage() {
         <View style={{ backgroundColor: '#111827', borderRadius: '12px', border: '1px solid #1e3a5f', padding: '16px' }}>
           <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <BookOpen size={18} color="#3b82f6" />
+              <BookOpen size={18} color="#60a5fa" />
               <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>选择语料库</Text>
             </View>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -255,7 +255,7 @@ export default function ViralRemixPage() {
                 style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#1e3a5f' }}
                 onClick={toggleAll}
               >
-                <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>{expandedCategory === 'all' ? '全部折叠' : '全部展开'}</Text>
+                <Text style={{ fontSize: '12px', color: '#94a3b8' }}>{expandedCategory === 'all' ? '全部折叠' : '全部展开'}</Text>
               </View>
             </View>
           </View>
@@ -275,10 +275,10 @@ export default function ViralRemixPage() {
                       onClick={() => toggleCategory('enterprise')}
                     >
                       <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Building2 size={16} color="#22c55e" />
+                        <Building2 size={16} color="#4ade80" />
                         <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>企业语料库</Text>
                         <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(34, 197, 94, 0.2)' }}>
-                          <Text style={{ fontSize: '11px', color: '#22c55e' }}>{enterpriseLexicons.length}</Text>
+                          <Text style={{ fontSize: '11px', color: '#4ade80' }}>{enterpriseLexicons.length}</Text>
                         </View>
                       </View>
                       {expandedCategory === 'all' || expandedCategory === 'enterprise' ? <ChevronDown size={16} color="#71717a" /> : <ChevronRight size={16} color="#71717a" />}
@@ -289,7 +289,7 @@ export default function ViralRemixPage() {
                           <View key={lexicon.id} style={{ backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
                             <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', marginBottom: '4px', display: 'block' }}>{lexicon.title}</Text>
                             {lexicon.category && <Text style={{ fontSize: '11px', color: '#71717a', marginBottom: '4px', display: 'block' }}>{lexicon.category}</Text>}
-                            <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
+                            <Text style={{ fontSize: '12px', color: '#94a3b8', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
                           </View>
                         ))}
                       </View>
@@ -305,10 +305,10 @@ export default function ViralRemixPage() {
                       onClick={() => toggleCategory('personal')}
                     >
                       <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <User size={16} color="#3b82f6" />
+                        <User size={16} color="#60a5fa" />
                         <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>个人IP语料库</Text>
                         <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 0.2)' }}>
-                          <Text style={{ fontSize: '11px', color: '#3b82f6' }}>{personalLexicons.length}</Text>
+                          <Text style={{ fontSize: '11px', color: '#60a5fa' }}>{personalLexicons.length}</Text>
                         </View>
                       </View>
                       {expandedCategory === 'all' || expandedCategory === 'personal' ? <ChevronDown size={16} color="#71717a" /> : <ChevronRight size={16} color="#71717a" />}
@@ -319,7 +319,7 @@ export default function ViralRemixPage() {
                           <View key={lexicon.id} style={{ backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
                             <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', marginBottom: '4px', display: 'block' }}>{lexicon.title}</Text>
                             {lexicon.category && <Text style={{ fontSize: '11px', color: '#71717a', marginBottom: '4px', display: 'block' }}>{lexicon.category}</Text>}
-                            <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
+                            <Text style={{ fontSize: '12px', color: '#94a3b8', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
                           </View>
                         ))}
                       </View>
@@ -349,7 +349,7 @@ export default function ViralRemixPage() {
                           <View key={lexicon.id} style={{ backgroundColor: '#111827', borderRadius: '8px', padding: '12px' }}>
                             <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', marginBottom: '4px', display: 'block' }}>{lexicon.title}</Text>
                             {lexicon.category && <Text style={{ fontSize: '11px', color: '#71717a', marginBottom: '4px', display: 'block' }}>{lexicon.category}</Text>}
-                            <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
+                            <Text style={{ fontSize: '12px', color: '#94a3b8', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lexicon.content}</Text>
                           </View>
                         ))}
                       </View>
@@ -382,7 +382,7 @@ export default function ViralRemixPage() {
             <Textarea
               style={{ width: '100%', minHeight: '100px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
               placeholder="请输入你的改写想法，例如：重点突出产品优势，增加购买引导..."
-              placeholderStyle="color: #52525b"
+              placeholderStyle="color: #64748b"
               value={remixIdea}
               onInput={(e) => setRemixIdea(e.detail.value)}
               maxlength={500}
@@ -404,7 +404,7 @@ export default function ViralRemixPage() {
                   }}
                   onClick={() => setSelectedStyle(option.value)}
                 >
-                  <Text style={{ fontSize: '13px', color: selectedStyle === option.value ? '#ffffff' : '#a1a1aa' }}>{option.label}</Text>
+                  <Text style={{ fontSize: '13px', color: selectedStyle === option.value ? '#ffffff' : '#94a3b8' }}>{option.label}</Text>
                 </View>
               ))}
             </View>
@@ -416,7 +416,7 @@ export default function ViralRemixPage() {
           style={{ 
             padding: '14px', 
             borderRadius: '12px', 
-            backgroundColor: isGenerating || !remixIdea.trim() ? '#1e3a5f' : '#f59e0b', 
+            backgroundColor: isGenerating || !remixIdea.trim() ? '#1e3a5f' : '#38bdf8', 
             textAlign: 'center' 
           }}
           onClick={!isGenerating && remixIdea.trim() ? handleGenerate : undefined}
@@ -442,8 +442,8 @@ export default function ViralRemixPage() {
                     style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px', borderRadius: '8px', backgroundColor: '#1e3a5f' }}
                     onClick={() => handleCopy(scheme)}
                   >
-                    <Copy size={14} color="#3b82f6" />
-                    <Text style={{ fontSize: '12px', color: '#3b82f6' }}>复制</Text>
+                    <Copy size={14} color="#60a5fa" />
+                    <Text style={{ fontSize: '12px', color: '#60a5fa' }}>复制</Text>
                   </View>
                 </View>
 
@@ -451,7 +451,7 @@ export default function ViralRemixPage() {
                 <View style={{ marginBottom: '12px' }}>
                   <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                     <Text style={{ fontSize: '12px', color: '#71717a' }}>标题</Text>
-                    <Text style={{ fontSize: '11px', color: scheme.title.length > 50 ? '#ef4444' : scheme.title.length >= 30 ? '#f59e0b' : '#22c55e' }}>{scheme.title.length}字</Text>
+                    <Text style={{ fontSize: '11px', color: scheme.title.length > 50 ? '#f87171' : scheme.title.length >= 30 ? '#38bdf8' : '#4ade80' }}>{scheme.title.length}字</Text>
                   </View>
                   <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                     <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff' }}>{scheme.title}</Text>
@@ -462,7 +462,7 @@ export default function ViralRemixPage() {
                 <View style={{ marginBottom: '12px' }}>
                   <Text style={{ fontSize: '12px', color: '#71717a', marginBottom: '8px', display: 'block' }}>内容</Text>
                   <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
-                    <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '22px', whiteSpace: 'pre-wrap' }}>{scheme.content}</Text>
+                    <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '22px', whiteSpace: 'pre-wrap' }}>{scheme.content}</Text>
                   </View>
                 </View>
 
@@ -473,7 +473,7 @@ export default function ViralRemixPage() {
                     <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                       {scheme.tags.map((tag, tagIdx) => (
                         <View key={tagIdx} style={{ padding: '4px 10px', borderRadius: '6px', backgroundColor: 'rgba(59, 130, 246, 0.15)' }}>
-                          <Text style={{ fontSize: '12px', color: '#3b82f6' }}>{tag}</Text>
+                          <Text style={{ fontSize: '12px', color: '#60a5fa' }}>{tag}</Text>
                         </View>
                       ))}
                     </View>
@@ -488,8 +488,8 @@ export default function ViralRemixPage() {
               onClick={!isGenerating ? handleGenerate : undefined}
             >
               <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <RefreshCw size={14} color="#a1a1aa" />
-                <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>重新创建</Text>
+                <RefreshCw size={14} color="#94a3b8" />
+                <Text style={{ fontSize: '14px', color: '#94a3b8' }}>重新创建</Text>
               </View>
             </View>
           </View>

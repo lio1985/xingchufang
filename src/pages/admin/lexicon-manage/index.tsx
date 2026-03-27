@@ -186,18 +186,18 @@ const LexiconManagePage = () => {
   };
 
   const categories = [
-    { value: 'all', label: '全部', color: '#f59e0b' },
-    { value: 'product', label: '产品', color: '#3b82f6' },
-    { value: 'service', label: '服务', color: '#22c55e' },
+    { value: 'all', label: '全部', color: '#38bdf8' },
+    { value: 'product', label: '产品', color: '#60a5fa' },
+    { value: 'service', label: '服务', color: '#4ade80' },
     { value: 'marketing', label: '营销', color: '#ec4899' },
   ];
 
   const getShareIcon = (scope: string) => {
     switch (scope) {
       case 'all':
-        return <Globe size={18} color="#22c55e" />;
+        return <Globe size={18} color="#4ade80" />;
       case 'department':
-        return <Users size={18} color="#3b82f6" />;
+        return <Users size={18} color="#60a5fa" />;
       default:
         return <Lock size={18} color="#71717a" />;
     }
@@ -218,18 +218,18 @@ const LexiconManagePage = () => {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">语料库管理</Text>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View className="admin-action-btn" onClick={loadLexicons}>
-              <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+              <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
             </View>
             <View
               style={{
                 padding: '10px',
                 borderRadius: '12px',
-                backgroundColor: '#f59e0b',
+                backgroundColor: '#38bdf8',
               }}
               onClick={() => setShowCreateModal(true)}
             >
@@ -240,17 +240,17 @@ const LexiconManagePage = () => {
 
         {/* 搜索栏 */}
         <View className="search-bar-wrapper" style={{ marginTop: '16px' }}>
-          <Search size={24} color="#52525b" />
+          <Search size={24} color="#64748b" />
           <Input
             className="search-input"
             placeholder="搜索语料库..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
           {searchKeyword && (
             <View onClick={() => setSearchKeyword('')}>
-              <X size={24} color="#52525b" />
+              <X size={24} color="#64748b" />
             </View>
           )}
         </View>
@@ -271,7 +271,7 @@ const LexiconManagePage = () => {
                 style={{
                   fontSize: '22px',
                   fontWeight: '600',
-                  color: categoryFilter === cat.value ? '#000' : '#a1a1aa',
+                  color: categoryFilter === cat.value ? '#000' : '#94a3b8',
                 }}
               >
                 {cat.label}
@@ -296,7 +296,7 @@ const LexiconManagePage = () => {
                   <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <View style={{ flex: 1 }}>
                       <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa' }}>
+                        <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>
                           {lexicon.name}
                         </Text>
                         {getShareIcon(lexicon.shareScope)}
@@ -318,10 +318,10 @@ const LexiconManagePage = () => {
                     }}
                   >
                     <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                      <Text style={{ fontSize: '20px', color: '#64748b' }}>
                         {lexicon.itemCount} 条内容
                       </Text>
-                      <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                      <Text style={{ fontSize: '20px', color: '#64748b' }}>
                         {getShareLabel(lexicon.shareScope)}
                       </Text>
                     </View>
@@ -337,7 +337,7 @@ const LexiconManagePage = () => {
                           // 查看详情
                         }}
                       >
-                        <Eye size={20} color="#3b82f6" />
+                        <Eye size={20} color="#60a5fa" />
                       </View>
                       <View
                         style={{
@@ -349,7 +349,7 @@ const LexiconManagePage = () => {
                           Taro.showToast({ title: '编辑功能开发中', icon: 'none' });
                         }}
                       >
-                        <Pencil size={20} color="#f59e0b" />
+                        <Pencil size={20} color="#38bdf8" />
                       </View>
                       <View
                         style={{
@@ -359,7 +359,7 @@ const LexiconManagePage = () => {
                         }}
                         onClick={() => handleDelete(lexicon)}
                       >
-                        <Trash2 size={20} color="#ef4444" />
+                        <Trash2 size={20} color="#f87171" />
                       </View>
                     </View>
                   </View>
@@ -375,7 +375,7 @@ const LexiconManagePage = () => {
         <View className="modal-overlay">
           <View className="modal-content">
             <View className="modal-header">
-              <Text style={{ fontSize: '32px', fontWeight: '600', color: '#fafafa' }}>
+              <Text style={{ fontSize: '32px', fontWeight: '600', color: '#f1f5f9' }}>
                 创建语料库
               </Text>
               <View onClick={() => setShowCreateModal(false)}>
@@ -391,7 +391,7 @@ const LexiconManagePage = () => {
                 <Input
                   className="form-input input-focus"
                   placeholder="请输入名称"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={newLexiconName}
                   onInput={(e) => setNewLexiconName(e.detail.value)}
                 />
@@ -404,7 +404,7 @@ const LexiconManagePage = () => {
                 <Input
                   className="form-input input-focus"
                   placeholder="请输入描述"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={newLexiconDesc}
                   onInput={(e) => setNewLexiconDesc(e.detail.value)}
                 />
@@ -422,7 +422,7 @@ const LexiconManagePage = () => {
                 }}
                 onClick={() => setShowCreateModal(false)}
               >
-                <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>取消</Text>
+                <Text style={{ fontSize: '24px', color: '#94a3b8' }}>取消</Text>
               </View>
               <View
                 className="action-btn-primary"

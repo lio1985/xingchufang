@@ -123,7 +123,7 @@ const LoginPage = () => {
       {/* Logo 区域 */}
       <View style={{ paddingTop: '120px', paddingLeft: '48px', paddingRight: '48px' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
-          <View style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #38bdf8 0%, #fb923c 100%)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Lightbulb size={40} color="#000" />
           </View>
           <View style={{ display: 'flex', flexDirection: 'column' }}>
@@ -131,18 +131,18 @@ const LoginPage = () => {
             <Text style={{ fontSize: '24px', color: '#71717a', letterSpacing: '0.1em' }}>STAR KITCHEN</Text>
           </View>
         </View>
-        <Text style={{ fontSize: '28px', color: '#a1a1aa', marginTop: '16px' }}>欢迎回来，创作者</Text>
+        <Text style={{ fontSize: '28px', color: '#94a3b8', marginTop: '16px' }}>欢迎回来，创作者</Text>
       </View>
 
       {/* 登录表单 */}
       <View style={{ flex: 1, padding: '48px 32px 0' }}>
         {/* 账号输入 */}
         <View style={{ marginBottom: '24px' }}>
-          <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>账号</Text>
+          <Text style={{ fontSize: '24px', color: '#94a3b8', marginBottom: '12px', display: 'block' }}>账号</Text>
           <View style={{ 
             backgroundColor: '#111827', 
             borderRadius: '16px', 
-            border: focusedField === 'username' ? '2px solid #f59e0b' : '1px solid #1e3a5f', 
+            border: focusedField === 'username' ? '2px solid #38bdf8' : '1px solid #1e3a5f', 
             padding: '24px', 
             display: 'flex', 
             alignItems: 'center', 
@@ -154,7 +154,7 @@ const LoginPage = () => {
             <Input
               style={{ flex: 1, fontSize: '28px', color: '#ffffff', backgroundColor: 'transparent' }}
               placeholder="请输入账号"
-              placeholderStyle="color: #52525b"
+              placeholderStyle="color: #64748b"
               value={username}
               onFocus={() => setFocusedField('username')}
               onBlur={() => setFocusedField(null)}
@@ -165,11 +165,11 @@ const LoginPage = () => {
 
         {/* 密码输入 */}
         <View style={{ marginBottom: '24px' }}>
-          <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>密码</Text>
+          <Text style={{ fontSize: '24px', color: '#94a3b8', marginBottom: '12px', display: 'block' }}>密码</Text>
           <View style={{ 
             backgroundColor: '#111827', 
             borderRadius: '16px', 
-            border: focusedField === 'password' ? '2px solid #f59e0b' : '1px solid #1e3a5f', 
+            border: focusedField === 'password' ? '2px solid #38bdf8' : '1px solid #1e3a5f', 
             padding: '24px', 
             display: 'flex', 
             alignItems: 'center', 
@@ -182,7 +182,7 @@ const LoginPage = () => {
               style={{ flex: 1, fontSize: '28px', color: '#ffffff', backgroundColor: 'transparent' }}
               password={!showPassword}
               placeholder="请输入密码"
-              placeholderStyle="color: #52525b"
+              placeholderStyle="color: #64748b"
               value={password}
               onFocus={() => setFocusedField('password')}
               onBlur={() => setFocusedField(null)}
@@ -193,9 +193,9 @@ const LoginPage = () => {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeOff size={24} color="#f59e0b" />
+                <EyeOff size={24} color="#38bdf8" />
               ) : (
-                <Eye size={24} color="#f59e0b" />
+                <Eye size={24} color="#38bdf8" />
               )}
             </View>
           </View>
@@ -211,7 +211,7 @@ const LoginPage = () => {
         {/* 登录按钮 */}
         <View
           style={{ 
-            background: loading ? '#1e3a5f' : 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)', 
+            background: loading ? '#1e3a5f' : 'linear-gradient(135deg, #38bdf8 0%, #fb923c 100%)', 
             borderRadius: '16px', 
             padding: '28px', 
             textAlign: 'center', 
@@ -219,15 +219,15 @@ const LoginPage = () => {
           }}
           onClick={loading ? undefined : handleLogin}
         >
-          <Text style={{ fontSize: '32px', fontWeight: '600', color: loading ? '#52525b' : '#000' }}>
+          <Text style={{ fontSize: '32px', fontWeight: '600', color: loading ? '#64748b' : '#000' }}>
             {loading ? '登录中...' : '登录'}
           </Text>
         </View>
 
         {/* 注册入口 */}
         <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-          <Text style={{ fontSize: '24px', color: '#52525b' }}>还没有账号？</Text>
-          <Text style={{ fontSize: '24px', color: '#f59e0b', fontWeight: '500' }} onClick={handleRegister}>
+          <Text style={{ fontSize: '24px', color: '#64748b' }}>还没有账号？</Text>
+          <Text style={{ fontSize: '24px', color: '#38bdf8', fontWeight: '500' }} onClick={handleRegister}>
             立即注册
           </Text>
         </View>

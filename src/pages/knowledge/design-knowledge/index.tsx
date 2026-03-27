@@ -99,9 +99,9 @@ const designKnowledgeData = [
 
 // 难度颜色映射
 const difficultyColors: Record<string, { color: string; bgColor: string }> = {
-  '入门': { color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
-  '进阶': { color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
-  '必读': { color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.2)' },
+  '入门': { color: '#4ade80', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  '进阶': { color: '#38bdf8', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  '必读': { color: '#f87171', bgColor: 'rgba(239, 68, 68, 0.2)' },
 };
 
 const DesignKnowledgePage = () => {
@@ -138,7 +138,7 @@ const DesignKnowledgePage = () => {
               }}
               onClick={handleSearch}
             >
-              <Search size={18} color="#a1a1aa" />
+              <Search size={18} color="#94a3b8" />
             </View>
           </View>
         </View>
@@ -154,12 +154,12 @@ const DesignKnowledgePage = () => {
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
-                backgroundColor: cat.id === 'all' ? '#f59e0b' : '#1e3a5f',
+                backgroundColor: cat.id === 'all' ? '#38bdf8' : '#1e3a5f',
                 flexShrink: 0
               }}
               onClick={() => handleCategoryClick(cat.id)}
             >
-              <Text style={{ fontSize: '13px', color: cat.id === 'all' ? '#0a0f1a' : '#a1a1aa', fontWeight: '500' }}>
+              <Text style={{ fontSize: '13px', color: cat.id === 'all' ? '#0a0f1a' : '#94a3b8', fontWeight: '500' }}>
                 {cat.name} ({cat.count})
               </Text>
             </View>
@@ -183,7 +183,7 @@ const DesignKnowledgePage = () => {
               gap: '8px'
             }}
             >
-              <Layers size={20} color="#3b82f6" />
+              <Layers size={20} color="#60a5fa" />
               <View>
                 <Text style={{ fontSize: '12px', color: '#71717a' }}>设计案例</Text>
                 <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>32</Text>
@@ -200,7 +200,7 @@ const DesignKnowledgePage = () => {
               gap: '8px'
             }}
             >
-              <Ruler size={20} color="#22c55e" />
+              <Ruler size={20} color="#4ade80" />
               <View>
                 <Text style={{ fontSize: '12px', color: '#71717a' }}>设计规范</Text>
                 <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>18</Text>
@@ -236,23 +236,23 @@ const DesignKnowledgePage = () => {
                 <View style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <PenTool size={16} color="#f59e0b" />
+                      <PenTool size={16} color="#38bdf8" />
                       <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff' }}>{knowledge.title}</Text>
                     </View>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
                       <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(245, 158, 11, 0.2)' }}>
-                        <Text style={{ fontSize: '11px', color: '#f59e0b' }}>{knowledge.categoryName}</Text>
+                        <Text style={{ fontSize: '11px', color: '#38bdf8' }}>{knowledge.categoryName}</Text>
                       </View>
                       <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: difficultyStyle.bgColor }}>
                         <Text style={{ fontSize: '11px', color: difficultyStyle.color }}>{knowledge.difficulty}</Text>
                       </View>
                     </View>
                   </View>
-                  <ChevronRight size={20} color="#52525b" />
+                  <ChevronRight size={20} color="#64748b" />
                 </View>
 
                 {/* 摘要 */}
-                <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '20px', marginBottom: '12px' }}>
+                <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '20px', marginBottom: '12px' }}>
                   {knowledge.summary}
                 </Text>
 
@@ -273,11 +273,11 @@ const DesignKnowledgePage = () => {
                       <Eye size={14} color="#71717a" />
                       <Text style={{ fontSize: '12px', color: '#71717a' }}>{knowledge.viewCount}</Text>
                     </View>
-                    <Text style={{ fontSize: '12px', color: '#52525b' }}>作者: {knowledge.author}</Text>
+                    <Text style={{ fontSize: '12px', color: '#64748b' }}>作者: {knowledge.author}</Text>
                   </View>
                   <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Clock size={14} color="#52525b" />
-                    <Text style={{ fontSize: '12px', color: '#52525b' }}>{knowledge.updateTime}</Text>
+                    <Clock size={14} color="#64748b" />
+                    <Text style={{ fontSize: '12px', color: '#64748b' }}>{knowledge.updateTime}</Text>
                   </View>
                 </View>
               </View>

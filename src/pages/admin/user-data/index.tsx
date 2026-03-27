@@ -25,7 +25,7 @@ export default function UserDataPage() {
         return {
           title: '对话记录',
           icon: MessageSquare,
-          iconColor: '#3b82f6',
+          iconColor: '#60a5fa',
           api: `/api/conversation/list?userId=${userId}`,
           emptyText: '暂无对话记录'
         }
@@ -41,7 +41,7 @@ export default function UserDataPage() {
         return {
           title: '文件上传',
           icon: FolderOpen,
-          iconColor: '#f59e0b',
+          iconColor: '#38bdf8',
           api: `/api/multimedia/list?userId=${userId}`,
           emptyText: '暂无文件'
         }
@@ -151,7 +151,7 @@ export default function UserDataPage() {
   const renderFileItem = (item: any) => (
     <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
       <View className="flex items-start gap-3 mb-2">
-        <FolderOpen size={18} color="#f59e0b" />
+        <FolderOpen size={18} color="#38bdf8" />
         <View className="flex-1 min-w-0">
           <Text className="text-white font-semibold block truncate">{item.name || item.title || '未命名文件'}</Text>
           <Text className="text-zinc-500 text-xs block">
@@ -240,7 +240,7 @@ export default function UserDataPage() {
             className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
             onClick={() => Taro.navigateBack()}
           >
-            <ArrowLeft size={20} color="#f59e0b" />
+            <ArrowLeft size={20} color="#38bdf8" />
           </View>
           <View className="flex items-center gap-2">
             <View className="w-8 h-8 rounded-lg flex items-center justify-center bg-zinc-800/60 border border-zinc-700/50">

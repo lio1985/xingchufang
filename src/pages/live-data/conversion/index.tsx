@@ -97,9 +97,9 @@ const ConversionPage = () => {
 
   const getConversionLevel = (rate: number) => {
     if (rate >= 5) return { label: '优秀', color: '#10b981' };
-    if (rate >= 3) return { label: '良好', color: '#3b82f6' };
-    if (rate >= 1) return { label: '一般', color: '#f59e0b' };
-    return { label: '待提升', color: '#ef4444' };
+    if (rate >= 3) return { label: '良好', color: '#60a5fa' };
+    if (rate >= 1) return { label: '一般', color: '#38bdf8' };
+    return { label: '待提升', color: '#f87171' };
   };
 
   if (!stats) {

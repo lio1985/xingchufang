@@ -112,7 +112,7 @@ const NewsPage = () => {
           <Input
             style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
             placeholder="搜索热点资讯..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={keyword}
             onInput={(e) => setKeyword(e.detail.value)}
             onConfirm={handleSearch}
@@ -137,7 +137,7 @@ const NewsPage = () => {
                 }}
                 onClick={() => setTimeRange(item.value)}
               >
-                <Text style={{ fontSize: '13px', color: timeRange === item.value ? '#ffffff' : '#a1a1aa' }}>{item.label}</Text>
+                <Text style={{ fontSize: '13px', color: timeRange === item.value ? '#ffffff' : '#94a3b8' }}>{item.label}</Text>
               </View>
             ))}
           </View>
@@ -190,9 +190,9 @@ const NewsPage = () => {
             <View style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                 <Text style={{ fontSize: '16px' }}>✨</Text>
-                <Text style={{ fontSize: '14px', fontWeight: '600', color: '#3b82f6' }}>摘要</Text>
+                <Text style={{ fontSize: '14px', fontWeight: '600', color: '#60a5fa' }}>摘要</Text>
               </View>
-              <Text style={{ fontSize: '13px', color: '#a1a1aa', display: 'block', lineHeight: '20px' }}>{aiSummary}</Text>
+              <Text style={{ fontSize: '13px', color: '#94a3b8', display: 'block', lineHeight: '20px' }}>{aiSummary}</Text>
             </View>
           )}
 
@@ -200,20 +200,20 @@ const NewsPage = () => {
           {results.length === 0 && !loading && keyword === '' && (
             <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
               <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Globe size={32} color="#52525b" />
+                <Globe size={32} color="#64748b" />
               </View>
               <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginTop: '16px' }}>搜索热点资讯</Text>
-              <Text style={{ fontSize: '13px', color: '#52525b', display: 'block', marginTop: '8px' }}>输入关键词，发现最新动态</Text>
+              <Text style={{ fontSize: '13px', color: '#64748b', display: 'block', marginTop: '8px' }}>输入关键词，发现最新动态</Text>
             </View>
           )}
 
           {results.length === 0 && !loading && keyword !== '' && (
             <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
               <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Search size={32} color="#52525b" />
+                <Search size={32} color="#64748b" />
               </View>
               <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginTop: '16px' }}>未找到相关资讯</Text>
-              <Text style={{ fontSize: '13px', color: '#52525b', display: 'block', marginTop: '8px' }}>试试其他关键词</Text>
+              <Text style={{ fontSize: '13px', color: '#64748b', display: 'block', marginTop: '8px' }}>试试其他关键词</Text>
             </View>
           )}
 
@@ -238,8 +238,8 @@ const NewsPage = () => {
                   <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                     {item.siteName && (
                       <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Globe size={12} color="#3b82f6" />
-                        <Text style={{ fontSize: '12px', color: '#3b82f6' }}>{item.siteName}</Text>
+                        <Globe size={12} color="#60a5fa" />
+                        <Text style={{ fontSize: '12px', color: '#60a5fa' }}>{item.siteName}</Text>
                       </View>
                     )}
                     {item.publishTime && (
@@ -251,7 +251,7 @@ const NewsPage = () => {
                   </View>
 
                   {/* 摘要 */}
-                  <Text style={{ fontSize: '13px', color: '#a1a1aa', display: 'block', marginBottom: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8', display: 'block', marginBottom: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {item.snippet}
                   </Text>
 
@@ -261,7 +261,7 @@ const NewsPage = () => {
                     onClick={() => openUrl(item.url)}
                   >
                     <Text style={{ fontSize: '14px' }}>🔗</Text>
-                    <Text style={{ fontSize: '12px', color: '#3b82f6' }}>查看原文</Text>
+                    <Text style={{ fontSize: '12px', color: '#60a5fa' }}>查看原文</Text>
                   </View>
                 </View>
               ))}

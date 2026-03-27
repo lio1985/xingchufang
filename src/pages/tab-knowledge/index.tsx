@@ -35,14 +35,14 @@ const TabKnowledgePage = () => {
 
       {/* 知识分类 */}
       <View style={{ padding: '24px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
         <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           <View
             style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/favorite-list/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Heart size={20} color="#ef4444" />
+              <Heart size={20} color="#f87171" />
             </View>
             <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>个人收藏</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>我的收藏内容</Text>
@@ -64,7 +64,7 @@ const TabKnowledgePage = () => {
             onClick={() => handleNav('/pages/lexicon-system/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <MessageSquareText size={20} color="#f59e0b" />
+              <MessageSquareText size={20} color="#38bdf8" />
             </View>
             <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>个人语料</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>个人表达风格</Text>
@@ -86,9 +86,9 @@ const TabKnowledgePage = () => {
       {/* 最近学习 */}
       <View style={{ padding: '24px 20px 0' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500' }}>最近学习</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>最近学习</Text>
           <Text 
-            style={{ fontSize: '12px', color: '#f59e0b' }}
+            style={{ fontSize: '12px', color: '#38bdf8' }}
             onClick={() => handleNav('/pages/news/index')}
           >
             查看全部
@@ -104,12 +104,12 @@ const TabKnowledgePage = () => {
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>内容创作入门指南</Text>
               <View style={{ display: 'flex', alignItems: 'center' }}>
-                <Play size={14} color="#f59e0b" />
-                <Text style={{ fontSize: '12px', color: '#f59e0b', marginLeft: '4px' }}>继续</Text>
+                <Play size={14} color="#38bdf8" />
+                <Text style={{ fontSize: '12px', color: '#38bdf8', marginLeft: '4px' }}>继续</Text>
               </View>
             </View>
             <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
-              <View style={{ height: '100%', width: '60%', backgroundColor: '#f59e0b', borderRadius: '2px' }} />
+              <View style={{ height: '100%', width: '60%', backgroundColor: '#38bdf8', borderRadius: '2px' }} />
             </View>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 7/12 课时 · 60%</Text>
           </View>
@@ -122,12 +122,12 @@ const TabKnowledgePage = () => {
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>客户沟通技巧</Text>
               <View style={{ display: 'flex', alignItems: 'center' }}>
-                <Play size={14} color="#f59e0b" />
-                <Text style={{ fontSize: '12px', color: '#f59e0b', marginLeft: '4px' }}>继续</Text>
+                <Play size={14} color="#38bdf8" />
+                <Text style={{ fontSize: '12px', color: '#38bdf8', marginLeft: '4px' }}>继续</Text>
               </View>
             </View>
             <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
-              <View style={{ height: '100%', width: '30%', backgroundColor: '#f59e0b', borderRadius: '2px' }} />
+              <View style={{ height: '100%', width: '30%', backgroundColor: '#38bdf8', borderRadius: '2px' }} />
             </View>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 2/8 课时 · 30%</Text>
           </View>

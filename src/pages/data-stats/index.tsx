@@ -114,7 +114,7 @@ const DataStatsPage = () => {
         <View className="header-top" style={{ marginBottom: '24px' }}>
           <View className="header-left">
             <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#fafafa" />
+              <ChevronLeft size={32} color="#f1f5f9" />
             </View>
             <Text className="header-title">数据统计</Text>
           </View>
@@ -140,7 +140,7 @@ const DataStatsPage = () => {
 
       {loading ? (
         <View className="loading-state">
-          <RefreshCw size={64} color="#f59e0b" />
+          <RefreshCw size={64} color="#38bdf8" />
           <Text className="loading-text">加载中...</Text>
         </View>
       ) : (
@@ -165,14 +165,14 @@ const DataStatsPage = () => {
                   </Text>
                   <View className="stat-item-trend">
                     {stats.trends[0].change > 0 ? (
-                      <TrendingUp size={16} color="#22c55e" />
+                      <TrendingUp size={16} color="#4ade80" />
                     ) : (
-                      <TrendingDown size={16} color="#ef4444" />
+                      <TrendingDown size={16} color="#f87171" />
                     )}
                     <Text
                       style={{
                         fontSize: '20px',
-                        color: stats.trends[0].change > 0 ? '#22c55e' : '#ef4444',
+                        color: stats.trends[0].change > 0 ? '#4ade80' : '#f87171',
                       }}
                     >
                       {stats.trends[0].change > 0 ? '+' : ''}
@@ -191,14 +191,14 @@ const DataStatsPage = () => {
                   <Text className="stat-item-value">{stats.totalOrders}</Text>
                   <View className="stat-item-trend">
                     {stats.trends[1].change > 0 ? (
-                      <TrendingUp size={16} color="#22c55e" />
+                      <TrendingUp size={16} color="#4ade80" />
                     ) : (
-                      <TrendingDown size={16} color="#ef4444" />
+                      <TrendingDown size={16} color="#f87171" />
                     )}
                     <Text
                       style={{
                         fontSize: '20px',
-                        color: stats.trends[1].change > 0 ? '#22c55e' : '#ef4444',
+                        color: stats.trends[1].change > 0 ? '#4ade80' : '#f87171',
                       }}
                     >
                       {stats.trends[1].change > 0 ? '+' : ''}
@@ -217,14 +217,14 @@ const DataStatsPage = () => {
                   <Text className="stat-item-value">{stats.totalCustomers}</Text>
                   <View className="stat-item-trend">
                     {stats.trends[2].change > 0 ? (
-                      <TrendingUp size={16} color="#22c55e" />
+                      <TrendingUp size={16} color="#4ade80" />
                     ) : (
-                      <TrendingDown size={16} color="#ef4444" />
+                      <TrendingDown size={16} color="#f87171" />
                     )}
                     <Text
                       style={{
                         fontSize: '20px',
-                        color: stats.trends[2].change > 0 ? '#22c55e' : '#ef4444',
+                        color: stats.trends[2].change > 0 ? '#4ade80' : '#f87171',
                       }}
                     >
                       {stats.trends[2].change > 0 ? '+' : ''}

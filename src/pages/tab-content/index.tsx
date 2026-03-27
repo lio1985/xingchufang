@@ -27,14 +27,14 @@ const TabContentPage = () => {
           style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center' }}
           onClick={() => handleNav('/pages/ai-assistant/index')}
         >
-          <View style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #f59e0b, #f97316)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #38bdf8, #f97316)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Sparkles size={24} color="#ffffff" />
           </View>
           <View style={{ flex: 1, marginLeft: '16px' }}>
-            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f59e0b', display: 'block' }}>星小帮</Text>
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#38bdf8', display: 'block' }}>星小帮</Text>
             <Text style={{ fontSize: '12px', color: 'rgba(245, 158, 11, 0.6)', display: 'block', marginTop: '4px' }}>AI智能创作助手</Text>
           </View>
-          <ChevronRight size={20} color="#f59e0b" />
+          <ChevronRight size={20} color="#38bdf8" />
         </View>
       </View>
 
@@ -46,7 +46,7 @@ const TabContentPage = () => {
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周创作</Text>
           </View>
           <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#f59e0b' }}>42</Text>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#38bdf8' }}>42</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>灵感数量</Text>
           </View>
         </View>
@@ -54,7 +54,7 @@ const TabContentPage = () => {
 
       {/* 创作工具 */}
       <View style={{ padding: '24px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>创作工具</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>创作工具</Text>
         
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 灵感速记 */}
@@ -63,13 +63,13 @@ const TabContentPage = () => {
             onClick={() => handleNav('/pages/quick-note/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Lightbulb size={20} color="#f59e0b" />
+              <Lightbulb size={20} color="#38bdf8" />
             </View>
             <View style={{ flex: 1, marginLeft: '12px' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>灵感速记</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>快速捕捉灵感</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={18} color="#64748b" />
           </View>
 
           {/* 选题策划 */}
@@ -84,7 +84,7 @@ const TabContentPage = () => {
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>选题策划</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>热门选题方向</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={18} color="#64748b" />
           </View>
 
           {/* 内容写作 */}
@@ -99,7 +99,7 @@ const TabContentPage = () => {
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>内容写作</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>高效产出优质内容</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={18} color="#64748b" />
           </View>
         </View>
       </View>

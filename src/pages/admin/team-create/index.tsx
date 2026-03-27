@@ -57,11 +57,11 @@ export default function TeamCreate() {
               className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
               onClick={() => Taro.navigateBack()}
             >
-              <ArrowLeft size={20} color="#f59e0b" />
+              <ArrowLeft size={20} color="#38bdf8" />
             </View>
             <View className="flex items-center gap-2">
               <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
-                <Users size={16} color="#f59e0b" />
+                <Users size={16} color="#38bdf8" />
               </View>
               <Text className="block text-lg font-semibold text-white">创建团队</Text>
             </View>
@@ -133,7 +133,7 @@ export default function TeamCreate() {
         {/* Tips */}
         <View className="flex items-start gap-3 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
           <View className="flex-shrink-0 w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
-            <Info size={16} color="#f59e0b" />
+            <Info size={16} color="#38bdf8" />
           </View>
           <View>
             <Text className="block text-sm text-amber-500 font-medium mb-1">创建说明</Text>

@@ -32,13 +32,13 @@ interface Statistics {
 
 const statusMap = {
   pending: { label: '待接触', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.2)' },
-  contacted: { label: '已接触', color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.2)' },
+  contacted: { label: '已接触', color: '#60a5fa', bgColor: 'rgba(59, 130, 246, 0.2)' },
   assessing: { label: '评估中', color: '#a855f7', bgColor: 'rgba(168, 85, 247, 0.2)' },
-  negotiating: { label: '谈判中', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
-  deal: { label: '已签约', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  negotiating: { label: '谈判中', color: '#38bdf8', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  deal: { label: '已签约', color: '#4ade80', bgColor: 'rgba(34, 197, 94, 0.2)' },
   recycling: { label: '回收中', color: '#06b6d4', bgColor: 'rgba(6, 182, 212, 0.2)' },
   completed: { label: '已完成', color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.2)' },
-  cancelled: { label: '已取消', color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.2)' }
+  cancelled: { label: '已取消', color: '#f87171', bgColor: 'rgba(239, 68, 68, 0.2)' }
 };
 
 export default function RecycleStoreList() {
@@ -145,7 +145,7 @@ export default function RecycleStoreList() {
             }}
             onClick={() => Taro.navigateBack()}
           >
-            <ChevronLeft size={24} color="#f59e0b" />
+            <ChevronLeft size={24} color="#38bdf8" />
           </View>
           <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>整店回收</Text>
         </View>
@@ -161,7 +161,7 @@ export default function RecycleStoreList() {
               style={{ padding: '6px 12px', backgroundColor: 'rgba(59, 130, 246, 0.2)', borderRadius: '8px' }}
               onClick={goToDashboard}
             >
-              <Text style={{ fontSize: '12px', color: '#3b82f6' }}>查看详情</Text>
+              <Text style={{ fontSize: '12px', color: '#60a5fa' }}>查看详情</Text>
             </View>
           </View>
           <View style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -171,14 +171,14 @@ export default function RecycleStoreList() {
             </View>
             <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
             <View style={{ flex: 1, textAlign: 'center' }}>
-              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>
                 {statistics?.statusDistribution?.completed || 0}
               </Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>已完成</Text>
             </View>
             <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
             <View style={{ flex: 1, textAlign: 'center' }}>
-              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#38bdf8' }}>
                 ¥{(statistics?.totalEstimatedValue || 0).toFixed(0)}
               </Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>预估价值(万)</Text>
@@ -195,14 +195,14 @@ export default function RecycleStoreList() {
             <Input
               style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
               placeholder="搜索门店名称/电话/微信"
-              placeholderStyle="color: #52525b"
+              placeholderStyle="color: #64748b"
               value={keyword}
               onInput={(e) => setKeyword(e.detail.value)}
               onConfirm={handleSearch}
             />
           </View>
           <View
-            style={{ backgroundColor: '#3b82f6', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ backgroundColor: '#60a5fa', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={handleSearch}
           >
             <Text style={{ fontSize: '14px', color: '#ffffff' }}>搜索</Text>
@@ -218,12 +218,12 @@ export default function RecycleStoreList() {
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
-                backgroundColor: statusFilter === '' ? '#3b82f6' : '#111827',
+                backgroundColor: statusFilter === '' ? '#60a5fa' : '#111827',
                 border: statusFilter === '' ? 'none' : '1px solid #1e3a5f'
               }}
               onClick={() => { setStatusFilter(''); loadStores(true, keyword, ''); }}
             >
-              <Text style={{ fontSize: '13px', color: statusFilter === '' ? '#ffffff' : '#a1a1aa' }}>全部</Text>
+              <Text style={{ fontSize: '13px', color: statusFilter === '' ? '#ffffff' : '#94a3b8' }}>全部</Text>
             </View>
             {Object.entries(statusMap).slice(0, 6).map(([key, config]) => (
               <View
@@ -231,12 +231,12 @@ export default function RecycleStoreList() {
                 style={{
                   padding: '8px 16px',
                   borderRadius: '20px',
-                  backgroundColor: statusFilter === key ? '#3b82f6' : '#111827',
+                  backgroundColor: statusFilter === key ? '#60a5fa' : '#111827',
                   border: statusFilter === key ? 'none' : '1px solid #1e3a5f'
                 }}
                 onClick={() => { setStatusFilter(key); loadStores(true, keyword, key); }}
               >
-                <Text style={{ fontSize: '13px', color: statusFilter === key ? '#ffffff' : '#a1a1aa' }}>{config.label}</Text>
+                <Text style={{ fontSize: '13px', color: statusFilter === key ? '#ffffff' : '#94a3b8' }}>{config.label}</Text>
               </View>
             ))}
           </View>
@@ -247,10 +247,10 @@ export default function RecycleStoreList() {
       <View style={{ padding: '16px 20px 0' }}>
         {stores.length === 0 && !loading ? (
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
-            <Store size={48} color="#52525b" />
+            <Store size={48} color="#64748b" />
             <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '12px' }}>暂无回收门店</Text>
             <View
-              style={{ marginTop: '16px', backgroundColor: '#3b82f6', borderRadius: '24px', padding: '12px 24px' }}
+              style={{ marginTop: '16px', backgroundColor: '#60a5fa', borderRadius: '24px', padding: '12px 24px' }}
               onClick={goToCreate}
             >
               <Text style={{ fontSize: '14px', color: '#ffffff' }}>新增门店</Text>
@@ -282,27 +282,27 @@ export default function RecycleStoreList() {
                       </View>
                       <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>{store.business_type || '未分类'}</Text>
                     </View>
-                    <ChevronRight size={18} color="#52525b" />
+                    <ChevronRight size={18} color="#64748b" />
                   </View>
 
                   <View style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Phone size={14} color="#52525b" />
-                      <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.phone || '未填写'}</Text>
+                      <Phone size={14} color="#64748b" />
+                      <Text style={{ fontSize: '13px', color: '#94a3b8' }}>{store.phone || '未填写'}</Text>
                     </View>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <MapPin size={14} color="#52525b" />
-                      <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.city || '未填写'}</Text>
+                      <MapPin size={14} color="#64748b" />
+                      <Text style={{ fontSize: '13px', color: '#94a3b8' }}>{store.city || '未填写'}</Text>
                     </View>
                   </View>
 
                   {store.estimated_value && (
                     <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                       <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <CircleDollarSign size={14} color="#52525b" />
+                        <CircleDollarSign size={14} color="#64748b" />
                         <Text style={{ fontSize: '13px', color: '#71717a' }}>预估价值</Text>
                       </View>
-                      <Text style={{ fontSize: '16px', fontWeight: '600', color: '#3b82f6' }}>¥{store.estimated_value.toFixed(0)}</Text>
+                      <Text style={{ fontSize: '16px', fontWeight: '600', color: '#60a5fa' }}>¥{store.estimated_value.toFixed(0)}</Text>
                     </View>
                   )}
                 </View>
@@ -319,7 +319,7 @@ export default function RecycleStoreList() {
 
         {!hasMore && stores.length > 0 && (
           <View style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }} onClick={handleLoadMore}>
-            <Text style={{ fontSize: '12px', color: '#52525b' }}>没有更多了</Text>
+            <Text style={{ fontSize: '12px', color: '#64748b' }}>没有更多了</Text>
           </View>
         )}
       </View>
@@ -332,7 +332,7 @@ export default function RecycleStoreList() {
           right: '20px',
           width: '56px',
           height: '56px',
-          backgroundColor: '#3b82f6',
+          backgroundColor: '#60a5fa',
           borderRadius: '28px',
           display: 'flex',
           alignItems: 'center',

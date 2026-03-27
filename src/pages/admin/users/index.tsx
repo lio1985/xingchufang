@@ -207,14 +207,14 @@ export default function AdminUsersPage() {
       <View className="admin-header" style={{ paddingBottom: '16px' }}>
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">用户管理</Text>
           <View
             className="admin-action-btn"
             onClick={handleRefresh}
           >
-            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
 
@@ -224,12 +224,12 @@ export default function AdminUsersPage() {
           <Input
             className="search-input"
             placeholder="搜索用户名、姓名、员工ID..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={searchText}
             onInput={(e) => handleSearch(e.detail.value)}
           />
           <View
-            style={{ padding: '8px', borderRadius: '8px', backgroundColor: showListFilters ? '#f59e0b' : '#1e293b' }}
+            style={{ padding: '8px', borderRadius: '8px', backgroundColor: showListFilters ? '#38bdf8' : '#1e293b' }}
             onClick={() => setShowListFilters(!showListFilters)}
           >
             <ListFilter size={20} color={showListFilters ? '#000' : '#71717a'} />
@@ -322,7 +322,7 @@ export default function AdminUsersPage() {
             users.map((user) => (
               <View key={user.id} className="user-list-item" onClick={() => showUserDetail(user)}>
                 <View className="user-avatar">
-                  <User size={28} color="#f59e0b" />
+                  <User size={28} color="#38bdf8" />
                 </View>
 
                 <View className="user-info">
@@ -355,21 +355,21 @@ export default function AdminUsersPage() {
                   )}
                 </View>
 
-                <ChevronRight size={24} color="#52525b" />
+                <ChevronRight size={24} color="#64748b" />
               </View>
             ))
           )}
 
           {loading && (
             <View className="loading-state">
-              <RefreshCw size={48} color="#f59e0b" />
+              <RefreshCw size={48} color="#38bdf8" />
               <Text className="loading-text">加载中...</Text>
             </View>
           )}
 
           {!loading && users.length >= total && users.length > 0 && (
             <View style={{ textAlign: 'center', padding: '16px 0' }}>
-              <Text style={{ fontSize: '22px', color: '#52525b' }}>已加载全部数据</Text>
+              <Text style={{ fontSize: '22px', color: '#64748b' }}>已加载全部数据</Text>
             </View>
           )}
         </View>
@@ -389,10 +389,10 @@ export default function AdminUsersPage() {
             {/* 用户信息 */}
             <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
               <View className="user-avatar" style={{ width: '80px', height: '80px' }}>
-                <User size={36} color="#f59e0b" />
+                <User size={36} color="#38bdf8" />
               </View>
               <View>
-                <Text style={{ fontSize: '32px', fontWeight: '700', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9', display: 'block' }}>
                   {selectedUser.username}
                 </Text>
                 <View style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
@@ -408,24 +408,24 @@ export default function AdminUsersPage() {
 
             {/* 基本信息 */}
             <View className="admin-card" style={{ marginBottom: '16px' }}>
-              <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '12px', display: 'block' }}>
+              <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px', display: 'block' }}>
                 基本信息
               </Text>
               {selectedUser.profile?.realName && (
                 <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                   <Text style={{ fontSize: '22px', color: '#71717a' }}>姓名</Text>
-                  <Text style={{ fontSize: '22px', color: '#fafafa' }}>{selectedUser.profile.realName}</Text>
+                  <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{selectedUser.profile.realName}</Text>
                 </View>
               )}
               {selectedUser.profile?.department && (
                 <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                   <Text style={{ fontSize: '22px', color: '#71717a' }}>部门</Text>
-                  <Text style={{ fontSize: '22px', color: '#fafafa' }}>{selectedUser.profile.department}</Text>
+                  <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{selectedUser.profile.department}</Text>
                 </View>
               )}
               <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                 <Text style={{ fontSize: '22px', color: '#71717a' }}>注册时间</Text>
-                <Text style={{ fontSize: '22px', color: '#fafafa' }}>
+                <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>
                   {new Date(selectedUser.createdAt).toLocaleDateString('zh-CN')}
                 </Text>
               </View>
@@ -434,18 +434,18 @@ export default function AdminUsersPage() {
             {/* 用户统计 */}
             {selectedUser.statistics && (
               <View className="admin-card" style={{ marginBottom: '16px' }}>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '12px', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px', display: 'block' }}>
                   活跃统计
                 </Text>
                 <View style={{ display: 'flex', gap: '24px' }}>
                   <View style={{ textAlign: 'center' }}>
-                    <Text style={{ fontSize: '32px', fontWeight: '700', color: '#3b82f6' }}>
+                    <Text style={{ fontSize: '32px', fontWeight: '700', color: '#60a5fa' }}>
                       {selectedUser.statistics.conversationCount}
                     </Text>
                     <Text style={{ fontSize: '20px', color: '#71717a' }}>对话</Text>
                   </View>
                   <View style={{ textAlign: 'center' }}>
-                    <Text style={{ fontSize: '32px', fontWeight: '700', color: '#22c55e' }}>
+                    <Text style={{ fontSize: '32px', fontWeight: '700', color: '#4ade80' }}>
                       {selectedUser.statistics.messageCount}
                     </Text>
                     <Text style={{ fontSize: '20px', color: '#71717a' }}>消息</Text>
@@ -475,7 +475,7 @@ export default function AdminUsersPage() {
                     className="action-button action-button-danger"
                     onClick={() => changeUserStatus(selectedUser.id, 'disabled')}
                   >
-                    <CircleX size={20} color="#ef4444" />
+                    <CircleX size={20} color="#f87171" />
                     <Text style={{ marginLeft: '8px' }}>拒绝</Text>
                   </View>
                 </>

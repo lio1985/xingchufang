@@ -54,13 +54,13 @@ interface FollowUp {
 
 const statusMap = {
   pending: { label: '待接触', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.2)' },
-  contacted: { label: '已接触', color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.2)' },
+  contacted: { label: '已接触', color: '#60a5fa', bgColor: 'rgba(59, 130, 246, 0.2)' },
   assessing: { label: '评估中', color: '#a855f7', bgColor: 'rgba(168, 85, 247, 0.2)' },
-  negotiating: { label: '谈判中', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
-  deal: { label: '已签约', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  negotiating: { label: '谈判中', color: '#38bdf8', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  deal: { label: '已签约', color: '#4ade80', bgColor: 'rgba(34, 197, 94, 0.2)' },
   recycling: { label: '回收中', color: '#06b6d4', bgColor: 'rgba(6, 182, 212, 0.2)' },
   completed: { label: '已完成', color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.2)' },
-  cancelled: { label: '已取消', color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.2)' }
+  cancelled: { label: '已取消', color: '#f87171', bgColor: 'rgba(239, 68, 68, 0.2)' }
 };
 
 export default function RecycleStoreDetail() {
@@ -213,17 +213,17 @@ export default function RecycleStoreDetail() {
           </View>
           <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <View onClick={goEdit}>
-              <Pencil size={20} color="#a1a1aa" />
+              <Pencil size={20} color="#94a3b8" />
             </View>
             <View onClick={handleDelete}>
-              <Trash2 size={20} color="#ef4444" />
+              <Trash2 size={20} color="#f87171" />
             </View>
           </View>
         </View>
 
         <View style={{ marginTop: '20px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <Store size={24} color="#3b82f6" />
+            <Store size={24} color="#60a5fa" />
             <Text style={{ fontSize: '22px', fontWeight: '700', color: '#ffffff' }}>{store.store_name}</Text>
           </View>
           <View style={{ display: 'inline-flex', alignItems: 'center', padding: '6px 12px', borderRadius: '8px', backgroundColor: statusConfig.bgColor }}>
@@ -238,7 +238,7 @@ export default function RecycleStoreDetail() {
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '16px', padding: '20px' }}>
             <View style={{ display: 'flex', justifyContent: 'space-between' }}>
               <View style={{ flex: 1, textAlign: 'center' }}>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#3b82f6' }}>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#60a5fa' }}>
                   ¥{(store.estimated_value || 0).toFixed(0)}
                 </Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>预估价值（元）</Text>
@@ -247,7 +247,7 @@ export default function RecycleStoreDetail() {
                 <>
                   <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
                   <View style={{ flex: 1, textAlign: 'center' }}>
-                    <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>
+                    <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>
                       ¥{store.total_cost.toFixed(0)}
                     </Text>
                     <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>总成本（元）</Text>
@@ -264,18 +264,18 @@ export default function RecycleStoreDetail() {
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>联系方式</Text>
             
             <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e3a5f' }} onClick={makePhoneCall}>
-              <Phone size={16} color="#3b82f6" />
+              <Phone size={16} color="#60a5fa" />
               <Text style={{ fontSize: '14px', color: '#ffffff', marginLeft: '12px', flex: 1 }}>{store.phone || '未填写'}</Text>
-              {store.phone && <Text style={{ fontSize: '12px', color: '#3b82f6' }}>拨打</Text>}
+              {store.phone && <Text style={{ fontSize: '12px', color: '#60a5fa' }}>拨打</Text>}
             </View>
             
             <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e3a5f' }}>
-              <MessageCircle size={16} color="#22c55e" />
+              <MessageCircle size={16} color="#4ade80" />
               <Text style={{ fontSize: '14px', color: '#ffffff', marginLeft: '12px' }}>{store.wechat || '未填写'}</Text>
             </View>
             
             <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e3a5f' }}>
-              <Text style={{ fontSize: '12px', color: '#ef4444', marginLeft: '28px' }}>小红书: {store.xiaohongshu || '未填写'}</Text>
+              <Text style={{ fontSize: '12px', color: '#f87171', marginLeft: '28px' }}>小红书: {store.xiaohongshu || '未填写'}</Text>
             </View>
             
             <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0' }}>
@@ -289,13 +289,13 @@ export default function RecycleStoreDetail() {
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }} onClick={openLocation}>
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <View style={{ display: 'flex', alignItems: 'center' }}>
-                <MapPin size={16} color="#f59e0b" />
+                <MapPin size={16} color="#38bdf8" />
                 <View style={{ marginLeft: '12px' }}>
                   <Text style={{ fontSize: '14px', color: '#ffffff' }}>{store.city || '未填写城市'}</Text>
                   <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>{store.address || '未填写地址'}</Text>
                 </View>
               </View>
-              {store.location && <Navigation size={18} color="#3b82f6" />}
+              {store.location && <Navigation size={18} color="#60a5fa" />}
             </View>
           </View>
         </View>
@@ -320,7 +320,7 @@ export default function RecycleStoreDetail() {
             {store.close_reason && (
               <View style={{ marginTop: '8px', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>关店原因</Text>
-                <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.close_reason}</Text>
+                <Text style={{ fontSize: '13px', color: '#94a3b8' }}>{store.close_reason}</Text>
               </View>
             )}
           </View>
@@ -335,14 +335,14 @@ export default function RecycleStoreDetail() {
               {store.estimated_devices && (
                 <View style={{ marginBottom: '12px' }}>
                   <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>预估设备清单</Text>
-                  <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.estimated_devices}</Text>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>{store.estimated_devices}</Text>
                 </View>
               )}
               
               {store.purchase_price && (
                 <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                   <Text style={{ fontSize: '13px', color: '#71717a' }}>收购价格</Text>
-                  <Text style={{ fontSize: '14px', fontWeight: '600', color: '#22c55e' }}>¥{store.purchase_price.toFixed(0)}</Text>
+                  <Text style={{ fontSize: '14px', fontWeight: '600', color: '#4ade80' }}>¥{store.purchase_price.toFixed(0)}</Text>
                 </View>
               )}
               
@@ -369,7 +369,7 @@ export default function RecycleStoreDetail() {
             <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>跟进记录</Text>
               <View
-                style={{ backgroundColor: '#3b82f6', borderRadius: '20px', padding: '6px 12px', display: 'flex', alignItems: 'center' }}
+                style={{ backgroundColor: '#60a5fa', borderRadius: '20px', padding: '6px 12px', display: 'flex', alignItems: 'center' }}
                 onClick={() => setShowAddFollowUp(true)}
               >
                 <Text style={{ fontSize: '12px', color: '#ffffff' }}>+ 新增</Text>
@@ -378,25 +378,25 @@ export default function RecycleStoreDetail() {
 
             {followUps.length === 0 ? (
               <View style={{ textAlign: 'center', padding: '24px 0' }}>
-                <Clock size={24} color="#52525b" />
+                <Clock size={24} color="#64748b" />
                 <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '8px' }}>暂无跟进记录</Text>
               </View>
             ) : (
               <View>
                 {followUps.map((followUp) => (
-                  <View key={followUp.id} style={{ borderLeft: '2px solid #3b82f6', paddingLeft: '12px', marginBottom: '16px' }}>
+                  <View key={followUp.id} style={{ borderLeft: '2px solid #60a5fa', paddingLeft: '12px', marginBottom: '16px' }}>
                     <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                      <Text style={{ fontSize: '12px', color: '#52525b' }}>{formatDateTime(followUp.follow_up_time)}</Text>
+                      <Text style={{ fontSize: '12px', color: '#64748b' }}>{formatDateTime(followUp.follow_up_time)}</Text>
                       {followUp.follow_up_method && (
                         <View style={{ backgroundColor: '#1e3a5f', borderRadius: '4px', padding: '2px 8px' }}>
                           <Text style={{ fontSize: '11px', color: '#71717a' }}>{followUp.follow_up_method}</Text>
                         </View>
                       )}
                     </View>
-                    <Text style={{ fontSize: '14px', color: '#a1a1aa', display: 'block' }}>{followUp.content}</Text>
+                    <Text style={{ fontSize: '14px', color: '#94a3b8', display: 'block' }}>{followUp.content}</Text>
                     {followUp.next_follow_up_plan && (
                       <View style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #1e3a5f' }}>
-                        <Text style={{ fontSize: '12px', color: '#f59e0b' }}>下次计划：{followUp.next_follow_up_plan}</Text>
+                        <Text style={{ fontSize: '12px', color: '#38bdf8' }}>下次计划：{followUp.next_follow_up_plan}</Text>
                       </View>
                     )}
                   </View>
@@ -427,11 +427,11 @@ export default function RecycleStoreDetail() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      backgroundColor: followUpMethod === method ? '#3b82f6' : '#1e3a5f'
+                      backgroundColor: followUpMethod === method ? '#60a5fa' : '#1e3a5f'
                     }}
                     onClick={() => setFollowUpMethod(method)}
                   >
-                    <Text style={{ fontSize: '13px', color: followUpMethod === method ? '#ffffff' : '#a1a1aa' }}>{method}</Text>
+                    <Text style={{ fontSize: '13px', color: followUpMethod === method ? '#ffffff' : '#94a3b8' }}>{method}</Text>
                   </View>
                 ))}
               </View>
@@ -443,7 +443,7 @@ export default function RecycleStoreDetail() {
                 <Textarea
                   style={{ width: '100%', minHeight: '100px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入跟进内容"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={followUpContent}
                   onInput={(e) => setFollowUpContent(e.detail.value)}
                 />
@@ -451,7 +451,7 @@ export default function RecycleStoreDetail() {
             </View>
 
             <View
-              style={{ backgroundColor: '#3b82f6', borderRadius: '12px', padding: '14px', textAlign: 'center' }}
+              style={{ backgroundColor: '#60a5fa', borderRadius: '12px', padding: '14px', textAlign: 'center' }}
               onClick={handleAddFollowUp}
             >
               <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff' }}>确定添加</Text>

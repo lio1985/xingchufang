@@ -2,56 +2,73 @@
 
 ## 1. 品牌定位
 
-**产品灵魂**：精品厨房 + 创意工坊
-**视觉隐喻**：想象一个精品咖啡吧台——黑色金属架、深色木质台面、温暖的黄铜装饰灯、咖啡师专注的神情。每个工具都整齐排列，每个元素都有存在的理由。
+**产品灵魂**：专业厨房 + 智能创作
+**视觉隐喻**：想象一个高端科技厨房——深邃的蓝色空间、晶莹的操作台面、流动的光效指引、智能设备的冷光与温暖的烟火气息交织。每个操作都精准优雅，每次创作都充满灵感。
 
 **目标用户**：内容创作者、厨房行业从业者
-**设计理念**：专业感与手作温度并存，克制但有温度
+**设计理念**：专业科技感与温暖创造力的完美融合
 
-## 2. 设计风格：「Warm Industrial 温暖工业风」
+## 2. 设计风格：「Midnight Blue 午夜蓝」
 
 ### 核心视觉语言
-- **材质感**：深色背景模拟哑光金属质感
-- **光影感**：暖色点缀模拟黄铜/铜管灯光
-- **留白感**：大量负空间，每个元素呼吸
-- **网格感**：清晰的视觉层级和分组
+- **深邃感**：深蓝色背景营造专业沉稳氛围
+- **流动感**：蓝紫色渐变与光效增添科技活力
+- **呼吸感**：充足的留白与通透的卡片设计
+- **温暖感**：琥珀金点缀平衡冷色调，增添人机温度
 
 ### 禁忌清单
-- ❌ 科技蓝+圆角卡片+蓝紫色渐变
-- ❌ 纯白背景+单调阴影
+- ❌ 科技蓝+圆角卡片+蓝紫色渐变的老套组合
+- ❌ 纯白背景+单调阴影的廉价感
 - ❌ 所有元素都是大圆角
 - ❌ 过于花哨的渐变和阴影
 - ❌ 拥挤的布局和过小的间距
 
 ## 3. 配色方案
 
-### 主色调
+### 主色调 - 深海蓝系
 ```css
---background: #0a0a0b;        /* 深黑 - 哑光金属感 */
---background-elevated: #141416; /* 卡片/浮层背景 */
---background-subtle: #1a1a1d;  /* 次级背景 */
---foreground: #fafafa;         /* 主文字 - 亮白 */
---foreground-muted: #a1a1aa;    /* 次级文字 - 暖灰 */
---border: #27272a;              /* 边框 - 暗金属 */
+--background: #0a0f1a;           /* 深海蓝 - 主背景 */
+--background-elevated: #111827;  /* 卡片/浮层背景 */
+--background-subtle: #1e293b;    /* 次级背景 */
+--foreground: #f1f5f9;           /* 主文字 - 亮白 */
+--foreground-muted: #94a3b8;     /* 次级文字 - 冷灰 */
+--foreground-subtle: #64748b;    /* 辅助文字 - 暗灰 */
+--border: #1e3a5f;               /* 边框 - 深蓝边框 */
+--border-light: #334155;         /* 浅边框 */
+```
+
+### 品牌色 - 天空蓝
+```css
+--primary: #38bdf8;              /* 天空蓝 - 主操作色 */
+--primary-hover: #7dd3fc;        /* 悬停状态 */
+--primary-foreground: #0c4a6e;   /* 主色上的文字 */
+--primary-subtle: rgba(56, 189, 248, 0.15);  /* 主色淡底 */
+```
+
+### 强调色 - 琥珀橙
+```css
+--accent: #fb923c;               /* 橙色 - 强调色 */
+--accent-secondary: #fbbf24;     /* 亮黄 - 辅助强调 */
 ```
 
 ### 功能色
 ```css
---primary: #f59e0b;            /* 琥珀金 - 主操作色 */
---primary-foreground: #000000; /* 主色上的文字 */
---accent: #fb923c;             /* 橙色 - 强调色 */
---accent-secondary: #fbbf24;   /* 亮黄 - 辅助强调 */
-
---success: #22c55e;            /* 翠绿 - 成功 */
---warning: #f59e0b;            /* 琥珀 - 警告 */
---destructive: #ef4444;        /* 红色 - 危险/错误 */
---info: #3b82f6;               /* 蓝色 - 信息 */
+--success: #4ade80;              /* 翠绿 - 成功 */
+--success-subtle: rgba(74, 222, 128, 0.15);
+--warning: #fbbf24;              /* 金黄 - 警告 */
+--warning-subtle: rgba(251, 191, 36, 0.15);
+--destructive: #f87171;          /* 珊瑚红 - 危险/错误 */
+--destructive-subtle: rgba(248, 113, 113, 0.15);
+--info: #60a5fa;                 /* 亮蓝 - 信息 */
+--info-subtle: rgba(96, 165, 250, 0.15);
 ```
 
-### 渐变（用于特殊场景）
+### 渐变色（用于特殊场景）
 ```css
---gradient-primary: linear-gradient(135deg, #f59e0b 0%, #fb923c 100%);
---gradient-surface: linear-gradient(180deg, #141416 0%, #0a0a0b 100%);
+--gradient-primary: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+--gradient-surface: linear-gradient(180deg, #111827 0%, #0a0f1a 100%);
+--gradient-accent: linear-gradient(135deg, #fb923c 0%, #fbbf24 100%);
+--gradient-glow: linear-gradient(180deg, rgba(56, 189, 248, 0.1) 0%, transparent 100%);
 ```
 
 ## 4. 字体规范
@@ -241,8 +258,8 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 **功能模块**：
 | 模块 | 图标 | 颜色 | 描述 |
 |------|------|------|------|
-| 获客登记 | UserPlus | emerald #22c55e | 客户信息录入与管理 |
-| 整店回收 | Store | blue #3b82f6 | 回收业务全流程管理 |
+| 获客登记 | UserPlus | emerald #4ade80 | 客户信息录入与管理 |
+| 整店回收 | Store | sky #38bdf8 | 回收业务全流程管理 |
 
 **新增设计元素**：
 - **数据概览卡片**：展示今日新增客户数、待跟进数量
@@ -285,10 +302,10 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 **功能模块**：
 | 模块 | 图标 | 颜色 | 描述 |
 |------|------|------|------|
-| 个人收藏 | Heart | red #ef4444 | 我的收藏内容 |
-| 公司资料 | Building2 | purple #a855f7 | 企业知识库 |
-| 个人语料 | MessageSquareText | amber #f59e0b | 个人表达风格库 |
-| 课程培训 | GraduationCap | cyan #06b6d4 | 学习与培训课程 |
+| 个人收藏 | Heart | rose #fb7185 | 我的收藏内容 |
+| 公司资料 | Building2 | violet #a78bfa | 企业知识库 |
+| 个人语料 | MessageSquareText | amber #fbbf24 | 个人表达风格库 |
+| 课程培训 | GraduationCap | teal #2dd4bf | 学习与培训课程 |
 
 **新增设计元素**：
 - **搜索栏**：快速检索知识库内容
@@ -333,14 +350,14 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 **功能模块**：
 | 模块 | 图标 | 颜色 | 描述 |
 |------|------|------|------|
-| 星小帮 | Sparkles | 渐变 amber→orange | AI智能创作助手 |
-| 灵感速记 | Lightbulb | amber #f59e0b | 快速捕捉灵感 |
-| 选题策划 | Target | cyan #06b6d4 | 热门选题方向 |
-| 内容写作 | PenTool | violet #8b5cf6 | 高效产出内容 |
+| 星小帮 | Sparkles | 渐变 sky→violet | AI智能创作助手 |
+| 灵感速记 | Lightbulb | amber #fbbf24 | 快速捕捉灵感 |
+| 选题策划 | Target | teal #2dd4bf | 热门选题方向 |
+| 内容写作 | PenTool | violet #a78bfa | 高效产出内容 |
 
 **星小帮特殊设计**：
-- 使用渐变背景 `from-amber-500/20 to-orange-500/10`
-- 突出的边框 `border-amber-500/30`
+- 使用渐变背景 `from-sky-500/20 to-violet-500/10`
+- 突出的边框 `border-sky-500/30`
 - 跨两列显示，视觉焦点
 
 **新增设计元素**：
@@ -385,25 +402,13 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 └─────────────────────────────────┘
 ```
 
-**未登录状态**：
-```
-┌─────────────────────────────────┐
-│ 登录/注册区                      │
-│ ┌─────────────────────────────┐ │
-│ │    👤 登录账号               │ │
-│ ├─────────────────────────────┤ │
-│ │    ➕ 注册新账号             │ │
-│ └─────────────────────────────┘ │
-└─────────────────────────────────┘
-```
-
 **功能模块**：
 | 模块 | 图标 | 颜色 | 描述 |
 |------|------|------|------|
-| 数据看板 | ChartBarBig | blue #3b82f6 | 运营数据统计 |
-| 数据导出 | Download | green #22c55e | 导出所有数据 |
-| 设置 | Settings | zinc #71717a | 账号与系统设置 |
-| 退出登录 | LogOut | red #ef4444 | 退出当前账号 |
+| 数据看板 | ChartBarBig | sky #38bdf8 | 运营数据统计 |
+| 数据导出 | Download | emerald #4ade80 | 导出所有数据 |
+| 设置 | Settings | slate #64748b | 账号与系统设置 |
+| 退出登录 | LogOut | rose #fb7185 | 退出当前账号 |
 
 ---
 
@@ -412,37 +417,37 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 #### 功能入口卡片
 ```tsx
 // 标准卡片样式
-<View className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6 flex flex-col items-center active:bg-zinc-800/60">
-  <View className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-{color}-500/15">
-    <Icon size={32} color="{color}" />
+<View className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6 flex flex-col items-center active:bg-slate-800/60">
+  <View className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-sky-500/15">
+    <Icon size={32} color="#38bdf8" />
   </View>
-  <Text className="block text-lg font-medium text-white">标题</Text>
-  <Text className="block text-xs text-zinc-500 mt-1">描述</Text>
+  <Text className="block text-lg font-medium text-slate-100">标题</Text>
+  <Text className="block text-xs text-slate-500 mt-1">描述</Text>
 </View>
 ```
 
 #### 突出卡片样式（用于星小帮等核心功能）
 ```tsx
-<View className="bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/30 rounded-2xl p-6 flex flex-col items-center col-span-2">
-  <View className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-gradient-to-br from-amber-400 to-orange-500">
+<View className="bg-gradient-to-br from-sky-500/20 to-violet-500/10 border border-sky-500/30 rounded-2xl p-6 flex flex-col items-center col-span-2">
+  <View className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-gradient-to-br from-sky-400 to-violet-500">
     <Icon size={32} color="#ffffff" />
   </View>
-  <Text className="block text-lg font-semibold text-amber-400">星小帮</Text>
-  <Text className="block text-xs text-amber-400/60 mt-1">AI智能创作助手</Text>
+  <Text className="block text-lg font-semibold text-sky-400">星小帮</Text>
+  <Text className="block text-xs text-sky-400/60 mt-1">AI智能创作助手</Text>
 </View>
 ```
 
 #### 列表项样式
 ```tsx
-<View className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 flex items-center active:bg-zinc-800/60">
-  <View className="w-11 h-11 rounded-xl flex items-center justify-center mr-4 bg-{color}-500/15">
-    <Icon size={22} color="{color}" />
+<View className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5 flex items-center active:bg-slate-800/60">
+  <View className="w-11 h-11 rounded-xl flex items-center justify-center mr-4 bg-sky-500/15">
+    <Icon size={22} color="#38bdf8" />
   </View>
   <View className="flex-1">
-    <Text className="block text-base font-medium text-white">标题</Text>
-    <Text className="block text-sm text-zinc-500 mt-0.5">描述</Text>
+    <Text className="block text-base font-medium text-slate-100">标题</Text>
+    <Text className="block text-sm text-slate-500 mt-0.5">描述</Text>
   </View>
-  <ChevronRight size={18} color="#52525b" />
+  <ChevronRight size={18} color="#64748b" />
 </View>
 ```
 
@@ -451,16 +456,16 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 ### 10.6 页面头部规范
 
 ```tsx
-<View className="px-8 pt-12 pb-6 bg-gradient-to-b from-[#141416] to-[#0a0a0b] border-b border-zinc-800">
-  <Text className="block text-4xl font-bold text-white mb-2">{标题}</Text>
-  <Text className="block text-zinc-500 text-lg">{副标题}</Text>
+<View className="px-8 pt-12 pb-6 bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800">
+  <Text className="block text-4xl font-bold text-slate-100 mb-2">{标题}</Text>
+  <Text className="block text-slate-500 text-lg">{副标题}</Text>
 </View>
 ```
 
-**标题颜色**：`text-white` (#fafafa)
-**副标题颜色**：`text-zinc-500` (#71717a)
-**背景渐变**：`from-[#141416] to-[#0a0a0b]`
-**底部边框**：`border-b border-zinc-800`
+**标题颜色**：`text-slate-100` (#f1f5f9)
+**副标题颜色**：`text-slate-500` (#64748b)
+**背景渐变**：`from-slate-900 to-slate-950`
+**底部边框**：`border-b border-slate-800`
 
 ---
 
@@ -468,9 +473,9 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 
 ```tsx
 <View className="grid grid-cols-2 gap-4">
-  <View className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 text-center">
-    <Text className="block text-3xl font-bold text-white mb-1">{数值}</Text>
-    <Text className="block text-sm text-zinc-500">{标签}</Text>
+  <View className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5 text-center">
+    <Text className="block text-3xl font-bold text-slate-100 mb-1">{数值}</Text>
+    <Text className="block text-sm text-slate-500">{标签}</Text>
   </View>
 </View>
 ```
@@ -481,13 +486,14 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 
 | 功能类型 | 推荐颜色 | Tailwind 类 |
 |----------|----------|-------------|
-| 主要操作 | amber | `bg-amber-500/15` |
+| 主要操作 | sky | `bg-sky-500/15` |
 | 信息展示 | blue | `bg-blue-500/15` |
-| 成功/增长 | green/emerald | `bg-green-500/15` |
-| 警告/重要 | orange/red | `bg-orange-500/15` |
-| 学习/知识 | cyan | `bg-cyan-500/15` |
-| 企业/团队 | purple | `bg-purple-500/15` |
-| 中性操作 | zinc | `bg-zinc-600/30` |
+| 成功/增长 | emerald | `bg-emerald-500/15` |
+| 警告/重要 | amber | `bg-amber-500/15` |
+| 危险/删除 | rose | `bg-rose-500/15` |
+| 学习/知识 | teal | `bg-teal-500/15` |
+| 企业/团队 | violet | `bg-violet-500/15` |
+| 中性操作 | slate | `bg-slate-600/30` |
 
 ---
 

@@ -265,11 +265,11 @@ export default function AdminQuickNoteManagePage() {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">灵感速记管理</Text>
           <View className="admin-action-btn" onClick={loadData}>
-            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
       </View>
@@ -291,39 +291,39 @@ export default function AdminQuickNoteManagePage() {
                 }}
                 onClick={handleBatchDelete}
               >
-                <Trash2 size={20} color="#ef4444" />
-                <Text style={{ fontSize: '14px', color: '#ef4444' }}>删除 {selectedNoteIds.length}</Text>
+                <Trash2 size={20} color="#f87171" />
+                <Text style={{ fontSize: '14px', color: '#f87171' }}>删除 {selectedNoteIds.length}</Text>
               </View>
             )}
             <View
               style={{
                 padding: '8px 16px',
                 borderRadius: '12px',
-                backgroundColor: isBatchMode ? '#ef4444' : '#1e293b',
+                backgroundColor: isBatchMode ? '#f87171' : '#1e293b',
               }}
               onClick={() => {
                 setIsBatchMode(!isBatchMode);
                 setSelectedNoteIds([]);
               }}
             >
-              <Text style={{ fontSize: '14px', color: isBatchMode ? '#fff' : '#a1a1aa' }}>
+              <Text style={{ fontSize: '14px', color: isBatchMode ? '#fff' : '#94a3b8' }}>
                 {isBatchMode ? '退出' : '批量'}
               </Text>
             </View>
           </View>
         </View>
         <View className="search-bar-wrapper">
-          <Search size={24} color="#52525b" />
+          <Search size={24} color="#64748b" />
           <Input
             className="search-input"
             placeholder="搜索笔记..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
           {searchKeyword && (
             <View onClick={() => setSearchKeyword('')}>
-              <X size={24} color="#52525b" />
+              <X size={24} color="#64748b" />
             </View>
           )}
         </View>
@@ -338,11 +338,11 @@ export default function AdminQuickNoteManagePage() {
                 style={{
                   padding: '10px 20px',
                   borderRadius: '12px',
-                  backgroundColor: !activeTag ? '#f59e0b' : '#1e293b',
+                  backgroundColor: !activeTag ? '#38bdf8' : '#1e293b',
                 }}
                 onClick={() => setActiveTag('')}
               >
-                <Text style={{ fontSize: '22px', color: !activeTag ? '#000' : '#a1a1aa' }}>全部</Text>
+                <Text style={{ fontSize: '22px', color: !activeTag ? '#000' : '#94a3b8' }}>全部</Text>
               </View>
               {allTags.map((tag) => (
                 <View
@@ -350,7 +350,7 @@ export default function AdminQuickNoteManagePage() {
                   style={{
                     padding: '10px 20px',
                     borderRadius: '12px',
-                    backgroundColor: activeTag === tag ? '#f59e0b' : '#1e293b',
+                    backgroundColor: activeTag === tag ? '#38bdf8' : '#1e293b',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
@@ -358,7 +358,7 @@ export default function AdminQuickNoteManagePage() {
                   onClick={() => setActiveTag(tag)}
                 >
                   <Tag size={18} color={activeTag === tag ? '#000' : '#71717a'} />
-                  <Text style={{ fontSize: '22px', color: activeTag === tag ? '#000' : '#a1a1aa' }}>{tag}</Text>
+                  <Text style={{ fontSize: '22px', color: activeTag === tag ? '#000' : '#94a3b8' }}>{tag}</Text>
                 </View>
               ))}
             </View>
@@ -371,7 +371,7 @@ export default function AdminQuickNoteManagePage() {
         <View className="admin-content" style={{ paddingTop: '16px' }}>
           {loading && (
             <View className="empty-state">
-              <RefreshCw size={60} color="#52525b" />
+              <RefreshCw size={60} color="#64748b" />
               <Text className="empty-title">加载中...</Text>
             </View>
           )}
@@ -381,7 +381,7 @@ export default function AdminQuickNoteManagePage() {
               key={note.id}
               className="admin-card"
               style={{
-                borderLeft: note.isPinned ? '4px solid #f59e0b' : undefined,
+                borderLeft: note.isPinned ? '4px solid #38bdf8' : undefined,
               }}
             >
               <View style={{ display: 'flex', gap: '16px' }}>
@@ -392,8 +392,8 @@ export default function AdminQuickNoteManagePage() {
                       height: '24px',
                       borderRadius: '6px',
                       border: '2px solid',
-                      borderColor: selectedNoteIds.includes(note.id) ? '#f59e0b' : '#1e3a5f',
-                      backgroundColor: selectedNoteIds.includes(note.id) ? '#f59e0b' : 'transparent',
+                      borderColor: selectedNoteIds.includes(note.id) ? '#38bdf8' : '#1e3a5f',
+                      backgroundColor: selectedNoteIds.includes(note.id) ? '#38bdf8' : 'transparent',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -411,22 +411,22 @@ export default function AdminQuickNoteManagePage() {
                       style={{ flex: 1, minWidth: 0 }}
                       onClick={() => openDetail(note)}
                     >
-                      <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {note.title}
                       </Text>
                     </View>
 
                     {!isBatchMode && (
                       <View style={{ display: 'flex', gap: '12px', marginLeft: '12px' }}>
-                        {note.isPinned && <Pin size={20} color="#f59e0b" />}
+                        {note.isPinned && <Pin size={20} color="#38bdf8" />}
                         <View onClick={() => toggleStar(note.id)}>
-                          <Star size={20} color={note.isStarred ? '#f59e0b' : '#52525b'} />
+                          <Star size={20} color={note.isStarred ? '#38bdf8' : '#64748b'} />
                         </View>
                         <View onClick={() => togglePin(note.id)}>
-                          <Pin size={20} color={note.isPinned ? '#f59e0b' : '#52525b'} />
+                          <Pin size={20} color={note.isPinned ? '#38bdf8' : '#64748b'} />
                         </View>
                         <View onClick={() => handleDelete(note.id)}>
-                          <Trash2 size={20} color="#ef4444" />
+                          <Trash2 size={20} color="#f87171" />
                         </View>
                       </View>
                     )}
@@ -440,7 +440,7 @@ export default function AdminQuickNoteManagePage() {
                   )}
 
                   <View onClick={() => openDetail(note)} style={{ marginBottom: '12px' }}>
-                    <Text style={{ fontSize: '22px', color: '#a1a1aa', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    <Text style={{ fontSize: '22px', color: '#94a3b8', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {note.content}
                     </Text>
                   </View>
@@ -466,13 +466,13 @@ export default function AdminQuickNoteManagePage() {
 
                   <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Clock size={18} color="#52525b" />
-                      <Text style={{ fontSize: '20px', color: '#52525b' }}>{formatDate(note.updatedAt)}</Text>
+                      <Clock size={18} color="#64748b" />
+                      <Text style={{ fontSize: '20px', color: '#64748b' }}>{formatDate(note.updatedAt)}</Text>
                     </View>
                     {note.tags && note.tags.length > 0 && (
                       <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Tag size={18} color="#52525b" />
-                        <Text style={{ fontSize: '20px', color: '#52525b' }}>{note.tags.join(', ')}</Text>
+                        <Tag size={18} color="#64748b" />
+                        <Text style={{ fontSize: '20px', color: '#64748b' }}>{note.tags.join(', ')}</Text>
                       </View>
                     )}
                   </View>
@@ -483,7 +483,7 @@ export default function AdminQuickNoteManagePage() {
 
           {!loading && filteredNotes.length === 0 && (
             <View className="empty-state">
-              <FileText size={80} color="#52525b" />
+              <FileText size={80} color="#64748b" />
               <Text className="empty-title">
                 {searchKeyword || activeTag ? '未找到匹配的笔记' : '暂无笔记'}
               </Text>
@@ -498,9 +498,9 @@ export default function AdminQuickNoteManagePage() {
           <View className="modal-content" style={{ maxHeight: '80vh' }}>
             <View className="modal-header">
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
-                {selectedNote.isPinned && <Pin size={24} color="#f59e0b" />}
-                {selectedNote.isStarred && <Star size={24} color="#f59e0b" />}
-                <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {selectedNote.isPinned && <Pin size={24} color="#38bdf8" />}
+                {selectedNote.isStarred && <Star size={24} color="#38bdf8" />}
+                <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {selectedNote.title}
                 </Text>
               </View>
@@ -510,14 +510,14 @@ export default function AdminQuickNoteManagePage() {
                   setSelectedNote({ ...selectedNote, isStarred: !selectedNote.isStarred });
                 }}
                 >
-                  <Star size={24} color={selectedNote.isStarred ? '#f59e0b' : '#71717a'} />
+                  <Star size={24} color={selectedNote.isStarred ? '#38bdf8' : '#71717a'} />
                 </View>
                 <View onClick={() => {
                   togglePin(selectedNote.id);
                   setSelectedNote({ ...selectedNote, isPinned: !selectedNote.isPinned });
                 }}
                 >
-                  <Pin size={24} color={selectedNote.isPinned ? '#f59e0b' : '#71717a'} />
+                  <Pin size={24} color={selectedNote.isPinned ? '#38bdf8' : '#71717a'} />
                 </View>
                 <View onClick={() => setShowDetailDialog(false)}>
                   <X size={28} color="#71717a" />
@@ -534,15 +534,15 @@ export default function AdminQuickNoteManagePage() {
               )}
 
               <View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>内容</Text>
-                <Text style={{ fontSize: '22px', color: '#a1a1aa', display: 'block', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block', marginBottom: '12px' }}>内容</Text>
+                <Text style={{ fontSize: '22px', color: '#94a3b8', display: 'block', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
                   {selectedNote.content}
                 </Text>
               </View>
 
               {selectedNote.images && selectedNote.images.length > 0 && (
                 <View>
-                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>
+                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block', marginBottom: '12px' }}>
                     图片 ({selectedNote.images.length})
                   </Text>
                   <View style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
@@ -561,13 +561,13 @@ export default function AdminQuickNoteManagePage() {
 
               {selectedNote.audio && (
                 <View>
-                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>语音</Text>
+                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block', marginBottom: '12px' }}>语音</Text>
                   <View style={{ backgroundColor: '#1e293b', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Mic size={24} color="#f59e0b" />
-                    <Text style={{ fontSize: '22px', color: '#a1a1aa', flex: 1 }}>语音记录</Text>
+                    <Mic size={24} color="#38bdf8" />
+                    <Text style={{ fontSize: '22px', color: '#94a3b8', flex: 1 }}>语音记录</Text>
                     {isWeapp && (
                       <View
-                        style={{ padding: '10px 20px', backgroundColor: '#f59e0b', borderRadius: '12px' }}
+                        style={{ padding: '10px 20px', backgroundColor: '#38bdf8', borderRadius: '12px' }}
                         onClick={() => {
                           Taro.playVoice({ filePath: selectedNote.audio! });
                         }}
@@ -581,18 +581,18 @@ export default function AdminQuickNoteManagePage() {
 
               {selectedNote.tags && selectedNote.tags.length > 0 && (
                 <View>
-                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>标签</Text>
+                  <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block', marginBottom: '12px' }}>标签</Text>
                   <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     {selectedNote.tags.map((tag, index) => (
                       <View key={index} style={{ padding: '8px 16px', borderRadius: '12px', backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
-                        <Text style={{ fontSize: '22px', color: '#f59e0b' }}>{tag}</Text>
+                        <Text style={{ fontSize: '22px', color: '#38bdf8' }}>{tag}</Text>
                       </View>
                     ))}
                   </View>
                 </View>
               )}
 
-              <View style={{ fontSize: '20px', color: '#52525b', paddingTop: '16px', borderTop: '1px solid #1e3a5f', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <View style={{ fontSize: '20px', color: '#64748b', paddingTop: '16px', borderTop: '1px solid #1e3a5f', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <Text style={{ display: 'block' }}>
                   创建时间: {new Date(selectedNote.createdAt).toLocaleString('zh-CN')}
                 </Text>

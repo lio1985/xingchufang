@@ -155,7 +155,7 @@ export default function CustomerEdit() {
           </Text>
         </View>
         <View
-          style={{ backgroundColor: '#f59e0b', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center' }}
+          style={{ backgroundColor: '#38bdf8', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center' }}
           onClick={handleSubmit}
         >
           <Save size={16} color="#000000" />
@@ -166,16 +166,16 @@ export default function CustomerEdit() {
       <ScrollView style={{ padding: '16px 20px', height: 'calc(100vh - 100px)' }} scrollY>
         {/* 基本信息 */}
         <View style={{ marginBottom: '16px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>基本信息</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>基本信息</Text>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 客户称呼 */}
             <View style={{ marginBottom: '16px' }}>
-              <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>客户称呼 <Text style={{ color: '#ef4444' }}>*</Text></Text>
+              <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>客户称呼 <Text style={{ color: '#f87171' }}>*</Text></Text>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ fontSize: '14px', color: '#ffffff' }}
                   placeholder="请输入客户姓名"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={form.name}
                   onInput={(e) => handleInput('name', e.detail.value)}
                 />
@@ -186,11 +186,11 @@ export default function CustomerEdit() {
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>手机号码</Text>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
-                <Phone size={16} color="#52525b" />
+                <Phone size={16} color="#64748b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
                   placeholder="请输入手机号码"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   type="number"
                   value={form.phone}
                   onInput={(e) => handleInput('phone', e.detail.value)}
@@ -202,11 +202,11 @@ export default function CustomerEdit() {
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>微信号</Text>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
-                <MessageCircle size={16} color="#52525b" />
+                <MessageCircle size={16} color="#64748b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
                   placeholder="请输入微信号"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={form.wechat}
                   onInput={(e) => handleInput('wechat', e.detail.value)}
                 />
@@ -217,11 +217,11 @@ export default function CustomerEdit() {
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>小红书号</Text>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
-                <User size={16} color="#52525b" />
+                <User size={16} color="#64748b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
                   placeholder="请输入小红书号"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={form.xiaohongshu}
                   onInput={(e) => handleInput('xiaohongshu', e.detail.value)}
                 />
@@ -232,11 +232,11 @@ export default function CustomerEdit() {
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>抖音号</Text>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
-                <User size={16} color="#52525b" />
+                <User size={16} color="#64748b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
                   placeholder="请输入抖音号"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={form.douyin}
                   onInput={(e) => handleInput('douyin', e.detail.value)}
                 />
@@ -247,7 +247,7 @@ export default function CustomerEdit() {
 
         {/* 业务信息 */}
         <View style={{ marginBottom: '16px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>业务信息</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>业务信息</Text>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 餐饮类别 */}
             <View style={{ marginBottom: '16px' }}>
@@ -256,7 +256,7 @@ export default function CustomerEdit() {
                 <Input
                   style={{ fontSize: '14px', color: '#ffffff' }}
                   placeholder="如：火锅、烧烤、中餐等"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={form.category}
                   onInput={(e) => handleInput('category', e.detail.value)}
                 />
@@ -277,7 +277,7 @@ export default function CustomerEdit() {
                 }}
               >
                 <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
-                  <Text style={{ fontSize: '14px', color: form.source ? '#ffffff' : '#52525b' }}>{form.source || '请选择客户来源'}</Text>
+                  <Text style={{ fontSize: '14px', color: form.source ? '#ffffff' : '#64748b' }}>{form.source || '请选择客户来源'}</Text>
                 </View>
               </Picker>
             </View>
@@ -296,7 +296,7 @@ export default function CustomerEdit() {
                 }}
               >
                 <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
-                  <Text style={{ fontSize: '14px', color: form.customer_type ? '#ffffff' : '#52525b' }}>{form.customer_type || '请选择客户类别'}</Text>
+                  <Text style={{ fontSize: '14px', color: form.customer_type ? '#ffffff' : '#64748b' }}>{form.customer_type || '请选择客户类别'}</Text>
                 </View>
               </Picker>
             </View>
@@ -305,11 +305,11 @@ export default function CustomerEdit() {
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>预计销售金额（万元）</Text>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
-                <Text style={{ fontSize: '14px', color: '#22c55e' }}>¥</Text>
+                <Text style={{ fontSize: '14px', color: '#4ade80' }}>¥</Text>
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '4px' }}
                   placeholder="请输入预计金额"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   type="digit"
                   value={form.estimated_amount?.toString()}
                   onInput={(e) => handleInput('estimated_amount', parseFloat(e.detail.value) || 0)}
@@ -321,17 +321,17 @@ export default function CustomerEdit() {
 
         {/* 位置信息 */}
         <View style={{ marginBottom: '16px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>位置信息</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>位置信息</Text>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 所在城市 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>所在城市</Text>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
-                <MapPin size={16} color="#52525b" />
+                <MapPin size={16} color="#64748b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
                   placeholder="请输入城市"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={form.city}
                   onInput={(e) => handleInput('city', e.detail.value)}
                 />
@@ -345,8 +345,8 @@ export default function CustomerEdit() {
                 style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}
                 onClick={handleLocation}
               >
-                <MapPin size={16} color="#f59e0b" />
-                <Text style={{ flex: 1, fontSize: '14px', color: form.location?.address ? '#ffffff' : '#52525b', marginLeft: '8px' }}>
+                <MapPin size={16} color="#38bdf8" />
+                <Text style={{ flex: 1, fontSize: '14px', color: form.location?.address ? '#ffffff' : '#64748b', marginLeft: '8px' }}>
                   {form.location?.address || '点击选择位置'}
                 </Text>
               </View>
@@ -356,7 +356,7 @@ export default function CustomerEdit() {
 
         {/* 订单信息 */}
         <View style={{ marginBottom: '16px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>订单信息</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>订单信息</Text>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 订单归属 */}
             <View style={{ marginBottom: '16px' }}>
@@ -372,7 +372,7 @@ export default function CustomerEdit() {
                 }}
               >
                 <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
-                  <Text style={{ fontSize: '14px', color: form.order_belonging ? '#ffffff' : '#52525b' }}>{form.order_belonging || '请选择订单归属'}</Text>
+                  <Text style={{ fontSize: '14px', color: form.order_belonging ? '#ffffff' : '#64748b' }}>{form.order_belonging || '请选择订单归属'}</Text>
                 </View>
               </Picker>
             </View>
@@ -419,19 +419,19 @@ export default function CustomerEdit() {
 
         {/* 客户需求 */}
         <View style={{ marginBottom: '32px' }}>
-          <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>客户需求</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px' }}>客户需求</Text>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
               <Textarea
                 style={{ width: '100%', height: '100px', fontSize: '14px', color: '#ffffff' }}
                 placeholder="请输入客户的具体需求..."
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={form.requirements}
                 onInput={(e) => handleInput('requirements', e.detail.value)}
                 maxlength={500}
               />
             </View>
-            <Text style={{ fontSize: '12px', color: '#52525b', textAlign: 'right', marginTop: '8px' }}>
+            <Text style={{ fontSize: '12px', color: '#64748b', textAlign: 'right', marginTop: '8px' }}>
               {(form.requirements?.length || 0)}/500
             </Text>
           </View>

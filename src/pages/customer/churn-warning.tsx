@@ -289,7 +289,7 @@ export default function ChurnWarningList() {
                       <Text className="block text-slate-400 text-xs mt-1">{levelInfo.desc}</Text>
                     </View>
                     <View className={`flex items-center gap-1 px-3 py-1.5 rounded-full ${levelInfo.bg} ${levelInfo.border} border`}>
-                      <IconComponent size={14} color={risk.riskLevel === 'red' ? '#f87171' : risk.riskLevel === 'orange' ? '#fbbf24' : '#facc15'} />
+                      <IconComponent size={14} color={risk.riskLevel === 'red' ? '#f87171' : risk.riskLevel === 'orange' ? '#7dd3fc' : '#facc15'} />
                       <Text className={`block text-sm font-bold ${levelInfo.color}`}>{levelInfo.label}</Text>
                     </View>
                   </View>

@@ -94,7 +94,7 @@ export default function TeamManagement() {
     Taro.showModal({
       title: '确认删除',
       content: `确定要删除团队"${team.name}"吗？此操作不可恢复。`,
-      confirmColor: '#ef4444',
+      confirmColor: '#f87171',
       success: (res) => {
         if (res.confirm) {
           Network.request({
@@ -155,11 +155,11 @@ export default function TeamManagement() {
               className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
               onClick={() => Taro.navigateBack()}
             >
-              <ArrowLeft size={20} color="#f59e0b" />
+              <ArrowLeft size={20} color="#38bdf8" />
             </View>
             <View className="flex items-center gap-2">
               <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
-                <Users size={16} color="#f59e0b" />
+                <Users size={16} color="#38bdf8" />
               </View>
               <Text className="block text-lg font-semibold text-white">团队管理</Text>
             </View>
@@ -243,7 +243,7 @@ export default function TeamManagement() {
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-zinc-700/50 rounded-lg active:bg-zinc-700"
                     onClick={() => navigateToDetail(team.id)}
                   >
-                    <Pencil size={14} color="#3b82f6" />
+                    <Pencil size={14} color="#60a5fa" />
                     <Text className="block text-sm text-blue-400">详情</Text>
                   </View>
                   <View
@@ -258,7 +258,7 @@ export default function TeamManagement() {
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-500/10 rounded-lg active:bg-red-500/20 border border-red-500/20"
                     onClick={() => handleDelete(team)}
                   >
-                    <Trash2 size={14} color="#ef4444" />
+                    <Trash2 size={14} color="#f87171" />
                     <Text className="block text-sm text-red-400">删除</Text>
                   </View>
                 </View>

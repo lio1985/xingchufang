@@ -35,14 +35,14 @@ interface Statistics {
 }
 
 const statusConfig = {
-  normal: { label: '正常', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
-  at_risk: { label: '有风险', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
-  lost: { label: '已流失', color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.2)' }
+  normal: { label: '正常', color: '#4ade80', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  at_risk: { label: '有风险', color: '#38bdf8', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  lost: { label: '已流失', color: '#f87171', bgColor: 'rgba(239, 68, 68, 0.2)' }
 };
 
 const orderStatusConfig = {
-  in_progress: { label: '进行中', color: '#3b82f6' },
-  completed: { label: '已成交', color: '#22c55e' }
+  in_progress: { label: '进行中', color: '#60a5fa' },
+  completed: { label: '已成交', color: '#4ade80' }
 };
 
 export default function CustomerList() {
@@ -156,7 +156,7 @@ export default function CustomerList() {
             style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={() => Taro.navigateBack()}
           >
-            <ChevronLeft size={24} color="#fafafa" />
+            <ChevronLeft size={24} color="#f1f5f9" />
           </View>
           <View>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>获客登记</Text>
@@ -169,8 +169,8 @@ export default function CustomerList() {
       <View style={{ padding: '0 20px', marginTop: '-8px' }}>
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
           <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>客户总览</Text>
-            <Text style={{ fontSize: '12px', color: '#f59e0b' }}>查看详情</Text>
+            <Text style={{ fontSize: '14px', color: '#94a3b8' }}>客户总览</Text>
+            <Text style={{ fontSize: '12px', color: '#38bdf8' }}>查看详情</Text>
           </View>
           <View style={{ display: 'flex', justifyContent: 'space-between' }}>
             <View style={{ alignItems: 'center' }}>
@@ -178,11 +178,11 @@ export default function CustomerList() {
               <Text style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>总客户</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>{statistics?.orderDistribution?.completed || 0}</Text>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>{statistics?.orderDistribution?.completed || 0}</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>已成交</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>{statistics?.statusDistribution?.atRisk || 0}</Text>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#38bdf8' }}>{statistics?.statusDistribution?.atRisk || 0}</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>有风险</Text>
             </View>
           </View>
@@ -205,8 +205,8 @@ export default function CustomerList() {
             }}
             onClick={() => { setStatusFilter(''); loadCustomers(true); }}
           >
-            <CircleCheck size={18} color={statusFilter === '' ? '#f59e0b' : '#71717a'} />
-            <Text style={{ fontSize: '14px', color: statusFilter === '' ? '#f59e0b' : '#a1a1aa', marginTop: '4px' }}>全部</Text>
+            <CircleCheck size={18} color={statusFilter === '' ? '#38bdf8' : '#71717a'} />
+            <Text style={{ fontSize: '14px', color: statusFilter === '' ? '#38bdf8' : '#94a3b8', marginTop: '4px' }}>全部</Text>
           </View>
           <View
             style={{ 
@@ -221,8 +221,8 @@ export default function CustomerList() {
             }}
             onClick={() => { setStatusFilter('normal'); loadCustomers(true); }}
           >
-            <CircleCheck size={18} color={statusFilter === 'normal' ? '#22c55e' : '#71717a'} />
-            <Text style={{ fontSize: '14px', color: statusFilter === 'normal' ? '#22c55e' : '#a1a1aa', marginTop: '4px' }}>正常</Text>
+            <CircleCheck size={18} color={statusFilter === 'normal' ? '#4ade80' : '#71717a'} />
+            <Text style={{ fontSize: '14px', color: statusFilter === 'normal' ? '#4ade80' : '#94a3b8', marginTop: '4px' }}>正常</Text>
           </View>
           <View
             style={{ 
@@ -237,8 +237,8 @@ export default function CustomerList() {
             }}
             onClick={() => { setStatusFilter('at_risk'); loadCustomers(true); }}
           >
-            <TrendingUp size={18} color={statusFilter === 'at_risk' ? '#f59e0b' : '#71717a'} />
-            <Text style={{ fontSize: '14px', color: statusFilter === 'at_risk' ? '#f59e0b' : '#a1a1aa', marginTop: '4px' }}>有风险</Text>
+            <TrendingUp size={18} color={statusFilter === 'at_risk' ? '#38bdf8' : '#71717a'} />
+            <Text style={{ fontSize: '14px', color: statusFilter === 'at_risk' ? '#38bdf8' : '#94a3b8', marginTop: '4px' }}>有风险</Text>
           </View>
           <View
             style={{ 
@@ -253,8 +253,8 @@ export default function CustomerList() {
             }}
             onClick={() => { setStatusFilter('lost'); loadCustomers(true); }}
           >
-            <CircleX size={18} color={statusFilter === 'lost' ? '#ef4444' : '#71717a'} />
-            <Text style={{ fontSize: '14px', color: statusFilter === 'lost' ? '#ef4444' : '#a1a1aa', marginTop: '4px' }}>已流失</Text>
+            <CircleX size={18} color={statusFilter === 'lost' ? '#f87171' : '#71717a'} />
+            <Text style={{ fontSize: '14px', color: statusFilter === 'lost' ? '#f87171' : '#94a3b8', marginTop: '4px' }}>已流失</Text>
           </View>
         </View>
       </View>
@@ -274,7 +274,7 @@ export default function CustomerList() {
             />
           </View>
           <View
-            style={{ backgroundColor: '#f59e0b', borderRadius: '8px', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ backgroundColor: '#38bdf8', borderRadius: '8px', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={handleSearch}
           >
             <Text style={{ fontSize: '14px', color: '#000000', fontWeight: '500' }}>搜索</Text>
@@ -284,7 +284,7 @@ export default function CustomerList() {
 
       {/* 客户列表标题 */}
       <View style={{ padding: '20px 20px 12px' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500' }}>客户列表</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>客户列表</Text>
       </View>
 
       {/* 客户列表 */}
@@ -314,7 +314,7 @@ export default function CustomerList() {
                   <View style={{ padding: '4px 8px', backgroundColor: status.bgColor, borderRadius: '4px' }}>
                     <Text style={{ fontSize: '12px', color: status.color }}>{status.label}</Text>
                   </View>
-                  <ChevronRight size={18} color="#52525b" style={{ marginLeft: '8px' }} />
+                  <ChevronRight size={18} color="#64748b" style={{ marginLeft: '8px' }} />
                 </View>
               </View>
 
@@ -322,14 +322,14 @@ export default function CustomerList() {
               <View style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '12px' }}>
                 {customer.phone && (
                   <View style={{ display: 'flex', alignItems: 'center' }}>
-                    <Phone size={14} color="#52525b" />
-                    <Text style={{ fontSize: '13px', color: '#a1a1aa', marginLeft: '4px' }}>{customer.phone}</Text>
+                    <Phone size={14} color="#64748b" />
+                    <Text style={{ fontSize: '13px', color: '#94a3b8', marginLeft: '4px' }}>{customer.phone}</Text>
                   </View>
                 )}
                 {customer.city && (
                   <View style={{ display: 'flex', alignItems: 'center' }}>
-                    <MapPin size={14} color="#52525b" />
-                    <Text style={{ fontSize: '13px', color: '#a1a1aa', marginLeft: '4px' }}>{customer.city}</Text>
+                    <MapPin size={14} color="#64748b" />
+                    <Text style={{ fontSize: '13px', color: '#94a3b8', marginLeft: '4px' }}>{customer.city}</Text>
                   </View>
                 )}
               </View>
@@ -339,7 +339,7 @@ export default function CustomerList() {
                 <Text style={{ fontSize: '12px', color: '#71717a' }}>{customer.customer_type || '未分类'}</Text>
                 <View style={{ display: 'flex', alignItems: 'center' }}>
                   <Text style={{ fontSize: '12px', color: orderStatus.color, marginRight: '12px' }}>{orderStatus.label}</Text>
-                  <Text style={{ fontSize: '14px', color: '#22c55e', fontWeight: '500' }}>¥{(customer.estimated_amount || 0).toFixed(0)}万</Text>
+                  <Text style={{ fontSize: '14px', color: '#4ade80', fontWeight: '500' }}>¥{(customer.estimated_amount || 0).toFixed(0)}万</Text>
                 </View>
               </View>
             </View>
@@ -356,7 +356,7 @@ export default function CustomerList() {
         {/* 无更多数据 */}
         {!hasMore && customers.length > 0 && (
           <View style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: '14px', color: '#52525b' }}>没有更多数据了</Text>
+            <Text style={{ fontSize: '14px', color: '#64748b' }}>没有更多数据了</Text>
           </View>
         )}
 
@@ -365,7 +365,7 @@ export default function CustomerList() {
           <View style={{ padding: '48px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <User size={48} color="#334155" />
             <Text style={{ fontSize: '14px', color: '#71717a', marginTop: '16px' }}>暂无客户数据</Text>
-            <Text style={{ fontSize: '12px', color: '#52525b', marginTop: '8px' }}>点击右下角添加新客户</Text>
+            <Text style={{ fontSize: '12px', color: '#64748b', marginTop: '8px' }}>点击右下角添加新客户</Text>
           </View>
         )}
       </ScrollView>
@@ -378,7 +378,7 @@ export default function CustomerList() {
           right: '24px', 
           width: '56px', 
           height: '56px', 
-          backgroundColor: '#f59e0b', 
+          backgroundColor: '#38bdf8', 
           borderRadius: '50%', 
           display: 'flex', 
           alignItems: 'center', 

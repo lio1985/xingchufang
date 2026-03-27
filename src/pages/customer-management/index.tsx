@@ -160,7 +160,7 @@ const CustomerManagementPage = () => {
         <View className="header-top">
           <View className="header-left">
             <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#fafafa" />
+              <ChevronLeft size={32} color="#f1f5f9" />
             </View>
             <View className="header-title-group">
               <Text className="header-title">客资管理</Text>
@@ -179,7 +179,7 @@ const CustomerManagementPage = () => {
           <Input
             className="search-input"
             placeholder="搜索客户..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
@@ -205,7 +205,7 @@ const CustomerManagementPage = () => {
       <View className="content-area">
         {loading ? (
           <View className="loading-state">
-            <Users size={64} color="#f59e0b" />
+            <Users size={64} color="#38bdf8" />
             <Text className="loading-text">加载中...</Text>
           </View>
         ) : filteredCustomers.length === 0 ? (
@@ -234,15 +234,15 @@ const CustomerManagementPage = () => {
 
                 <View className="customer-actions">
                   <View className="action-icon-btn action-phone" onClick={() => handleCall(customer.phone)}>
-                    <Phone size={24} color="#22c55e" />
+                    <Phone size={24} color="#4ade80" />
                   </View>
                   {customer.wechat && (
                     <View className="action-icon-btn action-wechat" onClick={() => handleCopy(customer.wechat!)}>
-                      <MessageCircle size={24} color="#3b82f6" />
+                      <MessageCircle size={24} color="#60a5fa" />
                     </View>
                   )}
                   <View className="action-icon-btn action-copy" onClick={() => handleCopy(customer.phone)}>
-                    <Copy size={24} color="#f59e0b" />
+                    <Copy size={24} color="#38bdf8" />
                   </View>
                 </View>
               </View>
@@ -278,7 +278,7 @@ const CustomerManagementPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入姓名"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newCustomer.name}
                 onInput={(e) => setNewCustomer({ ...newCustomer, name: e.detail.value })}
               />
@@ -289,7 +289,7 @@ const CustomerManagementPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入手机号"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newCustomer.phone}
                 onInput={(e) => setNewCustomer({ ...newCustomer, phone: e.detail.value })}
               />
@@ -300,7 +300,7 @@ const CustomerManagementPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入微信号（选填）"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newCustomer.wechat}
                 onInput={(e) => setNewCustomer({ ...newCustomer, wechat: e.detail.value })}
               />
@@ -316,10 +316,10 @@ const CustomerManagementPage = () => {
                       style={{
                         flexShrink: 0,
                         padding: '12px 20px',
-                        backgroundColor: newCustomer.source === source ? '#f59e0b' : '#1e293b',
+                        backgroundColor: newCustomer.source === source ? '#38bdf8' : '#1e293b',
                         borderRadius: '12px',
                         fontSize: '24px',
-                        color: newCustomer.source === source ? '#000' : '#a1a1aa',
+                        color: newCustomer.source === source ? '#000' : '#94a3b8',
                       }}
                       onClick={() => setNewCustomer({ ...newCustomer, source })}
                     >
@@ -335,7 +335,7 @@ const CustomerManagementPage = () => {
               <Input
                 className="form-input"
                 placeholder="如：VIP, 意向客户"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newCustomer.tags}
                 onInput={(e) => setNewCustomer({ ...newCustomer, tags: e.detail.value })}
               />
@@ -346,7 +346,7 @@ const CustomerManagementPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入备注（选填）"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newCustomer.remark}
                 onInput={(e) => setNewCustomer({ ...newCustomer, remark: e.detail.value })}
               />

@@ -143,7 +143,7 @@ const ContentCreationPage = () => {
         <View className="header-top" style={{ marginBottom: '24px' }}>
           <View className="header-left">
             <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#fafafa" />
+              <ChevronLeft size={32} color="#f1f5f9" />
             </View>
             <Text className="header-title">内容创作</Text>
           </View>
@@ -168,7 +168,7 @@ const ContentCreationPage = () => {
             >
               已选选题 ({selectedTopics.length})
             </Text>
-            <Text style={{ fontSize: '26px', color: '#f59e0b' }}>
+            <Text style={{ fontSize: '26px', color: '#38bdf8' }}>
               {selectedTopics.slice(0, 2).join(' | ')}
               {selectedTopics.length > 2 && ` +${selectedTopics.length - 2}更多`}
             </Text>
@@ -294,7 +294,7 @@ const ContentCreationPage = () => {
           <View style={{ padding: '0 32px', marginBottom: '24px' }}>
             <View className="result-section">
               <View className="generating-state">
-                <Loader size={64} color="#f59e0b" />
+                <Loader size={64} color="#38bdf8" />
                 <Text className="generating-step">{loadingStep}</Text>
               </View>
             </View>
@@ -312,7 +312,7 @@ const ContentCreationPage = () => {
               <View className="action-buttons">
                 <View className="action-button" onClick={handleReset}>
                   <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                    <RefreshCw size={20} color="#a1a1aa" />
+                    <RefreshCw size={20} color="#94a3b8" />
                     <Text className="action-button-text">重新生成</Text>
                   </View>
                 </View>

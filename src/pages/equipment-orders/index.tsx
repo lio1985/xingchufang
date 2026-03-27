@@ -39,18 +39,18 @@ interface Order {
 
 // 状态映射
 const statusMap: Record<string, { text: string; color: string; bgColor: string }> = {
-  published: { text: '待接单', color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)' },
-  taken: { text: '已接单', color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.2)' },
-  completed: { text: '已完成', color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)' },
+  published: { text: '待接单', color: '#38bdf8', bgColor: 'rgba(245, 158, 11, 0.2)' },
+  taken: { text: '已接单', color: '#60a5fa', bgColor: 'rgba(59, 130, 246, 0.2)' },
+  completed: { text: '已完成', color: '#4ade80', bgColor: 'rgba(34, 197, 94, 0.2)' },
   closed: { text: '已关闭', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.2)' },
 };
 
 // 优先级映射
 const priorityMap: Record<string, { text: string; color: string }> = {
   low: { text: '低', color: '#71717a' },
-  normal: { text: '普通', color: '#3b82f6' },
-  high: { text: '高', color: '#f59e0b' },
-  urgent: { text: '紧急', color: '#ef4444' },
+  normal: { text: '普通', color: '#60a5fa' },
+  high: { text: '高', color: '#38bdf8' },
+  urgent: { text: '紧急', color: '#f87171' },
 };
 
 const EquipmentOrdersPage = () => {
@@ -109,10 +109,10 @@ const EquipmentOrdersPage = () => {
               style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={() => Taro.switchTab({ url: '/pages/tab-customer/index' })}
             >
-              <ChevronLeft size={24} color="#fafafa" />
+              <ChevronLeft size={24} color="#f1f5f9" />
             </View>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ShoppingCart size={24} color="#f59e0b" />
+              <ShoppingCart size={24} color="#38bdf8" />
               <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>设备接单系统</Text>
             </View>
           </View>
@@ -120,7 +120,7 @@ const EquipmentOrdersPage = () => {
             style={{
               padding: '8px 16px',
               borderRadius: '8px',
-              backgroundColor: '#f59e0b',
+              backgroundColor: '#38bdf8',
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
@@ -147,12 +147,12 @@ const EquipmentOrdersPage = () => {
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
-                backgroundColor: activeTab === tab.key ? '#f59e0b' : '#1e3a5f',
+                backgroundColor: activeTab === tab.key ? '#38bdf8' : '#1e3a5f',
                 flexShrink: 0
               }}
               onClick={() => setActiveTab(tab.key as any)}
             >
-              <Text style={{ fontSize: '13px', color: activeTab === tab.key ? '#0a0f1a' : '#a1a1aa', fontWeight: '500' }}>
+              <Text style={{ fontSize: '13px', color: activeTab === tab.key ? '#0a0f1a' : '#94a3b8', fontWeight: '500' }}>
                 {tab.label}
               </Text>
             </View>
@@ -176,12 +176,12 @@ const EquipmentOrdersPage = () => {
                 padding: '6px 12px',
                 borderRadius: '16px',
                 backgroundColor: activeStatus === status.key ? 'rgba(245, 158, 11, 0.2)' : '#0a0f1a',
-                border: activeStatus === status.key ? '1px solid #f59e0b' : '1px solid #1e3a5f',
+                border: activeStatus === status.key ? '1px solid #38bdf8' : '1px solid #1e3a5f',
                 flexShrink: 0
               }}
               onClick={() => setActiveStatus(status.key)}
             >
-              <Text style={{ fontSize: '12px', color: activeStatus === status.key ? '#f59e0b' : '#71717a' }}>
+              <Text style={{ fontSize: '12px', color: activeStatus === status.key ? '#38bdf8' : '#71717a' }}>
                 {status.label}
               </Text>
             </View>
@@ -222,13 +222,13 @@ const EquipmentOrdersPage = () => {
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                         {order.order_type === 'purchase' ? (
-                          <ShoppingCart size={16} color="#3b82f6" />
+                          <ShoppingCart size={16} color="#60a5fa" />
                         ) : (
-                          <Package size={16} color="#22c55e" />
+                          <Package size={16} color="#4ade80" />
                         )}
                         <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff' }}>{order.title}</Text>
                       </View>
-                      <Text style={{ fontSize: '12px', color: '#52525b' }}>{order.order_no}</Text>
+                      <Text style={{ fontSize: '12px', color: '#64748b' }}>{order.order_no}</Text>
                     </View>
                     <View style={{ padding: '4px 10px', borderRadius: '12px', backgroundColor: statusInfo.bgColor }}>
                       <Text style={{ fontSize: '12px', color: statusInfo.color, fontWeight: '500' }}>{statusInfo.text}</Text>
@@ -239,17 +239,17 @@ const EquipmentOrdersPage = () => {
                   <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
                     {order.category && (
                       <View style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#1e3a5f' }}>
-                        <Text style={{ fontSize: '11px', color: '#a1a1aa' }}>{order.category}</Text>
+                        <Text style={{ fontSize: '11px', color: '#94a3b8' }}>{order.category}</Text>
                       </View>
                     )}
                     {order.brand && (
                       <View style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#1e3a5f' }}>
-                        <Text style={{ fontSize: '11px', color: '#a1a1aa' }}>{order.brand}</Text>
+                        <Text style={{ fontSize: '11px', color: '#94a3b8' }}>{order.brand}</Text>
                       </View>
                     )}
                     {order.expected_price && (
                       <View style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: 'rgba(34, 197, 94, 0.2)' }}>
-                        <Text style={{ fontSize: '11px', color: '#22c55e' }}>¥{order.expected_price}</Text>
+                        <Text style={{ fontSize: '11px', color: '#4ade80' }}>¥{order.expected_price}</Text>
                       </View>
                     )}
                     <View style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: priorityInfo.color + '20' }}>
@@ -273,24 +273,24 @@ const EquipmentOrdersPage = () => {
                   {/* 底部 */}
                   <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #1e3a5f', paddingTop: '12px' }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Clock size={14} color="#52525b" />
-                      <Text style={{ fontSize: '12px', color: '#52525b' }}>
+                      <Clock size={14} color="#64748b" />
+                      <Text style={{ fontSize: '12px', color: '#64748b' }}>
                         {new Date(order.created_at).toLocaleDateString()}
                       </Text>
                     </View>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       {order.canTake && (
-                        <View style={{ padding: '6px 12px', borderRadius: '6px', backgroundColor: '#f59e0b' }}>
+                        <View style={{ padding: '6px 12px', borderRadius: '6px', backgroundColor: '#38bdf8' }}>
                           <Text style={{ fontSize: '12px', color: '#0a0f1a', fontWeight: '500' }}>立即接单</Text>
                         </View>
                       )}
                       {order.canViewDetail && (
                         <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Eye size={14} color="#f59e0b" />
-                          <Text style={{ fontSize: '12px', color: '#f59e0b' }}>查看详情</Text>
+                          <Eye size={14} color="#38bdf8" />
+                          <Text style={{ fontSize: '12px', color: '#38bdf8' }}>查看详情</Text>
                         </View>
                       )}
-                      <ChevronRight size={16} color="#52525b" />
+                      <ChevronRight size={16} color="#64748b" />
                     </View>
                   </View>
                 </View>

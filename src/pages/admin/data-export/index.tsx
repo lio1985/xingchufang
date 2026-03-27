@@ -139,25 +139,25 @@ const DataExportPage: React.FC = () => {
   };
 
   const dataTypeOptions = [
-    { value: 'all', label: '全部数据', icon: Database, color: '#f59e0b' },
-    { value: 'users', label: '用户数据', icon: Users, color: '#3b82f6' },
-    { value: 'lexicons', label: '语料库', icon: BookOpen, color: '#22c55e' },
+    { value: 'all', label: '全部数据', icon: Database, color: '#38bdf8' },
+    { value: 'users', label: '用户数据', icon: Users, color: '#60a5fa' },
+    { value: 'lexicons', label: '语料库', icon: BookOpen, color: '#4ade80' },
     { value: 'logs', label: '操作日志', icon: ScrollText, color: '#a855f7' },
   ];
 
   const formatOptions = [
-    { value: 'json', label: 'JSON', icon: FileCode, color: '#f59e0b' },
-    { value: 'csv', label: 'CSV', icon: FileSpreadsheet, color: '#22c55e' },
+    { value: 'json', label: 'JSON', icon: FileCode, color: '#38bdf8' },
+    { value: 'csv', label: 'CSV', icon: FileSpreadsheet, color: '#4ade80' },
   ];
 
   const getStatusIcon = (status: ExportTaskStatus) => {
     switch (status) {
       case 'completed':
-        return <CircleCheck size={20} color="#22c55e" />;
+        return <CircleCheck size={20} color="#4ade80" />;
       case 'failed':
-        return <CircleX size={20} color="#ef4444" />;
+        return <CircleX size={20} color="#f87171" />;
       case 'processing':
-        return <LoaderCircle size={20} color="#3b82f6" />;
+        return <LoaderCircle size={20} color="#60a5fa" />;
       default:
         return <Clock size={20} color="#71717a" />;
     }
@@ -185,7 +185,7 @@ const DataExportPage: React.FC = () => {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">数据导出</Text>
           <View
@@ -195,7 +195,7 @@ const DataExportPage: React.FC = () => {
               loadHistory();
             }}
           >
-            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
 
@@ -211,7 +211,7 @@ const DataExportPage: React.FC = () => {
                 flex: 1,
                 padding: '14px',
                 borderRadius: '12px',
-                backgroundColor: activeTab === tab.key ? '#f59e0b' : '#1e293b',
+                backgroundColor: activeTab === tab.key ? '#38bdf8' : '#1e293b',
                 textAlign: 'center',
               }}
               onClick={() => setActiveTab(tab.key as any)}
@@ -220,7 +220,7 @@ const DataExportPage: React.FC = () => {
                 style={{
                   fontSize: '24px',
                   fontWeight: '600',
-                  color: activeTab === tab.key ? '#000' : '#a1a1aa',
+                  color: activeTab === tab.key ? '#000' : '#94a3b8',
                 }}
               >
                 {tab.label}
@@ -238,7 +238,7 @@ const DataExportPage: React.FC = () => {
               <View className="stats-grid">
                 <View className="stat-card">
                   <View className="stat-icon-wrapper stat-icon-primary">
-                    <Download size={24} color="#f59e0b" />
+                    <Download size={24} color="#38bdf8" />
                   </View>
                   <Text className="stat-value">{stats.totalTasks}</Text>
                   <Text className="stat-label">总导出次数</Text>
@@ -246,7 +246,7 @@ const DataExportPage: React.FC = () => {
 
                 <View className="stat-card">
                   <View className="stat-icon-wrapper stat-icon-success">
-                    <CircleCheck size={24} color="#22c55e" />
+                    <CircleCheck size={24} color="#4ade80" />
                   </View>
                   <Text className="stat-value">{stats.completedTasks}</Text>
                   <Text className="stat-label">已完成</Text>
@@ -257,7 +257,7 @@ const DataExportPage: React.FC = () => {
               <View className="admin-card">
                 <View className="admin-card-header">
                   <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Settings size={24} color="#f59e0b" />
+                    <Settings size={24} color="#38bdf8" />
                     <Text className="admin-card-title">导出设置</Text>
                   </View>
                 </View>
@@ -290,7 +290,7 @@ const DataExportPage: React.FC = () => {
                         <option.icon size={24} color={option.color} />
                       </View>
                       <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                        <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                           {option.label}
                         </Text>
                       </View>
@@ -327,7 +327,7 @@ const DataExportPage: React.FC = () => {
                         style={{
                           fontSize: '24px',
                           fontWeight: '600',
-                          color: config.format === option.value ? option.color : '#a1a1aa',
+                          color: config.format === option.value ? option.color : '#94a3b8',
                         }}
                       >
                         {option.label}
@@ -352,7 +352,7 @@ const DataExportPage: React.FC = () => {
           ) : (
             <>
               {/* 导出历史 */}
-              <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+              <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
                 导出历史
               </Text>
 
@@ -369,7 +369,7 @@ const DataExportPage: React.FC = () => {
                         <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           {getStatusIcon(task.status)}
                           <View>
-                            <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                            <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                               {task.fileName}
                             </Text>
                             <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -393,14 +393,14 @@ const DataExportPage: React.FC = () => {
                               Taro.showToast({ title: '开始下载', icon: 'success' });
                             }}
                           >
-                            <Download size={18} color="#f59e0b" />
-                            <Text style={{ fontSize: '22px', color: '#f59e0b' }}>下载</Text>
+                            <Download size={18} color="#38bdf8" />
+                            <Text style={{ fontSize: '22px', color: '#38bdf8' }}>下载</Text>
                           </View>
                         )}
                       </View>
 
                       <View style={{ marginTop: '12px', display: 'flex', gap: '16px' }}>
-                        <Text style={{ fontSize: '20px', color: '#52525b' }}>
+                        <Text style={{ fontSize: '20px', color: '#64748b' }}>
                           {new Date(task.createdAt).toLocaleString('zh-CN')}
                         </Text>
                         <View

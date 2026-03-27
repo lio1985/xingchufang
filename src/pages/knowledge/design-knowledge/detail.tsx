@@ -145,12 +145,12 @@ const DesignKnowledgeDetailPage = () => {
           {/* 标题区 */}
           <View style={{ marginBottom: '20px' }}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <PenTool size={24} color="#f59e0b" />
+              <PenTool size={24} color="#38bdf8" />
               <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>{knowledgeDetail.title}</Text>
             </View>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(245, 158, 11, 0.2)' }}>
-                <Text style={{ fontSize: '12px', color: '#f59e0b' }}>{knowledgeDetail.category}</Text>
+                <Text style={{ fontSize: '12px', color: '#38bdf8' }}>{knowledgeDetail.category}</Text>
               </View>
               <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(168, 85, 247, 0.2)' }}>
                 <Text style={{ fontSize: '12px', color: '#a855f7' }}>{knowledgeDetail.difficulty}</Text>
@@ -181,7 +181,7 @@ const DesignKnowledgeDetailPage = () => {
                 justifyContent: 'center'
               }}
               >
-                <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f59e0b' }}>{knowledgeDetail.author.charAt(0)}</Text>
+                <Text style={{ fontSize: '16px', fontWeight: '600', color: '#38bdf8' }}>{knowledgeDetail.author.charAt(0)}</Text>
               </View>
               <View>
                 <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{knowledgeDetail.author}</Text>
@@ -198,8 +198,8 @@ const DesignKnowledgeDetailPage = () => {
                 <Text style={{ fontSize: '12px', color: '#71717a' }}>{knowledgeDetail.likeCount}</Text>
               </View>
               <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Clock size={14} color="#52525b" />
-                <Text style={{ fontSize: '12px', color: '#52525b' }}>{knowledgeDetail.updateTime}</Text>
+                <Clock size={14} color="#64748b" />
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>{knowledgeDetail.updateTime}</Text>
               </View>
             </View>
           </View>
@@ -213,7 +213,7 @@ const DesignKnowledgeDetailPage = () => {
                 backgroundColor: '#1e3a5f'
               }}
               >
-                <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>#{tag}</Text>
+                <Text style={{ fontSize: '12px', color: '#94a3b8' }}>#{tag}</Text>
               </View>
             ))}
           </View>
@@ -228,10 +228,10 @@ const DesignKnowledgeDetailPage = () => {
           }}
           >
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <Lightbulb size={16} color="#3b82f6" />
-              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#3b82f6' }}>内容摘要</Text>
+              <Lightbulb size={16} color="#60a5fa" />
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#60a5fa' }}>内容摘要</Text>
             </View>
-            <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '20px' }}>
+            <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '20px' }}>
               {knowledgeDetail.summary}
             </Text>
           </View>
@@ -278,7 +278,7 @@ const DesignKnowledgeDetailPage = () => {
           }}
           onClick={handleLike}
         >
-          <ThumbsUp size={20} color={isLiked ? '#22c55e' : '#71717a'} />
+          <ThumbsUp size={20} color={isLiked ? '#4ade80' : '#71717a'} />
         </View>
         <View
           style={{
@@ -292,7 +292,7 @@ const DesignKnowledgeDetailPage = () => {
           }}
           onClick={handleFavorite}
         >
-          <Star size={20} color={isFavorite ? '#f59e0b' : '#71717a'} />
+          <Star size={20} color={isFavorite ? '#38bdf8' : '#71717a'} />
         </View>
         <View
           style={{

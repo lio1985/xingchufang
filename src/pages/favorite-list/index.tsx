@@ -92,11 +92,11 @@ export default function FavoriteListPage() {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case '待拍':
-        return { color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.2)', icon: Clock };
+        return { color: '#38bdf8', bgColor: 'rgba(245, 158, 11, 0.2)', icon: Clock };
       case '已拍':
-        return { color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.2)', icon: CircleCheck };
+        return { color: '#4ade80', bgColor: 'rgba(34, 197, 94, 0.2)', icon: CircleCheck };
       case '已发布':
-        return { color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.2)', icon: Link };
+        return { color: '#60a5fa', bgColor: 'rgba(59, 130, 246, 0.2)', icon: Link };
       default:
         return { color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.2)', icon: Clock };
     }
@@ -108,7 +108,7 @@ export default function FavoriteListPage() {
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ display: 'flex', alignItems: 'center' }}>
-            <Heart size={24} color="#ef4444" />
+            <Heart size={24} color="#f87171" />
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginLeft: '8px' }}>个人收藏</Text>
           </View>
           <Text style={{ fontSize: '14px', color: '#71717a' }}>共 {favorites.length} 条</Text>
@@ -124,10 +124,10 @@ export default function FavoriteListPage() {
         ) : favorites.length === 0 ? (
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 20px' }}>
             <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Heart size={32} color="#52525b" />
+              <Heart size={32} color="#64748b" />
             </View>
             <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginTop: '16px' }}>暂无收藏内容</Text>
-            <Text style={{ fontSize: '13px', color: '#52525b', display: 'block', marginTop: '8px', textAlign: 'center' }}>去热点列表收藏感兴趣的内容吧</Text>
+            <Text style={{ fontSize: '13px', color: '#64748b', display: 'block', marginTop: '8px', textAlign: 'center' }}>去热点列表收藏感兴趣的内容吧</Text>
           </View>
         ) : (
           <View style={{ padding: '16px 20px' }}>
@@ -149,7 +149,7 @@ export default function FavoriteListPage() {
                   {/* 热点标题 */}
                   <View style={{ marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #1e3a5f' }}>
                     <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>热点标题</Text>
-                    <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>{item.hotTitle}</Text>
+                    <Text style={{ fontSize: '14px', color: '#94a3b8' }}>{item.hotTitle}</Text>
                   </View>
 
                   {/* 选题标题 */}
@@ -162,7 +162,7 @@ export default function FavoriteListPage() {
                   {item.scriptSummary && (
                     <View style={{ marginBottom: '12px' }}>
                       <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>脚本摘要</Text>
-                      <Text style={{ fontSize: '13px', color: '#a1a1aa', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <Text style={{ fontSize: '13px', color: '#94a3b8', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {item.scriptSummary}
                       </Text>
                     </View>
@@ -190,7 +190,7 @@ export default function FavoriteListPage() {
                     <View style={{ display: 'flex', gap: '8px' }}>
                       {item.status === '待拍' && (
                         <View
-                          style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#22c55e' }}
+                          style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#4ade80' }}
                           onClick={() => handleUpdateStatus(item.id, '已拍')}
                         >
                           <Text style={{ fontSize: '12px', color: '#ffffff' }}>已拍</Text>
@@ -198,7 +198,7 @@ export default function FavoriteListPage() {
                       )}
                       {item.status === '已拍' && (
                         <View
-                          style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#3b82f6' }}
+                          style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#60a5fa' }}
                           onClick={() => handleUpdateStatus(item.id, '已发布')}
                         >
                           <Text style={{ fontSize: '12px', color: '#ffffff' }}>已发布</Text>
@@ -208,13 +208,13 @@ export default function FavoriteListPage() {
                         style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center' }}
                         onClick={() => handleDeleteFavorite(item.id)}
                       >
-                        <Trash2 size={14} color="#ef4444" />
+                        <Trash2 size={14} color="#f87171" />
                       </View>
                     </View>
                   </View>
 
                   {/* 创建时间 */}
-                  <Text style={{ fontSize: '11px', color: '#52525b', display: 'block', marginTop: '12px' }}>
+                  <Text style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '12px' }}>
                     {item.createdAt}
                   </Text>
                 </View>

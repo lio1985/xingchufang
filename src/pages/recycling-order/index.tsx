@@ -35,9 +35,9 @@ interface Order {
 }
 
 const statusMap = {
-  pending: { label: '待处理', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  processing: { label: '处理中', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-  completed: { label: '已完成', color: '#22c55e', bg: 'rgba(34, 197, 94, 0.1)' },
+  pending: { label: '待处理', color: '#38bdf8', bg: 'rgba(245, 158, 11, 0.1)' },
+  processing: { label: '处理中', color: '#60a5fa', bg: 'rgba(59, 130, 246, 0.1)' },
+  completed: { label: '已完成', color: '#4ade80', bg: 'rgba(34, 197, 94, 0.1)' },
   cancelled: { label: '已取消', color: '#71717a', bg: 'rgba(113, 113, 122, 0.1)' },
 };
 
@@ -185,7 +185,7 @@ const RecyclingOrderPage = () => {
         <View className="header-top">
           <View className="header-left">
             <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#fafafa" />
+              <ChevronLeft size={32} color="#f1f5f9" />
             </View>
             <View className="header-title-group">
               <Text className="header-title">回收订单</Text>
@@ -204,7 +204,7 @@ const RecyclingOrderPage = () => {
           <Input
             className="search-input"
             placeholder="搜索订单/客户..."
-            placeholderStyle="color: #52525b"
+            placeholderStyle="color: #64748b"
             value={searchKeyword}
             onInput={(e) => setSearchKeyword(e.detail.value)}
           />
@@ -213,10 +213,10 @@ const RecyclingOrderPage = () => {
         {/* 状态统计 */}
         <ScrollView scrollX className="order-stats">
           {[
-            { key: '全部', count: stats.total, activeColor: '#fafafa' },
-            { key: 'pending', count: stats.pending, activeColor: '#f59e0b' },
-            { key: 'processing', count: stats.processing, activeColor: '#3b82f6' },
-            { key: 'completed', count: stats.completed, activeColor: '#22c55e' },
+            { key: '全部', count: stats.total, activeColor: '#f1f5f9' },
+            { key: 'pending', count: stats.pending, activeColor: '#38bdf8' },
+            { key: 'processing', count: stats.processing, activeColor: '#60a5fa' },
+            { key: 'completed', count: stats.completed, activeColor: '#4ade80' },
           ].map((item) => (
             <View
               key={item.key}
@@ -243,8 +243,8 @@ const RecyclingOrderPage = () => {
                 style={{
                   flexShrink: 0,
                   padding: '10px 16px',
-                  backgroundColor: selectedCategory === cat ? '#f59e0b' : '#111827',
-                  color: selectedCategory === cat ? '#000' : '#a1a1aa',
+                  backgroundColor: selectedCategory === cat ? '#38bdf8' : '#111827',
+                  color: selectedCategory === cat ? '#000' : '#94a3b8',
                   borderRadius: '10px',
                   fontSize: '22px',
                 }}
@@ -261,7 +261,7 @@ const RecyclingOrderPage = () => {
       <View className="content-area">
         {loading ? (
           <View className="loading-state">
-            <RefreshCw size={64} color="#f59e0b" />
+            <RefreshCw size={64} color="#38bdf8" />
             <Text className="loading-text">加载中...</Text>
           </View>
         ) : filteredOrders.length === 0 ? (
@@ -288,16 +288,16 @@ const RecyclingOrderPage = () => {
 
               <View style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '16px 0' }}>
                 <View className="info-tag">
-                  <Package size={18} color="#a1a1aa" />
-                  <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>{order.category}</Text>
+                  <Package size={18} color="#94a3b8" />
+                  <Text style={{ fontSize: '22px', color: '#94a3b8' }}>{order.category}</Text>
                 </View>
                 <View className="info-tag">
-                  <Scale size={18} color="#a1a1aa" />
-                  <Text style={{ fontSize: '22px', color: '#a1a1aa' }}>{order.weight}kg</Text>
+                  <Scale size={18} color="#94a3b8" />
+                  <Text style={{ fontSize: '22px', color: '#94a3b8' }}>{order.weight}kg</Text>
                 </View>
                 <View className="info-tag" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
-                  <DollarSign size={18} color="#f59e0b" />
-                  <Text style={{ fontSize: '22px', color: '#f59e0b' }}>¥{order.price}</Text>
+                  <DollarSign size={18} color="#38bdf8" />
+                  <Text style={{ fontSize: '22px', color: '#38bdf8' }}>¥{order.price}</Text>
                 </View>
               </View>
 
@@ -363,7 +363,7 @@ const RecyclingOrderPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入客户姓名"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newOrder.customerName}
                 onInput={(e) => setNewOrder({ ...newOrder, customerName: e.detail.value })}
               />
@@ -374,7 +374,7 @@ const RecyclingOrderPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入客户电话"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newOrder.customerPhone}
                 onInput={(e) => setNewOrder({ ...newOrder, customerPhone: e.detail.value })}
               />
@@ -390,10 +390,10 @@ const RecyclingOrderPage = () => {
                       style={{
                         flexShrink: 0,
                         padding: '12px 20px',
-                        backgroundColor: newOrder.category === cat ? '#f59e0b' : '#1e293b',
+                        backgroundColor: newOrder.category === cat ? '#38bdf8' : '#1e293b',
                         borderRadius: '12px',
                         fontSize: '24px',
-                        color: newOrder.category === cat ? '#000' : '#a1a1aa',
+                        color: newOrder.category === cat ? '#000' : '#94a3b8',
                       }}
                       onClick={() => setNewOrder({ ...newOrder, category: cat })}
                     >
@@ -409,7 +409,7 @@ const RecyclingOrderPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入重量"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 type="number"
                 value={newOrder.weight}
                 onInput={(e) => setNewOrder({ ...newOrder, weight: e.detail.value })}
@@ -421,7 +421,7 @@ const RecyclingOrderPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入价格"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 type="number"
                 value={newOrder.price}
                 onInput={(e) => setNewOrder({ ...newOrder, price: e.detail.value })}
@@ -433,7 +433,7 @@ const RecyclingOrderPage = () => {
               <Input
                 className="form-input"
                 placeholder="请输入备注（选填）"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newOrder.remark}
                 onInput={(e) => setNewOrder({ ...newOrder, remark: e.detail.value })}
               />

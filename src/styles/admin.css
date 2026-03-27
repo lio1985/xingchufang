@@ -1,4 +1,4 @@
-/* 管理后台通用样式 */
+/* 管理后台通用样式 - Midnight Blue 午夜蓝主题 */
 
 /* 管理后台页面容器 */
 .admin-page {
@@ -41,7 +41,7 @@
   flex: 1;
   font-size: 18px;
   font-weight: 700;
-  color: #fafafa;
+  color: #f1f5f9;
 }
 
 .admin-action-btn {
@@ -59,7 +59,7 @@
 
 .admin-subtitle {
   font-size: 13px;
-  color: #71717a;
+  color: #64748b;
   margin-top: 8px;
 }
 
@@ -106,36 +106,36 @@
 }
 
 .stat-icon-primary {
-  background-color: rgba(245, 158, 11, 0.15);
+  background-color: rgba(56, 189, 248, 0.15);
 }
 
 .stat-icon-success {
-  background-color: rgba(34, 197, 94, 0.15);
+  background-color: rgba(74, 222, 128, 0.15);
 }
 
 .stat-icon-info {
-  background-color: rgba(59, 130, 246, 0.15);
+  background-color: rgba(96, 165, 250, 0.15);
 }
 
 .stat-icon-warning {
-  background-color: rgba(234, 179, 8, 0.1);
+  background-color: rgba(251, 191, 36, 0.15);
 }
 
 .stat-icon-danger {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: rgba(248, 113, 113, 0.15);
 }
 
 .stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #fafafa;
+  color: #f1f5f9;
   display: block;
   margin-bottom: 2px;
 }
 
 .stat-label {
   font-size: 12px;
-  color: #71717a;
+  color: #64748b;
 }
 
 /* 管理后台卡片 */
@@ -157,7 +157,7 @@
 .admin-card-title {
   font-size: 16px;
   font-weight: 600;
-  color: #fafafa;
+  color: #f1f5f9;
 }
 
 /* 用户列表项 */
@@ -180,7 +180,7 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background-color: rgba(245, 158, 11, 0.15);
+  background-color: rgba(56, 189, 248, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,7 +189,7 @@
 .user-avatar-text {
   font-size: 18px;
   font-weight: 600;
-  color: #f59e0b;
+  color: #38bdf8;
 }
 
 .user-info {
@@ -199,13 +199,13 @@
 .user-name {
   font-size: 15px;
   font-weight: 600;
-  color: #fafafa;
+  color: #f1f5f9;
   display: block;
 }
 
 .user-meta {
   font-size: 12px;
-  color: #71717a;
+  color: #64748b;
   margin-top: 2px;
 }
 
@@ -218,23 +218,23 @@
 }
 
 .status-active {
-  background-color: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
+  background-color: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
 }
 
 .status-pending {
-  background-color: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
 }
 
 .status-disabled {
-  background-color: rgba(113, 113, 122, 0.15);
-  color: #71717a;
+  background-color: rgba(100, 116, 139, 0.15);
+  color: #64748b;
 }
 
 .status-admin {
-  background-color: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
+  background-color: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
 }
 
 /* 筛选器 */
@@ -253,7 +253,7 @@
   border: 1px solid #1e3a5f;
   border-radius: 8px;
   font-size: 13px;
-  color: #71717a;
+  color: #64748b;
 }
 
 .filter-item:active {
@@ -261,9 +261,9 @@
 }
 
 .filter-item-active {
-  background-color: #f59e0b;
-  border-color: #f59e0b;
-  color: #000;
+  background-color: #38bdf8;
+  border-color: #38bdf8;
+  color: #0c4a6e;
 }
 
 /* 操作按钮组 */
@@ -287,18 +287,18 @@
 
 .action-button-secondary {
   background-color: #1e293b;
-  color: #71717a;
+  color: #94a3b8;
 }
 
 .action-button-primary {
-  background-color: #f59e0b;
-  color: #000;
+  background-color: #38bdf8;
+  color: #0c4a6e;
   font-weight: 600;
 }
 
 .action-button-danger {
-  background-color: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  background-color: rgba(248, 113, 113, 0.15);
+  color: #f87171;
 }
 
 /* 时间范围选择器 */
@@ -314,7 +314,7 @@
   border: 1px solid #1e3a5f;
   border-radius: 10px;
   font-size: 13px;
-  color: #71717a;
+  color: #64748b;
 }
 
 .time-range-item:active {
@@ -322,9 +322,9 @@
 }
 
 .time-range-item-active {
-  background-color: #f59e0b;
-  border-color: #f59e0b;
-  color: #000;
+  background-color: #38bdf8;
+  border-color: #38bdf8;
+  color: #0c4a6e;
 }
 
 /* 报告部分 */
@@ -346,12 +346,12 @@
 .report-section-title {
   font-size: 16px;
   font-weight: 600;
-  color: #fafafa;
+  color: #f1f5f9;
 }
 
 .report-section-content {
   font-size: 14px;
-  color: #a1a1aa;
+  color: #94a3b8;
   line-height: 1.6;
 }
 
@@ -386,22 +386,22 @@
   font-size: 14px;
   font-weight: 700;
   background-color: #1e293b;
-  color: #71717a;
+  color: #64748b;
 }
 
 .ranking-position-1 {
-  background-color: #f59e0b;
-  color: #000;
+  background-color: #38bdf8;
+  color: #0c4a6e;
 }
 
 .ranking-position-2 {
-  background-color: rgba(192, 192, 192, 0.2);
-  color: #a1a1aa;
+  background-color: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
 }
 
 .ranking-position-3 {
-  background-color: rgba(205, 127, 50, 0.2);
-  color: #cd7f32;
+  background-color: rgba(251, 146, 60, 0.2);
+  color: #fb923c;
 }
 
 .ranking-user-info {
@@ -411,18 +411,18 @@
 .ranking-username {
   font-size: 15px;
   font-weight: 600;
-  color: #fafafa;
+  color: #f1f5f9;
 }
 
 .ranking-score {
   font-size: 13px;
-  color: #71717a;
+  color: #64748b;
 }
 
 .ranking-stat {
   font-size: 16px;
   font-weight: 700;
-  color: #f59e0b;
+  color: #38bdf8;
 }
 
 /* 搜索框 */
@@ -439,7 +439,7 @@
 .search-input {
   flex: 1;
   font-size: 14px;
-  color: #fafafa;
+  color: #f1f5f9;
   background: transparent;
 }
 
@@ -459,7 +459,7 @@
   font-weight: 500;
   background-color: #111827;
   border: 1px solid #1e3a5f;
-  color: #71717a;
+  color: #64748b;
 }
 
 .admin-tab:active {
@@ -467,9 +467,9 @@
 }
 
 .admin-tab-active {
-  background-color: #f59e0b;
-  border-color: #f59e0b;
-  color: #000;
+  background-color: #38bdf8;
+  border-color: #38bdf8;
+  color: #0c4a6e;
 }
 
 /* 模态框 */
@@ -505,7 +505,7 @@
 .admin-modal-title {
   font-size: 18px;
   font-weight: 600;
-  color: #fafafa;
+  color: #f1f5f9;
 }
 
 .admin-modal-close {
@@ -516,7 +516,7 @@
 
 .admin-modal-content {
   font-size: 14px;
-  color: #a1a1aa;
+  color: #94a3b8;
   line-height: 1.6;
 }
 
@@ -524,4 +524,35 @@
   display: flex;
   gap: 12px;
   margin-top: 20px;
+}
+
+/* 搜索栏包装器 */
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #1e293b;
+  border: 1px solid #1e3a5f;
+  border-radius: 12px;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.empty-desc {
+  font-size: 14px;
+  color: #64748b;
+  display: block;
 }

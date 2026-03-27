@@ -175,8 +175,8 @@ export default function LexiconManagePage() {
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
             onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
           >
-            <ChevronLeft size={24} color="#f59e0b" />
-            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+            <ChevronLeft size={24} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -192,7 +192,7 @@ export default function LexiconManagePage() {
                 justifyContent: 'center',
               }}
             >
-              <User size={24} color="#3b82f6" />
+              <User size={24} color="#60a5fa" />
             </View>
             <View>
               <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人IP语料库</Text>
@@ -203,7 +203,7 @@ export default function LexiconManagePage() {
             style={{
               padding: '10px 16px',
               borderRadius: '10px',
-              backgroundColor: '#f59e0b',
+              backgroundColor: '#38bdf8',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -222,7 +222,7 @@ export default function LexiconManagePage() {
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>总语料数</Text>
           </View>
           <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '10px', padding: '12px', border: '1px solid #1e3a5f' }}>
-            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#3b82f6', display: 'block' }}>{todayCount}</Text>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#60a5fa', display: 'block' }}>{todayCount}</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>今日新增</Text>
           </View>
         </View>
@@ -246,7 +246,7 @@ export default function LexiconManagePage() {
             <Textarea
               style={{ width: '100%', minHeight: '20px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
               placeholder="搜索语料..."
-              placeholderStyle="color: #52525b"
+              placeholderStyle="color: #64748b"
               value={searchKeyword}
               onInput={(e) => setSearchKeyword(e.detail.value)}
             />
@@ -281,10 +281,10 @@ export default function LexiconManagePage() {
                   border: '1px solid #1e3a5f',
                 }}
               >
-                <FileText size={28} color="#52525b" />
+                <FileText size={28} color="#64748b" />
               </View>
               <Text style={{ color: '#71717a', fontSize: '14px', display: 'block' }}>暂无语料</Text>
-              <Text style={{ color: '#52525b', fontSize: '12px', display: 'block', marginTop: '4px' }}>点击右上角添加按钮创建</Text>
+              <Text style={{ color: '#64748b', fontSize: '12px', display: 'block', marginTop: '4px' }}>点击右上角添加按钮创建</Text>
             </View>
           ) : (
             filteredLexicons.map((lexicon) => (
@@ -305,7 +305,7 @@ export default function LexiconManagePage() {
                     </Text>
                     {lexicon.category && (
                       <View style={{ display: 'inline-flex', padding: '2px 8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', borderRadius: '4px', marginBottom: '8px' }}>
-                        <Text style={{ fontSize: '11px', color: '#3b82f6' }}>{lexicon.category}</Text>
+                        <Text style={{ fontSize: '11px', color: '#60a5fa' }}>{lexicon.category}</Text>
                       </View>
                     )}
                   </View>
@@ -314,20 +314,20 @@ export default function LexiconManagePage() {
                       style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       onClick={() => handleOpenEditModal(lexicon)}
                     >
-                      <Pencil size={14} color="#a1a1aa" />
+                      <Pencil size={14} color="#94a3b8" />
                     </View>
                     <View
                       style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       onClick={() => handleDelete(lexicon)}
                     >
-                      <Trash2 size={14} color="#ef4444" />
+                      <Trash2 size={14} color="#f87171" />
                     </View>
                   </View>
                 </View>
                 <Text
                   style={{
                     fontSize: '13px',
-                    color: '#a1a1aa',
+                    color: '#94a3b8',
                     display: 'block',
                     lineHeight: '20px',
                     marginBottom: '12px',
@@ -338,8 +338,8 @@ export default function LexiconManagePage() {
                   {lexicon.content.length > 100 ? lexicon.content.substring(0, 100) + '...' : lexicon.content}
                 </Text>
                 <View style={{ display: 'flex', alignItems: 'center', gap: '4px', borderTop: '1px solid #1e3a5f', paddingTop: '12px' }}>
-                  <Clock size={12} color="#52525b" />
-                  <Text style={{ fontSize: '12px', color: '#52525b' }}>
+                  <Clock size={12} color="#64748b" />
+                  <Text style={{ fontSize: '12px', color: '#64748b' }}>
                     {new Date(lexicon.created_at).toLocaleDateString()}
                   </Text>
                 </View>
@@ -383,7 +383,7 @@ export default function LexiconManagePage() {
                   style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   onClick={() => setShowAddModal(false)}
                 >
-                  <X size={16} color="#a1a1aa" />
+                  <X size={16} color="#94a3b8" />
                 </View>
               </View>
             </View>
@@ -391,12 +391,12 @@ export default function LexiconManagePage() {
             {/* 表单内容 */}
             <ScrollView scrollY style={{ padding: '20px', maxHeight: '50vh' }}>
               <View style={{ marginBottom: '16px' }}>
-                <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>标题 *</Text>
+                <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>标题 *</Text>
                 <View style={{ backgroundColor: '#111827', borderRadius: '10px', padding: '12px', border: '1px solid #1e3a5f' }}>
                   <Textarea
                     style={{ width: '100%', minHeight: '24px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="请输入标题"
-                    placeholderStyle="color: #52525b"
+                    placeholderStyle="color: #64748b"
                     value={formData.title}
                     onInput={(e) => setFormData({ ...formData, title: e.detail.value })}
                     maxlength={100}
@@ -405,12 +405,12 @@ export default function LexiconManagePage() {
               </View>
 
               <View style={{ marginBottom: '16px' }}>
-                <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>分类标签</Text>
+                <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>分类标签</Text>
                 <View style={{ backgroundColor: '#111827', borderRadius: '10px', padding: '12px', border: '1px solid #1e3a5f' }}>
                   <Textarea
                     style={{ width: '100%', minHeight: '24px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="如：口头禅、专业术语、风格表达"
-                    placeholderStyle="color: #52525b"
+                    placeholderStyle="color: #64748b"
                     value={formData.category}
                     onInput={(e) => setFormData({ ...formData, category: e.detail.value })}
                     maxlength={50}
@@ -419,18 +419,18 @@ export default function LexiconManagePage() {
               </View>
 
               <View style={{ marginBottom: '16px' }}>
-                <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>内容 *</Text>
+                <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>内容 *</Text>
                 <View style={{ backgroundColor: '#111827', borderRadius: '10px', padding: '12px', border: '1px solid #1e3a5f' }}>
                   <Textarea
                     style={{ width: '100%', minHeight: '120px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="请输入语料内容..."
-                    placeholderStyle="color: #52525b"
+                    placeholderStyle="color: #64748b"
                     value={formData.content}
                     onInput={(e) => setFormData({ ...formData, content: e.detail.value })}
                     maxlength={2000}
                   />
                 </View>
-                <Text style={{ fontSize: '12px', color: '#52525b', marginTop: '4px', display: 'block', textAlign: 'right' }}>
+                <Text style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', display: 'block', textAlign: 'right' }}>
                   {formData.content.length}/2000
                 </Text>
               </View>
@@ -442,7 +442,7 @@ export default function LexiconManagePage() {
                 style={{
                   padding: '14px',
                   borderRadius: '12px',
-                  backgroundColor: saving ? '#1e3a5f' : '#f59e0b',
+                  backgroundColor: saving ? '#1e3a5f' : '#38bdf8',
                   textAlign: 'center',
                 }}
                 onClick={saving ? undefined : handleSave}

@@ -145,8 +145,8 @@ const ChangePasswordPage = () => {
           onClick={handleGoBack}
         >
           <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <ChevronLeft size={24} color="#f59e0b" />
-            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+            <ChevronLeft size={24} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
         <Text
@@ -185,7 +185,7 @@ const ChangePasswordPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: step === 1 ? '#f59e0b' : '#22c55e',
+              backgroundColor: step === 1 ? '#38bdf8' : '#4ade80',
             }}
           >
             {step === 2 ? (
@@ -203,7 +203,7 @@ const ChangePasswordPage = () => {
             width: '48px',
             height: '2px',
             borderRadius: '1px',
-            backgroundColor: step === 2 ? '#f59e0b' : '#1e3a5f',
+            backgroundColor: step === 2 ? '#38bdf8' : '#1e3a5f',
           }}
         />
 
@@ -217,10 +217,10 @@ const ChangePasswordPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: step === 2 ? '#f59e0b' : '#1e3a5f',
+              backgroundColor: step === 2 ? '#38bdf8' : '#1e3a5f',
             }}
           >
-            <Text style={{ fontSize: '14px', fontWeight: '600', color: step === 2 ? '#000000' : '#52525b' }}>2</Text>
+            <Text style={{ fontSize: '14px', fontWeight: '600', color: step === 2 ? '#000000' : '#64748b' }}>2</Text>
           </View>
           <Text style={{ fontSize: '14px', color: step === 2 ? '#ffffff' : '#71717a', fontWeight: '500' }}>设置密码</Text>
         </View>
@@ -254,13 +254,13 @@ const ChangePasswordPage = () => {
                 flexShrink: 0,
               }}
             >
-              <ShieldCheck size={18} color="#f59e0b" />
+              <ShieldCheck size={18} color="#38bdf8" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: '14px', color: '#f59e0b', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+              <Text style={{ fontSize: '14px', color: '#38bdf8', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
                 安全验证
               </Text>
-              <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block' }}>
+              <Text style={{ fontSize: '12px', color: '#94a3b8', display: 'block' }}>
                 请输入您的账号和原密码，验证身份后方可设置新密码
               </Text>
             </View>
@@ -282,12 +282,12 @@ const ChangePasswordPage = () => {
                 gap: '12px',
               }}
             >
-              <User size={18} color="#52525b" />
+              <User size={18} color="#64748b" />
               <Input
                 style={{ flex: 1, fontSize: '14px', color: '#ffffff' }}
                 type="text"
                 placeholder="请输入账号"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={username}
                 onInput={(e) => setUsername(e.detail.value)}
               />
@@ -310,20 +310,20 @@ const ChangePasswordPage = () => {
                 gap: '12px',
               }}
             >
-              <Lock size={18} color="#52525b" />
+              <Lock size={18} color="#64748b" />
               <Input
                 style={{ flex: 1, fontSize: '14px', color: '#ffffff' }}
                 type={showOldPassword ? ('text' as any) : ('password' as any)}
                 placeholder="请输入原密码"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={oldPassword}
                 onInput={(e) => setOldPassword(e.detail.value)}
               />
               <View onClick={() => setShowOldPassword(!showOldPassword)}>
                 {showOldPassword ? (
-                  <EyeOff size={18} color="#52525b" />
+                  <EyeOff size={18} color="#64748b" />
                 ) : (
-                  <Eye size={18} color="#52525b" />
+                  <Eye size={18} color="#64748b" />
                 )}
               </View>
             </View>
@@ -332,7 +332,7 @@ const ChangePasswordPage = () => {
           {/* 下一步按钮 */}
           <View
             style={{
-              backgroundColor: isLoading ? 'rgba(245, 158, 11, 0.5)' : '#f59e0b',
+              backgroundColor: isLoading ? 'rgba(245, 158, 11, 0.5)' : '#38bdf8',
               borderRadius: '12px',
               padding: '16px',
               display: 'flex',
@@ -377,13 +377,13 @@ const ChangePasswordPage = () => {
                 flexShrink: 0,
               }}
             >
-              <CircleCheck size={18} color="#22c55e" />
+              <CircleCheck size={18} color="#4ade80" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: '14px', color: '#22c55e', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
+              <Text style={{ fontSize: '14px', color: '#4ade80', fontWeight: '500', display: 'block', marginBottom: '4px' }}>
                 身份验证成功
               </Text>
-              <Text style={{ fontSize: '12px', color: '#a1a1aa', display: 'block' }}>
+              <Text style={{ fontSize: '12px', color: '#94a3b8', display: 'block' }}>
                 请设置您的新密码，密码长度至少6位
               </Text>
             </View>
@@ -405,20 +405,20 @@ const ChangePasswordPage = () => {
                 gap: '12px',
               }}
             >
-              <Lock size={18} color="#52525b" />
+              <Lock size={18} color="#64748b" />
               <Input
                 style={{ flex: 1, fontSize: '14px', color: '#ffffff' }}
                 type={showNewPassword ? ('text' as any) : ('password' as any)}
                 placeholder="请输入新密码（至少6位）"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={newPassword}
                 onInput={(e) => setNewPassword(e.detail.value)}
               />
               <View onClick={() => setShowNewPassword(!showNewPassword)}>
                 {showNewPassword ? (
-                  <EyeOff size={18} color="#52525b" />
+                  <EyeOff size={18} color="#64748b" />
                 ) : (
-                  <Eye size={18} color="#52525b" />
+                  <Eye size={18} color="#64748b" />
                 )}
               </View>
             </View>
@@ -440,20 +440,20 @@ const ChangePasswordPage = () => {
                 gap: '12px',
               }}
             >
-              <Lock size={18} color="#52525b" />
+              <Lock size={18} color="#64748b" />
               <Input
                 style={{ flex: 1, fontSize: '14px', color: '#ffffff' }}
                 type={showConfirmPassword ? ('text' as any) : ('password' as any)}
                 placeholder="请再次输入新密码"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={confirmPassword}
                 onInput={(e) => setConfirmPassword(e.detail.value)}
               />
               <View onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                 {showConfirmPassword ? (
-                  <EyeOff size={18} color="#52525b" />
+                  <EyeOff size={18} color="#64748b" />
                 ) : (
-                  <Eye size={18} color="#52525b" />
+                  <Eye size={18} color="#64748b" />
                 )}
               </View>
             </View>
@@ -461,7 +461,7 @@ const ChangePasswordPage = () => {
 
           {/* 密码强度提示 */}
           <View style={{ marginBottom: '24px' }}>
-            <Text style={{ fontSize: '12px', color: '#52525b', display: 'block' }}>
+            <Text style={{ fontSize: '12px', color: '#64748b', display: 'block' }}>
               密码要求：至少6位字符，建议包含字母、数字和特殊符号
             </Text>
           </View>
@@ -469,7 +469,7 @@ const ChangePasswordPage = () => {
           {/* 确认修改按钮 */}
           <View
             style={{
-              backgroundColor: isLoading ? 'rgba(245, 158, 11, 0.5)' : '#f59e0b',
+              backgroundColor: isLoading ? 'rgba(245, 158, 11, 0.5)' : '#38bdf8',
               borderRadius: '12px',
               padding: '16px',
               display: 'flex',

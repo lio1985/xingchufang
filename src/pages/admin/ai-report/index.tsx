@@ -90,14 +90,14 @@ export default function AdminAIReportPage() {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">运营报告</Text>
           <View
             className="admin-action-btn"
             onClick={loadLatestReport}
           >
-            <RefreshCw size={20} color="#f59e0b" />
+            <RefreshCw size={20} color="#38bdf8" />
           </View>
         </View>
       </View>
@@ -110,7 +110,7 @@ export default function AdminAIReportPage() {
           {/* 创建设置卡片 */}
           <View className="admin-card">
             <View className="admin-card-header">
-              <Settings size={24} color="#f59e0b" />
+              <Settings size={24} color="#38bdf8" />
               <Text className="admin-card-title">创建设置</Text>
             </View>
 
@@ -149,7 +149,7 @@ export default function AdminAIReportPage() {
               <View className="admin-card">
                 <View className="admin-card-header">
                   <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <FileChartColumn size={24} color="#3b82f6" />
+                    <FileChartColumn size={24} color="#60a5fa" />
                     <Text className="admin-card-title">运营分析报告</Text>
                   </View>
                   <View
@@ -163,8 +163,8 @@ export default function AdminAIReportPage() {
                     }}
                     onClick={exportReport}
                   >
-                    <Download size={20} color="#f59e0b" />
-                    <Text style={{ fontSize: '22px', color: '#f59e0b' }}>导出</Text>
+                    <Download size={20} color="#38bdf8" />
+                    <Text style={{ fontSize: '22px', color: '#38bdf8' }}>导出</Text>
                   </View>
                 </View>
                 <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
@@ -179,7 +179,7 @@ export default function AdminAIReportPage() {
               {reportData.map((section, index) => (
                 <View key={index} className="report-section">
                   <View className="report-section-header">
-                    <FileText size={24} color="#f59e0b" />
+                    <FileText size={24} color="#38bdf8" />
                     <Text className="report-section-title">{section.title}</Text>
                   </View>
                   <Text className="report-section-content">{section.content}</Text>
@@ -188,13 +188,13 @@ export default function AdminAIReportPage() {
 
               {/* 数据统计卡片 */}
               <View className="admin-card">
-                <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+                <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
                   数据概览
                 </Text>
                 <View className="stats-grid">
                   <View className="stat-card">
                     <View className="stat-icon-wrapper stat-icon-success">
-                      <Users size={24} color="#22c55e" />
+                      <Users size={24} color="#4ade80" />
                     </View>
                     <Text className="stat-value">128</Text>
                     <Text className="stat-label">活跃用户</Text>
@@ -202,7 +202,7 @@ export default function AdminAIReportPage() {
 
                   <View className="stat-card">
                     <View className="stat-icon-wrapper stat-icon-primary">
-                      <ChartBar size={24} color="#f59e0b" />
+                      <ChartBar size={24} color="#38bdf8" />
                     </View>
                     <Text className="stat-value">1,234</Text>
                     <Text className="stat-label">使用频次</Text>
@@ -210,7 +210,7 @@ export default function AdminAIReportPage() {
 
                   <View className="stat-card">
                     <View className="stat-icon-wrapper stat-icon-info">
-                      <MessageSquare size={24} color="#3b82f6" />
+                      <MessageSquare size={24} color="#60a5fa" />
                     </View>
                     <Text className="stat-value">567</Text>
                     <Text className="stat-label">对话数量</Text>
@@ -240,9 +240,9 @@ export default function AdminAIReportPage() {
                   margin: '0 auto 24px',
                 }}
               >
-                <Info size={40} color="#3b82f6" />
+                <Info size={40} color="#60a5fa" />
               </View>
-              <Text style={{ fontSize: '28px', fontWeight: '600', color: '#fafafa', marginBottom: '12px', display: 'block' }}>
+              <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px', display: 'block' }}>
                 暂无报告数据
               </Text>
               <Text style={{ fontSize: '22px', color: '#71717a', lineHeight: '1.6' }}>

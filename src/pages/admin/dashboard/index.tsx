@@ -144,7 +144,7 @@ export default function AdminDashboardPage() {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">数据监控</Text>
           <View
@@ -152,7 +152,7 @@ export default function AdminDashboardPage() {
             style={{ opacity: loading ? 0.5 : 1 }}
             onClick={handleRefresh}
           >
-            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
       </View>
@@ -170,7 +170,7 @@ export default function AdminDashboardPage() {
           <View
             className="admin-card"
             style={{
-              background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+              background: 'linear-gradient(135deg, #60a5fa 0%, #8b5cf6 100%)',
               border: 'none',
             }}
             onClick={() => Taro.navigateTo({ url: '/pages/admin/ai-report/index' })}
@@ -270,7 +270,7 @@ export default function AdminDashboardPage() {
             <View
               className="admin-card"
               style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                background: 'linear-gradient(135deg, #38bdf8 0%, #ea580c 100%)',
                 border: 'none',
               }}
               onClick={() => Taro.navigateTo({ url: '/pages/admin/users/index?status=pending' })}
@@ -317,7 +317,7 @@ export default function AdminDashboardPage() {
                 style={{
                   fontSize: '28px',
                   fontWeight: '600',
-                  color: '#fafafa',
+                  color: '#f1f5f9',
                   marginBottom: '16px',
                   display: 'block',
                 }}
@@ -327,7 +327,7 @@ export default function AdminDashboardPage() {
               <View className="stats-grid">
                 <View className="stat-card">
                   <View className="stat-icon-wrapper stat-icon-primary">
-                    <Users size={24} color="#f59e0b" />
+                    <Users size={24} color="#38bdf8" />
                   </View>
                   <Text className="stat-value">{statistics.totalUsers}</Text>
                   <Text className="stat-label">总用户数</Text>
@@ -335,7 +335,7 @@ export default function AdminDashboardPage() {
 
                 <View className="stat-card">
                   <View className="stat-icon-wrapper stat-icon-success">
-                    <UserCheck size={24} color="#22c55e" />
+                    <UserCheck size={24} color="#4ade80" />
                   </View>
                   <Text className="stat-value">{statistics.activeUsers}</Text>
                   <Text className="stat-label">活跃用户</Text>
@@ -343,7 +343,7 @@ export default function AdminDashboardPage() {
 
                 <View className="stat-card">
                   <View className="stat-icon-wrapper stat-icon-info">
-                    <MessageSquare size={24} color="#3b82f6" />
+                    <MessageSquare size={24} color="#60a5fa" />
                   </View>
                   <Text className="stat-value">{statistics.totalConversations}</Text>
                   <Text className="stat-label">对话总数</Text>
@@ -366,7 +366,7 @@ export default function AdminDashboardPage() {
               style={{
                 fontSize: '28px',
                 fontWeight: '600',
-                color: '#fafafa',
+                color: '#f1f5f9',
                 marginBottom: '16px',
                 display: 'block',
               }}
@@ -379,9 +379,9 @@ export default function AdminDashboardPage() {
                 onClick={() => Taro.navigateTo({ url: '/pages/admin/users/index' })}
               >
                 <View className="stat-icon-wrapper stat-icon-info">
-                  <Users size={24} color="#3b82f6" />
+                  <Users size={24} color="#60a5fa" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   用户管理
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -394,9 +394,9 @@ export default function AdminDashboardPage() {
                 onClick={() => Taro.navigateTo({ url: '/pages/admin/lexicon-manage/index' })}
               >
                 <View className="stat-icon-wrapper stat-icon-success">
-                  <BookOpen size={24} color="#22c55e" />
+                  <BookOpen size={24} color="#4ade80" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   语料库
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -411,7 +411,7 @@ export default function AdminDashboardPage() {
                 <View className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(168, 85, 247, 0.1)' }}>
                   <Database size={24} color="#a855f7" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   用户数据
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -424,9 +424,9 @@ export default function AdminDashboardPage() {
                 onClick={() => Taro.navigateTo({ url: '/pages/admin/quick-note-manage/index' })}
               >
                 <View className="stat-icon-wrapper stat-icon-primary">
-                  <StickyNote size={24} color="#f59e0b" />
+                  <StickyNote size={24} color="#38bdf8" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   快速笔记
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -439,9 +439,9 @@ export default function AdminDashboardPage() {
                 onClick={() => Taro.navigateTo({ url: '/pages/admin/audit/index' })}
               >
                 <View className="stat-icon-wrapper stat-icon-danger">
-                  <ScrollText size={24} color="#ef4444" />
+                  <ScrollText size={24} color="#f87171" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   审计日志
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -456,7 +456,7 @@ export default function AdminDashboardPage() {
                 <View className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(6, 182, 212, 0.1)' }}>
                   <TrendingUp size={24} color="#06b6d4" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   共享统计
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -471,7 +471,7 @@ export default function AdminDashboardPage() {
                 <View className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(236, 72, 153, 0.1)' }}>
                   <Bell size={24} color="#ec4899" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   发送通知
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -484,9 +484,9 @@ export default function AdminDashboardPage() {
                 onClick={() => Taro.navigateTo({ url: '/pages/admin/customer-management/index' })}
               >
                 <View className="stat-icon-wrapper stat-icon-info">
-                  <Users size={24} color="#3b82f6" />
+                  <Users size={24} color="#60a5fa" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   客户管理
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -501,7 +501,7 @@ export default function AdminDashboardPage() {
                 <View className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(6, 182, 212, 0.1)' }}>
                   <Building2 size={24} color="#06b6d4" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   回收门店
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -514,9 +514,9 @@ export default function AdminDashboardPage() {
                 onClick={() => Taro.navigateTo({ url: '/pages/admin/team-management/index' })}
               >
                 <View className="stat-icon-wrapper stat-icon-success">
-                  <UsersRound size={24} color="#22c55e" />
+                  <UsersRound size={24} color="#4ade80" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   团队管理
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -529,9 +529,9 @@ export default function AdminDashboardPage() {
                 onClick={() => Taro.navigateTo({ url: '/pages/equipment-orders/index' })}
               >
                 <View className="stat-icon-wrapper stat-icon-primary">
-                  <ShoppingCart size={24} color="#f59e0b" />
+                  <ShoppingCart size={24} color="#38bdf8" />
                 </View>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                   设备订单
                 </Text>
                 <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
@@ -556,14 +556,14 @@ export default function AdminDashboardPage() {
                   style={{
                     fontSize: '28px',
                     fontWeight: '600',
-                    color: '#fafafa',
+                    color: '#f1f5f9',
                   }}
                 >
                   活跃用户排行
                 </Text>
                 <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <TrendingUp size={20} color="#f59e0b" />
-                  <Text style={{ fontSize: '22px', color: '#f59e0b' }}>TOP {rankingLimit}</Text>
+                  <TrendingUp size={20} color="#38bdf8" />
+                  <Text style={{ fontSize: '22px', color: '#38bdf8' }}>TOP {rankingLimit}</Text>
                 </View>
               </View>
 

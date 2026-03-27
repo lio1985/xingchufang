@@ -109,7 +109,7 @@ const TabProfilePage = () => {
                 />
               ) : (
                 <View style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <User size={24} color="#f59e0b" />
+                  <User size={24} color="#38bdf8" />
                 </View>
               )}
               <View style={{ flex: 1, marginLeft: '16px' }}>
@@ -128,15 +128,15 @@ const TabProfilePage = () => {
               style={{ flex: 1, backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               onClick={handleLogin}
             >
-              <User size={20} color="#f59e0b" />
-              <Text style={{ fontSize: '14px', color: '#f59e0b', fontWeight: '500', marginTop: '4px' }}>登录账号</Text>
+              <User size={20} color="#38bdf8" />
+              <Text style={{ fontSize: '14px', color: '#38bdf8', fontWeight: '500', marginTop: '4px' }}>登录账号</Text>
             </View>
             <View
               style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               onClick={handleRegister}
             >
               <UserPlus size={20} color="#71717a" />
-              <Text style={{ fontSize: '14px', color: '#a1a1aa', marginTop: '4px' }}>注册账号</Text>
+              <Text style={{ fontSize: '14px', color: '#94a3b8', marginTop: '4px' }}>注册账号</Text>
             </View>
           </View>
         )}
@@ -307,7 +307,7 @@ const TabProfilePage = () => {
                   justifyContent: 'center',
                 }}
                 >
-                  <ShoppingCart size={14} color="#fbbf24" />
+                  <ShoppingCart size={14} color="#7dd3fc" />
                 </View>
                 <Text style={{ fontSize: '12px', color: '#e4e4e7', marginLeft: '8px', fontWeight: '500' }}>设备订单</Text>
               </View>
@@ -422,7 +422,7 @@ const TabProfilePage = () => {
 
       {/* 数据管理 */}
       <View style={{ padding: '24px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>数据管理</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>数据管理</Text>
         
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 数据看板 */}
@@ -431,13 +431,13 @@ const TabProfilePage = () => {
             onClick={() => handleNav('/pages/data-stats/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <ChartBarBig size={20} color="#3b82f6" />
+              <ChartBarBig size={20} color="#60a5fa" />
             </View>
             <View style={{ flex: 1, marginLeft: '12px' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>数据看板</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>查看运营数据统计</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={18} color="#64748b" />
           </View>
 
           {/* 数据导出 */}
@@ -446,20 +446,20 @@ const TabProfilePage = () => {
             onClick={handleExportData}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Download size={20} color="#22c55e" />
+              <Download size={20} color="#4ade80" />
             </View>
             <View style={{ flex: 1, marginLeft: '12px' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>数据导出</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>导出您的所有数据</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={18} color="#64748b" />
           </View>
         </View>
       </View>
 
       {/* 系统 */}
       <View style={{ padding: '24px 20px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>系统</Text>
+        <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>系统</Text>
         
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 设置 */}
@@ -468,13 +468,13 @@ const TabProfilePage = () => {
             onClick={() => handleNav('/pages/settings/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(63, 63, 70, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Settings size={20} color="#a1a1aa" />
+              <Settings size={20} color="#94a3b8" />
             </View>
             <View style={{ flex: 1, marginLeft: '12px' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>设置</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>账号与系统设置</Text>
             </View>
-            <ChevronRight size={18} color="#52525b" />
+            <ChevronRight size={18} color="#64748b" />
           </View>
         </View>
       </View>
@@ -486,8 +486,8 @@ const TabProfilePage = () => {
             style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={handleLogout}
           >
-            <LogOut size={18} color="#ef4444" />
-            <Text style={{ fontSize: '14px', color: '#ef4444', marginLeft: '8px' }}>退出登录</Text>
+            <LogOut size={18} color="#f87171" />
+            <Text style={{ fontSize: '14px', color: '#f87171', marginLeft: '8px' }}>退出登录</Text>
           </View>
         </View>
       )}

@@ -132,7 +132,7 @@ export default function AdminRecycleManagementPage() {
             {trend > 0 ? (
               <TrendingUp size={12} color="#10b981" />
             ) : trend < 0 ? (
-              <TrendingDown size={12} color="#ef4444" />
+              <TrendingDown size={12} color="#f87171" />
             ) : (
               <Minus size={12} color="#71717a" />
             )}
@@ -185,9 +185,9 @@ export default function AdminRecycleManagementPage() {
   const RiskStoreItem = ({ store }: { store: RiskStore }) => {
     const getRiskColor = (level: string) => {
       switch (level) {
-        case 'high': return { bg: 'bg-red-500/20', border: 'border-red-500/30', text: 'text-red-400', icon: '#ef4444' };
+        case 'high': return { bg: 'bg-red-500/20', border: 'border-red-500/30', text: 'text-red-400', icon: '#f87171' };
         case 'medium': return { bg: 'bg-orange-500/20', border: 'border-orange-500/30', text: 'text-orange-400', icon: '#f97316' };
-        case 'low': return { bg: 'bg-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', icon: '#f59e0b' };
+        case 'low': return { bg: 'bg-amber-500/20', border: 'border-amber-500/30', text: 'text-amber-400', icon: '#38bdf8' };
         default: return { bg: 'bg-zinc-700', border: 'border-zinc-600', text: 'text-zinc-400', icon: '#71717a' };
       }
     };
@@ -233,7 +233,7 @@ export default function AdminRecycleManagementPage() {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">回收门店管理</Text>
           <View
@@ -241,7 +241,7 @@ export default function AdminRecycleManagementPage() {
             style={{ opacity: loading ? 0.5 : 1 }}
             onClick={handleRefresh}
           >
-            <RefreshCw size={20} color={loading ? '#52525b' : '#f59e0b'} />
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
       </View>
@@ -396,7 +396,7 @@ export default function AdminRecycleManagementPage() {
             <View>
               <View className="flex justify-between items-center mb-3">
                 <View className="flex items-center gap-2">
-                  <User size={16} color="#f59e0b" />
+                  <User size={16} color="#38bdf8" />
                   <Text className="text-white font-semibold">回收业绩排行</Text>
                 </View>
                 <Text className="text-zinc-500 text-sm">Top {salesRankings.length}</Text>
@@ -422,7 +422,7 @@ export default function AdminRecycleManagementPage() {
             <View>
               <View className="flex justify-between items-center mb-3">
                 <View className="flex items-center gap-2">
-                  <CircleAlert size={16} color="#f59e0b" />
+                  <CircleAlert size={16} color="#38bdf8" />
                   <Text className="text-white font-semibold">风险预警门店</Text>
                 </View>
                 <Text className="text-zinc-500 text-sm">近期需要跟进</Text>

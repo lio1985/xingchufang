@@ -119,12 +119,12 @@ const ProductManualDetailPage = () => {
           {/* 标题区 */}
           <View style={{ marginBottom: '20px' }}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <FileText size={24} color="#f59e0b" />
+              <FileText size={24} color="#38bdf8" />
               <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>{manualDetail.title}</Text>
             </View>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(245, 158, 11, 0.2)' }}>
-                <Text style={{ fontSize: '12px', color: '#f59e0b' }}>{manualDetail.category}</Text>
+                <Text style={{ fontSize: '12px', color: '#38bdf8' }}>{manualDetail.category}</Text>
               </View>
               <Text style={{ fontSize: '13px', color: '#71717a' }}>{manualDetail.brand} | {manualDetail.model}</Text>
             </View>
@@ -138,8 +138,8 @@ const ProductManualDetailPage = () => {
                 <Text style={{ fontSize: '12px', color: '#71717a' }}>{manualDetail.downloadCount} 次下载</Text>
               </View>
               <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Clock size={14} color="#52525b" />
-                <Text style={{ fontSize: '12px', color: '#52525b' }}>{manualDetail.updateTime}</Text>
+                <Clock size={14} color="#64748b" />
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>{manualDetail.updateTime}</Text>
               </View>
             </View>
           </View>
@@ -153,7 +153,7 @@ const ProductManualDetailPage = () => {
                 backgroundColor: '#1e3a5f'
               }}
               >
-                <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>#{tag}</Text>
+                <Text style={{ fontSize: '12px', color: '#94a3b8' }}>#{tag}</Text>
               </View>
             ))}
           </View>
@@ -168,10 +168,10 @@ const ProductManualDetailPage = () => {
           }}
           >
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <CircleAlert size={16} color="#f59e0b" />
-              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f59e0b' }}>重要提示</Text>
+              <CircleAlert size={16} color="#38bdf8" />
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#38bdf8' }}>重要提示</Text>
             </View>
-            <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '20px' }}>
+            <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '20px' }}>
               请在使用设备前仔细阅读本说明书，确保安全操作。如有疑问请联系技术支持。
             </Text>
           </View>
@@ -248,7 +248,7 @@ const ProductManualDetailPage = () => {
           }}
           onClick={handleFavorite}
         >
-          <Star size={20} color={isFavorite ? '#f59e0b' : '#71717a'} />
+          <Star size={20} color={isFavorite ? '#38bdf8' : '#71717a'} />
         </View>
         <View
           style={{
@@ -269,7 +269,7 @@ const ProductManualDetailPage = () => {
             flex: 1,
             height: '44px',
             borderRadius: '12px',
-            backgroundColor: '#f59e0b',
+            backgroundColor: '#38bdf8',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

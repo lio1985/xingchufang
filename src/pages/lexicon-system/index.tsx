@@ -147,8 +147,8 @@ export default function LexiconSystemPage() {
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
             onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
           >
-            <ChevronLeft size={24} color="#f59e0b" />
-            <Text style={{ fontSize: '14px', color: '#f59e0b' }}>返回</Text>
+            <ChevronLeft size={24} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -164,7 +164,7 @@ export default function LexiconSystemPage() {
                 justifyContent: 'center',
               }}
             >
-              <MessageSquareText size={24} color="#3b82f6" />
+              <MessageSquareText size={24} color="#60a5fa" />
             </View>
             <View>
               <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人语料</Text>
@@ -182,8 +182,8 @@ export default function LexiconSystemPage() {
             }}
             onClick={handleNavigateToManage}
           >
-            <Settings size={14} color="#f59e0b" />
-            <Text style={{ fontSize: '13px', color: '#f59e0b', fontWeight: '500' }}>管理</Text>
+            <Settings size={14} color="#38bdf8" />
+            <Text style={{ fontSize: '13px', color: '#38bdf8', fontWeight: '500' }}>管理</Text>
           </View>
         </View>
       </View>
@@ -212,15 +212,15 @@ export default function LexiconSystemPage() {
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <View style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <User size={18} color="#3b82f6" />
+                <User size={18} color="#60a5fa" />
                 <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>个人IP语料库</Text>
                 <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 0.2)' }}>
-                  <Text style={{ fontSize: '12px', color: '#3b82f6' }}>{lexicons.length} 条</Text>
+                  <Text style={{ fontSize: '12px', color: '#60a5fa' }}>{lexicons.length} 条</Text>
                 </View>
               </View>
               <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <View style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(34, 197, 94, 0.2)' }}>
-                  <Text style={{ fontSize: '12px', color: '#22c55e' }}>已选 {selectedLexicons.length}</Text>
+                  <Text style={{ fontSize: '12px', color: '#4ade80' }}>已选 {selectedLexicons.length}</Text>
                 </View>
                 {isExpanded ? <ChevronDown size={16} color="#71717a" /> : <ChevronRight size={16} color="#71717a" />}
               </View>
@@ -242,10 +242,10 @@ export default function LexiconSystemPage() {
                         marginBottom: '12px',
                       }}
                     >
-                      <MessageSquareText size={24} color="#52525b" />
+                      <MessageSquareText size={24} color="#64748b" />
                     </View>
                     <Text style={{ fontSize: '14px', color: '#71717a', display: 'block' }}>暂无语料库</Text>
-                    <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginTop: '4px' }}>
+                    <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginTop: '4px' }}>
                       点击右上角管理按钮添加语料
                     </Text>
                   </View>
@@ -264,10 +264,10 @@ export default function LexiconSystemPage() {
                       }}
                       onClick={handleSelectAll}
                     >
-                      <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>
+                      <Text style={{ fontSize: '13px', color: '#94a3b8' }}>
                         {selectedLexicons.length === lexicons.length ? '取消全选' : '全选'}
                       </Text>
-                      <Text style={{ fontSize: '12px', color: '#52525b' }}>
+                      <Text style={{ fontSize: '12px', color: '#64748b' }}>
                         {selectedLexicons.length}/{lexicons.length}
                       </Text>
                     </View>
@@ -293,9 +293,9 @@ export default function LexiconSystemPage() {
                               height: '18px',
                               borderRadius: '4px',
                               border: selectedLexicons.includes(lexicon.id)
-                                ? '2px solid #3b82f6'
-                                : '2px solid #52525b',
-                              backgroundColor: selectedLexicons.includes(lexicon.id) ? '#3b82f6' : 'transparent',
+                                ? '2px solid #60a5fa'
+                                : '2px solid #64748b',
+                              backgroundColor: selectedLexicons.includes(lexicon.id) ? '#60a5fa' : 'transparent',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -334,7 +334,7 @@ export default function LexiconSystemPage() {
                             <Text
                               style={{
                                 fontSize: '12px',
-                                color: '#a1a1aa',
+                                color: '#94a3b8',
                                 display: 'block',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
@@ -371,7 +371,7 @@ export default function LexiconSystemPage() {
               <Textarea
                 style={{ width: '100%', minHeight: '100px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                 placeholder="请输入需要优化的文本..."
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={inputText}
                 onInput={(e) => setInputText(e.detail.value)}
                 maxlength={2000}
@@ -381,7 +381,7 @@ export default function LexiconSystemPage() {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: isProcessing || !inputText.trim() ? '#1e3a5f' : '#f59e0b',
+                  backgroundColor: isProcessing || !inputText.trim() ? '#1e3a5f' : '#38bdf8',
                   borderRadius: '8px',
                   padding: '12px',
                   textAlign: 'center',
@@ -427,7 +427,7 @@ export default function LexiconSystemPage() {
             >
               <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Sparkles size={16} color="#22c55e" />
+                  <Sparkles size={16} color="#4ade80" />
                   <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>优化结果</Text>
                 </View>
                 <View
@@ -441,12 +441,12 @@ export default function LexiconSystemPage() {
                   }}
                   onClick={handleCopy}
                 >
-                  <Copy size={14} color="#a1a1aa" />
-                  <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>复制</Text>
+                  <Copy size={14} color="#94a3b8" />
+                  <Text style={{ fontSize: '12px', color: '#94a3b8' }}>复制</Text>
                 </View>
               </View>
               <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
-                <Text style={{ fontSize: '14px', color: '#a1a1aa', display: 'block', lineHeight: '24px' }}>
+                <Text style={{ fontSize: '14px', color: '#94a3b8', display: 'block', lineHeight: '24px' }}>
                   {outputText}
                 </Text>
               </View>
@@ -463,13 +463,13 @@ export default function LexiconSystemPage() {
             }}
           >
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <Info size={16} color="#3b82f6" />
+              <Info size={16} color="#60a5fa" />
               <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>使用说明</Text>
             </View>
             <Text
               style={{
                 fontSize: '13px',
-                color: '#a1a1aa',
+                color: '#94a3b8',
                 display: 'block',
                 marginBottom: '8px',
                 lineHeight: '20px',

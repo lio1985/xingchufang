@@ -18,7 +18,7 @@ const knowledgeCategories = [
     title: '商厨设备维修维保',
     description: '设备维修保养指南与知识库',
     icon: Wrench,
-    color: '#f59e0b',
+    color: '#38bdf8',
     bgColor: 'rgba(245, 158, 11, 0.2)',
     count: 24,
     subCategories: [
@@ -40,7 +40,7 @@ const knowledgeCategories = [
     title: '销售技巧',
     description: '销售话术与客户沟通技巧',
     icon: Lightbulb,
-    color: '#22c55e',
+    color: '#4ade80',
     bgColor: 'rgba(34, 197, 94, 0.2)',
     count: 18,
   },
@@ -49,7 +49,7 @@ const knowledgeCategories = [
     title: '产品知识',
     description: '产品介绍与参数说明',
     icon: Settings,
-    color: '#3b82f6',
+    color: '#60a5fa',
     bgColor: 'rgba(59, 130, 246, 0.2)',
     count: 32,
   },
@@ -95,7 +95,7 @@ const KnowledgeSharePage = () => {
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <BookOpen size={20} color="#f59e0b" />
+                <BookOpen size={20} color="#38bdf8" />
                 <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>知识库概览</Text>
               </View>
             </View>
@@ -106,19 +106,19 @@ const KnowledgeSharePage = () => {
               </View>
               <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
               <View style={{ textAlign: 'center' }}>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>4</Text>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#38bdf8' }}>4</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>知识分类</Text>
               </View>
               <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
               <View style={{ textAlign: 'center' }}>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>12</Text>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>12</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周更新</Text>
               </View>
             </View>
           </View>
 
           {/* 知识分类列表 */}
-          <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
           
           {knowledgeCategories.map((category) => {
             const CategoryIcon = category.icon;
@@ -180,15 +180,15 @@ const KnowledgeSharePage = () => {
                       >
                         <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           {sub.id === 'product-manual' ? (
-                            <FileText size={16} color="#f59e0b" />
+                            <FileText size={16} color="#38bdf8" />
                           ) : (
-                            <PenTool size={16} color="#f59e0b" />
+                            <PenTool size={16} color="#38bdf8" />
                           )}
-                          <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>{sub.title}</Text>
+                          <Text style={{ fontSize: '14px', color: '#94a3b8' }}>{sub.title}</Text>
                         </View>
                         <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <Text style={{ fontSize: '12px', color: '#52525b' }}>{sub.count}篇</Text>
-                          <ChevronRight size={16} color="#52525b" />
+                          <Text style={{ fontSize: '12px', color: '#64748b' }}>{sub.count}篇</Text>
+                          <ChevronRight size={16} color="#64748b" />
                         </View>
                       </View>
                     ))}
@@ -199,7 +199,7 @@ const KnowledgeSharePage = () => {
           })}
 
           {/* 快捷入口 */}
-          <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', marginTop: '8px', fontWeight: '500' }}>快捷入口</Text>
+          <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', marginTop: '8px', fontWeight: '500' }}>快捷入口</Text>
           
           <View style={{ display: 'flex', gap: '12px' }}>
             <View
@@ -256,7 +256,7 @@ const KnowledgeSharePage = () => {
                 marginBottom: '8px'
               }}
               >
-                <BookOpen size={20} color="#3b82f6" />
+                <BookOpen size={20} color="#60a5fa" />
               </View>
               <Text style={{ fontSize: '14px', color: '#ffffff' }}>全部知识</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', marginTop: '4px' }}>查看所有内容</Text>

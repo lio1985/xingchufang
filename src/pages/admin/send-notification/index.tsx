@@ -24,7 +24,7 @@ const notificationTypes = [
     label: '系统通知',
     desc: '重要系统公告',
     icon: Bell,
-    iconColor: '#3b82f6',
+    iconColor: '#60a5fa',
     bgColor: 'rgba(59, 130, 246, 0.1)',
   },
   {
@@ -40,7 +40,7 @@ const notificationTypes = [
     label: '更新通知',
     desc: '版本更新说明',
     icon: Gift,
-    iconColor: '#f59e0b',
+    iconColor: '#38bdf8',
     bgColor: 'rgba(245, 158, 11, 0.1)',
   },
 ];
@@ -51,7 +51,7 @@ const targetTypes = [
     label: '全部用户',
     desc: '发送给所有用户',
     icon: Globe,
-    iconColor: '#22c55e',
+    iconColor: '#4ade80',
     bgColor: 'rgba(34, 197, 94, 0.1)',
   },
   {
@@ -137,7 +137,7 @@ const SendNotificationPage = () => {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#f59e0b" />
+            <ChevronLeft size={20} color="#38bdf8" />
           </View>
           <Text className="admin-title">发送通知</Text>
           <View style={{ width: '36px' }} />
@@ -149,7 +149,7 @@ const SendNotificationPage = () => {
         <View className="admin-content" style={{ paddingTop: '16px' }}>
           {/* 通知类型选择 */}
           <View className="admin-card">
-            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
               通知类型
             </Text>
 
@@ -177,7 +177,7 @@ const SendNotificationPage = () => {
                     <item.icon size={28} color={item.iconColor} />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa', display: 'block' }}>
+                    <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
                       {item.label}
                     </Text>
                     <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '2px' }}>{item.desc}</Text>
@@ -190,7 +190,7 @@ const SendNotificationPage = () => {
 
           {/* 目标用户选择 */}
           <View className="admin-card">
-            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
               目标用户
             </Text>
 
@@ -228,12 +228,12 @@ const SendNotificationPage = () => {
                     style={{
                       fontSize: '24px',
                       fontWeight: '600',
-                      color: targetType === item.value ? item.iconColor : '#a1a1aa',
+                      color: targetType === item.value ? item.iconColor : '#94a3b8',
                     }}
                   >
                     {item.label}
                   </Text>
-                  <Text style={{ fontSize: '18px', color: '#52525b' }}>{item.desc}</Text>
+                  <Text style={{ fontSize: '18px', color: '#64748b' }}>{item.desc}</Text>
                 </View>
               ))}
             </View>
@@ -246,7 +246,7 @@ const SendNotificationPage = () => {
                 <Input
                   className="form-input"
                   placeholder="输入用户ID，多个用逗号分隔"
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={targetUsers}
                   onInput={(e) => setTargetUsers(e.detail.value)}
                 />
@@ -256,18 +256,18 @@ const SendNotificationPage = () => {
 
           {/* 通知内容 */}
           <View className="admin-card">
-            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
               通知内容
             </Text>
 
             <View className="form-group">
               <Text className="form-label">
-                标题 <Text style={{ color: '#ef4444' }}>*</Text>
+                标题 <Text style={{ color: '#f87171' }}>*</Text>
               </Text>
               <Input
                 className="form-input input-focus"
                 placeholder="请输入通知标题"
-                placeholderStyle="color: #52525b"
+                placeholderStyle="color: #64748b"
                 value={title}
                 onInput={(e) => setTitle(e.detail.value)}
                 maxlength={100}
@@ -276,7 +276,7 @@ const SendNotificationPage = () => {
 
             <View className="form-group">
               <Text className="form-label">
-                内容 <Text style={{ color: '#ef4444' }}>*</Text>
+                内容 <Text style={{ color: '#f87171' }}>*</Text>
               </Text>
               <View
                 style={{
@@ -291,17 +291,17 @@ const SendNotificationPage = () => {
                     minHeight: '200px',
                     padding: '20px',
                     fontSize: '28px',
-                    color: '#fafafa',
+                    color: '#f1f5f9',
                     backgroundColor: 'transparent',
                   }}
                   placeholder="请输入通知内容..."
-                  placeholderStyle="color: #52525b"
+                  placeholderStyle="color: #64748b"
                   value={content}
                   onInput={(e) => setContent(e.detail.value)}
                   maxlength={500}
                 />
               </View>
-              <Text style={{ fontSize: '20px', color: '#52525b', marginTop: '8px', textAlign: 'right' }}>
+              <Text style={{ fontSize: '20px', color: '#64748b', marginTop: '8px', textAlign: 'right' }}>
                 {content.length}/500
               </Text>
             </View>
@@ -309,7 +309,7 @@ const SendNotificationPage = () => {
 
           {/* 预览 */}
           <View className="admin-card">
-            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', marginBottom: '16px', display: 'block' }}>
+            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
               预览效果
             </Text>
 
@@ -337,15 +337,15 @@ const SendNotificationPage = () => {
                     <selectedNotificationType.icon size={20} color={selectedNotificationType.iconColor} />
                   )}
                 </View>
-                <Text style={{ fontSize: '26px', fontWeight: '600', color: '#fafafa' }}>
+                <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>
                   {title || '通知标题'}
                 </Text>
               </View>
-              <Text style={{ fontSize: '22px', color: '#a1a1aa', lineHeight: '1.6' }}>
+              <Text style={{ fontSize: '22px', color: '#94a3b8', lineHeight: '1.6' }}>
                 {content || '通知内容将显示在这里...'}
               </Text>
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
-                <Text style={{ fontSize: '18px', color: '#52525b' }}>
+                <Text style={{ fontSize: '18px', color: '#64748b' }}>
                   目标: {selectedTargetType?.label}
                 </Text>
               </View>

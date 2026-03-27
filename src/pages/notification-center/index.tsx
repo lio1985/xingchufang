@@ -99,13 +99,13 @@ const NotificationCenterPage = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'order_taken':
-        return <CircleCheck size={20} color="#22c55e" />;
+        return <CircleCheck size={20} color="#4ade80" />;
       case 'order_completed':
-        return <CircleCheck size={20} color="#3b82f6" />;
+        return <CircleCheck size={20} color="#60a5fa" />;
       case 'order_transferred':
-        return <CircleAlert size={20} color="#f59e0b" />;
+        return <CircleAlert size={20} color="#38bdf8" />;
       case 'new_order':
-        return <Info size={20} color="#3b82f6" />;
+        return <Info size={20} color="#60a5fa" />;
       default:
         return <Bell size={20} color="#71717a" />;
     }
@@ -123,7 +123,7 @@ const NotificationCenterPage = () => {
       <View style={{ backgroundColor: '#111827', padding: '48px 20px 16px', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Bell size={24} color="#f59e0b" />
+            <Bell size={24} color="#38bdf8" />
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>消息中心</Text>
           </View>
           {unreadCount > 0 && (
@@ -135,7 +135,7 @@ const NotificationCenterPage = () => {
               }}
               onClick={handleMarkAllRead}
             >
-              <Text style={{ fontSize: '12px', color: '#ef4444' }}>全部已读 ({unreadCount})</Text>
+              <Text style={{ fontSize: '12px', color: '#f87171' }}>全部已读 ({unreadCount})</Text>
             </View>
           )}
         </View>
@@ -151,12 +151,12 @@ const NotificationCenterPage = () => {
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
-                backgroundColor: activeType === filter.key ? '#f59e0b' : '#1e3a5f',
+                backgroundColor: activeType === filter.key ? '#38bdf8' : '#1e3a5f',
                 flexShrink: 0
               }}
               onClick={() => setActiveType(filter.key)}
             >
-              <Text style={{ fontSize: '13px', color: activeType === filter.key ? '#0a0f1a' : '#a1a1aa', fontWeight: '500' }}>
+              <Text style={{ fontSize: '13px', color: activeType === filter.key ? '#0a0f1a' : '#94a3b8', fontWeight: '500' }}>
                 {filter.label}
               </Text>
             </View>
@@ -184,7 +184,7 @@ const NotificationCenterPage = () => {
                 key={notification.id}
                 style={{
                   backgroundColor: notification.is_read ? '#111827' : '#1a1a1f',
-                  border: notification.is_read ? '1px solid #1e3a5f' : '1px solid #f59e0b',
+                  border: notification.is_read ? '1px solid #1e3a5f' : '1px solid #38bdf8',
                   borderRadius: '12px',
                   padding: '16px',
                   marginBottom: '12px',
@@ -211,22 +211,22 @@ const NotificationCenterPage = () => {
                     <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
                       <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff' }}>{notification.title}</Text>
                       {!notification.is_read && (
-                        <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
+                        <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
                       )}
                     </View>
-                    <Text style={{ fontSize: '13px', color: '#a1a1aa', lineHeight: '20px', marginBottom: '8px' }}>
+                    <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '20px', marginBottom: '8px' }}>
                       {notification.content}
                     </Text>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Clock size={12} color="#52525b" />
-                      <Text style={{ fontSize: '12px', color: '#52525b' }}>
+                      <Clock size={12} color="#64748b" />
+                      <Text style={{ fontSize: '12px', color: '#64748b' }}>
                         {new Date(notification.created_at).toLocaleString()}
                       </Text>
                     </View>
                   </View>
                   {notification.related_order_id && (
                     <View style={{ flexShrink: 0, marginTop: '12px' }}>
-                      <ChevronRight size={16} color="#52525b" />
+                      <ChevronRight size={16} color="#64748b" />
                     </View>
                   )}
                 </View>

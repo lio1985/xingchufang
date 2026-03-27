@@ -173,7 +173,7 @@ export default function TeamDetail() {
     Taro.showModal({
       title: '确认移除',
       content: `确定要移除成员"${nickname}"吗？`,
-      confirmColor: '#ef4444',
+      confirmColor: '#f87171',
       success: (res) => {
         if (res.confirm) {
           Network.request({
@@ -264,7 +264,7 @@ export default function TeamDetail() {
     return (
       <View className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
         <View className="text-center">
-          <Loader size={24} color="#f59e0b" className="animate-spin" />
+          <Loader size={24} color="#38bdf8" className="animate-spin" />
           <Text className="block text-zinc-500 mt-2">加载中...</Text>
         </View>
       </View>
@@ -291,11 +291,11 @@ export default function TeamDetail() {
             className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
             onClick={() => Taro.navigateBack()}
           >
-            <ArrowLeft size={20} color="#f59e0b" />
+            <ArrowLeft size={20} color="#38bdf8" />
           </View>
           <View className="flex items-center gap-2">
             <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
-              <Users size={16} color="#f59e0b" />
+              <Users size={16} color="#38bdf8" />
             </View>
             <Text className="block text-lg font-semibold text-white">{team.name}</Text>
           </View>
@@ -358,7 +358,7 @@ export default function TeamDetail() {
                   className="px-3 py-1.5 bg-blue-500/20 rounded-lg flex items-center gap-1.5 active:bg-blue-500/30 border border-blue-500/30"
                   onClick={handleStartEdit}
                 >
-                  <Pencil size={14} color="#3b82f6" />
+                  <Pencil size={14} color="#60a5fa" />
                   <Text className="block text-sm text-blue-400">编辑</Text>
                 </View>
               </View>
@@ -526,7 +526,7 @@ export default function TeamDetail() {
                     <View className="flex items-center gap-2 mt-0.5">
                       {member.role === 'leader' ? (
                         <View className="flex items-center gap-1">
-                          <Crown size={12} color="#f59e0b" />
+                          <Crown size={12} color="#38bdf8" />
                           <Text className="block text-xs text-amber-500">负责人</Text>
                         </View>
                       ) : (
@@ -548,7 +548,7 @@ export default function TeamDetail() {
                     className="p-2 bg-red-500/10 rounded-lg active:bg-red-500/20 border border-red-500/20"
                     onClick={() => handleRemoveMember(member.user_id, member.user?.nickname || '该成员')}
                   >
-                    <User size={14} color="#ef4444" />
+                    <User size={14} color="#f87171" />
                   </View>
                 </View>
               </View>
