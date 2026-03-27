@@ -184,8 +184,10 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
 
 ### TabBar 配置 (app.config.ts)
 ```
-工作台 | 客资管理 | 知识库 | 内容创作 | 消息 | 我的
+工作台 | 客资管理 | 知识库 | 内容创作 | 我的
 ```
+
+**消息入口**：位于首页顶部，以卡片形式展示，显示未读消息数量
 
 ### 页面跳转规范
 - TabBar 页面：使用 `switchTab()`
