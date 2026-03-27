@@ -29,7 +29,7 @@ const quickActions = [
   { id: 'script', icon: FileText, label: '写脚本', color: '#38bdf8', prompt: '帮我写一个短视频脚本' },
   { id: 'copywriting', icon: PenTool, label: '写文案', color: '#8b5cf6', prompt: '帮我写一段产品文案' },
   { id: 'topic', icon: Target, label: '找选题', color: '#06b6d4', prompt: '帮我找一些热门选题' },
-  { id: 'idea', icon: Lightbulb, label: '灵感', color: '#4ade80', prompt: '给我一些创作灵感' },
+  { id: 'idea', icon: Lightbulb, label: '灵感', color: '#4ade80', prompt: '给我一些写作灵感' },
 ];
 
 export default function AIAssistantPage() {
@@ -37,7 +37,7 @@ export default function AIAssistantPage() {
     {
       id: '1',
       role: 'assistant',
-      content: '你好！我是星小帮，你的 AI 创作助手 ✨\n\n我可以帮你：\n• 撰写短视频脚本\n• 创作产品文案\n• 寻找热门选题\n• 提供创作灵感\n\n有什么我可以帮你的吗？',
+      content: '你好！我是星小帮，你的智能写作助手 ✨\n\n我可以帮你：\n• 撰写短视频脚本\n• 撰写产品文案\n• 寻找热门选题\n• 提供写作灵感\n\n有什么我可以帮你的吗？',
       timestamp: new Date(),
     },
   ]);
@@ -156,7 +156,7 @@ export default function AIAssistantPage() {
 需要我详细展开哪个方向吗？`;
     }
     if (input.includes('灵感')) {
-      return `这里有一些创作灵感 💡
+      return `这里有一些写作灵感 💡
 
 🎬 视频创意
 - 拍摄一道传统美食的制作过程
@@ -173,10 +173,10 @@ export default function AIAssistantPage() {
     return `收到你的消息！我是星小帮，很高兴为你服务 🌟
 
 请告诉我你需要什么帮助：
-• 写脚本 - 创作短视频脚本
+• 写脚本 - 撰写短视频脚本
 • 写文案 - 撰写产品文案
 • 找选题 - 发现热门话题
-• 灵感 - 获取创作灵感
+• 灵感 - 获取写作灵感
 
 或者直接描述你的需求~`;
   };
@@ -260,7 +260,7 @@ export default function AIAssistantPage() {
           marginTop: '4px' 
         }}
         >
-          AI 智能创作助手
+          智能写作助手
         </Text>
       </View>
 

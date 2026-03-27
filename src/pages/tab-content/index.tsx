@@ -18,10 +18,10 @@ const TabContentPage = () => {
       {/* 页面头部 */}
       <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>内容创作</Text>
-        <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>释放你的创作潜能</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>释放你的写作潜能</Text>
       </View>
 
-      {/* 星小帮 - AI助手入口 */}
+      {/* 星小帮 - 写作助手入口 */}
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         <View
           style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center' }}
@@ -32,7 +32,7 @@ const TabContentPage = () => {
           </View>
           <View style={{ flex: 1, marginLeft: '16px' }}>
             <Text style={{ fontSize: '16px', fontWeight: '600', color: '#38bdf8', display: 'block' }}>星小帮</Text>
-            <Text style={{ fontSize: '12px', color: 'rgba(245, 158, 11, 0.6)', display: 'block', marginTop: '4px' }}>AI智能创作助手</Text>
+            <Text style={{ fontSize: '12px', color: 'rgba(245, 158, 11, 0.6)', display: 'block', marginTop: '4px' }}>智能写作助手</Text>
           </View>
           <ChevronRight size={20} color="#38bdf8" />
         </View>
