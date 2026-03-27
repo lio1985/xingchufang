@@ -488,12 +488,12 @@ const TabHomePage = () => {
               <View
                 key={action.id}
                 style={{
-                  flex: '1 1 45%',
-                  minWidth: '140px',
+                  flex: '1 1 30%',
+                  minWidth: '100px',
                   backgroundColor: '#111827',
                   border: '1px solid #1e3a5f',
                   borderRadius: '12px',
-                  padding: '16px',
+                  padding: '14px 12px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -502,20 +502,19 @@ const TabHomePage = () => {
               >
                 <View
                   style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '12px',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '10px',
                     backgroundColor: action.bgColor,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: '10px',
+                    marginBottom: '8px',
                   }}
                 >
-                  <IconComp size={22} color={action.color} />
+                  <IconComp size={20} color={action.color} />
                 </View>
-                <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>{action.label}</Text>
-                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>{action.desc}</Text>
+                <Text style={{ fontSize: '13px', fontWeight: '500', color: '#ffffff', display: 'block', textAlign: 'center' }}>{action.label}</Text>
               </View>
             );
           })}
