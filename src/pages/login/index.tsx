@@ -91,7 +91,7 @@ const LoginPage = () => {
 
       setTimeout(() => {
         console.log('[登录] 执行跳转到首页');
-        Taro.switchTab({ url: '/pages/index/index' });
+        Taro.switchTab({ url: '/pages/tab-customer/index' });
       }, 500);
     } catch (error: any) {
       console.error('登录接口异常=', error);
@@ -117,125 +117,149 @@ const LoginPage = () => {
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-      {/* 背景装饰 */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '400px', background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%)', pointerEvents: 'none' }} />
+      {/* 背景装饰 - 顶部光晕 */}
+      <View style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        height: '500px', 
+        background: 'radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 70%)',
+        pointerEvents: 'none' 
+      }}
+      />
 
-      {/* Logo 区域 */}
-      <View style={{ paddingTop: '120px', paddingLeft: '48px', paddingRight: '48px' }}>
-        <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
-          <View style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #38bdf8 0%, #fb923c 100%)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Lightbulb size={40} color="#000" />
-          </View>
-          <View style={{ display: 'flex', flexDirection: 'column' }}>
-            <Text style={{ fontSize: '48px', fontWeight: '700', color: '#ffffff', letterSpacing: '-0.02em' }}>星厨房</Text>
-            <Text style={{ fontSize: '24px', color: '#71717a', letterSpacing: '0.1em' }}>STAR KITCHEN</Text>
-          </View>
-        </View>
-        <Text style={{ fontSize: '28px', color: '#94a3b8', marginTop: '16px' }}>欢迎回来，创作者</Text>
-      </View>
-
-      {/* 登录表单 */}
-      <View style={{ flex: 1, padding: '48px 32px 0' }}>
-        {/* 账号输入 */}
-        <View style={{ marginBottom: '24px' }}>
-          <Text style={{ fontSize: '24px', color: '#94a3b8', marginBottom: '12px', display: 'block' }}>账号</Text>
-          <View style={{ 
-            backgroundColor: '#111827', 
-            borderRadius: '16px', 
-            border: focusedField === 'username' ? '2px solid #38bdf8' : '1px solid #1e3a5f', 
-            padding: '24px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '16px',
-            boxShadow: focusedField === 'username' ? '0 0 0 3px rgba(245, 158, 11, 0.2)' : 'none'
-          }}
-          >
-            <User size={24} color="#71717a" style={{ flexShrink: 0 }} />
-            <Input
-              style={{ flex: 1, fontSize: '28px', color: '#ffffff', backgroundColor: 'transparent' }}
-              placeholder="请输入账号"
-              placeholderStyle="color: #64748b"
-              value={username}
-              onFocus={() => setFocusedField('username')}
-              onBlur={() => setFocusedField(null)}
-              onInput={(e) => setUsername(e.detail.value)}
-            />
-          </View>
-        </View>
-
-        {/* 密码输入 */}
-        <View style={{ marginBottom: '24px' }}>
-          <Text style={{ fontSize: '24px', color: '#94a3b8', marginBottom: '12px', display: 'block' }}>密码</Text>
-          <View style={{ 
-            backgroundColor: '#111827', 
-            borderRadius: '16px', 
-            border: focusedField === 'password' ? '2px solid #38bdf8' : '1px solid #1e3a5f', 
-            padding: '24px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '16px',
-            boxShadow: focusedField === 'password' ? '0 0 0 3px rgba(245, 158, 11, 0.2)' : 'none'
-          }}
-          >
-            <Lock size={24} color="#71717a" style={{ flexShrink: 0 }} />
-            <Input
-              style={{ flex: 1, fontSize: '28px', color: '#ffffff', backgroundColor: 'transparent' }}
-              password={!showPassword}
-              placeholder="请输入密码"
-              placeholderStyle="color: #64748b"
-              value={password}
-              onFocus={() => setFocusedField('password')}
-              onBlur={() => setFocusedField(null)}
-              onInput={(e) => setPassword(e.detail.value)}
-            />
-            <View
-              style={{ padding: '8px' }}
-              onClick={() => setShowPassword(!showPassword)}
+      {/* 主内容区 */}
+      <View style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 24px', position: 'relative', zIndex: 1 }}>
+        
+        {/* Logo 区域 */}
+        <View style={{ paddingTop: '80px', marginBottom: '48px' }}>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
+            <View style={{ 
+              width: '64px', 
+              height: '64px', 
+              background: 'linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%)', 
+              borderRadius: '16px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              boxShadow: '0 8px 24px rgba(56, 189, 248, 0.3)'
+            }}
             >
-              {showPassword ? (
-                <EyeOff size={24} color="#38bdf8" />
-              ) : (
-                <Eye size={24} color="#38bdf8" />
-              )}
+              <Lightbulb size={32} color="#fff" />
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'column' }}>
+              <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9', letterSpacing: '-0.02em' }}>星厨房</Text>
+              <Text style={{ fontSize: '12px', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Star Kitchen</Text>
             </View>
           </View>
+          <Text style={{ fontSize: '16px', color: '#94a3b8', marginTop: '24px' }}>欢迎回来，创作者</Text>
         </View>
 
-        {/* 忘记密码 */}
-        <View style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '48px' }}>
-          <Text style={{ fontSize: '24px', color: '#71717a' }} onClick={handleChangePassword}>
-            忘记密码？
-          </Text>
+        {/* 登录表单 */}
+        <View style={{ flex: 1 }}>
+          {/* 账号输入 */}
+          <View style={{ marginBottom: '20px' }}>
+            <Text style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px', display: 'block', fontWeight: '500' }}>账号</Text>
+            <View style={{ 
+              backgroundColor: '#111827', 
+              borderRadius: '12px', 
+              border: focusedField === 'username' ? '2px solid #38bdf8' : '1px solid #1e3a5f', 
+              padding: '16px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px',
+              transition: 'all 0.2s ease'
+            }}
+            >
+              <User size={20} color={focusedField === 'username' ? '#38bdf8' : '#64748b'} style={{ flexShrink: 0 }} />
+              <Input
+                style={{ flex: 1, fontSize: '16px', color: '#f1f5f9', backgroundColor: 'transparent' }}
+                placeholder="请输入账号"
+                placeholderStyle="color: #64748b"
+                value={username}
+                onFocus={() => setFocusedField('username')}
+                onBlur={() => setFocusedField(null)}
+                onInput={(e) => setUsername(e.detail.value)}
+              />
+            </View>
+          </View>
+
+          {/* 密码输入 */}
+          <View style={{ marginBottom: '16px' }}>
+            <Text style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px', display: 'block', fontWeight: '500' }}>密码</Text>
+            <View style={{ 
+              backgroundColor: '#111827', 
+              borderRadius: '12px', 
+              border: focusedField === 'password' ? '2px solid #38bdf8' : '1px solid #1e3a5f', 
+              padding: '16px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px',
+              transition: 'all 0.2s ease'
+            }}
+            >
+              <Lock size={20} color={focusedField === 'password' ? '#38bdf8' : '#64748b'} style={{ flexShrink: 0 }} />
+              <Input
+                style={{ flex: 1, fontSize: '16px', color: '#f1f5f9', backgroundColor: 'transparent' }}
+                password={!showPassword}
+                placeholder="请输入密码"
+                placeholderStyle="color: #64748b"
+                value={password}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
+                onInput={(e) => setPassword(e.detail.value)}
+              />
+              <View
+                style={{ padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff size={20} color="#38bdf8" />
+                ) : (
+                  <Eye size={20} color="#64748b" />
+                )}
+              </View>
+            </View>
+          </View>
+
+          {/* 忘记密码 */}
+          <View style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}>
+            <Text style={{ fontSize: '14px', color: '#64748b' }} onClick={handleChangePassword}>
+              忘记密码？
+            </Text>
+          </View>
+
+          {/* 登录按钮 */}
+          <View
+            style={{ 
+              backgroundColor: loading ? '#1e3a5f' : '#38bdf8', 
+              borderRadius: '12px', 
+              padding: '16px', 
+              textAlign: 'center', 
+              marginBottom: '24px',
+              boxShadow: loading ? 'none' : '0 4px 16px rgba(56, 189, 248, 0.3)'
+            }}
+            onClick={loading ? undefined : handleLogin}
+          >
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: loading ? '#64748b' : '#0c4a6e' }}>
+              {loading ? '登录中...' : '登录'}
+            </Text>
+          </View>
+
+          {/* 注册入口 */}
+          <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px' }}>
+            <Text style={{ fontSize: '14px', color: '#64748b' }}>还没有账号？</Text>
+            <Text style={{ fontSize: '14px', color: '#38bdf8', fontWeight: '500' }} onClick={handleRegister}>
+              立即注册
+            </Text>
+          </View>
         </View>
 
-        {/* 登录按钮 */}
-        <View
-          style={{ 
-            background: loading ? '#1e3a5f' : 'linear-gradient(135deg, #38bdf8 0%, #fb923c 100%)', 
-            borderRadius: '16px', 
-            padding: '28px', 
-            textAlign: 'center', 
-            marginBottom: '32px' 
-          }}
-          onClick={loading ? undefined : handleLogin}
-        >
-          <Text style={{ fontSize: '32px', fontWeight: '600', color: loading ? '#64748b' : '#000' }}>
-            {loading ? '登录中...' : '登录'}
-          </Text>
+        {/* 底部版权 */}
+        <View style={{ padding: '32px 0', textAlign: 'center' }}>
+          <Text style={{ fontSize: '12px', color: '#334155' }}>星厨房 · 让创作更高效</Text>
         </View>
-
-        {/* 注册入口 */}
-        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-          <Text style={{ fontSize: '24px', color: '#64748b' }}>还没有账号？</Text>
-          <Text style={{ fontSize: '24px', color: '#38bdf8', fontWeight: '500' }} onClick={handleRegister}>
-            立即注册
-          </Text>
-        </View>
-      </View>
-
-      {/* 底部版权 */}
-      <View style={{ padding: '48px 32px', textAlign: 'center' }}>
-        <Text style={{ fontSize: '20px', color: '#334155' }}>星厨房 · 让创作更高效</Text>
       </View>
     </View>
   );
