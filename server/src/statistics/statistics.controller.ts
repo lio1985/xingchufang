@@ -9,6 +9,56 @@ export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
   /**
+   * 获取数据看板（根据用户角色返回不同数据）
+   * 管理员：全局数据
+   * 普通用户：个人数据 + 团队数据
+   */
+  @Get('dashboard')
+  async getDashboard(@Request() req, @Query('period') period?: string) {
+    try {
+      const userId = req.user.sub;
+      const userRole = req.user.role;
+
+      if (userRole === 'admin') {
+        // 管理员：返回全局数据
+        const globalStats = await this.statisticsService.getGlobalStatistics();
+        const trends = await this.statisticsService.getGlobalTrends(period || 'week');
+        
+        return {
+          code: 200,
+          msg: 'success',
+          data: {
+            type: 'global',
+            stats: globalStats,
+            trends,
+          },
+        };
+      } else {
+        // 普通用户：返回个人数据 + 团队数据
+        const personalStats = await this.statisticsService.getUserDashboardStats(userId, period || 'week');
+        const teamStats = await this.statisticsService.getTeamDashboardStats(userId, period || 'week');
+        
+        return {
+          code: 200,
+          msg: 'success',
+          data: {
+            type: 'personal',
+            personal: personalStats,
+            team: teamStats,
+          },
+        };
+      }
+    } catch (error) {
+      console.error('获取数据看板失败:', error);
+      return {
+        code: 500,
+        msg: '获取数据看板失败',
+        data: null,
+      };
+    }
+  }
+
+  /**
    * 获取当前用户统计
    */
   @Get('me')

@@ -3,93 +3,145 @@ import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
   ChevronLeft,
-  TrendingUp,
-  TrendingDown,
   DollarSign,
-  Package,
   Users,
   FileText,
   Activity,
   RefreshCw,
+  Crown,
+  User,
 } from 'lucide-react-taro';
-import '@/styles/pages.css';
-import './index.css';
+import { Network } from '@/network';
 
-interface StatData {
-  date: string;
-  revenue: number;
-  orders: number;
-  customers: number;
-  contentPublished: number;
-}
-
-interface TrendData {
-  label: string;
-  value: number;
-  change: number;
-  trend: 'up' | 'down' | 'stable';
+interface DashboardStats {
+  type: 'global' | 'personal';
+  stats?: any;
+  trends?: any[];
+  personal?: {
+    customerCount: number;
+    totalDealValue: number;
+    contentCount: number;
+    dialogCount: number;
+    messageCount: number;
+    lexiconCount: number;
+    trends: any[];
+  };
+  team?: {
+    teamId: string;
+    memberCount: number;
+    customerCount: number;
+    totalDealValue: number;
+    contentCount: number;
+    dialogCount: number;
+    messageCount: number;
+    memberStats: any[];
+  } | null;
 }
 
 const DataStatsPage = () => {
   const [period, setPeriod] = useState<'today' | 'week' | 'month'>('week');
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<{
-    totalRevenue: number;
-    totalOrders: number;
-    totalCustomers: number;
-    contentCount: number;
-    trends: TrendData[];
-    chartData: StatData[];
-  }>({
-    totalRevenue: 0,
-    totalOrders: 0,
-    totalCustomers: 0,
-    contentCount: 0,
-    trends: [],
-    chartData: [],
-  });
+  const [dashboardData, setDashboardData] = useState<DashboardStats | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    loadStats();
+    checkUserRole();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (dashboardData) {
+      loadStats();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
-  const loadStats = () => {
-    setLoading(true);
-    setTimeout(() => {
-      const mockData = generateMockData(period);
-      setStats(mockData);
+  const checkUserRole = async () => {
+    try {
+      const user = Taro.getStorageSync('user');
+      setIsAdmin(user?.role === 'admin');
+      await loadStats();
+    } catch (error) {
+      console.error('检查用户角色失败:', error);
       setLoading(false);
-    }, 500);
+    }
   };
 
-  const generateMockData = (periodType: string) => {
-    const baseRevenue = periodType === 'today' ? 1280 : periodType === 'week' ? 8960 : 38400;
-    const baseOrders = period === 'today' ? 12 : period === 'week' ? 84 : 360;
-    const baseCustomers = period === 'today' ? 8 : period === 'week' ? 56 : 240;
+  const loadStats = async () => {
+    setLoading(true);
+    try {
+      const response = await Network.request({
+        url: '/api/statistics/dashboard',
+        method: 'GET',
+        data: { period },
+      });
 
-    return {
-      totalRevenue: baseRevenue + Math.floor(Math.random() * 2000),
-      totalOrders: baseOrders + Math.floor(Math.random() * 20),
-      totalCustomers: baseCustomers + Math.floor(Math.random() * 15),
-      contentCount: Math.floor(Math.random() * 30) + 10,
-      trends: [
-        { label: '营收', value: baseRevenue, change: 12.5, trend: 'up' as const },
-        { label: '订单', value: baseOrders, change: 8.3, trend: 'up' as const },
-        { label: '客户', value: baseCustomers, change: -2.1, trend: 'down' as const },
-        { label: '内容', value: Math.floor(Math.random() * 30) + 10, change: 0, trend: 'stable' as const },
-      ],
-      chartData: Array.from({ length: periodType === 'today' ? 24 : 7 }, (_, i) => ({
-        date:
-          periodType === 'today'
-            ? `${i}:00`
-            : `周${['一', '二', '三', '四', '五', '六', '日'][i % 7]}`,
-        revenue: Math.floor(Math.random() * 2000) + 500,
-        orders: Math.floor(Math.random() * 15) + 5,
-        customers: Math.floor(Math.random() * 10) + 3,
-        contentPublished: Math.floor(Math.random() * 5) + 1,
-      })),
-    };
+      console.log('[DataStats] Dashboard response:', response);
+
+      if (response.data?.code === 200 && response.data?.data) {
+        setDashboardData(response.data.data);
+      } else {
+        // 如果接口失败，使用模拟数据
+        setDashboardData(generateMockData());
+      }
+    } catch (error) {
+      console.error('[DataStats] 加载失败:', error);
+      // 使用模拟数据
+      setDashboardData(generateMockData());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateMockData = (): DashboardStats => {
+    if (isAdmin) {
+      return {
+        type: 'global',
+        stats: {
+          totalUsers: 156,
+          activeUsers: 89,
+          totalDialogs: 1234,
+          totalMessages: 5678,
+          totalLexicons: 234,
+          todayActiveUsers: 45,
+          todayDialogs: 123,
+          todayMessages: 456,
+        },
+        trends: Array.from({ length: 7 }, (_, i) => ({
+          date: `周${['一', '二', '三', '四', '五', '六', '日'][i]}`,
+          dialogCount: Math.floor(Math.random() * 100) + 50,
+          messageCount: Math.floor(Math.random() * 200) + 100,
+          activeUsers: Math.floor(Math.random() * 50) + 20,
+        })),
+      };
+    } else {
+      return {
+        type: 'personal',
+        personal: {
+          customerCount: Math.floor(Math.random() * 50) + 10,
+          totalDealValue: Math.floor(Math.random() * 50000) + 10000,
+          contentCount: Math.floor(Math.random() * 30) + 10,
+          dialogCount: Math.floor(Math.random() * 100) + 20,
+          messageCount: Math.floor(Math.random() * 300) + 50,
+          lexiconCount: Math.floor(Math.random() * 20) + 5,
+          trends: Array.from({ length: 7 }, (_, i) => ({
+            date: `周${['一', '二', '三', '四', '五', '六', '日'][i]}`,
+            dialogCount: Math.floor(Math.random() * 20) + 5,
+            messageCount: Math.floor(Math.random() * 50) + 10,
+          })),
+        },
+        team: {
+          teamId: 'mock-team',
+          memberCount: 5,
+          customerCount: Math.floor(Math.random() * 200) + 50,
+          totalDealValue: Math.floor(Math.random() * 200000) + 50000,
+          contentCount: Math.floor(Math.random() * 100) + 30,
+          dialogCount: Math.floor(Math.random() * 300) + 100,
+          messageCount: Math.floor(Math.random() * 800) + 200,
+          memberStats: [],
+        },
+      };
+    }
   };
 
   const formatMoney = (amount: number) => {
@@ -99,29 +151,254 @@ const DataStatsPage = () => {
     return amount.toLocaleString();
   };
 
-  const getMaxRevenue = () => {
-    return Math.max(...stats.chartData.map((d) => d.revenue), 1);
+  const getMaxValue = (data: any[], key: string) => {
+    return Math.max(...data.map((d) => d[key] || 0), 1);
   };
 
-  const getBarHeight = (value: number) => {
-    return (value / getMaxRevenue()) * 120;
+  const getBarHeight = (value: number, maxValue: number) => {
+    return (value / maxValue) * 100;
+  };
+
+  // 管理员视图
+  const renderAdminView = () => {
+    if (!dashboardData?.stats) return null;
+
+    const { stats, trends } = dashboardData;
+
+    return (
+      <ScrollView scrollY style={{ paddingTop: '32px', height: 'calc(100vh - 200px)' }}>
+        {/* 核心指标 */}
+        <View style={{ padding: '0 20px', marginBottom: '24px' }}>
+          <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>核心指标</Text>
+          
+          <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Users size={16} color="#60a5fa" />
+                </View>
+                <Text style={{ fontSize: '13px', color: '#94a3b8' }}>总用户数</Text>
+              </View>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.totalUsers}</Text>
+              <Text style={{ fontSize: '12px', color: '#10b981', display: 'block', marginTop: '4px' }}>今日活跃 {stats.todayActiveUsers}</Text>
+            </View>
+
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Activity size={16} color="#10b981" />
+                </View>
+                <Text style={{ fontSize: '13px', color: '#94a3b8' }}>对话总数</Text>
+              </View>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.totalDialogs}</Text>
+              <Text style={{ fontSize: '12px', color: '#10b981', display: 'block', marginTop: '4px' }}>今日 {stats.todayDialogs}</Text>
+            </View>
+
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FileText size={16} color="#fbbf24" />
+                </View>
+                <Text style={{ fontSize: '13px', color: '#94a3b8' }}>消息总数</Text>
+              </View>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.totalMessages}</Text>
+              <Text style={{ fontSize: '12px', color: '#10b981', display: 'block', marginTop: '4px' }}>今日 {stats.todayMessages}</Text>
+            </View>
+
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FileText size={16} color="#a855f7" />
+                </View>
+                <Text style={{ fontSize: '13px', color: '#94a3b8' }}>语料库</Text>
+              </View>
+              <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.totalLexicons}</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>总条目</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 趋势图 */}
+        {trends && trends.length > 0 && (
+          <View style={{ padding: '0 20px', marginBottom: '24px' }}>
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>活跃趋势</Text>
+            
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+              <View style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: '120px', gap: '8px' }}>
+                {trends.map((item, index) => {
+                  const maxDialog = getMaxValue(trends, 'dialogCount');
+                  return (
+                    <View key={index} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                      <View
+                        style={{
+                          width: '100%',
+                          height: `${getBarHeight(item.dialogCount, maxDialog)}px`,
+                          backgroundColor: index === trends.length - 1 ? '#38bdf8' : '#1e3a5f',
+                          borderRadius: '4px 4px 0 0',
+                          minHeight: '4px',
+                        }}
+                      />
+                      <Text style={{ fontSize: '11px', color: '#71717a' }}>{item.date}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </View>
+        )}
+      </ScrollView>
+    );
+  };
+
+  // 普通用户视图
+  const renderUserView = () => {
+    const { personal, team } = dashboardData || {};
+
+    return (
+      <ScrollView scrollY style={{ paddingTop: '32px', height: 'calc(100vh - 200px)' }}>
+        {/* 个人数据 */}
+        {personal && (
+          <View style={{ padding: '0 20px', marginBottom: '24px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <User size={16} color="#38bdf8" />
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>个人数据</Text>
+            </View>
+            
+            <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Users size={16} color="#60a5fa" />
+                  </View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>客户数量</Text>
+                </View>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{personal.customerCount}</Text>
+              </View>
+
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <DollarSign size={16} color="#10b981" />
+                  </View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>成交总额</Text>
+                </View>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>¥{formatMoney(personal.totalDealValue)}</Text>
+              </View>
+
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FileText size={16} color="#fbbf24" />
+                  </View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>内容数量</Text>
+                </View>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{personal.contentCount}</Text>
+              </View>
+
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Activity size={16} color="#a855f7" />
+                  </View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>对话次数</Text>
+                </View>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{personal.dialogCount}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* 团队数据 */}
+        {team && (
+          <View style={{ padding: '0 20px', marginBottom: '24px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <Crown size={16} color="#fbbf24" />
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>团队数据</Text>
+            </View>
+            
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+              <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '16px' }}>
+                <View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px', display: 'block' }}>团队成员</Text>
+                  <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{team.memberCount} 人</Text>
+                </View>
+                <View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px', display: 'block' }}>团队客户</Text>
+                  <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{team.customerCount}</Text>
+                </View>
+                <View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px', display: 'block' }}>成交总额</Text>
+                  <Text style={{ fontSize: '24px', fontWeight: '700', color: '#10b981', display: 'block' }}>¥{formatMoney(team.totalDealValue)}</Text>
+                </View>
+                <View>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px', display: 'block' }}>内容数量</Text>
+                  <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{team.contentCount}</Text>
+                </View>
+              </View>
+
+              <View style={{ borderTop: '1px solid #1e3a5f', paddingTop: '12px' }}>
+                <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px', display: 'block' }}>团队活动</Text>
+                <View style={{ display: 'flex', gap: '16px' }}>
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Activity size={14} color="#38bdf8" />
+                    <Text style={{ fontSize: '14px', color: '#ffffff' }}>{team.dialogCount} 次对话</Text>
+                  </View>
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <FileText size={14} color="#fbbf24" />
+                    <Text style={{ fontSize: '14px', color: '#ffffff' }}>{team.messageCount} 条消息</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* 无团队提示 */}
+        {!team && (
+          <View style={{ padding: '0 20px', marginBottom: '24px' }}>
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '32px', textAlign: 'center' }}>
+              <View style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+                <Users size={28} color="#64748b" />
+              </View>
+              <Text style={{ fontSize: '14px', color: '#71717a', display: 'block' }}>暂未加入团队</Text>
+              <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginTop: '4px' }}>加入团队后可查看团队数据</Text>
+            </View>
+          </View>
+        )}
+      </ScrollView>
+    );
   };
 
   return (
-    <View className="data-stats-page">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* Header */}
-      <View className="page-header">
-        <View className="header-top" style={{ marginBottom: '24px' }}>
-          <View className="header-left">
-            <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#f1f5f9" />
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <View
+              style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onClick={() => {
+                const pages = Taro.getCurrentPages();
+                if (pages.length > 1) {
+                  Taro.navigateBack();
+                } else {
+                  Taro.redirectTo({ url: '/pages/tab-profile/index' });
+                }
+              }}
+            >
+              <ChevronLeft size={24} color="#f1f5f9" />
             </View>
-            <Text className="header-title">数据统计</Text>
+            <View>
+              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>数据看板</Text>
+              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>
+                {isAdmin ? '全局数据监控' : '个人与团队数据'}
+              </Text>
+            </View>
           </View>
         </View>
 
         {/* 时间筛选 */}
-        <View className="period-filter">
+        <View style={{ display: 'flex', gap: '8px' }}>
           {[
             { key: 'today', label: '今日' },
             { key: 'week', label: '本周' },
@@ -129,172 +406,32 @@ const DataStatsPage = () => {
           ].map((item) => (
             <View
               key={item.key}
-              className={`period-btn ${period === item.key ? 'period-btn-active' : ''}`}
+              style={{
+                flex: 1,
+                padding: '10px',
+                borderRadius: '10px',
+                backgroundColor: period === item.key ? '#38bdf8' : '#111827',
+                border: period === item.key ? 'none' : '1px solid #1e3a5f',
+                textAlign: 'center',
+              }}
               onClick={() => setPeriod(item.key as typeof period)}
             >
-              <Text className="period-btn-text">{item.label}</Text>
+              <Text style={{ fontSize: '14px', fontWeight: '500', color: period === item.key ? '#0a0f1a' : '#94a3b8' }}>{item.label}</Text>
             </View>
           ))}
         </View>
       </View>
 
+      {/* 内容区 */}
       {loading ? (
-        <View className="loading-state">
-          <RefreshCw size={64} color="#38bdf8" />
-          <Text className="loading-text">加载中...</Text>
+        <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px' }}>
+          <RefreshCw size={48} color="#38bdf8" />
+          <Text style={{ fontSize: '14px', color: '#71717a', marginTop: '16px', display: 'block' }}>加载中...</Text>
         </View>
+      ) : isAdmin ? (
+        renderAdminView()
       ) : (
-        <ScrollView scrollY style={{ paddingTop: '32px' }}>
-          {/* 核心指标卡片 */}
-          <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-            <View className="stat-card">
-              <View className="stat-card-title">
-                <Activity size={24} color="#71717a" />
-                <Text>核心指标</Text>
-              </View>
-
-              <View className="stat-grid">
-                {/* 营收 */}
-                <View className="stat-item">
-                  <View className="stat-item-header">
-                    <DollarSign size={24} color="#71717a" />
-                    <Text className="stat-item-label">营收</Text>
-                  </View>
-                  <Text className="stat-item-value stat-item-value-primary">
-                    ¥{formatMoney(stats.totalRevenue)}
-                  </Text>
-                  <View className="stat-item-trend">
-                    {stats.trends[0].change > 0 ? (
-                      <TrendingUp size={16} color="#4ade80" />
-                    ) : (
-                      <TrendingDown size={16} color="#f87171" />
-                    )}
-                    <Text
-                      style={{
-                        fontSize: '20px',
-                        color: stats.trends[0].change > 0 ? '#4ade80' : '#f87171',
-                      }}
-                    >
-                      {stats.trends[0].change > 0 ? '+' : ''}
-                      {stats.trends[0].change}%
-                    </Text>
-                    <Text style={{ fontSize: '20px', color: '#71717a' }}>较上期</Text>
-                  </View>
-                </View>
-
-                {/* 订单 */}
-                <View className="stat-item">
-                  <View className="stat-item-header">
-                    <Package size={24} color="#71717a" />
-                    <Text className="stat-item-label">订单</Text>
-                  </View>
-                  <Text className="stat-item-value">{stats.totalOrders}</Text>
-                  <View className="stat-item-trend">
-                    {stats.trends[1].change > 0 ? (
-                      <TrendingUp size={16} color="#4ade80" />
-                    ) : (
-                      <TrendingDown size={16} color="#f87171" />
-                    )}
-                    <Text
-                      style={{
-                        fontSize: '20px',
-                        color: stats.trends[1].change > 0 ? '#4ade80' : '#f87171',
-                      }}
-                    >
-                      {stats.trends[1].change > 0 ? '+' : ''}
-                      {stats.trends[1].change}%
-                    </Text>
-                    <Text style={{ fontSize: '20px', color: '#71717a' }}>较上期</Text>
-                  </View>
-                </View>
-
-                {/* 客户 */}
-                <View className="stat-item">
-                  <View className="stat-item-header">
-                    <Users size={24} color="#71717a" />
-                    <Text className="stat-item-label">客户</Text>
-                  </View>
-                  <Text className="stat-item-value">{stats.totalCustomers}</Text>
-                  <View className="stat-item-trend">
-                    {stats.trends[2].change > 0 ? (
-                      <TrendingUp size={16} color="#4ade80" />
-                    ) : (
-                      <TrendingDown size={16} color="#f87171" />
-                    )}
-                    <Text
-                      style={{
-                        fontSize: '20px',
-                        color: stats.trends[2].change > 0 ? '#4ade80' : '#f87171',
-                      }}
-                    >
-                      {stats.trends[2].change > 0 ? '+' : ''}
-                      {stats.trends[2].change}%
-                    </Text>
-                    <Text style={{ fontSize: '20px', color: '#71717a' }}>较上期</Text>
-                  </View>
-                </View>
-
-                {/* 内容 */}
-                <View className="stat-item">
-                  <View className="stat-item-header">
-                    <FileText size={24} color="#71717a" />
-                    <Text className="stat-item-label">内容</Text>
-                  </View>
-                  <Text className="stat-item-value">{stats.contentCount}</Text>
-                  <View className="stat-item-trend">
-                    <Text style={{ fontSize: '20px', color: '#71717a' }}>已发布</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          {/* 营收趋势图 */}
-          <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-            <View className="stat-card">
-              <View className="stat-card-title">
-                <Activity size={24} color="#71717a" />
-                <Text>营收趋势</Text>
-              </View>
-
-              <View className="chart-container">
-                {stats.chartData.map((item, index) => (
-                  <View key={index} className="chart-bar-wrapper">
-                    <View
-                      className={`chart-bar ${index === stats.chartData.length - 1 ? 'chart-bar-active' : 'chart-bar-inactive'}`}
-                      style={{ height: `${getBarHeight(item.revenue)}px` }}
-                    />
-                    <Text className="chart-label">{item.date}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </View>
-
-          {/* 数据明细 */}
-          <View style={{ padding: '0 32px', marginBottom: '32px' }}>
-            <View className="stat-card">
-              <View className="stat-card-title">
-                <FileText size={24} color="#71717a" />
-                <Text>数据明细</Text>
-              </View>
-
-              {stats.chartData.map((item, index) => (
-                <View key={index} className="detail-item">
-                  <View className="detail-row">
-                    <Text className="detail-date">{item.date}</Text>
-                    <Text className="detail-value">¥{item.revenue}</Text>
-                  </View>
-                  <View className="detail-stats">
-                    <Text className="detail-stat">📦 {item.orders}单</Text>
-                    <Text className="detail-stat">👥 {item.customers}人</Text>
-                    <Text className="detail-stat">📝 {item.contentPublished}篇</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        </ScrollView>
+        renderUserView()
       )}
     </View>
   );
