@@ -335,6 +335,7 @@ export class EquipmentOrdersService {
 
   /**
    * 接单（原子操作，防止抢单）
+   * 接单成功后自动创建获客登记记录
    */
   async acceptOrder(orderId: string, userId: string) {
     // 权限检查
@@ -361,10 +362,84 @@ export class EquipmentOrdersService {
       throw new BadRequestException('接单失败，订单可能已被其他人接走');
     }
 
+    // 自动创建获客登记记录
+    await this.createRecycleStoreFromOrder(order, userId);
+
     // 推送消息
     await this.notifyOnAccept(order, userId);
 
-    return { success: true, data: order, message: '接单成功' };
+    return { success: true, data: order, message: '接单成功，已自动创建获客登记' };
+  }
+
+  /**
+   * 从获客订单自动创建获客登记记录
+   */
+  private async createRecycleStoreFromOrder(order: any, userId: string) {
+    try {
+      // 检查是否已存在关联的获客登记
+      const { data: existingStore } = await this.supabase
+        .from('recycle_stores')
+        .select('id')
+        .eq('equipment_order_id', order.id)
+        .eq('is_deleted', false)
+        .single();
+
+      if (existingStore) {
+        console.log('[EquipmentOrders] 获客登记已存在，跳过创建:', existingStore.id);
+        return;
+      }
+
+      // 构建获客登记数据
+      const storeData = {
+        store_name: order.customer_name || '未命名门店',
+        phone: order.customer_phone || '',
+        wechat: order.customer_wechat || '',
+        address: order.customer_address || '',
+        city: this.extractCity(order.customer_address),
+        business_type: order.category || '其他',
+        recycle_status: 'pending', // 初始状态：待接触
+        equipment_order_id: order.id, // 关联原订单
+        user_id: userId,
+        first_follow_up_at: new Date().toISOString(),
+        // 备注信息
+        estimated_devices: order.description || '',
+      };
+
+      const { data: store, error: storeError } = await this.supabase
+        .from('recycle_stores')
+        .insert(storeData)
+        .select()
+        .single();
+
+      if (storeError) {
+        console.error('[EquipmentOrders] 创建获客登记失败:', storeError);
+        // 不抛出异常，避免影响接单流程
+      } else {
+        console.log('[EquipmentOrders] 自动创建获客登记成功:', store.id);
+
+        // 更新原订单，记录关联的获客登记ID
+        await this.supabase
+          .from('equipment_orders')
+          .update({ recycle_store_id: store.id })
+          .eq('id', order.id);
+      }
+    } catch (err) {
+      console.error('[EquipmentOrders] 创建获客登记异常:', err);
+      // 不抛出异常，避免影响接单流程
+    }
+  }
+
+  /**
+   * 从地址中提取城市
+   */
+  private extractCity(address: string): string {
+    if (!address) return '';
+    // 尝试匹配城市名称
+    const cityMatch = address.match(/(北京市|上海市|天津市|重庆市|.*省.*市|.*市)/);
+    if (cityMatch) {
+      return cityMatch[1];
+    }
+    return address.substring(0, 20);
   }
 
   /**
