@@ -106,46 +106,43 @@ const TabProfilePage = () => {
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
-      {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
-        <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>我</Text>
-        <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>个人中心与设置</Text>
-      </View>
-
       {/* 用户信息区 */}
-      <View style={{ padding: '0 20px', marginTop: '-16px' }}>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         {isLoggedIn ? (
-          <View 
-            style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}
-            onClick={handleEditAvatar}
-          >
-            <View style={{ display: 'flex', alignItems: 'center' }}>
+          <View style={{ display: 'flex', alignItems: 'center' }}>
+            <View
+              onClick={handleEditAvatar}
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                border: '2px solid rgba(56, 189, 248, 0.3)',
+                flexShrink: 0,
+              }}
+            >
               {userInfo?.avatar ? (
                 <Image
                   src={userInfo.avatar}
-                  style={{ width: '56px', height: '56px', borderRadius: '50%', border: '2px solid rgba(245, 158, 11, 0.3)' }}
+                  style={{ width: '100%', height: '100%' }}
                   mode="aspectFill"
                 />
               ) : (
-                <View style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <User size={24} color="#38bdf8" />
+                <View style={{ width: '100%', height: '100%', backgroundColor: 'rgba(56, 189, 248, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <User size={28} color="#38bdf8" />
                 </View>
               )}
-              <View style={{ flex: 1, marginLeft: '16px' }}>
-                <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>
-                  {userInfo?.nickname || userInfo?.username || '用户'}
-                </Text>
-                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>
-                  ID: {userInfo?.id || '-'} · {isAdmin ? '管理员' : '普通用户'}
-                </Text>
-              </View>
-              <Text style={{ fontSize: '12px', color: '#38bdf8' }}>点击修改头像</Text>
+            </View>
+            <View style={{ flex: 1, marginLeft: '16px' }}>
+              <Text style={{ fontSize: '20px', fontWeight: '600', color: '#ffffff', display: 'block' }}>
+                {userInfo?.nickname || userInfo?.username || '用户'}
+              </Text>
             </View>
           </View>
         ) : (
           <View style={{ display: 'flex', gap: '12px' }}>
             <View
-              style={{ flex: 1, backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              style={{ flex: 1, backgroundColor: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               onClick={handleLogin}
             >
               <User size={20} color="#38bdf8" />
