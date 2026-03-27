@@ -17,6 +17,7 @@ import {
   FileChartColumn,
   Bell,
 } from 'lucide-react-taro';
+import { useOnlineStatus, getUserOnlineStatus } from '@/hooks/useOnlineStatus';
 
 const TabProfilePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,6 +29,13 @@ const TabProfilePage = () => {
     avatar?: string;
     role?: string;
   } | null>(null);
+  const [onlineStatus, setOnlineStatus] = useState<{ isOnline: boolean; lastSeenAt: string | null }>({
+    isOnline: false,
+    lastSeenAt: null,
+  });
+
+  // 使用在线状态 Hook
+  useOnlineStatus();
 
   useEffect(() => {
     try {
@@ -37,6 +45,12 @@ const TabProfilePage = () => {
         setIsLoggedIn(true);
         setUserInfo(user);
         setIsAdmin(user.role === 'admin');
+        // 获取在线状态
+        if (user.id) {
+          getUserOnlineStatus(user.id).then(status => {
+            setOnlineStatus(status);
+          });
+        }
       }
     } catch (e) {
       console.log('获取用户信息失败');
@@ -49,6 +63,12 @@ const TabProfilePage = () => {
       const user = Taro.getStorageSync('user');
       if (user) {
         setUserInfo(user);
+        // 刷新在线状态
+        if (user.id) {
+          getUserOnlineStatus(user.id).then(status => {
+            setOnlineStatus(status);
+          });
+        }
       }
     } catch (e) {
       console.log('刷新用户信息失败');
@@ -137,6 +157,20 @@ const TabProfilePage = () => {
               <Text style={{ fontSize: '20px', fontWeight: '600', color: '#ffffff', display: 'block' }}>
                 {userInfo?.nickname || userInfo?.username || '用户'}
               </Text>
+              <View style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
+                <View
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: onlineStatus.isOnline ? '#22c55e' : '#64748b',
+                    marginRight: '6px',
+                  }}
+                />
+                <Text style={{ fontSize: '12px', color: onlineStatus.isOnline ? '#22c55e' : '#64748b' }}>
+                  {onlineStatus.isOnline ? '在线' : '离线'}
+                </Text>
+              </View>
             </View>
           </View>
         ) : (

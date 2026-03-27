@@ -828,4 +828,148 @@ export class UserController {
       };
     }
   }
+
+  /**
+   * 更新在线状态
+   * POST /api/user/online-status
+   */
+  @Post('online-status')
+  async updateOnlineStatus(@Request() req, @Body() body: { isOnline: boolean }) {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        code: 401,
+        msg: '未授权',
+        data: null
+      };
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await this.userService.validateToken(token);
+
+    if (!payload) {
+      return {
+        code: 401,
+        msg: '无效的登录凭证',
+        data: null
+      };
+    }
+
+    try {
+      await this.userService.updateOnlineStatus(payload.sub, body.isOnline);
+
+      return {
+        code: 200,
+        msg: '状态更新成功',
+        data: null
+      };
+    } catch (error) {
+      console.error('更新在线状态失败:', error);
+      return {
+        code: 500,
+        msg: '更新在线状态失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 获取用户在线状态
+   * GET /api/user/online-status?userId=xxx
+   */
+  @Get('online-status')
+  async getOnlineStatus(@Request() req, @Query('userId') targetUserId?: string) {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        code: 401,
+        msg: '未授权',
+        data: null
+      };
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await this.userService.validateToken(token);
+
+    if (!payload) {
+      return {
+        code: 401,
+        msg: '无效的登录凭证',
+        data: null
+      };
+    }
+
+    try {
+      const userId = targetUserId || payload.sub;
+      const status = await this.userService.getOnlineStatus(userId);
+
+      return {
+        code: 200,
+        msg: 'success',
+        data: status
+      };
+    } catch (error) {
+      console.error('获取在线状态失败:', error);
+      return {
+        code: 500,
+        msg: '获取在线状态失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 批量获取用户在线状态
+   * POST /api/user/online-status/batch
+   */
+  @Post('online-status/batch')
+  async getBatchOnlineStatus(@Request() req, @Body() body: { userIds: string[] }) {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        code: 401,
+        msg: '未授权',
+        data: null
+      };
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await this.userService.validateToken(token);
+
+    if (!payload) {
+      return {
+        code: 401,
+        msg: '无效的登录凭证',
+        data: null
+      };
+    }
+
+    if (!body.userIds || !Array.isArray(body.userIds) || body.userIds.length === 0) {
+      return {
+        code: 400,
+        msg: 'userIds 不能为空',
+        data: null
+      };
+    }
+
+    try {
+      const statusMap = await this.userService.getBatchOnlineStatus(body.userIds);
+
+      return {
+        code: 200,
+        msg: 'success',
+        data: statusMap
+      };
+    } catch (error) {
+      console.error('批量获取在线状态失败:', error);
+      return {
+        code: 500,
+        msg: '批量获取在线状态失败',
+        data: null
+      };
+    }
+  }
 }

@@ -77,6 +77,8 @@ export const users = pgTable("users", {
 	avatarUrl: text("avatar_url"),
 	role: text().default('user').notNull(),
 	status: text().default('active').notNull(),
+	isOnline: boolean("is_online").default(false),
+	lastSeenAt: timestamp("last_seen_at", { withTimezone: true, mode: 'string' }),
 	lastLoginAt: timestamp("last_login_at", { withTimezone: true, mode: 'string' }),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),

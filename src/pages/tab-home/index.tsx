@@ -15,6 +15,7 @@ import {
   Clock,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
+import { useOnlineStatus, getUserOnlineStatus } from '@/hooks/useOnlineStatus';
 
 interface RecentOrder {
   id: string;
@@ -54,6 +55,13 @@ const TabHomePage = () => {
     weekContent: 15,
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [onlineStatus, setOnlineStatus] = useState<{ isOnline: boolean; lastSeenAt: string | null }>({
+    isOnline: false,
+    lastSeenAt: null,
+  });
+
+  // 使用在线状态 Hook
+  useOnlineStatus();
 
   useEffect(() => {
     checkLoginStatus();
@@ -85,6 +93,12 @@ const TabHomePage = () => {
       const token = Taro.getStorageSync('token');
       if (user && token) {
         setUserInfo(user);
+        // 获取在线状态
+        if (user.id) {
+          getUserOnlineStatus(user.id).then(status => {
+            setOnlineStatus(status);
+          });
+        }
       }
     } catch (e) {
       console.log('获取用户信息失败');
@@ -230,9 +244,32 @@ const TabHomePage = () => {
             <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', display: 'block' }}>
               {getGreeting()}，{userInfo?.nickname || userInfo?.username || '用户'}
             </Text>
-            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>
-              {formatDate()}
-            </Text>
+            <View style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
+              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block' }}>
+                {formatDate()}
+              </Text>
+              <View
+                style={{
+                  width: '4px',
+                  height: '4px',
+                  borderRadius: '50%',
+                  backgroundColor: '#3b3f4c',
+                  margin: '0 8px',
+                }}
+              />
+              <View
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  backgroundColor: onlineStatus.isOnline ? '#22c55e' : '#64748b',
+                  marginRight: '4px',
+                }}
+              />
+              <Text style={{ fontSize: '12px', color: onlineStatus.isOnline ? '#22c55e' : '#64748b' }}>
+                {onlineStatus.isOnline ? '在线' : '离线'}
+              </Text>
+            </View>
           </View>
           {/* 消息铃铛入口 */}
           <View

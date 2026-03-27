@@ -1509,4 +1509,87 @@ export class UserService {
       avatarKey,
     };
   }
+
+  /**
+   * 更新用户在线状态
+   * @param userId 用户ID
+   * @param isOnline 是否在线
+   */
+  async updateOnlineStatus(userId: string, isOnline: boolean): Promise<void> {
+    const now = new Date().toISOString();
+
+    const { error } = await this.client
+      .from('users')
+      .update({
+        is_online: isOnline,
+        last_seen_at: now,
+        updated_at: now,
+      })
+      .eq('id', userId);
+
+    if (error) {
+      this.logger.error('更新用户在线状态失败:', error);
+      throw new HttpException('更新在线状态失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    this.logger.log(`用户在线状态更新成功: ${userId}, isOnline: ${isOnline}`);
+  }
+
+  /**
+   * 获取用户在线状态
+   * @param userId 用户ID
+   */
+  async getOnlineStatus(userId: string): Promise<{
+    isOnline: boolean;
+    lastSeenAt: string | null;
+  }> {
+    const { data, error } = await this.client
+      .from('users')
+      .select('is_online, last_seen_at')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      this.logger.error('获取用户在线状态失败:', error);
+      throw new HttpException('获取在线状态失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return {
+      isOnline: data?.is_online ?? false,
+      lastSeenAt: data?.last_seen_at ?? null,
+    };
+  }
+
+  /**
+   * 批量获取用户在线状态
+   * @param userIds 用户ID列表
+   */
+  async getBatchOnlineStatus(userIds: string[]): Promise<Record<string, {
+    isOnline: boolean;
+    lastSeenAt: string | null;
+  }>> {
+    if (!userIds || userIds.length === 0) {
+      return {};
+    }
+
+    const { data, error } = await this.client
+      .from('users')
+      .select('id, is_online, last_seen_at')
+      .in('id', userIds);
+
+    if (error) {
+      this.logger.error('批量获取用户在线状态失败:', error);
+      throw new HttpException('获取在线状态失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    const result: Record<string, { isOnline: boolean; lastSeenAt: string | null }> = {};
+    for (const user of data || []) {
+      result[user.id] = {
+        isOnline: user.is_online ?? false,
+        lastSeenAt: user.last_seen_at ?? null,
+      };
+    }
+
+    return result;
+  }
 }
