@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Taro, { useLoad } from '@tarojs/taro';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Picker } from '@tarojs/components';
 import {
   RefreshCw,
   Download,
@@ -16,22 +16,30 @@ import {
   CircleX,
   LoaderCircle,
   Settings,
+  User,
+  Building2,
+  Globe,
+  ShoppingCart,
+  Store,
+  FileText,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import '@/styles/pages.css';
 import '@/styles/admin.css';
 
-type ExportDataType = 'users' | 'lexicons' | 'logs' | 'all';
+type ExportDataType = 'users' | 'lexicons' | 'logs' | 'customers' | 'recycles' | 'equipment_orders' | 'all';
 type ExportFormat = 'json' | 'csv';
 type ExportTaskStatus = 'pending' | 'processing' | 'completed' | 'failed';
+type ExportScope = 'self' | 'team' | 'all';
 
 interface ExportTask {
   id: string;
   dataType: ExportDataType;
   format: ExportFormat;
+  scope: ExportScope;
+  fileName: string;
   status: ExportTaskStatus;
   downloadUrl: string;
-  fileName: string;
   fileSize: number;
   recordCount: number;
   createdAt: string;
@@ -42,10 +50,8 @@ interface ExportTask {
 interface ExportConfig {
   dataType: ExportDataType;
   format: ExportFormat;
-  timeRange?: {
-    startDate: string;
-    endDate: string;
-  };
+  scope: ExportScope;
+  teamId?: string;
 }
 
 interface ExportStats {
@@ -56,10 +62,23 @@ interface ExportStats {
   totalExportSize: number;
 }
 
+interface ScopeOption {
+  value: ExportScope;
+  label: string;
+  description: string;
+}
+
+interface Team {
+  id: string;
+  name: string;
+  memberCount: number;
+}
+
 const DataExportPage: React.FC = () => {
   const [config, setConfig] = useState<ExportConfig>({
     dataType: 'all',
     format: 'json',
+    scope: 'self',
   });
   const [tasks, setTasks] = useState<ExportTask[]>([]);
   const [stats, setStats] = useState<ExportStats>({
@@ -69,19 +88,55 @@ const DataExportPage: React.FC = () => {
     failedTasks: 0,
     totalExportSize: 0,
   });
+  const [scopeOptions, setScopeOptions] = useState<ScopeOption[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [activeTab, setActiveTab] = useState<'create' | 'history'>('create');
 
   useLoad(() => {
+    loadScopeOptions();
+    loadTeams();
     loadStats();
     loadHistory();
   });
 
+  const loadScopeOptions = async () => {
+    try {
+      const res = await Network.request({
+        url: '/api/data-export/scope-options',
+      });
+
+      if (res.data.code === 200) {
+        setScopeOptions(res.data.data);
+        // 默认选择第一个可用范围
+        if (res.data.data.length > 0) {
+          setConfig((prev) => ({ ...prev, scope: res.data.data[0].value }));
+        }
+      }
+    } catch (error) {
+      console.error('加载范围选项失败:', error);
+    }
+  };
+
+  const loadTeams = async () => {
+    try {
+      const res = await Network.request({
+        url: '/api/data-export/teams',
+      });
+
+      if (res.data.code === 200) {
+        setTeams(res.data.data || []);
+      }
+    } catch (error) {
+      console.error('加载团队列表失败:', error);
+    }
+  };
+
   const loadStats = async () => {
     try {
       const res = await Network.request({
-        url: '/api/admin/data-export/stats',
+        url: '/api/data-export/stats',
       });
 
       if (res.data.code === 200) {
@@ -96,7 +151,7 @@ const DataExportPage: React.FC = () => {
     setLoading(true);
     try {
       const res = await Network.request({
-        url: '/api/admin/data-export/history',
+        url: '/api/data-export/history',
         data: {
           page: 1,
           pageSize: 20,
@@ -117,7 +172,7 @@ const DataExportPage: React.FC = () => {
     setExporting(true);
     try {
       const res = await Network.request({
-        url: '/api/admin/data-export/export',
+        url: '/api/data-export/export',
         method: 'POST',
         data: config,
       });
@@ -138,10 +193,36 @@ const DataExportPage: React.FC = () => {
     }
   };
 
+  const handleDownload = async (task: ExportTask) => {
+    try {
+      const res = await Network.request({
+        url: `/api/data-export/download/${task.id}`,
+      });
+
+      if (res.data.code === 200 && res.data.data.downloadUrl) {
+        // 复制下载链接或直接下载
+        Taro.setClipboardData({
+          data: res.data.data.downloadUrl,
+          success: () => {
+            Taro.showToast({ title: '下载链接已复制', icon: 'success' });
+          },
+        });
+      } else {
+        Taro.showToast({ title: '获取下载链接失败', icon: 'none' });
+      }
+    } catch (error) {
+      console.error('下载失败:', error);
+      Taro.showToast({ title: '下载失败', icon: 'none' });
+    }
+  };
+
   const dataTypeOptions = [
     { value: 'all', label: '全部数据', icon: Database, color: '#38bdf8' },
     { value: 'users', label: '用户数据', icon: Users, color: '#60a5fa' },
     { value: 'lexicons', label: '语料库', icon: BookOpen, color: '#4ade80' },
+    { value: 'customers', label: '客户数据', icon: User, color: '#f472b6' },
+    { value: 'recycles', label: '回收门店', icon: Store, color: '#fb923c' },
+    { value: 'equipment_orders', label: '获客订单', icon: ShoppingCart, color: '#a78bfa' },
     { value: 'logs', label: '操作日志', icon: ScrollText, color: '#a855f7' },
   ];
 
@@ -149,6 +230,17 @@ const DataExportPage: React.FC = () => {
     { value: 'json', label: 'JSON', icon: FileCode, color: '#38bdf8' },
     { value: 'csv', label: 'CSV', icon: FileSpreadsheet, color: '#4ade80' },
   ];
+
+  const getScopeIcon = (scope: ExportScope) => {
+    switch (scope) {
+      case 'all':
+        return Globe;
+      case 'team':
+        return Building2;
+      default:
+        return User;
+    }
+  };
 
   const getStatusIcon = (status: ExportTaskStatus) => {
     switch (status) {
@@ -173,11 +265,23 @@ const DataExportPage: React.FC = () => {
     return map[status];
   };
 
+  const getScopeText = (scope: ExportScope) => {
+    const map: Record<ExportScope, string> = {
+      self: '个人数据',
+      team: '团队数据',
+      all: '全部数据',
+    };
+    return map[scope];
+  };
+
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
+
+  const selectedScopeOption = scopeOptions.find((o) => o.value === config.scope);
+  const ScopeIcon = getScopeIcon(config.scope);
 
   return (
     <View className="admin-page">
@@ -253,7 +357,7 @@ const DataExportPage: React.FC = () => {
                 </View>
               </View>
 
-              {/* 数据类型选择 */}
+              {/* 导出设置 */}
               <View className="admin-card">
                 <View className="admin-card-header">
                   <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -262,6 +366,86 @@ const DataExportPage: React.FC = () => {
                   </View>
                 </View>
 
+                {/* 导出范围 */}
+                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '12px', display: 'block' }}>
+                  选择导出范围
+                </Text>
+
+                <View style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                  {scopeOptions.map((option) => {
+                    const Icon = getScopeIcon(option.value);
+                    return (
+                      <View
+                        key={option.value}
+                        className={`user-list-item ${config.scope === option.value ? 'card-hover' : ''}`}
+                        style={{
+                          borderLeft: config.scope === option.value ? '4px solid #38bdf8' : undefined,
+                        }}
+                        onClick={() => setConfig({ ...config, scope: option.value })}
+                      >
+                        <View
+                          style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '12px',
+                            backgroundColor: config.scope === option.value ? 'rgba(56, 189, 248, 0.2)' : '#1e293b',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Icon size={24} color={config.scope === option.value ? '#38bdf8' : '#71717a'} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
+                            {option.label}
+                          </Text>
+                          <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '2px' }}>
+                            {option.description}
+                          </Text>
+                        </View>
+                        {config.scope === option.value && <CircleCheck size={24} color="#38bdf8" />}
+                      </View>
+                    );
+                  })}
+                </View>
+
+                {/* 团队选择（当选择团队数据时） */}
+                {config.scope === 'team' && teams.length > 0 && (
+                  <>
+                    <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '12px', display: 'block' }}>
+                      选择团队
+                    </Text>
+                    <View style={{ marginBottom: '20px' }}>
+                      <Picker
+                        mode="selector"
+                        range={teams.map((t) => t.name)}
+                        onChange={(e) => {
+                          const team = teams[e.detail.value];
+                          setConfig({ ...config, teamId: team?.id });
+                        }}
+                      >
+                        <View
+                          style={{
+                            padding: '16px',
+                            backgroundColor: '#1e293b',
+                            borderRadius: '12px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Text style={{ fontSize: '26px', color: '#f1f5f9' }}>
+                            {teams.find((t) => t.id === config.teamId)?.name || '请选择团队'}
+                          </Text>
+                          <Text style={{ fontSize: '22px', color: '#71717a' }}>▼</Text>
+                        </View>
+                      </Picker>
+                    </View>
+                  </>
+                )}
+
+                {/* 数据类型选择 */}
                 <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '12px', display: 'block' }}>
                   选择数据类型
                 </Text>
@@ -294,13 +478,12 @@ const DataExportPage: React.FC = () => {
                           {option.label}
                         </Text>
                       </View>
-                      {config.dataType === option.value && (
-                        <CircleCheck size={24} color={option.color} />
-                      )}
+                      {config.dataType === option.value && <CircleCheck size={24} color={option.color} />}
                     </View>
                   ))}
                 </View>
 
+                {/* 格式选择 */}
                 <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '12px', marginTop: '20px', display: 'block' }}>
                   选择格式
                 </Text>
@@ -373,7 +556,7 @@ const DataExportPage: React.FC = () => {
                               {task.fileName}
                             </Text>
                             <Text style={{ fontSize: '20px', color: '#71717a', marginTop: '4px' }}>
-                              {task.recordCount} 条记录 · {formatFileSize(task.fileSize)}
+                              {task.recordCount} 条记录 · {formatFileSize(task.fileSize)} · {getScopeText(task.scope)}
                             </Text>
                           </View>
                         </View>
@@ -382,16 +565,13 @@ const DataExportPage: React.FC = () => {
                           <View
                             style={{
                               padding: '10px 20px',
-                              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                              backgroundColor: 'rgba(56, 189, 248, 0.1)',
                               borderRadius: '10px',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '6px',
                             }}
-                            onClick={() => {
-                              // 下载文件
-                              Taro.showToast({ title: '开始下载', icon: 'success' });
-                            }}
+                            onClick={() => handleDownload(task)}
                           >
                             <Download size={18} color="#38bdf8" />
                             <Text style={{ fontSize: '22px', color: '#38bdf8' }}>下载</Text>

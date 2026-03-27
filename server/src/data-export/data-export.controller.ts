@@ -1,13 +1,42 @@
-import { Controller, Get, Post, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Request, UseGuards, ForbiddenException } from '@nestjs/common';
 import { DataExportService } from './data-export.service';
-import { AdminGuard } from '../guards/admin.guard';
 import { ActiveUserGuard } from '../guards/active-user.guard';
-import { ExportConfig } from './types';
+import { ExportConfig, ExportScope } from './types';
 
-@Controller('admin/data-export')
-@UseGuards(ActiveUserGuard, AdminGuard)
+@Controller('data-export')
+@UseGuards(ActiveUserGuard)
 export class DataExportController {
   constructor(private readonly dataExportService: DataExportService) {}
+
+  /**
+   * 获取可用的导出范围选项
+   */
+  @Get('scope-options')
+  async getScopeOptions(@Request() req) {
+    const userId = req.user.id;
+    const options = await this.dataExportService.getAvailableScopeOptions(userId);
+
+    return {
+      code: 200,
+      msg: 'success',
+      data: options,
+    };
+  }
+
+  /**
+   * 获取可导出的团队列表（仅管理员和团队队长）
+   */
+  @Get('teams')
+  async getAvailableTeams(@Request() req) {
+    const userId = req.user.id;
+    const teams = await this.dataExportService.getAvailableTeams(userId);
+
+    return {
+      code: 200,
+      msg: 'success',
+      data: teams,
+    };
+  }
 
   /**
    * 创建导出任务
@@ -15,8 +44,8 @@ export class DataExportController {
   @Post('export')
   async createExportTask(@Request() req, @Body() body: ExportConfig) {
     try {
-      const adminId = req.user.sub;
-      const task = await this.dataExportService.createExportTask(adminId, body);
+      const userId = req.user.id;
+      const task = await this.dataExportService.createExportTask(userId, body);
 
       return {
         code: 200,
@@ -39,8 +68,8 @@ export class DataExportController {
   @Get('task/:taskId')
   async getExportTaskStatus(@Request() req, @Param('taskId') taskId: string) {
     try {
-      const adminId = req.user.sub;
-      const task = await this.dataExportService.getExportTaskStatus(taskId, adminId);
+      const userId = req.user.id;
+      const task = await this.dataExportService.getExportTaskStatus(taskId, userId);
 
       return {
         code: 200,
@@ -67,9 +96,9 @@ export class DataExportController {
     @Query('pageSize') pageSize?: number,
   ) {
     try {
-      const adminId = req.user.sub;
+      const userId = req.user.id;
       const tasks = await this.dataExportService.getExportHistory(
-        adminId,
+        userId,
         page ? parseInt(page.toString()) : 1,
         pageSize ? parseInt(pageSize.toString()) : 20,
       );
@@ -95,8 +124,8 @@ export class DataExportController {
   @Get('stats')
   async getExportStats(@Request() req) {
     try {
-      const adminId = req.user.sub;
-      const stats = await this.dataExportService.getExportStats(adminId);
+      const userId = req.user.id;
+      const stats = await this.dataExportService.getExportStats(userId);
 
       return {
         code: 200,
@@ -119,8 +148,8 @@ export class DataExportController {
   @Get('download/:taskId')
   async downloadExportFile(@Request() req, @Param('taskId') taskId: string) {
     try {
-      const adminId = req.user.sub;
-      const result = await this.dataExportService.downloadExportFile(taskId, adminId);
+      const userId = req.user.id;
+      const result = await this.dataExportService.downloadExportFile(taskId, userId);
 
       return {
         code: 200,
