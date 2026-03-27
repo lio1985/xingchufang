@@ -27,6 +27,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { AdminModule } from './admin/admin.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { AuditModule } from './audit/audit.module';
+import { PermissionModule } from './permission/permission.module';
 import { QuickNotesModule } from './quick-notes/quick-notes.module';
 import { ReportsModule } from './reports/reports.module';
 import { KnowledgeShareModule } from './knowledge-share/knowledge-share.module';
@@ -46,6 +47,7 @@ import { StorageModule } from './storage/storage.module';
     AdminModule,
     StatisticsModule,
     AuditModule,
+    PermissionModule,
     ImageFetchModule,
     ImageAnalysisModule,
     TopicQuestionsModule,

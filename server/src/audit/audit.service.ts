@@ -1,24 +1,66 @@
 import { Injectable } from '@nestjs/common';
 import { getSupabaseClient } from '../storage/database/supabase-client';
 
-export interface OperationLog {
-  id: string;
-  userId: string;
-  operation: string;
-  resourceType?: string;
-  resourceId?: string;
-  details?: Record<string, any>;
-  ipAddress?: string;
-  userAgent?: string;
-  status: 'success' | 'failed';
-  errorMessage?: string;
-  createdAt: string;
+/**
+ * 审计日志操作类型
+ */
+export enum AuditAction {
+  // 用户管理
+  USER_CREATE = 'user_create',
+  USER_UPDATE = 'user_update',
+  USER_DELETE = 'user_delete',
+  USER_DISABLE = 'user_disable',
+  USER_ENABLE = 'user_enable',
+  USER_ROLE_CHANGE = 'user_role_change',
+  USER_APPROVE = 'user_approve',
+  USER_REJECT = 'user_reject',
+
+  // 登录相关
+  LOGIN_SUCCESS = 'login_success',
+  LOGIN_FAILED = 'login_failed',
+  LOGOUT = 'logout',
+
+  // 数据操作
+  DATA_CREATE = 'data_create',
+  DATA_UPDATE = 'data_update',
+  DATA_DELETE = 'data_delete',
+  DATA_EXPORT = 'data_export',
+  DATA_IMPORT = 'data_import',
+
+  // 权限操作
+  PERMISSION_GRANT = 'permission_grant',
+  PERMISSION_REVOKE = 'permission_revoke',
+  SHARE_CREATE = 'share_create',
+  SHARE_DELETE = 'share_delete',
+
+  // 系统操作
+  SYSTEM_CONFIG_CHANGE = 'system_config_change',
+  ADMIN_ACCESS = 'admin_access',
 }
 
-export interface LogOptions {
+/**
+ * 资源类型
+ */
+export enum ResourceType {
+  USER = 'user',
+  CUSTOMER = 'customer',
+  RECYCLE_STORE = 'recycle_store',
+  LEXICON = 'lexicon',
+  QUICK_NOTE = 'quick_note',
+  TEAM = 'team',
+  SHARE = 'share',
+  EQUIPMENT_ORDER = 'equipment_order',
+  CONVERSATION = 'conversation',
+  SYSTEM = 'system',
+}
+
+/**
+ * 审计日志创建参数
+ */
+export interface CreateAuditLogParams {
   userId: string;
-  operation: string;
-  resourceType?: string;
+  action: AuditAction | string;
+  resourceType?: ResourceType | string;
   resourceId?: string;
   details?: Record<string, any>;
   ipAddress?: string;
@@ -27,349 +69,366 @@ export interface LogOptions {
   errorMessage?: string;
 }
 
-export interface OperationStatistics {
-  totalOperations: number;
-  successOperations: number;
-  failedOperations: number;
-  operationsByType: Record<string, number>;
-  operationsByResource: Record<string, number>;
-  operationsByUser: Record<string, number>;
-  todayOperations: number;
+/**
+ * 审计日志查询参数
+ */
+export interface QueryAuditLogsParams {
+  userId?: string;
+  operation?: string;
+  action?: string;
+  resourceType?: string;
+  resourceId?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  pageSize?: number;
 }
 
+/**
+ * 审计日志服务
+ */
 @Injectable()
 export class AuditService {
-  private client = getSupabaseClient();
-
   /**
-   * 记录操作日志
+   * 记录审计日志
    */
-  async log(options: LogOptions): Promise<OperationLog> {
-    const {
-      userId,
-      operation,
-      resourceType,
-      resourceId,
-      details,
-      ipAddress,
-      userAgent,
-      status = 'success',
-      errorMessage,
-    } = options;
+  async log(params: CreateAuditLogParams): Promise<void> {
+    const supabase = getSupabaseClient();
 
-    const { data, error } = await this.client
-      .from('operation_logs')
-      .insert({
-        userId,
-        operation,
-        resourceType,
-        resourceId,
-        details: details as any,
-        ipAddress,
-        userAgent,
-        status,
-        errorMessage,
-      })
-      .select()
-      .single();
+    try {
+      const { error } = await supabase.from('audit_logs').insert({
+        user_id: params.userId,
+        action: params.action,
+        resource_type: params.resourceType || null,
+        resource_id: params.resourceId || null,
+        details: params.details || null,
+        ip_address: params.ipAddress || null,
+        user_agent: params.userAgent || null,
+        status: params.status || 'success',
+        error_message: params.errorMessage || null,
+        created_at: new Date().toISOString(),
+      });
 
-    if (error) {
-      console.error('记录操作日志失败:', error);
-      throw new Error('记录操作日志失败');
+      if (error) {
+        console.error('记录审计日志失败:', error);
+      }
+    } catch (error) {
+      console.error('记录审计日志异常:', error);
     }
-
-    return data;
   }
 
   /**
-   * 查询操作日志
+   * 批量记录审计日志
    */
-  async getLogs(options: {
-    userId?: string;
-    operation?: string;
-    resourceType?: string;
-    resourceId?: string;
-    status?: 'success' | 'failed';
-    startDate?: string;
-    endDate?: string;
-    page?: number;
-    pageSize?: number;
-  } = {}): Promise<{ logs: OperationLog[]; total: number }> {
-    const {
+  async logBatch(logs: CreateAuditLogParams[]): Promise<void> {
+    const supabase = getSupabaseClient();
+
+    try {
+      const { error } = await supabase.from('audit_logs').insert(
+        logs.map((log) => ({
+          user_id: log.userId,
+          action: log.action,
+          resource_type: log.resourceType || null,
+          resource_id: log.resourceId || null,
+          details: log.details || null,
+          ip_address: log.ipAddress || null,
+          user_agent: log.userAgent || null,
+          status: log.status || 'success',
+          error_message: log.errorMessage || null,
+          created_at: new Date().toISOString(),
+        })),
+      );
+
+      if (error) {
+        console.error('批量记录审计日志失败:', error);
+      }
+    } catch (error) {
+      console.error('批量记录审计日志异常:', error);
+    }
+  }
+
+  /**
+   * 查询审计日志（兼容旧接口）
+   */
+  async getLogs(params: QueryAuditLogsParams): Promise<{
+    list: any[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    return this.query(params);
+  }
+
+  /**
+   * 查询审计日志
+   */
+  async query(params: QueryAuditLogsParams): Promise<{
+    list: any[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const supabase = getSupabaseClient();
+    const page = params.page || 1;
+    const pageSize = params.pageSize || 20;
+
+    try {
+      // 构建查询
+      let query = supabase
+        .from('audit_logs')
+        .select('*', { count: 'exact' });
+
+      // 添加过滤条件
+      if (params.userId) {
+        query = query.eq('user_id', params.userId);
+      }
+      // 支持两种参数名
+      const action = params.action || params.operation;
+      if (action) {
+        query = query.eq('action', action);
+      }
+      if (params.resourceType) {
+        query = query.eq('resource_type', params.resourceType);
+      }
+      if (params.resourceId) {
+        query = query.eq('resource_id', params.resourceId);
+      }
+      if (params.status) {
+        query = query.eq('status', params.status);
+      }
+      if (params.startDate) {
+        query = query.gte('created_at', params.startDate);
+      }
+      if (params.endDate) {
+        query = query.lte('created_at', params.endDate);
+      }
+
+      // 分页
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      const { data, error, count } = await query
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      if (error) {
+        throw error;
+      }
+
+      return {
+        list: data || [],
+        total: count || 0,
+        page,
+        pageSize,
+      };
+    } catch (error) {
+      console.error('查询审计日志失败:', error);
+      return {
+        list: [],
+        total: 0,
+        page,
+        pageSize,
+      };
+    }
+  }
+
+  /**
+   * 获取用户的操作历史
+   */
+  async getUserLogs(
+    userId: string,
+    params?: { startDate?: string; endDate?: string; page?: number; pageSize?: number },
+  ): Promise<{
+    list: any[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const result = await this.query({
       userId,
-      operation,
-      resourceType,
-      resourceId,
-      status,
-      startDate,
-      endDate,
-      page = 1,
-      pageSize = 20,
-    } = options;
+      startDate: params?.startDate,
+      endDate: params?.endDate,
+      page: params?.page,
+      pageSize: params?.pageSize,
+    });
+    return result;
+  }
 
-    let query = this.client
-      .from('operation_logs')
-      .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false });
-
-    if (userId && userId.trim() !== '') {
-      query = query.eq('user_id', userId);
-    }
-
-    if (operation) {
-      query = query.eq('operation', operation);
-    }
-
-    if (resourceType) {
-      query = query.eq('resource_type', resourceType);
-    }
-
-    if (resourceId) {
-      query = query.eq('resource_id', resourceId);
-    }
-
-    if (status) {
-      query = query.eq('status', status);
-    }
-
-    if (startDate) {
-      query = query.gte('created_at', startDate);
-    }
-
-    if (endDate) {
-      query = query.lte('created_at', endDate);
-    }
-
-    query = query.range((page - 1) * pageSize, page * pageSize - 1);
-
-    const { data, error, count } = await query;
-
-    if (error) {
-      console.error('查询操作日志失败:', error);
-      throw new Error('查询操作日志失败');
-    }
-
+  /**
+   * 获取用户的操作历史（别名）
+   */
+  async getUserHistory(
+    userId: string,
+    page: number = 1,
+    pageSize: number = 20,
+  ): Promise<{
+    list: any[];
+    total: number;
+  }> {
+    const result = await this.query({ userId, page, pageSize });
     return {
-      logs: (data || []).map(log => ({
-        id: log.id,
-        userId: log.user_id,
-        operation: log.operation,
-        resourceType: log.resource_type,
-        resourceId: log.resource_id,
-        details: log.details,
-        ipAddress: log.ip_address,
-        userAgent: log.user_agent,
-        status: log.status,
-        errorMessage: log.error_message,
-        createdAt: log.created_at,
-      })),
-      total: count || 0,
+      list: result.list,
+      total: result.total,
     };
   }
 
   /**
-   * 获取用户操作记录
+   * 获取资源的操作历史
    */
-  async getUserLogs(
-    userId: string,
-    options: {
-      page?: number;
-      pageSize?: number;
-      startDate?: string;
-      endDate?: string;
-    } = {},
-  ): Promise<{ logs: OperationLog[]; total: number }> {
-    return this.getLogs({
-      userId,
-      ...options,
-    });
+  async getResourceHistory(
+    resourceType: string,
+    resourceId: string,
+    page: number = 1,
+    pageSize: number = 20,
+  ): Promise<{
+    list: any[];
+    total: number;
+  }> {
+    const result = await this.query({ resourceType, resourceId, page, pageSize });
+    return {
+      list: result.list,
+      total: result.total,
+    };
   }
 
   /**
    * 获取操作统计
    */
-  async getStatistics(options: {
+  async getStatistics(params?: {
     startDate?: string;
     endDate?: string;
-  } = {}): Promise<OperationStatistics> {
-    const { startDate, endDate } = options;
+  }): Promise<{
+    totalActions: number;
+    actionCounts: Record<string, number>;
+    userCounts: number;
+    failedCounts: number;
+  }> {
+    const supabase = getSupabaseClient();
+    const startDate = params?.startDate;
+    const endDate = params?.endDate;
 
-    const today = new Date().toISOString().split('T')[0];
-    const todayStart = `${today}T00:00:00Z`;
-    const todayEnd = `${today}T23:59:59Z`;
+    try {
+      let query = supabase.from('audit_logs').select('action, user_id, status');
 
-    // 获取总操作数
-    let query = this.client.from('operation_logs').select('*', { count: 'exact', head: true });
-
-    if (startDate) {
-      query = query.gte('created_at', startDate);
-    }
-
-    if (endDate) {
-      query = query.lte('created_at', endDate);
-    }
-
-    const { count: totalOperations } = await query;
-
-    // 获取成功操作数
-    let successQuery = this.client
-      .from('operation_logs')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'success');
-
-    if (startDate) {
-      successQuery = successQuery.gte('created_at', startDate);
-    }
-
-    if (endDate) {
-      successQuery = successQuery.lte('created_at', endDate);
-    }
-
-    const { count: successOperations } = await successQuery;
-
-    // 获取今日操作数
-    const { count: todayOperations } = await this.client
-      .from('operation_logs')
-      .select('*', { count: 'exact', head: true })
-      .gte('created_at', todayStart)
-      .lte('created_at', todayEnd);
-
-    // 获取操作类型统计
-    let typeQuery = this.client.from('operation_logs').select('operation');
-
-    if (startDate) {
-      typeQuery = typeQuery.gte('created_at', startDate);
-    }
-
-    if (endDate) {
-      typeQuery = typeQuery.lte('created_at', endDate);
-    }
-
-    const { data: typeData } = await typeQuery;
-
-    const operationsByType: Record<string, number> = {};
-    typeData?.forEach((log) => {
-      operationsByType[log.operation] = (operationsByType[log.operation] || 0) + 1;
-    });
-
-    // 获取资源类型统计
-    let resourceQuery = this.client.from('operation_logs').select('resource_type').not('resource_type', 'is', null);
-
-    if (startDate) {
-      resourceQuery = resourceQuery.gte('created_at', startDate);
-    }
-
-    if (endDate) {
-      resourceQuery = resourceQuery.lte('created_at', endDate);
-    }
-
-    const { data: resourceData } = await resourceQuery;
-
-    const operationsByResource: Record<string, number> = {};
-    resourceData?.forEach((log) => {
-      if (log.resource_type) {
-        operationsByResource[log.resource_type] = (operationsByResource[log.resource_type] || 0) + 1;
+      if (startDate) {
+        query = query.gte('created_at', startDate);
       }
-    });
+      if (endDate) {
+        query = query.lte('created_at', endDate);
+      }
 
-    // 获取用户操作统计
-    let userQuery = this.client.from('operation_logs').select('user_id');
+      const { data, error } = await query;
 
-    if (startDate) {
-      userQuery = userQuery.gte('created_at', startDate);
+      if (error) {
+        throw error;
+      }
+
+      const actionCounts: Record<string, number> = {};
+      const users = new Set<string>();
+      let failedCounts = 0;
+
+      for (const log of data || []) {
+        // 统计操作类型
+        actionCounts[log.action] = (actionCounts[log.action] || 0) + 1;
+
+        // 统计用户数
+        users.add(log.user_id);
+
+        // 统计失败数
+        if (log.status === 'failed') {
+          failedCounts++;
+        }
+      }
+
+      return {
+        totalActions: data?.length || 0,
+        actionCounts,
+        userCounts: users.size,
+        failedCounts,
+      };
+    } catch (error) {
+      console.error('获取审计统计失败:', error);
+      return {
+        totalActions: 0,
+        actionCounts: {},
+        userCounts: 0,
+        failedCounts: 0,
+      };
     }
-
-    if (endDate) {
-      userQuery = userQuery.lte('created_at', endDate);
-    }
-
-    const { data: userData } = await userQuery;
-
-    const operationsByUser: Record<string, number> = {};
-    userData?.forEach((log) => {
-      operationsByUser[log.user_id] = (operationsByUser[log.user_id] || 0) + 1;
-    });
-
-    return {
-      totalOperations: totalOperations || 0,
-      successOperations: successOperations || 0,
-      failedOperations: (totalOperations || 0) - (successOperations || 0),
-      operationsByType,
-      operationsByResource,
-      operationsByUser,
-      todayOperations: todayOperations || 0,
-    };
   }
 
   /**
-   * 获取资源操作历史
-   */
-  async getResourceHistory(resourceType: string, resourceId: string): Promise<OperationLog[]> {
-    const { data, error } = await this.client
-      .from('operation_logs')
-      .select('*')
-      .eq('resource_type', resourceType)
-      .eq('resource_id', resourceId)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('获取资源操作历史失败:', error);
-      throw new Error('获取资源操作历史失败');
-    }
-
-    return (data || []).map(log => ({
-      id: log.id,
-      userId: log.user_id,
-      operation: log.operation,
-      resourceType: log.resource_type,
-      resourceId: log.resource_id,
-      details: log.details,
-      ipAddress: log.ip_address,
-      userAgent: log.user_agent,
-      status: log.status,
-      errorMessage: log.error_message,
-      createdAt: log.created_at,
-    }));
-  }
-
-  /**
-   * 删除操作日志（仅管理员）
+   * 删除单条日志
    */
   async deleteLogs(logId: string): Promise<void> {
-    const { error } = await this.client
-      .from('operation_logs')
-      .delete()
-      .eq('id', logId);
+    const supabase = getSupabaseClient();
 
-    if (error) {
-      console.error('删除操作日志失败:', error);
-      throw new Error('删除操作日志失败');
+    try {
+      const { error } = await supabase
+        .from('audit_logs')
+        .delete()
+        .eq('id', logId);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('删除审计日志失败:', error);
+      throw error;
     }
   }
 
   /**
-   * 批量删除操作日志（仅管理员）
+   * 按日期范围删除日志
    */
   async deleteLogsByDateRange(startDate: string, endDate: string): Promise<number> {
-    // 先查询符合条件的记录数量
-    const { count } = await this.client
-      .from('operation_logs')
-      .select('*', { count: 'exact', head: true })
-      .gte('created_at', startDate)
-      .lte('created_at', endDate);
+    const supabase = getSupabaseClient();
 
-    // 执行删除
-    const { error } = await this.client
-      .from('operation_logs')
-      .delete()
-      .gte('created_at', startDate)
-      .lte('created_at', endDate);
+    try {
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .delete()
+        .gte('created_at', startDate)
+        .lte('created_at', endDate)
+        .select('id');
 
-    if (error) {
-      console.error('批量删除操作日志失败:', error);
-      throw new Error('批量删除操作日志失败');
+      if (error) {
+        throw error;
+      }
+
+      return data?.length || 0;
+    } catch (error) {
+      console.error('批量删除审计日志失败:', error);
+      throw error;
     }
+  }
 
-    return count || 0;
+  /**
+   * 清理过期的审计日志
+   * @param daysToKeep 保留天数
+   */
+  async cleanOldLogs(daysToKeep: number = 90): Promise<number> {
+    const supabase = getSupabaseClient();
+
+    try {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
+
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .delete()
+        .lt('created_at', cutoffDate.toISOString())
+        .select('id');
+
+      if (error) {
+        throw error;
+      }
+
+      return data?.length || 0;
+    } catch (error) {
+      console.error('清理审计日志失败:', error);
+      return 0;
+    }
   }
 }
