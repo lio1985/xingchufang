@@ -184,66 +184,8 @@ const TabHomePage = () => {
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
-      {/* 消息入口 */}
-      <View
-        style={{
-          margin: '16px 20px 0',
-          backgroundColor: '#111827',
-          border: '1px solid #1e3a5f',
-          borderRadius: '12px',
-          padding: '14px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-        }}
-        onClick={() => handleNav('/pages/notification/index')}
-      >
-        <View
-          style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            backgroundColor: 'rgba(245, 158, 11, 0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            position: 'relative',
-          }}
-        >
-          <Bell size={22} color="#f59e0b" />
-          {stats.unreadMessage > 0 && (
-            <View
-              style={{
-                position: 'absolute',
-                top: '-2px',
-                right: '-2px',
-                minWidth: '18px',
-                height: '18px',
-                borderRadius: '9px',
-                backgroundColor: '#f87171',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingLeft: '4px',
-                paddingRight: '4px',
-              }}
-            >
-              <Text style={{ fontSize: '11px', color: '#ffffff', fontWeight: '600' }}>{stats.unreadMessage}</Text>
-            </View>
-          )}
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', display: 'block' }}>消息中心</Text>
-          <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>
-            {stats.unreadMessage > 0 ? `您有 ${stats.unreadMessage} 条未读消息` : '暂无新消息'}
-          </Text>
-        </View>
-        <ChevronRight size={20} color="#64748b" />
-      </View>
-
       {/* 欢迎区 */}
-      <View style={{ padding: '20px', backgroundColor: '#111827', marginTop: '12px' }}>
+      <View style={{ padding: '16px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center' }}>
           <View
             style={{
@@ -274,6 +216,45 @@ const TabHomePage = () => {
             <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>
               {formatDate()}
             </Text>
+          </View>
+          {/* 消息铃铛入口 */}
+          <View
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(56, 189, 248, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              flexShrink: 0,
+            }}
+            onClick={() => Taro.navigateTo({ url: '/pages/notification/index' })}
+          >
+            <Bell size={20} color="#38bdf8" />
+            {stats.unreadMessage > 0 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: '-2px',
+                  right: '-2px',
+                  minWidth: '16px',
+                  height: '16px',
+                  borderRadius: '8px',
+                  backgroundColor: '#f87171',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingLeft: '4px',
+                  paddingRight: '4px',
+                }}
+              >
+                <Text style={{ fontSize: '10px', color: '#ffffff', fontWeight: '600' }}>
+                  {stats.unreadMessage > 99 ? '99+' : stats.unreadMessage}
+                </Text>
+              </View>
+            )}
           </View>
         </View>
       </View>

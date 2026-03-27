@@ -10,6 +10,7 @@ import {
   RefreshCw,
   Check,
   ChevronRight,
+  ArrowLeft,
 } from 'lucide-react-taro';
 
 interface Notification {
@@ -201,6 +202,22 @@ const NotificationPage = () => {
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ display: 'flex', alignItems: 'center' }}>
+            {/* 返回按钮 */}
+            <View
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '12px',
+              }}
+              onClick={() => Taro.navigateBack({ delta: 1 })}
+            >
+              <ArrowLeft size={18} color="#38bdf8" />
+            </View>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>消息中心</Text>
             {unreadCount > 0 && (
               <View style={{
