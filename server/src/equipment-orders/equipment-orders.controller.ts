@@ -14,7 +14,7 @@ import { EquipmentOrdersService, CreateOrderDto, FollowUpDto, OrderType, OrderSt
 import { ActiveUserGuard } from '../guards/active-user.guard';
 import { AdminGuard } from '../guards/admin.guard';
 
-@Controller('equipment-orders')
+@Controller('api/equipment-orders')
 @UseGuards(ActiveUserGuard)
 export class EquipmentOrdersController {
   constructor(private readonly ordersService: EquipmentOrdersService) {}
@@ -53,15 +53,15 @@ export class EquipmentOrdersController {
    */
   @Get(':id')
   async getDetail(@Param('id') id: string, @Req() req: any) {
-    return this.ordersService.getOrderDetail(id, req.user.id, req.user.role);
+    return this.ordersService.getOrderDetail(id, req.user.id);
   }
 
   /**
    * 接单
    */
-  @Post(':id/take')
-  async take(@Param('id') id: string, @Req() req: any) {
-    return this.ordersService.takeOrder(id, req.user.id);
+  @Post(':id/accept')
+  async accept(@Param('id') id: string, @Req() req: any) {
+    return this.ordersService.acceptOrder(id, req.user.id);
   }
 
   /**
@@ -75,6 +75,31 @@ export class EquipmentOrdersController {
     @Req() req: any,
   ) {
     return this.ordersService.transferOrder(id, req.user.id, toUserId, reason);
+  }
+
+  /**
+   * 申请取消订单
+   */
+  @Post(':id/request-cancel')
+  async requestCancel(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+    @Req() req: any,
+  ) {
+    return this.ordersService.requestCancel(id, req.user.id, reason);
+  }
+
+  /**
+   * 确认取消订单（管理员）
+   */
+  @Post(':id/confirm-cancel')
+  @UseGuards(AdminGuard)
+  async confirmCancel(
+    @Param('id') id: string,
+    @Body('approved') approved: boolean,
+    @Req() req: any,
+  ) {
+    return this.ordersService.confirmCancel(id, req.user.id, approved);
   }
 
   /**
@@ -94,33 +119,19 @@ export class EquipmentOrdersController {
    */
   @Post(':id/complete')
   async complete(@Param('id') id: string, @Req() req: any) {
-    return this.ordersService.completeOrder(id, req.user.id, req.user.role);
-  }
-
-  /**
-   * 关闭订单
-   */
-  @Post(':id/close')
-  async close(
-    @Param('id') id: string,
-    @Body('reason') reason: string,
-    @Req() req: any,
-  ) {
-    return this.ordersService.closeOrder(id, req.user.id, req.user.role, reason);
+    return this.ordersService.completeOrder(id, req.user.id);
   }
 
   /**
    * 管理员重新分配
    */
   @Post(':id/reassign')
+  @UseGuards(AdminGuard)
   async reassign(
     @Param('id') id: string,
     @Body('newUserId') newUserId: string | null,
     @Req() req: any,
   ) {
-    if (req.user.role !== 'admin') {
-      return { success: false, message: '只有管理员可以执行此操作' };
-    }
     return this.ordersService.reassignOrder(id, newUserId, req.user.id);
   }
 
@@ -128,33 +139,29 @@ export class EquipmentOrdersController {
    * 更新订单（管理员）
    */
   @Put(':id')
+  @UseGuards(AdminGuard)
   async update(
     @Param('id') id: string,
     @Body() dto: Partial<CreateOrderDto>,
     @Req() req: any,
   ) {
-    if (req.user.role !== 'admin') {
-      return { success: false, message: '只有管理员可以执行此操作' };
-    }
-    return this.ordersService.updateOrder(id, dto);
+    return this.ordersService.updateOrder(id, dto, req.user.id);
   }
 
   /**
    * 删除订单（管理员）
    */
   @Delete(':id')
+  @UseGuards(AdminGuard)
   async delete(@Param('id') id: string, @Req() req: any) {
-    if (req.user.role !== 'admin') {
-      return { success: false, message: '只有管理员可以执行此操作' };
-    }
-    return this.ordersService.deleteOrder(id);
+    return this.ordersService.deleteOrder(id, req.user.id);
   }
 
   /**
-   * 获取销售列表（用于转让）
+   * 获取可接单用户列表（用于转让）
    */
-  @Get('sales/list')
-  async getSalesList() {
-    return this.ordersService.getSalesList();
+  @Get('users/available')
+  async getAvailableUsers() {
+    return this.ordersService.getAvailableUsers();
   }
 }

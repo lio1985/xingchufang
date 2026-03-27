@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TeamService } from './team.service';
 import { TeamController } from './team.controller';
-import { DatabaseModule } from '../database/database.module';
-import { UserModule } from '../user/user.module';
+import { TeamService } from './team.service';
+import { PermissionModule } from '../permission/permission.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule],
+  imports: [PermissionModule],
   controllers: [TeamController],
   providers: [TeamService],
-  exports: [TeamService]
+  exports: [TeamService],
 })
 export class TeamModule {}

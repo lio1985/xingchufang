@@ -7,6 +7,8 @@ export interface QuickNote {
   images: string[];
   is_starred: boolean;
   is_pinned: boolean;
+  visibility?: string;
+  team_id?: string;
   created_at: string;
   updated_at: string;
   userNickname?: string;
@@ -27,6 +29,7 @@ export interface CreateQuickNoteDto {
   images?: string[];
   is_starred?: boolean;
   is_pinned?: boolean;
+  visibility?: string;
 }
 
 export interface UpdateQuickNoteDto {
@@ -36,4 +39,5 @@ export interface UpdateQuickNoteDto {
   images?: string[];
   is_starred?: boolean;
   is_pinned?: boolean;
+  visibility?: string;
 }

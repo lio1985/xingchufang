@@ -1,6 +1,7 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { getSupabaseClient } from '../storage/database/supabase-client';
-import { UserService } from '../user/user.service';
+import { PermissionService } from '../permission/permission.service';
+import { UserRole, DataVisibility, PermissionAction, PermissionResource } from '../permission/permission.constants';
 import {
   QuickNote,
   QuickNoteListResponse,
@@ -12,7 +13,14 @@ import {
 export class QuickNotesService {
   private client = getSupabaseClient();
 
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly permissionService: PermissionService) {}
+
+  /**
+   * 获取用户可访问的用户ID列表（数据隔离）
+   */
+  private async getAccessibleUserIds(currentUserId: string): Promise<string[]> {
+    return this.permissionService.getAccessibleUserIds(currentUserId);
+  }
 
   /**
    * 验证用户是否有权访问笔记
@@ -24,16 +32,47 @@ export class QuickNotesService {
       .eq('id', noteId)
       .single();
 
-    if (error) {
+    if (error || !note) {
       throw new NotFoundException('笔记不存在');
     }
 
-    // 检查用户是否是管理员
-    const isAdmin = await this.userService.isAdmin(userId);
+    // 使用权限服务检查访问权限
+    const canAccess = await this.permissionService.canAccessData(
+      userId,
+      note.user_id,
+      note.visibility || DataVisibility.PRIVATE,
+      note.team_id,
+    );
 
-    // 如果不是管理员且不是所有者，拒绝访问
-    if (!isAdmin && note.user_id !== userId) {
+    if (!canAccess) {
       throw new ForbiddenException('无权访问此笔记');
+    }
+
+    return note;
+  }
+
+  /**
+   * 验证编辑权限
+   */
+  private async validateEditPermission(userId: string, noteId: string): Promise<QuickNote> {
+    const { data: note, error } = await this.client
+      .from('quick_notes')
+      .select('*')
+      .eq('id', noteId)
+      .single();
+
+    if (error || !note) {
+      throw new NotFoundException('笔记不存在');
+    }
+
+    const permissionCheck = await this.permissionService.canEditContent(
+      userId,
+      noteId,
+      'quick_note',
+    );
+
+    if (!permissionCheck.canEdit) {
+      throw new ForbiddenException(permissionCheck.reason || '无权编辑此笔记');
     }
 
     return note;
@@ -50,7 +89,14 @@ export class QuickNotesService {
     tag?: string,
     showStarredOnly?: boolean,
   ): Promise<QuickNoteListResponse> {
-    const isAdmin = await this.userService.isAdmin(userId);
+    // 权限检查
+    await this.permissionService.requirePermission(
+      userId,
+      PermissionResource.QUICK_NOTE,
+      PermissionAction.READ,
+    );
+
+    const isAdmin = await this.permissionService.isAdmin(userId);
     if (!isAdmin) {
       throw new ForbiddenException('需要管理员权限');
     }
@@ -61,29 +107,25 @@ export class QuickNotesService {
       .order('is_pinned', { ascending: false })
       .order('updated_at', { ascending: false });
 
-    // 搜索功能
     if (search) {
       query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
     }
 
-    // 标签筛选
     if (tag) {
       query = query.contains('tags', [tag]);
     }
 
-    // 仅星标
     if (showStarredOnly) {
       query = query.eq('is_starred', true);
     }
 
-    // 分页
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
     query = query.range(from, to);
 
     const { data, error, count } = await query;
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
 
     return {
       notes: (data as QuickNote[]) || [],
@@ -94,7 +136,7 @@ export class QuickNotesService {
   }
 
   /**
-   * 获取指定用户的笔记
+   * 获取指定用户的笔记（带数据隔离）
    */
   async getByUserId(
     currentUserId: string,
@@ -105,10 +147,25 @@ export class QuickNotesService {
     tag?: string,
     showStarredOnly?: boolean,
   ): Promise<QuickNoteListResponse> {
-    // 验证权限
-    const isAdmin = await this.userService.isAdmin(currentUserId);
+    // 检查数据访问权限
+    const context = await this.permissionService.getUserContext(currentUserId);
+    if (!context) {
+      throw new ForbiddenException('用户信息不存在');
+    }
+
+    // 游客不能查看笔记
+    if (context.role === UserRole.GUEST) {
+      throw new ForbiddenException('游客无权查看笔记');
+    }
+
+    // 非管理员只能查看自己或团队成员的笔记
+    const isAdmin = context.role === UserRole.ADMIN;
     if (!isAdmin && currentUserId !== targetUserId) {
-      throw new ForbiddenException('无权查看其他用户的笔记');
+      // 检查是否是同一团队的成员
+      const isInSameTeam = await this.permissionService.isInSameTeam(currentUserId, targetUserId);
+      if (!isInSameTeam) {
+        throw new ForbiddenException('无权查看其他用户的笔记');
+      }
     }
 
     let query = this.client
@@ -118,29 +175,74 @@ export class QuickNotesService {
       .order('is_pinned', { ascending: false })
       .order('updated_at', { ascending: false });
 
-    // 搜索功能
     if (search) {
       query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
     }
 
-    // 标签筛选
     if (tag) {
       query = query.contains('tags', [tag]);
     }
 
-    // 仅星标
     if (showStarredOnly) {
       query = query.eq('is_starred', true);
     }
 
-    // 分页
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
     query = query.range(from, to);
 
     const { data, error, count } = await query;
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
+
+    return {
+      notes: (data as QuickNote[]) || [],
+      total: count || 0,
+      page,
+      pageSize,
+    };
+  }
+
+  /**
+   * 获取当前用户可见的所有笔记
+   */
+  async getVisibleNotes(
+    currentUserId: string,
+    page: number = 1,
+    pageSize: number = 50,
+    search?: string,
+    tag?: string,
+    showStarredOnly?: boolean,
+  ): Promise<QuickNoteListResponse> {
+    // 获取可访问的用户ID列表
+    const accessibleUserIds = await this.getAccessibleUserIds(currentUserId);
+
+    let query = this.client
+      .from('quick_notes')
+      .select('*', { count: 'exact' })
+      .in('user_id', accessibleUserIds)
+      .order('is_pinned', { ascending: false })
+      .order('updated_at', { ascending: false });
+
+    if (search) {
+      query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
+    }
+
+    if (tag) {
+      query = query.contains('tags', [tag]);
+    }
+
+    if (showStarredOnly) {
+      query = query.eq('is_starred', true);
+    }
+
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+    query = query.range(from, to);
+
+    const { data, error, count } = await query;
+
+    if (error) throw new BadRequestException(error.message);
 
     return {
       notes: (data as QuickNote[]) || [],
@@ -156,7 +258,7 @@ export class QuickNotesService {
   async getById(userId: string, id: string): Promise<QuickNote> {
     const note = await this.validateAccess(userId, id);
 
-    // 获取用户信息（昵称）
+    // 获取用户信息
     const { data: userData } = await this.client
       .from('users')
       .select('nickname, username, avatar_url')
@@ -174,6 +276,16 @@ export class QuickNotesService {
    * 创建笔记
    */
   async create(userId: string, dto: CreateQuickNoteDto): Promise<QuickNote> {
+    // 权限检查
+    await this.permissionService.requirePermission(
+      userId,
+      PermissionResource.QUICK_NOTE,
+      PermissionAction.CREATE,
+    );
+
+    // 获取用户团队信息
+    const context = await this.permissionService.getUserContext(userId);
+
     const now = new Date().toISOString();
 
     const { data, error } = await this.client
@@ -186,13 +298,15 @@ export class QuickNotesService {
         images: dto.images || [],
         is_starred: dto.is_starred || false,
         is_pinned: dto.is_pinned || false,
+        visibility: dto.visibility || DataVisibility.PRIVATE,
+        team_id: context?.teamId || null,
         created_at: now,
         updated_at: now,
       })
       .select()
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
     return data as QuickNote;
   }
 
@@ -200,7 +314,7 @@ export class QuickNotesService {
    * 更新笔记
    */
   async update(userId: string, id: string, dto: UpdateQuickNoteDto): Promise<QuickNote> {
-    await this.validateAccess(userId, id);
+    await this.validateEditPermission(userId, id);
 
     const updateData: any = {
       updated_at: new Date().toISOString(),
@@ -212,6 +326,7 @@ export class QuickNotesService {
     if (dto.images !== undefined) updateData.images = dto.images;
     if (dto.is_starred !== undefined) updateData.is_starred = dto.is_starred;
     if (dto.is_pinned !== undefined) updateData.is_pinned = dto.is_pinned;
+    if (dto.visibility !== undefined) updateData.visibility = dto.visibility;
 
     const { data, error } = await this.client
       .from('quick_notes')
@@ -220,7 +335,7 @@ export class QuickNotesService {
       .select()
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
     return data as QuickNote;
   }
 
@@ -228,21 +343,30 @@ export class QuickNotesService {
    * 删除笔记
    */
   async delete(userId: string, id: string): Promise<void> {
-    await this.validateAccess(userId, id);
+    const permissionCheck = await this.permissionService.canDeleteContent(userId, id, 'quick_note');
+    if (!permissionCheck.canDelete) {
+      throw new ForbiddenException(permissionCheck.reason || '无权删除此笔记');
+    }
 
     const { error } = await this.client
       .from('quick_notes')
       .delete()
       .eq('id', id);
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
   }
 
   /**
    * 批量删除笔记（管理员）
    */
   async batchDelete(userId: string, ids: string[]): Promise<void> {
-    const isAdmin = await this.userService.isAdmin(userId);
+    await this.permissionService.requirePermission(
+      userId,
+      PermissionResource.QUICK_NOTE,
+      PermissionAction.DELETE,
+    );
+
+    const isAdmin = await this.permissionService.isAdmin(userId);
     if (!isAdmin) {
       throw new ForbiddenException('需要管理员权限');
     }
@@ -252,14 +376,14 @@ export class QuickNotesService {
       .delete()
       .in('id', ids);
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
   }
 
   /**
    * 切换星标状态
    */
   async toggleStar(userId: string, id: string): Promise<QuickNote> {
-    const note = await this.validateAccess(userId, id);
+    const note = await this.validateEditPermission(userId, id);
 
     const { data, error } = await this.client
       .from('quick_notes')
@@ -268,7 +392,7 @@ export class QuickNotesService {
       .select()
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
     return data as QuickNote;
   }
 
@@ -276,7 +400,7 @@ export class QuickNotesService {
    * 切换置顶状态
    */
   async togglePin(userId: string, id: string): Promise<QuickNote> {
-    const note = await this.validateAccess(userId, id);
+    const note = await this.validateEditPermission(userId, id);
 
     const { data, error } = await this.client
       .from('quick_notes')
@@ -285,26 +409,24 @@ export class QuickNotesService {
       .select()
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
     return data as QuickNote;
   }
 
   /**
-   * 获取所有标签（管理员）
+   * 获取所有标签
    */
   async getAllTags(userId: string): Promise<string[]> {
-    const isAdmin = await this.userService.isAdmin(userId);
-    if (!isAdmin) {
-      throw new ForbiddenException('需要管理员权限');
-    }
+    // 获取可访问的用户ID列表
+    const accessibleUserIds = await this.getAccessibleUserIds(userId);
 
     const { data, error } = await this.client
       .from('quick_notes')
-      .select('tags');
+      .select('tags')
+      .in('user_id', accessibleUserIds);
 
-    if (error) throw new Error(error.message);
+    if (error) throw new BadRequestException(error.message);
 
-    // 提取所有标签并去重
     const allTags = new Set<string>();
     (data as QuickNote[]).forEach(note => {
       note.tags.forEach(tag => allTags.add(tag));

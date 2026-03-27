@@ -1,22 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { getSupabaseClient } from '../storage/database/supabase-client';
 import { NotificationService } from '../notification/notification.service';
+import { PermissionService } from '../permission/permission.service';
+import { UserRole, PermissionAction, PermissionResource } from '../permission/permission.constants';
 
-// 订单状态枚举
+/**
+ * 订单状态枚举
+ */
 export enum OrderStatus {
-  PUBLISHED = 'published',   // 已发布，待接单
-  TAKEN = 'taken',          // 已接单
-  COMPLETED = 'completed',  // 已完成
-  CLOSED = 'closed',        // 已关闭
+  PUBLISHED = 'published',    // 已发布，待接单
+  ACCEPTED = 'accepted',      // 已接单
+  TRANSFERRED = 'transferred', // 已转让
+  CANCELLING = 'cancelling',  // 取消中（待管理员确认）
+  CANCELLED = 'cancelled',    // 已取消
+  COMPLETED = 'completed',    // 已完成
 }
 
-// 订单类型枚举
+/**
+ * 订单类型枚举
+ */
 export enum OrderType {
-  PURCHASE = 'purchase',    // 求购
-  TRANSFER = 'transfer',    // 转让
+  PURCHASE = 'purchase',      // 求购
+  TRANSFER = 'transfer',      // 转让
 }
 
-// 创建订单DTO
+/**
+ * 创建订单DTO
+ */
 export interface CreateOrderDto {
   orderType: OrderType;
   title: string;
@@ -33,7 +43,9 @@ export interface CreateOrderDto {
   priority?: 'low' | 'normal' | 'high' | 'urgent';
 }
 
-// 跟进记录DTO
+/**
+ * 跟进记录DTO
+ */
 export interface FollowUpDto {
   content: string;
   nextFollowUpTime?: string;
@@ -45,7 +57,10 @@ export class EquipmentOrdersService {
     return getSupabaseClient();
   }
 
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(
+    private readonly notificationService: NotificationService,
+    private readonly permissionService: PermissionService,
+  ) {}
 
   /**
    * 生成订单编号
@@ -55,7 +70,6 @@ export class EquipmentOrdersService {
     const date = new Date();
     const dateStr = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
     
-    // 查询今天的订单数量
     const { data: todayOrders } = await this.supabase
       .from('equipment_orders')
       .select('order_no')
@@ -88,7 +102,6 @@ export class EquipmentOrdersService {
    */
   private maskAddress(address: string): string {
     if (!address) return address;
-    // 只显示省市区，隐藏详细地址
     const parts = address.split(/[市区县]/);
     if (parts.length >= 2) {
       return parts[0] + (address.includes('市') ? '市***' : address.includes('区') ? '区***' : '县***');
@@ -100,6 +113,13 @@ export class EquipmentOrdersService {
    * 发布订单（管理员）
    */
   async createOrder(dto: CreateOrderDto, userId: string) {
+    // 权限检查
+    await this.permissionService.requirePermission(
+      userId,
+      PermissionResource.EQUIPMENT_ORDER,
+      PermissionAction.CREATE,
+    );
+
     const orderNo = await this.generateOrderNo(dto.orderType);
 
     const { data: order, error } = await this.supabase
@@ -128,37 +148,35 @@ export class EquipmentOrdersService {
 
     if (error) {
       console.error('创建订单失败:', error);
-      throw new Error(`创建订单失败: ${error.message}`);
+      throw new BadRequestException(`创建订单失败: ${error.message}`);
     }
 
-    // 推送消息给所有销售
-    await this.notifyAllSalesOnPublish(order);
+    // 推送消息给所有有接单权限的用户
+    await this.notifyAllOnPublish(order);
 
     return { success: true, data: order };
   }
 
   /**
-   * 发布时通知所有销售
+   * 发布时通知所有有接单权限的用户
    */
-  private async notifyAllSalesOnPublish(order: any) {
+  private async notifyAllOnPublish(order: any) {
     const typeText = order.order_type === 'purchase' ? '求购' : '转让';
     
-    // 获取所有销售角色的用户
-    const { data: salesUsers } = await this.supabase
+    // 获取所有可以接单的用户（员工、队长、管理员）
+    const { data: users } = await this.supabase
       .from('users')
       .select('id')
-      .eq('role', 'user')
+      .in('role', ['employee', 'team_leader', 'admin'])
       .eq('status', 'active');
 
-    if (salesUsers && salesUsers.length > 0) {
-      const userIds = salesUsers.map(u => u.id);
-      
+    if (users && users.length > 0) {
       await this.notificationService.sendNotification({
         title: `新${typeText}信息`,
         content: `【${order.title}】已发布，请及时查看接单。订单号：${order.order_no}`,
         type: 'activity',
         targetType: 'single',
-        targetUsers: userIds,
+        targetUsers: users.map(u => u.id),
       });
     }
   }
@@ -180,6 +198,16 @@ export class EquipmentOrdersService {
       .from('equipment_orders')
       .select('*', { count: 'exact' });
 
+    // 数据隔离：非管理员只能看到部分数据
+    const isAdmin = await this.permissionService.isAdmin(userId);
+    const context = await this.permissionService.getUserContext(userId);
+
+    // 游客只能看公开的订单梗要
+    if (context?.role === UserRole.GUEST) {
+      // 游客可以看到所有已发布的订单，但不能看联系信息
+      query = query.eq('status', OrderStatus.PUBLISHED);
+    }
+
     // 筛选条件
     if (orderType) {
       query = query.eq('order_type', orderType);
@@ -197,36 +225,46 @@ export class EquipmentOrdersService {
 
     if (error) {
       console.error('获取订单列表失败:', error);
-      throw new Error('获取订单列表失败');
+      throw new BadRequestException('获取订单列表失败');
     }
 
-    // 处理脱敏逻辑
-    const processedOrders = (orders || []).map(order => {
-      const isOwner = order.taken_by === userId;
-      const isAdmin = userRole === 'admin';
+    // 处理权限和脱敏逻辑
+    const processedOrders = await Promise.all((orders || []).map(async (order) => {
+      const permissionCheck = await this.permissionService.canViewOrderDetail(userId, order.id);
+      
+      // 判断用户权限
+      const isOwner = order.accepted_by === userId;
+      const isCreator = order.created_by === userId;
 
-      // 未接单：所有人只能看脱敏信息
-      // 已接单：只有接单人和管理员可以看完整信息
-      if (order.status === OrderStatus.PUBLISHED || (!isOwner && !isAdmin)) {
+      // 计算操作权限
+      const canAccept = (await this.permissionService.canAcceptOrder(userId, order.id)).canAccept;
+      const canTransfer = (await this.permissionService.canTransferOrder(userId, order.id)).canTransfer;
+      const canCancel = (await this.permissionService.canCancelOrder(userId, order.id)).canCancel;
+
+      // 脱敏处理
+      if (!permissionCheck.canViewContact) {
         return {
           ...order,
           customer_phone: this.maskPhone(order.customer_phone || ''),
           customer_wechat: this.maskWechat(order.customer_wechat || ''),
           customer_address: this.maskAddress(order.customer_address || ''),
-          canViewDetail: false,
-          canTake: order.status === OrderStatus.PUBLISHED,
-          canTransfer: false,
+          canViewDetail: permissionCheck.canView,
+          canViewContact: false,
+          canAccept,
+          canTransfer,
+          canCancel,
         };
       }
 
-      // 接单人或管理员可以看完整信息
       return {
         ...order,
         canViewDetail: true,
-        canTake: false,
-        canTransfer: isOwner && order.status === OrderStatus.TAKEN,
+        canViewContact: true,
+        canAccept,
+        canTransfer,
+        canCancel,
       };
-    });
+    }));
 
     return {
       success: true,
@@ -240,35 +278,30 @@ export class EquipmentOrdersService {
   /**
    * 获取订单详情
    */
-  async getOrderDetail(orderId: string, userId: string, userRole: string) {
+  async getOrderDetail(orderId: string, userId: string) {
+    const permissionCheck = await this.permissionService.canViewOrderDetail(userId, orderId);
+    
+    if (!permissionCheck.canView) {
+      throw new ForbiddenException(permissionCheck.reason || '无权查看此订单');
+    }
+
     const { data: order, error } = await this.supabase
       .from('equipment_orders')
-      .select('*, order_transfers(*)')
+      .select('*')
       .eq('id', orderId)
       .single();
 
-    if (error) {
-      console.error('获取订单详情失败:', error);
-      throw new Error('获取订单详情失败');
+    if (error || !order) {
+      throw new BadRequestException('订单不存在');
     }
 
-    if (!order) {
-      throw new Error('订单不存在');
-    }
-
-    const isOwner = order.taken_by === userId;
-    const isAdmin = userRole === 'admin';
-
-    // 权限判断
-    const canViewDetail = isAdmin || isOwner || order.status === OrderStatus.PUBLISHED;
-    const canTake = order.status === OrderStatus.PUBLISHED;
-    const canTransfer = isOwner && order.status === OrderStatus.TAKEN;
-    const canComplete = isOwner && order.status === OrderStatus.TAKEN;
-    const canClose = isAdmin || isOwner;
-    const canEdit = isAdmin;
+    // 计算操作权限
+    const canAccept = (await this.permissionService.canAcceptOrder(userId, orderId)).canAccept;
+    const canTransfer = (await this.permissionService.canTransferOrder(userId, orderId)).canTransfer;
+    const cancelCheck = await this.permissionService.canCancelOrder(userId, orderId);
 
     // 脱敏处理
-    if (order.status === OrderStatus.PUBLISHED || (!isOwner && !isAdmin)) {
+    if (!permissionCheck.canViewContact) {
       return {
         success: true,
         data: {
@@ -276,12 +309,12 @@ export class EquipmentOrdersService {
           customer_phone: this.maskPhone(order.customer_phone || ''),
           customer_wechat: this.maskWechat(order.customer_wechat || ''),
           customer_address: this.maskAddress(order.customer_address || ''),
-          canViewDetail: false,
-          canTake,
-          canTransfer: false,
-          canComplete: false,
-          canClose: false,
-          canEdit,
+          canViewDetail: true,
+          canViewContact: false,
+          canAccept,
+          canTransfer,
+          canCancel: cancelCheck.canCancel,
+          needAdminConfirm: cancelCheck.needAdminConfirm,
         },
       };
     }
@@ -291,11 +324,11 @@ export class EquipmentOrdersService {
       data: {
         ...order,
         canViewDetail: true,
-        canTake: false,
+        canViewContact: true,
+        canAccept,
         canTransfer,
-        canComplete,
-        canClose,
-        canEdit,
+        canCancel: cancelCheck.canCancel,
+        needAdminConfirm: cancelCheck.needAdminConfirm,
       },
     };
   }
@@ -303,36 +336,41 @@ export class EquipmentOrdersService {
   /**
    * 接单（原子操作，防止抢单）
    */
-  async takeOrder(orderId: string, userId: string) {
-    // 使用 PostgreSQL 的原子更新确保只有一人能接单
+  async acceptOrder(orderId: string, userId: string) {
+    // 权限检查
+    const permissionCheck = await this.permissionService.canAcceptOrder(userId, orderId);
+    if (!permissionCheck.canAccept) {
+      throw new ForbiddenException(permissionCheck.reason || '无权接单');
+    }
+
+    // 原子操作接单
     const { data: order, error } = await this.supabase
       .from('equipment_orders')
       .update({
-        status: OrderStatus.TAKEN,
-        taken_by: userId,
-        taken_at: new Date().toISOString(),
+        status: OrderStatus.ACCEPTED,
+        accepted_by: userId,
+        accepted_at: new Date().toISOString(),
       })
       .eq('id', orderId)
-      .eq('status', OrderStatus.PUBLISHED) // 只能接已发布的
-      .is('taken_by', null) // 确保没有人接单
+      .eq('status', OrderStatus.PUBLISHED)
+      .is('accepted_by', null)
       .select()
       .single();
 
     if (error || !order) {
-      console.error('接单失败:', error);
-      throw new Error('接单失败，订单可能已被其他人接走');
+      throw new BadRequestException('接单失败，订单可能已被其他人接走');
     }
 
-    // 推送消息给管理员和接单人
-    await this.notifyOnTake(order, userId);
+    // 推送消息
+    await this.notifyOnAccept(order, userId);
 
     return { success: true, data: order, message: '接单成功' };
   }
 
   /**
-   * 接单时通知管理员和接单人
+   * 接单时通知
    */
-  private async notifyOnTake(order: any, userId: string) {
+  private async notifyOnAccept(order: any, userId: string) {
     const typeText = order.order_type === 'purchase' ? '求购' : '转让';
     
     // 获取所有管理员
@@ -360,61 +398,62 @@ export class EquipmentOrdersService {
    * 转让订单
    */
   async transferOrder(orderId: string, fromUserId: string, toUserId: string, reason?: string) {
-    // 验证订单状态和权限
-    const { data: order, error: fetchError } = await this.supabase
+    // 权限检查
+    const permissionCheck = await this.permissionService.canTransferOrder(fromUserId, orderId);
+    if (!permissionCheck.canTransfer) {
+      throw new ForbiddenException(permissionCheck.reason || '无权转让订单');
+    }
+
+    // 检查目标用户是否有接单权限
+    const canAccept = await this.permissionService.hasPermission(
+      toUserId,
+      PermissionResource.EQUIPMENT_ORDER,
+      PermissionAction.ACCEPT_ORDER,
+    );
+    if (!canAccept) {
+      throw new BadRequestException('目标用户没有接单权限');
+    }
+
+    // 获取当前订单
+    const { data: order } = await this.supabase
       .from('equipment_orders')
       .select('*')
       .eq('id', orderId)
       .single();
 
-    if (fetchError || !order) {
-      throw new Error('订单不存在');
-    }
-
-    if (order.taken_by !== fromUserId) {
-      throw new Error('只有当前接单人才能转让订单');
-    }
-
-    if (order.status !== OrderStatus.TAKEN) {
-      throw new Error('只能转让已接单状态的订单');
-    }
-
-    // 更新订单接单人
+    // 更新订单
     const { error: updateError } = await this.supabase
       .from('equipment_orders')
-      .update({ taken_by: toUserId })
+      .update({
+        accepted_by: toUserId,
+        status: OrderStatus.TRANSFERRED,
+        transferred_to: toUserId,
+        transferred_at: new Date().toISOString(),
+      })
       .eq('id', orderId);
 
     if (updateError) {
-      console.error('转让订单失败:', updateError);
-      throw new Error('转让订单失败');
+      throw new BadRequestException('转让订单失败');
     }
 
     // 记录转让历史
-    const { error: transferError } = await this.supabase
-      .from('order_transfers')
-      .insert({
-        order_id: orderId,
-        from_user_id: fromUserId,
-        to_user_id: toUserId,
-        transfer_reason: reason,
-      });
+    await this.supabase.from('order_transfers').insert({
+      order_id: orderId,
+      from_user_id: fromUserId,
+      to_user_id: toUserId,
+      transfer_reason: reason,
+    });
 
-    if (transferError) {
-      console.error('记录转让历史失败:', transferError);
-    }
-
-    // 推送消息给管理员和新旧接单人
+    // 推送消息
     await this.notifyOnTransfer(order, fromUserId, toUserId);
 
     return { success: true, message: '转让成功' };
   }
 
   /**
-   * 转让时通知相关人
+   * 转让时通知
    */
   private async notifyOnTransfer(order: any, fromUserId: string, toUserId: string) {
-    // 获取所有管理员
     const { data: admins } = await this.supabase
       .from('users')
       .select('id')
@@ -436,66 +475,189 @@ export class EquipmentOrdersService {
   }
 
   /**
-   * 添加跟进记录
+   * 申请取消订单
    */
-  async addFollowUp(orderId: string, userId: string, dto: FollowUpDto) {
-    const { data: order, error: fetchError } = await this.supabase
+  async requestCancel(orderId: string, userId: string, reason: string) {
+    const cancelCheck = await this.permissionService.canCancelOrder(userId, orderId);
+    if (!cancelCheck.canCancel) {
+      throw new ForbiddenException(cancelCheck.reason || '无权取消订单');
+    }
+
+    const isAdmin = await this.permissionService.isAdmin(userId);
+
+    // 管理员可以直接取消
+    if (isAdmin && !cancelCheck.needAdminConfirm) {
+      return this.cancelOrder(orderId, userId, reason);
+    }
+
+    // 非管理员需要申请，进入待确认状态
+    const { error } = await this.supabase
       .from('equipment_orders')
-      .select('taken_by, follow_up_records')
+      .update({
+        status: OrderStatus.CANCELLING,
+        cancel_reason: reason,
+        cancel_requested_by: userId,
+      })
+      .eq('id', orderId);
+
+    if (error) {
+      throw new BadRequestException('申请取消失败');
+    }
+
+    // 通知管理员审批
+    await this.notifyAdminsOnCancelRequest(orderId, reason);
+
+    return { success: true, message: '已提交取消申请，等待管理员确认' };
+  }
+
+  /**
+   * 通知管理员有取消申请
+   */
+  private async notifyAdminsOnCancelRequest(orderId: string, reason: string) {
+    const { data: order } = await this.supabase
+      .from('equipment_orders')
+      .select('title, order_no')
       .eq('id', orderId)
       .single();
 
-    if (fetchError || !order) {
-      throw new Error('订单不存在');
+    const { data: admins } = await this.supabase
+      .from('users')
+      .select('id')
+      .eq('role', 'admin')
+      .eq('status', 'active');
+
+    if (admins && admins.length > 0) {
+      await this.notificationService.sendNotification({
+        title: '订单取消申请',
+        content: `【${order?.title}】申请取消，原因：${reason}。订单号：${order?.order_no}`,
+        type: 'activity',
+        targetType: 'single',
+        targetUsers: admins.map(a => a.id),
+      });
     }
+  }
 
-    if (order.taken_by !== userId) {
-      throw new Error('只有接单人才能添加跟进记录');
-    }
+  /**
+   * 确认取消订单（管理员）
+   */
+  async confirmCancel(orderId: string, adminId: string, approved: boolean) {
+    // 权限检查
+    await this.permissionService.requirePermission(
+      adminId,
+      PermissionResource.EQUIPMENT_ORDER,
+      PermissionAction.CONFIRM_CANCEL,
+    );
 
-    const newRecord = {
-      id: Date.now().toString(),
-      content: dto.content,
-      nextFollowUpTime: dto.nextFollowUpTime,
-      createdAt: new Date().toISOString(),
-      createdBy: userId,
-    };
-
-    const records = order.follow_up_records || [];
-    records.push(newRecord);
-
-    const { error: updateError } = await this.supabase
+    const { data: order } = await this.supabase
       .from('equipment_orders')
-      .update({ follow_up_records: records })
+      .select('status, cancel_requested_by')
+      .eq('id', orderId)
+      .single();
+
+    if (!order || order.status !== OrderStatus.CANCELLING) {
+      throw new BadRequestException('订单状态不正确');
+    }
+
+    if (approved) {
+      // 批准取消
+      await this.supabase
+        .from('equipment_orders')
+        .update({
+          status: OrderStatus.CANCELLED,
+          cancel_confirmed_by: adminId,
+          cancel_confirmed_at: new Date().toISOString(),
+        })
+        .eq('id', orderId);
+
+      // 通知申请人
+      if (order.cancel_requested_by) {
+        await this.notificationService.sendNotification({
+          title: '订单取消已批准',
+          content: `您的取消申请已批准。`,
+          type: 'activity',
+          targetType: 'single',
+          targetUsers: [order.cancel_requested_by],
+        });
+      }
+    } else {
+      // 拒绝取消，恢复状态
+      await this.supabase
+        .from('equipment_orders')
+        .update({
+          status: OrderStatus.ACCEPTED,
+          cancel_reason: null,
+          cancel_requested_by: null,
+        })
+        .eq('id', orderId);
+
+      // 通知申请人
+      if (order.cancel_requested_by) {
+        await this.notificationService.sendNotification({
+          title: '订单取消被拒绝',
+          content: `您的取消申请被拒绝，订单已恢复。`,
+          type: 'activity',
+          targetType: 'single',
+          targetUsers: [order.cancel_requested_by],
+        });
+      }
+    }
+
+    return { success: true, message: approved ? '已批准取消' : '已拒绝取消' };
+  }
+
+  /**
+   * 直接取消订单（管理员）
+   */
+  async cancelOrder(orderId: string, adminId: string, reason?: string) {
+    await this.permissionService.requirePermission(
+      adminId,
+      PermissionResource.EQUIPMENT_ORDER,
+      PermissionAction.CANCEL_ORDER,
+    );
+
+    const { error } = await this.supabase
+      .from('equipment_orders')
+      .update({
+        status: OrderStatus.CANCELLED,
+        cancel_reason: reason,
+        cancel_confirmed_by: adminId,
+        cancel_confirmed_at: new Date().toISOString(),
+      })
       .eq('id', orderId);
 
-    if (updateError) {
-      console.error('添加跟进记录失败:', updateError);
-      throw new Error('添加跟进记录失败');
+    if (error) {
+      throw new BadRequestException('取消订单失败');
     }
 
-    return { success: true, data: newRecord };
+    return { success: true, message: '订单已取消' };
   }
 
   /**
    * 完成订单
    */
-  async completeOrder(orderId: string, userId: string, userRole: string) {
-    const { data: order, error: fetchError } = await this.supabase
+  async completeOrder(orderId: string, userId: string) {
+    const { data: order } = await this.supabase
       .from('equipment_orders')
-      .select('taken_by')
+      .select('accepted_by, status')
       .eq('id', orderId)
       .single();
 
-    if (fetchError || !order) {
-      throw new Error('订单不存在');
+    if (!order) {
+      throw new BadRequestException('订单不存在');
     }
 
-    if (order.taken_by !== userId && userRole !== 'admin') {
-      throw new Error('只有接单人或管理员才能完成订单');
+    const isAdmin = await this.permissionService.isAdmin(userId);
+    const isOwner = order.accepted_by === userId;
+
+    if (!isAdmin && !isOwner) {
+      throw new ForbiddenException('只有接单人或管理员才能完成订单');
     }
 
-    const { error: updateError } = await this.supabase
+    if (order.status !== OrderStatus.ACCEPTED && order.status !== OrderStatus.TRANSFERRED) {
+      throw new BadRequestException('当前订单状态不能完成');
+    }
+
+    const { error } = await this.supabase
       .from('equipment_orders')
       .update({
         status: OrderStatus.COMPLETED,
@@ -503,19 +665,17 @@ export class EquipmentOrdersService {
       })
       .eq('id', orderId);
 
-    if (updateError) {
-      console.error('完成订单失败:', updateError);
-      throw new Error('完成订单失败');
+    if (error) {
+      throw new BadRequestException('完成订单失败');
     }
 
-    // 通知管理员
     await this.notifyOnComplete(orderId);
 
     return { success: true, message: '订单已完成' };
   }
 
   /**
-   * 完成时通知管理员
+   * 完成时通知
    */
   private async notifyOnComplete(orderId: string) {
     const { data: order } = await this.supabase
@@ -542,158 +702,57 @@ export class EquipmentOrdersService {
   }
 
   /**
-   * 关闭订单
+   * 添加跟进记录
    */
-  async closeOrder(orderId: string, userId: string, userRole: string, reason?: string) {
-    const { data: order, error: fetchError } = await this.supabase
-      .from('equipment_orders')
-      .select('taken_by')
-      .eq('id', orderId)
-      .single();
-
-    if (fetchError || !order) {
-      throw new Error('订单不存在');
-    }
-
-    if (order.taken_by !== userId && userRole !== 'admin') {
-      throw new Error('只有接单人或管理员才能关闭订单');
-    }
-
-    const { error: updateError } = await this.supabase
-      .from('equipment_orders')
-      .update({
-        status: OrderStatus.CLOSED,
-        closed_at: new Date().toISOString(),
-        closed_reason: reason,
-      })
-      .eq('id', orderId);
-
-    if (updateError) {
-      console.error('关闭订单失败:', updateError);
-      throw new Error('关闭订单失败');
-    }
-
-    // 通知管理员
-    await this.notifyOnClose(orderId);
-
-    return { success: true, message: '订单已关闭' };
-  }
-
-  /**
-   * 关闭时通知管理员
-   */
-  private async notifyOnClose(orderId: string) {
+  async addFollowUp(orderId: string, userId: string, dto: FollowUpDto) {
     const { data: order } = await this.supabase
       .from('equipment_orders')
-      .select('title, order_no')
+      .select('accepted_by, follow_up_records')
       .eq('id', orderId)
       .single();
 
-    const { data: admins } = await this.supabase
-      .from('users')
-      .select('id')
-      .eq('role', 'admin')
-      .eq('status', 'active');
-
-    if (admins && admins.length > 0) {
-      await this.notificationService.sendNotification({
-        title: '订单已关闭',
-        content: `【${order?.title}】已关闭。订单号：${order?.order_no}`,
-        type: 'activity',
-        targetType: 'single',
-        targetUsers: admins.map(a => a.id),
-      });
-    }
-  }
-
-  /**
-   * 管理员强制回收/重新分配
-   */
-  async reassignOrder(orderId: string, newUserId: string | null, adminId: string) {
-    const { data: order, error: fetchError } = await this.supabase
-      .from('equipment_orders')
-      .select('taken_by, status')
-      .eq('id', orderId)
-      .single();
-
-    if (fetchError || !order) {
-      throw new Error('订单不存在');
+    if (!order) {
+      throw new BadRequestException('订单不存在');
     }
 
-    const oldUserId = order.taken_by;
+    const isAdmin = await this.permissionService.isAdmin(userId);
+    if (order.accepted_by !== userId && !isAdmin) {
+      throw new ForbiddenException('只有接单人才能添加跟进记录');
+    }
 
-    // 更新订单
-    const updateData: any = {
-      taken_by: newUserId,
+    const newRecord = {
+      id: Date.now().toString(),
+      content: dto.content,
+      nextFollowUpTime: dto.nextFollowUpTime,
+      createdAt: new Date().toISOString(),
+      createdBy: userId,
     };
 
-    if (!newUserId) {
-      // 回收订单，重置为已发布状态
-      updateData.status = OrderStatus.PUBLISHED;
-      updateData.taken_at = null;
-    } else if (order.status === OrderStatus.PUBLISHED) {
-      // 直接分配
-      updateData.status = OrderStatus.TAKEN;
-      updateData.taken_at = new Date().toISOString();
-    }
+    const records = order.follow_up_records || [];
+    records.push(newRecord);
 
-    const { error: updateError } = await this.supabase
+    const { error } = await this.supabase
       .from('equipment_orders')
-      .update(updateData)
+      .update({ follow_up_records: records })
       .eq('id', orderId);
 
-    if (updateError) {
-      console.error('重新分配失败:', updateError);
-      throw new Error('重新分配失败');
+    if (error) {
+      throw new BadRequestException('添加跟进记录失败');
     }
 
-    // 记录转让历史
-    if (oldUserId && newUserId && oldUserId !== newUserId) {
-      await this.supabase
-        .from('order_transfers')
-        .insert({
-          order_id: orderId,
-          from_user_id: oldUserId,
-          to_user_id: newUserId,
-          transfer_reason: '管理员强制重新分配',
-        });
-    }
-
-    // 通知相关销售
-    await this.notifyOnReassign(orderId, oldUserId, newUserId);
-
-    return { success: true, message: '操作成功' };
-  }
-
-  /**
-   * 重新分配时通知相关人
-   */
-  private async notifyOnReassign(orderId: string, oldUserId: string | null, newUserId: string | null) {
-    const { data: order } = await this.supabase
-      .from('equipment_orders')
-      .select('title, order_no')
-      .eq('id', orderId)
-      .single();
-
-    const targetUsers: string[] = [];
-    if (oldUserId) targetUsers.push(oldUserId);
-    if (newUserId) targetUsers.push(newUserId);
-
-    if (targetUsers.length > 0) {
-      await this.notificationService.sendNotification({
-        title: '订单重新分配通知',
-        content: `【${order?.title}】已被管理员重新分配。订单号：${order?.order_no}`,
-        type: 'activity',
-        targetType: 'single',
-        targetUsers: targetUsers,
-      });
-    }
+    return { success: true, data: newRecord };
   }
 
   /**
    * 更新订单（管理员）
    */
-  async updateOrder(orderId: string, dto: Partial<CreateOrderDto>) {
+  async updateOrder(orderId: string, dto: Partial<CreateOrderDto>, userId: string) {
+    await this.permissionService.requirePermission(
+      userId,
+      PermissionResource.EQUIPMENT_ORDER,
+      PermissionAction.UPDATE,
+    );
+
     const updateData: any = {};
     
     if (dto.title) updateData.title = dto.title;
@@ -715,8 +774,7 @@ export class EquipmentOrdersService {
       .eq('id', orderId);
 
     if (error) {
-      console.error('更新订单失败:', error);
-      throw new Error('更新订单失败');
+      throw new BadRequestException('更新订单失败');
     }
 
     return { success: true, message: '更新成功' };
@@ -725,35 +783,124 @@ export class EquipmentOrdersService {
   /**
    * 删除订单（管理员）
    */
-  async deleteOrder(orderId: string) {
+  async deleteOrder(orderId: string, userId: string) {
+    await this.permissionService.requirePermission(
+      userId,
+      PermissionResource.EQUIPMENT_ORDER,
+      PermissionAction.DELETE,
+    );
+
     const { error } = await this.supabase
       .from('equipment_orders')
       .delete()
       .eq('id', orderId);
 
     if (error) {
-      console.error('删除订单失败:', error);
-      throw new Error('删除订单失败');
+      throw new BadRequestException('删除订单失败');
     }
 
     return { success: true, message: '删除成功' };
   }
 
   /**
-   * 获取销售列表（用于转让选择）
+   * 获取可接单用户列表（用于转让选择）
    */
-  async getSalesList() {
+  async getAvailableUsers() {
     const { data: users, error } = await this.supabase
       .from('users')
-      .select('id, nickname, employee_id')
-      .eq('role', 'user')
+      .select('id, nickname, employee_id, role')
+      .in('role', ['employee', 'team_leader', 'admin'])
       .eq('status', 'active');
 
     if (error) {
-      console.error('获取销售列表失败:', error);
-      throw new Error('获取销售列表失败');
+      throw new BadRequestException('获取用户列表失败');
     }
 
     return { success: true, data: users || [] };
+  }
+
+  /**
+   * 管理员强制重新分配订单
+   */
+  async reassignOrder(orderId: string, newUserId: string | null, adminId: string) {
+    await this.permissionService.requirePermission(
+      adminId,
+      PermissionResource.EQUIPMENT_ORDER,
+      PermissionAction.MANAGE_USER,
+    );
+
+    const { data: order } = await this.supabase
+      .from('equipment_orders')
+      .select('accepted_by, status')
+      .eq('id', orderId)
+      .single();
+
+    if (!order) {
+      throw new BadRequestException('订单不存在');
+    }
+
+    const oldUserId = order.accepted_by;
+
+    const updateData: any = {
+      accepted_by: newUserId,
+    };
+
+    if (!newUserId) {
+      // 回收订单
+      updateData.status = OrderStatus.PUBLISHED;
+      updateData.accepted_at = null;
+    } else if (order.status === OrderStatus.PUBLISHED) {
+      // 直接分配
+      updateData.status = OrderStatus.ACCEPTED;
+      updateData.accepted_at = new Date().toISOString();
+    }
+
+    const { error } = await this.supabase
+      .from('equipment_orders')
+      .update(updateData)
+      .eq('id', orderId);
+
+    if (error) {
+      throw new BadRequestException('重新分配失败');
+    }
+
+    // 记录转让历史
+    if (oldUserId && newUserId && oldUserId !== newUserId) {
+      await this.supabase.from('order_transfers').insert({
+        order_id: orderId,
+        from_user_id: oldUserId,
+        to_user_id: newUserId,
+        transfer_reason: '管理员强制重新分配',
+      });
+    }
+
+    await this.notifyOnReassign(orderId, oldUserId, newUserId);
+
+    return { success: true, message: '操作成功' };
+  }
+
+  /**
+   * 重新分配时通知
+   */
+  private async notifyOnReassign(orderId: string, oldUserId: string | null, newUserId: string | null) {
+    const { data: order } = await this.supabase
+      .from('equipment_orders')
+      .select('title, order_no')
+      .eq('id', orderId)
+      .single();
+
+    const targetUsers: string[] = [];
+    if (oldUserId) targetUsers.push(oldUserId);
+    if (newUserId) targetUsers.push(newUserId);
+
+    if (targetUsers.length > 0) {
+      await this.notificationService.sendNotification({
+        title: '订单重新分配通知',
+        content: `【${order?.title}】已被管理员重新分配。订单号：${order?.order_no}`,
+        type: 'activity',
+        targetType: 'single',
+        targetUsers: targetUsers,
+      });
+    }
   }
 }
