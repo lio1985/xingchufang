@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Textarea, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
@@ -7,16 +7,35 @@ import {
   Gift,
   Globe,
   User,
+  Users,
   Send,
   ChevronLeft,
   CircleCheck,
+  Search,
+  X,
+  RefreshCw,
+  Check,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import '@/styles/pages.css';
 import '@/styles/admin.css';
 
 type NotificationType = 'system' | 'activity' | 'update';
-type TargetType = 'all' | 'single';
+type TargetType = 'all' | 'team' | 'user';
+
+interface Team {
+  id: string;
+  name: string;
+  description?: string;
+  memberCount?: number;
+}
+
+interface UserItem {
+  id: string;
+  nickname?: string;
+  employee_id?: string;
+  status: string;
+}
 
 const notificationTypes = [
   {
@@ -25,7 +44,7 @@ const notificationTypes = [
     desc: '重要系统公告',
     icon: Bell,
     iconColor: '#60a5fa',
-    bgColor: 'rgba(59, 130, 246, 0.1)',
+    bgColor: 'rgba(96, 165, 250, 0.15)',
   },
   {
     value: 'activity' as const,
@@ -33,15 +52,15 @@ const notificationTypes = [
     desc: '推广活动信息',
     icon: Sparkles,
     iconColor: '#ec4899',
-    bgColor: 'rgba(236, 72, 153, 0.1)',
+    bgColor: 'rgba(236, 72, 153, 0.15)',
   },
   {
     value: 'update' as const,
     label: '更新通知',
     desc: '版本更新说明',
     icon: Gift,
-    iconColor: '#38bdf8',
-    bgColor: 'rgba(245, 158, 11, 0.1)',
+    iconColor: '#f59e0b',
+    bgColor: 'rgba(245, 158, 11, 0.15)',
   },
 ];
 
@@ -52,15 +71,23 @@ const targetTypes = [
     desc: '发送给所有用户',
     icon: Globe,
     iconColor: '#4ade80',
-    bgColor: 'rgba(34, 197, 94, 0.1)',
+    bgColor: 'rgba(74, 222, 128, 0.15)',
   },
   {
-    value: 'single' as const,
-    label: '指定用户',
+    value: 'team' as const,
+    label: '选择团队',
+    desc: '发送给团队',
+    icon: Users,
+    iconColor: '#f59e0b',
+    bgColor: 'rgba(245, 158, 11, 0.15)',
+  },
+  {
+    value: 'user' as const,
+    label: '选择用户',
     desc: '发送给特定用户',
     icon: User,
-    iconColor: '#6366f1',
-    bgColor: 'rgba(99, 102, 241, 0.1)',
+    iconColor: '#a855f7',
+    bgColor: 'rgba(168, 85, 247, 0.15)',
   },
 ];
 
@@ -69,8 +96,99 @@ const SendNotificationPage = () => {
   const [content, setContent] = useState('');
   const [type, setType] = useState<NotificationType>('system');
   const [targetType, setTargetType] = useState<TargetType>('all');
-  const [targetUsers, setTargetUsers] = useState('');
   const [sending, setSending] = useState(false);
+
+  // 团队选择相关
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [loadingTeams, setLoadingTeams] = useState(false);
+
+  // 用户选择相关
+  const [userSearchKeyword, setUserSearchKeyword] = useState('');
+  const [searchResults, setSearchResults] = useState<UserItem[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<UserItem[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  // 加载团队列表
+  useEffect(() => {
+    if (targetType === 'team') {
+      loadTeams();
+    }
+  }, [targetType]);
+
+  const loadTeams = async () => {
+    setLoadingTeams(true);
+    try {
+      const res = await Network.request({
+        url: '/api/teams',
+        method: 'GET',
+      });
+
+      if (res.data?.code === 200 && res.data?.data) {
+        // 处理不同的响应格式
+        const teamList = Array.isArray(res.data.data)
+          ? res.data.data
+          : res.data.data.data || [];
+        setTeams(teamList);
+      }
+    } catch (error) {
+      console.error('加载团队列表失败:', error);
+    } finally {
+      setLoadingTeams(false);
+    }
+  };
+
+  const searchUsers = async () => {
+    if (!userSearchKeyword.trim()) {
+      Taro.showToast({ title: '请输入搜索关键词', icon: 'none' });
+      return;
+    }
+
+    setSearching(true);
+    try {
+      const res = await Network.request({
+        url: '/api/admin/users',
+        method: 'GET',
+        data: {
+          search: userSearchKeyword,
+          status: 'active',
+          page: 1,
+          pageSize: 20,
+        },
+      });
+
+      if (res.data?.code === 200 && res.data?.data) {
+        // 过滤掉已选择的用户
+        const selectedIds = new Set(selectedUsers.map(u => u.id));
+        const filtered = (res.data.data.users || []).filter(
+          (u: UserItem) => !selectedIds.has(u.id)
+        );
+        setSearchResults(filtered);
+      }
+    } catch (error) {
+      console.error('搜索用户失败:', error);
+      Taro.showToast({ title: '搜索失败', icon: 'none' });
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const toggleTeamSelection = (teamId: string) => {
+    setSelectedTeams(prev =>
+      prev.includes(teamId)
+        ? prev.filter(id => id !== teamId)
+        : [...prev, teamId]
+    );
+  };
+
+  const selectUser = (user: UserItem) => {
+    setSelectedUsers(prev => [...prev, user]);
+    setSearchResults(prev => prev.filter(u => u.id !== user.id));
+  };
+
+  const removeUser = (userId: string) => {
+    setSelectedUsers(prev => prev.filter(u => u.id !== userId));
+  };
 
   const handleSend = async () => {
     if (!title.trim()) {
@@ -83,8 +201,13 @@ const SendNotificationPage = () => {
       return;
     }
 
-    if (targetType === 'single' && !targetUsers.trim()) {
-      Taro.showToast({ title: '请输入目标用户ID', icon: 'none' });
+    if (targetType === 'team' && selectedTeams.length === 0) {
+      Taro.showToast({ title: '请选择至少一个团队', icon: 'none' });
+      return;
+    }
+
+    if (targetType === 'user' && selectedUsers.length === 0) {
+      Taro.showToast({ title: '请选择至少一个用户', icon: 'none' });
       return;
     }
 
@@ -98,8 +221,10 @@ const SendNotificationPage = () => {
         targetType,
       };
 
-      if (targetType === 'single') {
-        requestData.targetUsers = targetUsers.split(',').map((id) => id.trim());
+      if (targetType === 'team') {
+        requestData.targetTeams = selectedTeams;
+      } else if (targetType === 'user') {
+        requestData.targetUsers = selectedUsers.map(u => u.id);
       }
 
       console.log('发送通知请求:', requestData);
@@ -112,11 +237,13 @@ const SendNotificationPage = () => {
 
       console.log('发送通知响应:', response.data);
 
-      if (response.data?.success) {
+      if (response.data?.success || response.data?.code === 200) {
         Taro.showToast({ title: '发送成功', icon: 'success' });
         setTitle('');
         setContent('');
-        setTargetUsers('');
+        setSelectedTeams([]);
+        setSelectedUsers([]);
+        setTargetType('all');
       } else {
         Taro.showToast({ title: response.data?.message || '发送失败', icon: 'none' });
       }
@@ -128,8 +255,8 @@ const SendNotificationPage = () => {
     }
   };
 
-  const selectedNotificationType = notificationTypes.find((t) => t.value === type);
-  const selectedTargetType = targetTypes.find((t) => t.value === targetType);
+  const selectedNotificationType = notificationTypes.find(t => t.value === type);
+  const selectedTargetType = targetTypes.find(t => t.value === targetType);
 
   return (
     <View className="admin-page">
@@ -154,7 +281,7 @@ const SendNotificationPage = () => {
             </Text>
 
             <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {notificationTypes.map((item) => (
+              {notificationTypes.map(item => (
                 <View
                   key={item.value}
                   className={`user-list-item ${type === item.value ? 'card-hover' : ''}`}
@@ -195,26 +322,30 @@ const SendNotificationPage = () => {
             </Text>
 
             <View style={{ display: 'flex', gap: '12px' }}>
-              {targetTypes.map((item) => (
+              {targetTypes.map(item => (
                 <View
                   key={item.value}
                   style={{
                     flex: 1,
-                    padding: '20px',
-                    borderRadius: '16px',
+                    padding: '16px',
+                    borderRadius: '14px',
                     backgroundColor: targetType === item.value ? item.bgColor : '#1e293b',
                     border: `2px solid ${targetType === item.value ? item.iconColor : '#1e3a5f'}`,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '12px',
+                    gap: '10px',
                   }}
-                  onClick={() => setTargetType(item.value)}
+                  onClick={() => {
+                    setTargetType(item.value);
+                    setSelectedTeams([]);
+                    setSelectedUsers([]);
+                  }}
                 >
                   <View
                     style={{
-                      width: '48px',
-                      height: '48px',
+                      width: '44px',
+                      height: '44px',
                       borderRadius: '12px',
                       backgroundColor: targetType === item.value ? item.bgColor : '#1e3a5f',
                       display: 'flex',
@@ -222,34 +353,254 @@ const SendNotificationPage = () => {
                       justifyContent: 'center',
                     }}
                   >
-                    <item.icon size={28} color={targetType === item.value ? item.iconColor : '#71717a'} />
+                    <item.icon size={24} color={targetType === item.value ? item.iconColor : '#71717a'} />
                   </View>
                   <Text
                     style={{
-                      fontSize: '24px',
+                      fontSize: '22px',
                       fontWeight: '600',
                       color: targetType === item.value ? item.iconColor : '#94a3b8',
                     }}
                   >
                     {item.label}
                   </Text>
-                  <Text style={{ fontSize: '18px', color: '#64748b' }}>{item.desc}</Text>
                 </View>
               ))}
             </View>
 
-            {targetType === 'single' && (
+            {/* 团队选择 */}
+            {targetType === 'team' && (
               <View style={{ marginTop: '16px' }}>
-                <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
-                  用户ID（多个用逗号分隔）
-                </Text>
-                <Input
-                  className="form-input"
-                  placeholder="输入用户ID，多个用逗号分隔"
-                  placeholderStyle="color: #64748b"
-                  value={targetUsers}
-                  onInput={(e) => setTargetUsers(e.detail.value)}
-                />
+                <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <Text style={{ fontSize: '22px', color: '#71717a' }}>
+                    选择团队 {selectedTeams.length > 0 && `(${selectedTeams.length})`}
+                  </Text>
+                  <View
+                    style={{ padding: '8px', borderRadius: '8px', backgroundColor: '#1e293b' }}
+                    onClick={loadTeams}
+                  >
+                    <RefreshCw size={18} color={loadingTeams ? '#64748b' : '#38bdf8'} />
+                  </View>
+                </View>
+
+                {loadingTeams ? (
+                  <View style={{ padding: '32px 0', textAlign: 'center' }}>
+                    <RefreshCw size={32} color="#38bdf8" />
+                    <Text style={{ fontSize: '22px', color: '#71717a', marginTop: '12px', display: 'block' }}>
+                      加载中...
+                    </Text>
+                  </View>
+                ) : teams.length === 0 ? (
+                  <View style={{ padding: '32px 0', textAlign: 'center' }}>
+                    <Users size={48} color="#71717a" />
+                    <Text style={{ fontSize: '22px', color: '#71717a', marginTop: '12px', display: 'block' }}>
+                      暂无可用团队
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {teams.map(team => {
+                      const isSelected = selectedTeams.includes(team.id);
+                      return (
+                        <View
+                          key={team.id}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '14px',
+                            backgroundColor: isSelected ? 'rgba(245, 158, 11, 0.15)' : '#1e293b',
+                            borderRadius: '12px',
+                            border: `1px solid ${isSelected ? '#f59e0b' : '#1e3a5f'}`,
+                          }}
+                          onClick={() => toggleTeamSelection(team.id)}
+                        >
+                          <View
+                            style={{
+                              width: '44px',
+                              height: '44px',
+                              borderRadius: '12px',
+                              backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Users size={22} color="#f59e0b" />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9', display: 'block' }}>
+                              {team.name}
+                            </Text>
+                            {team.description && (
+                              <Text style={{ fontSize: '20px', color: '#64748b', marginTop: '2px' }}>
+                                {team.description}
+                              </Text>
+                            )}
+                          </View>
+                          {isSelected && (
+                            <View
+                              style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                backgroundColor: '#f59e0b',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Check size={16} color="#000" />
+                            </View>
+                          )}
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* 用户选择 */}
+            {targetType === 'user' && (
+              <View style={{ marginTop: '16px' }}>
+                {/* 已选择的用户 */}
+                {selectedUsers.length > 0 && (
+                  <View style={{ marginBottom: '16px' }}>
+                    <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '10px', display: 'block' }}>
+                      已选择 {selectedUsers.length} 位用户
+                    </Text>
+                    <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {selectedUsers.map(user => (
+                        <View
+                          key={user.id}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '8px 12px',
+                            backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                            borderRadius: '10px',
+                            border: '1px solid rgba(168, 85, 247, 0.3)',
+                          }}
+                        >
+                          <Text style={{ fontSize: '22px', color: '#a855f7' }}>
+                            {user.nickname || '未设置昵称'}
+                          </Text>
+                          <View onClick={() => removeUser(user.id)}>
+                            <X size={16} color="#a855f7" />
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                {/* 搜索框 */}
+                <View style={{ display: 'flex', gap: '12px' }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '12px 16px',
+                      backgroundColor: '#1e293b',
+                      borderRadius: '12px',
+                      border: '1px solid #1e3a5f',
+                    }}
+                  >
+                    <Search size={22} color="#71717a" />
+                    <Input
+                      style={{ flex: 1, fontSize: '26px', color: '#f1f5f9' }}
+                      placeholder="搜索用户名或员工ID"
+                      placeholderStyle="color: #64748b"
+                      value={userSearchKeyword}
+                      onInput={e => setUserSearchKeyword(e.detail.value)}
+                      onConfirm={searchUsers}
+                    />
+                    {userSearchKeyword && (
+                      <View onClick={() => setUserSearchKeyword('')}>
+                        <X size={20} color="#71717a" />
+                      </View>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      padding: '12px 20px',
+                      backgroundColor: searching ? '#1e3a5f' : '#38bdf8',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onClick={searchUsers}
+                  >
+                    <Text style={{ fontSize: '24px', color: searching ? '#94a3b8' : '#000', fontWeight: '600' }}>
+                      搜索
+                    </Text>
+                  </View>
+                </View>
+
+                {/* 搜索结果 */}
+                {searchResults.length > 0 && (
+                  <View style={{ marginTop: '12px' }}>
+                    <Text style={{ fontSize: '20px', color: '#64748b', marginBottom: '8px', display: 'block' }}>
+                      搜索结果（点击选择）
+                    </Text>
+                    <View style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {searchResults.slice(0, 10).map(user => (
+                        <View
+                          key={user.id}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px',
+                            backgroundColor: '#1e293b',
+                            borderRadius: '10px',
+                            border: '1px solid #1e3a5f',
+                          }}
+                          onClick={() => selectUser(user)}
+                        >
+                          <View
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '10px',
+                              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <User size={20} color="#a855f7" />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ fontSize: '24px', color: '#f1f5f9' }}>
+                              {user.nickname || '未设置昵称'}
+                            </Text>
+                            {user.employee_id && (
+                              <Text style={{ fontSize: '20px', color: '#10b981' }}>
+                                #{user.employee_id}
+                              </Text>
+                            )}
+                          </View>
+                          <View
+                            style={{
+                              padding: '6px 12px',
+                              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                              borderRadius: '8px',
+                              border: '1px solid rgba(168, 85, 247, 0.3)',
+                            }}
+                          >
+                            <Text style={{ fontSize: '20px', color: '#a855f7' }}>选择</Text>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
               </View>
             )}
           </View>
@@ -269,7 +620,7 @@ const SendNotificationPage = () => {
                 placeholder="请输入通知标题"
                 placeholderStyle="color: #64748b"
                 value={title}
-                onInput={(e) => setTitle(e.detail.value)}
+                onInput={e => setTitle(e.detail.value)}
                 maxlength={100}
               />
             </View>
@@ -297,7 +648,7 @@ const SendNotificationPage = () => {
                   placeholder="请输入通知内容..."
                   placeholderStyle="color: #64748b"
                   value={content}
-                  onInput={(e) => setContent(e.detail.value)}
+                  onInput={e => setContent(e.detail.value)}
                   maxlength={500}
                 />
               </View>
@@ -347,6 +698,8 @@ const SendNotificationPage = () => {
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
                 <Text style={{ fontSize: '18px', color: '#64748b' }}>
                   目标: {selectedTargetType?.label}
+                  {targetType === 'team' && selectedTeams.length > 0 && ` (${selectedTeams.length}个团队)`}
+                  {targetType === 'user' && selectedUsers.length > 0 && ` (${selectedUsers.length}位用户)`}
                 </Text>
               </View>
             </View>

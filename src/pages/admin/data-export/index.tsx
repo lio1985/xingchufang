@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Taro, { useLoad } from '@tarojs/taro';
 import { View, Text, ScrollView, Picker } from '@tarojs/components';
 import {
@@ -21,7 +21,6 @@ import {
   Globe,
   ShoppingCart,
   Store,
-  FileText,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import '@/styles/pages.css';
@@ -279,9 +278,6 @@ const DataExportPage: React.FC = () => {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
-
-  const selectedScopeOption = scopeOptions.find((o) => o.value === config.scope);
-  const ScopeIcon = getScopeIcon(config.scope);
 
   return (
     <View className="admin-page">

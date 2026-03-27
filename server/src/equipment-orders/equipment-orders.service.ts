@@ -175,7 +175,7 @@ export class EquipmentOrdersService {
         title: `新${typeText}信息`,
         content: `【${order.title}】已发布，请及时查看接单。订单号：${order.order_no}`,
         type: 'activity',
-        targetType: 'single',
+        targetType: 'user',
         targetUsers: users.map(u => u.id),
       });
     }
@@ -464,7 +464,7 @@ export class EquipmentOrdersService {
       title: `订单已被接单`,
       content: `【${order.title}】已被接单。订单号：${order.order_no}`,
       type: 'activity',
-      targetType: 'single',
+      targetType: 'user',
       targetUsers: [...new Set(targetUsers)],
     });
   }
@@ -544,7 +544,7 @@ export class EquipmentOrdersService {
       title: '订单转让通知',
       content: `【${order.title}】已转让。订单号：${order.order_no}`,
       type: 'activity',
-      targetType: 'single',
+      targetType: 'user',
       targetUsers: [...new Set(targetUsers)],
     });
   }
@@ -606,7 +606,7 @@ export class EquipmentOrdersService {
         title: '订单取消申请',
         content: `【${order?.title}】申请取消，原因：${reason}。订单号：${order?.order_no}`,
         type: 'activity',
-        targetType: 'single',
+        targetType: 'user',
         targetUsers: admins.map(a => a.id),
       });
     }
@@ -650,7 +650,7 @@ export class EquipmentOrdersService {
           title: '订单取消已批准',
           content: `您的取消申请已批准。`,
           type: 'activity',
-          targetType: 'single',
+          targetType: 'user',
           targetUsers: [order.cancel_requested_by],
         });
       }
@@ -671,7 +671,7 @@ export class EquipmentOrdersService {
           title: '订单取消被拒绝',
           content: `您的取消申请被拒绝，订单已恢复。`,
           type: 'activity',
-          targetType: 'single',
+          targetType: 'user',
           targetUsers: [order.cancel_requested_by],
         });
       }
@@ -770,7 +770,7 @@ export class EquipmentOrdersService {
         title: '订单已完成',
         content: `【${order?.title}】已完成。订单号：${order?.order_no}`,
         type: 'activity',
-        targetType: 'single',
+        targetType: 'user',
         targetUsers: admins.map(a => a.id),
       });
     }
@@ -973,7 +973,7 @@ export class EquipmentOrdersService {
         title: '订单重新分配通知',
         content: `【${order?.title}】已被管理员重新分配。订单号：${order?.order_no}`,
         type: 'activity',
-        targetType: 'single',
+        targetType: 'user',
         targetUsers: targetUsers,
       });
     }

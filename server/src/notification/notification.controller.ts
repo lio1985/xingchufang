@@ -18,7 +18,8 @@ class SendNotificationDto {
   title: string;
   content: string;
   type?: 'system' | 'activity' | 'update';
-  targetType?: 'all' | 'single' | 'role';
+  targetType?: 'all' | 'team' | 'user';
+  targetTeams?: string[];
   targetUsers?: string[];
 }
 

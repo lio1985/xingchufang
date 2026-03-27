@@ -3,13 +3,17 @@ import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
 import {
-  ArrowLeft,
+  ChevronLeft,
   Search,
   Users,
   Pencil,
   Trash2,
-  Plus
+  Plus,
+  RefreshCw,
+  X,
 } from 'lucide-react-taro';
+import '@/styles/pages.css';
+import '@/styles/admin.css';
 
 interface Team {
   id: string;
@@ -36,11 +40,6 @@ interface TeamListResponse {
     totalPages: number;
   };
 }
-
-const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
-  active: { label: '启用中', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
-  inactive: { label: '已禁用', color: 'text-zinc-500', bg: 'bg-zinc-500/20' },
-};
 
 export default function TeamManagement() {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -95,18 +94,20 @@ export default function TeamManagement() {
       title: '确认删除',
       content: `确定要删除团队"${team.name}"吗？此操作不可恢复。`,
       confirmColor: '#f87171',
-      success: (res) => {
+      success: res => {
         if (res.confirm) {
           Network.request({
             url: `/api/teams/${team.id}`,
-            method: 'DELETE'
-          }).then(() => {
-            Taro.showToast({ title: '删除成功', icon: 'success' });
-            fetchTeams(true);
-          }).catch((err) => {
-            console.error('[TeamManagement] Delete error:', err);
-            Taro.showToast({ title: '删除失败', icon: 'none' });
-          });
+            method: 'DELETE',
+          })
+            .then(() => {
+              Taro.showToast({ title: '删除成功', icon: 'success' });
+              fetchTeams(true);
+            })
+            .catch(err => {
+              console.error('[TeamManagement] Delete error:', err);
+              Taro.showToast({ title: '删除失败', icon: 'none' });
+            });
         }
       },
     });
@@ -119,19 +120,21 @@ export default function TeamManagement() {
     Taro.showModal({
       title: `确认${actionText}`,
       content: `确定要${actionText}团队"${team.name}"吗？`,
-      success: (res) => {
+      success: res => {
         if (res.confirm) {
           Network.request({
             url: `/api/teams/${team.id}`,
             method: 'PUT',
             data: { isActive: newStatus },
-          }).then(() => {
-            Taro.showToast({ title: `${actionText}成功`, icon: 'success' });
-            fetchTeams(true);
-          }).catch((err) => {
-            console.error('[TeamManagement] Toggle status error:', err);
-            Taro.showToast({ title: `${actionText}失败`, icon: 'none' });
-          });
+          })
+            .then(() => {
+              Taro.showToast({ title: `${actionText}成功`, icon: 'success' });
+              fetchTeams(true);
+            })
+            .catch(err => {
+              console.error('[TeamManagement] Toggle status error:', err);
+              Taro.showToast({ title: `${actionText}失败`, icon: 'none' });
+            });
         }
       },
     });
@@ -146,51 +149,61 @@ export default function TeamManagement() {
   };
 
   return (
-    <View className="min-h-screen bg-[#0a0f1a]">
+    <View className="admin-page">
       {/* Header */}
-      <View className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
-        <View className="flex items-center justify-between px-4 py-3">
-          <View className="flex items-center gap-3">
+      <View className="admin-header">
+        <View className="admin-header-content">
+          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
+            <ChevronLeft size={20} color="#38bdf8" />
+          </View>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <View
-              className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
-              onClick={() => Taro.navigateBack()}
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
-              <ArrowLeft size={20} color="#38bdf8" />
+              <Users size={18} color="#f59e0b" />
             </View>
-            <View className="flex items-center gap-2">
-              <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
-                <Users size={16} color="#38bdf8" />
-              </View>
-              <Text className="block text-lg font-semibold text-white">团队管理</Text>
-            </View>
+            <Text className="admin-title">团队管理</Text>
           </View>
           <View
-            className="flex items-center gap-2 px-3 py-2 bg-amber-500 rounded-lg active:bg-amber-600"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#38bdf8',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
             onClick={navigateToCreate}
           >
             <Plus size={16} color="#000" />
-            <Text className="block text-sm text-black font-medium">新建团队</Text>
+            <Text style={{ fontSize: '22px', color: '#000', fontWeight: '600' }}>新建</Text>
           </View>
         </View>
 
         {/* Search Bar */}
-        <View className="px-4 pb-3">
-          <View className="flex items-center gap-2 bg-zinc-800/60 rounded-xl px-3 py-2 border border-zinc-700/50">
-            <Search size={18} color="#71717a" />
-            <Input
-              className="flex-1 text-sm text-white bg-transparent"
-              placeholder="搜索团队名称..."
-              placeholderClass="text-zinc-500"
-              value={keyword}
-              onInput={(e) => setKeyword(e.detail.value)}
-              onConfirm={handleSearch}
-            />
-            {keyword && (
-              <View onClick={() => { setKeyword(''); handleSearch(); }}>
-                <Text className="block text-xs text-amber-500">清除</Text>
-              </View>
-            )}
-          </View>
+        <View className="search-box" style={{ marginTop: '16px' }}>
+          <Search size={22} color="#71717a" />
+          <Input
+            className="search-input"
+            placeholder="搜索团队名称..."
+            placeholderStyle="color: #64748b"
+            value={keyword}
+            onInput={e => setKeyword(e.detail.value)}
+            onConfirm={handleSearch}
+          />
+          {keyword && (
+            <View onClick={() => setKeyword('')}>
+              <X size={20} color="#71717a" />
+            </View>
+          )}
         </View>
       </View>
 
@@ -199,99 +212,147 @@ export default function TeamManagement() {
         className="flex-1"
         scrollY
         onScrollToLower={() => hasMore && fetchTeams()}
-        style={{ height: 'calc(100vh - 120px)' }}
+        style={{ height: 'calc(100vh - 160px)', marginTop: '160px' }}
       >
-        <View className="p-4 space-y-3">
-          {teams.map((team) => {
-            const statusConfig = STATUS_MAP[team.is_active ? 'active' : 'inactive'];
-            return (
+        <View className="admin-content" style={{ paddingTop: '16px' }}>
+          {teams.length === 0 && !loading ? (
+            <View className="empty-state">
+              <Users size={80} color="#71717a" />
+              <Text className="empty-title">暂无团队</Text>
+              <Text className="empty-desc">点击下方按钮创建第一个团队</Text>
               <View
-                key={team.id}
-                className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50"
-              >
-                <View className="flex items-start justify-between mb-3">
-                  <View className="flex-1">
-                    <View className="flex items-center gap-2 mb-1">
-                      <Text className="block text-base font-semibold text-white">{team.name}</Text>
-                      <View className={`px-2 py-0.5 rounded-full ${statusConfig.bg}`}>
-                        <Text className={`block text-xs ${statusConfig.color}`}>{statusConfig.label}</Text>
-                      </View>
-                    </View>
-                    {team.description && (
-                      <Text className="block text-sm text-zinc-500 mt-1">{team.description}</Text>
-                    )}
-                  </View>
-                </View>
-
-                {/* Team Info */}
-                <View className="flex items-center gap-4 mb-4">
-                  <View className="flex items-center gap-2">
-                    <Users size={14} color="#71717a" />
-                    <Text className="block text-sm text-zinc-500">{team.members?.count || 0} 成员</Text>
-                  </View>
-                  {team.leader && (
-                    <View className="flex items-center gap-2">
-                      <Text className="block text-sm text-zinc-500">负责人:</Text>
-                      <Text className="block text-sm text-amber-500">{team.leader.nickname}</Text>
-                    </View>
-                  )}
-                </View>
-
-                {/* Actions */}
-                <View className="flex items-center gap-2 pt-3 border-t border-zinc-700/50">
-                  <View
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-zinc-700/50 rounded-lg active:bg-zinc-700"
-                    onClick={() => navigateToDetail(team.id)}
-                  >
-                    <Pencil size={14} color="#60a5fa" />
-                    <Text className="block text-sm text-blue-400">详情</Text>
-                  </View>
-                  <View
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-zinc-700/50 rounded-lg active:bg-zinc-700"
-                    onClick={() => handleToggleStatus(team)}
-                  >
-                    <Text className="block text-sm text-zinc-300">
-                      {team.is_active ? '禁用' : '启用'}
-                    </Text>
-                  </View>
-                  <View
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-500/10 rounded-lg active:bg-red-500/20 border border-red-500/20"
-                    onClick={() => handleDelete(team)}
-                  >
-                    <Trash2 size={14} color="#f87171" />
-                    <Text className="block text-sm text-red-400">删除</Text>
-                  </View>
-                </View>
-              </View>
-            );
-          })}
-
-          {teams.length === 0 && !loading && (
-            <View className="flex flex-col items-center justify-center py-12">
-              <View className="w-16 h-16 bg-zinc-800/60 rounded-2xl flex items-center justify-center mb-4 border border-zinc-700/50">
-                <Users size={32} color="#71717a" />
-              </View>
-              <Text className="block text-zinc-500 mb-2">暂无团队</Text>
-              <Text className="block text-sm text-zinc-600">点击下方按钮创建第一个团队</Text>
-              <View
-                className="mt-4 flex items-center gap-2 px-4 py-2 bg-amber-500 rounded-lg"
+                className="action-btn-primary"
+                style={{ marginTop: '20px' }}
                 onClick={navigateToCreate}
               >
-                <Plus size={16} color="#000" />
-                <Text className="block text-black font-medium">创建团队</Text>
+                <Plus size={24} color="#000" />
+                <Text className="action-btn-primary-text" style={{ marginLeft: '8px' }}>
+                  创建团队
+                </Text>
               </View>
+            </View>
+          ) : (
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {teams.map(team => {
+                const isActive = team.is_active;
+                return (
+                  <View key={team.id} className="admin-card">
+                    <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                      <View style={{ flex: 1 }}>
+                        <View style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>
+                            {team.name}
+                          </Text>
+                          <View
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: '8px',
+                              backgroundColor: isActive ? 'rgba(74, 222, 128, 0.15)' : 'rgba(100, 116, 139, 0.15)',
+                            }}
+                          >
+                            <Text style={{ fontSize: '20px', color: isActive ? '#4ade80' : '#64748b' }}>
+                              {isActive ? '启用中' : '已禁用'}
+                            </Text>
+                          </View>
+                        </View>
+                        {team.description && (
+                          <Text style={{ fontSize: '22px', color: '#64748b', marginTop: '6px' }}>
+                            {team.description}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+
+                    {/* Team Info */}
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
+                      <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Users size={16} color="#71717a" />
+                        <Text style={{ fontSize: '22px', color: '#71717a' }}>
+                          {team.members?.count || 0} 成员
+                        </Text>
+                      </View>
+                      {team.leader && (
+                        <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Text style={{ fontSize: '22px', color: '#71717a' }}>负责人:</Text>
+                          <Text style={{ fontSize: '22px', color: '#f59e0b' }}>{team.leader.nickname}</Text>
+                        </View>
+                      )}
+                    </View>
+
+                    {/* Actions */}
+                    <View
+                      style={{
+                        display: 'flex',
+                        gap: '10px',
+                        paddingTop: '12px',
+                        borderTop: '1px solid #1e3a5f',
+                      }}
+                    >
+                      <View
+                        style={{
+                          flex: 1,
+                          padding: '12px',
+                          backgroundColor: '#1e293b',
+                          borderRadius: '10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                        }}
+                        onClick={() => navigateToDetail(team.id)}
+                      >
+                        <Pencil size={16} color="#60a5fa" />
+                        <Text style={{ fontSize: '22px', color: '#60a5fa' }}>详情</Text>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          padding: '12px',
+                          backgroundColor: '#1e293b',
+                          borderRadius: '10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        onClick={() => handleToggleStatus(team)}
+                      >
+                        <Text style={{ fontSize: '22px', color: '#94a3b8' }}>
+                          {team.is_active ? '禁用' : '启用'}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          padding: '12px',
+                          backgroundColor: 'rgba(248, 113, 113, 0.1)',
+                          borderRadius: '10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                        }}
+                        onClick={() => handleDelete(team)}
+                      >
+                        <Trash2 size={16} color="#f87171" />
+                        <Text style={{ fontSize: '22px', color: '#f87171' }}>删除</Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })}
             </View>
           )}
 
           {loading && (
-            <View className="flex items-center justify-center py-4">
-              <Text className="block text-zinc-500">加载中...</Text>
+            <View className="loading-state">
+              <RefreshCw size={48} color="#38bdf8" />
+              <Text className="loading-text">加载中...</Text>
             </View>
           )}
 
-          {!hasMore && teams.length > 0 && (
-            <View className="flex items-center justify-center py-4">
-              <Text className="block text-sm text-zinc-600">没有更多数据了</Text>
+          {!loading && teams.length >= 20 && !hasMore && (
+            <View style={{ textAlign: 'center', padding: '20px 0' }}>
+              <Text style={{ fontSize: '22px', color: '#64748b' }}>没有更多数据了</Text>
             </View>
           )}
         </View>
