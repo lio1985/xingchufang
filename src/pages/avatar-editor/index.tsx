@@ -1,0 +1,342 @@
+import { View, Text, Image } from '@tarojs/components';
+import Taro, { useLoad } from '@tarojs/taro';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Camera, User, Check } from 'lucide-react-taro';
+import { Network } from '@/network';
+
+export default function AvatarEditorPage() {
+  const [userInfo, setUserInfo] = useState<{
+    id?: string;
+    nickname?: string;
+    avatar?: string;
+  } | null>(null);
+  const [currentAvatar, setCurrentAvatar] = useState<string>('');
+  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [isUploading, setIsUploading] = useState(false);
+  const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP;
+
+  useLoad(() => {
+    console.log('Avatar Editor page loaded.');
+  });
+
+  useEffect(() => {
+    loadUserInfo();
+  }, []);
+
+  const loadUserInfo = () => {
+    try {
+      const user = Taro.getStorageSync('user');
+      const token = Taro.getStorageSync('token');
+      if (user && token) {
+        setUserInfo(user);
+        setCurrentAvatar(user.avatar || '');
+      }
+    } catch (e) {
+      console.log('获取用户信息失败');
+    }
+  };
+
+  const handleChooseImage = () => {
+    Taro.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePath = res.tempFilePaths[0];
+        setSelectedImage(tempFilePath);
+        console.log('选择的图片路径:', tempFilePath);
+      },
+      fail: (err) => {
+        console.error('选择图片失败:', err);
+        Taro.showToast({
+          title: '选择图片失败',
+          icon: 'none',
+        });
+      },
+    });
+  };
+
+  const handleUploadAvatar = async () => {
+    if (!selectedImage) {
+      Taro.showToast({
+        title: '请先选择图片',
+        icon: 'none',
+      });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const token = Taro.getStorageSync('token');
+
+      console.log('开始上传头像:', {
+        url: '/api/user/upload-avatar',
+        filePath: selectedImage,
+        hasToken: !!token,
+      });
+
+      const res = await Network.uploadFile({
+        url: '/api/user/upload-avatar',
+        filePath: selectedImage,
+        name: 'file',
+        header: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log('上传响应:', res);
+
+      if (res.statusCode === 200 && res.data) {
+        const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+
+        if (data.code === 200 && data.data?.avatarUrl) {
+          // 更新本地存储的用户信息
+          const updatedUser = {
+            ...userInfo,
+            avatar: data.data.avatarUrl,
+          };
+          Taro.setStorageSync('user', updatedUser);
+
+          setCurrentAvatar(data.data.avatarUrl);
+          setSelectedImage('');
+
+          Taro.showToast({
+            title: '头像更新成功',
+            icon: 'success',
+          });
+
+          // 延迟返回上一页
+          setTimeout(() => {
+            Taro.navigateBack();
+          }, 1500);
+        } else {
+          throw new Error(data.msg || '上传失败');
+        }
+      } else {
+        throw new Error('上传失败');
+      }
+    } catch (error: any) {
+      console.error('上传头像失败:', error);
+      Taro.showToast({
+        title: error.message || '上传失败',
+        icon: 'none',
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleGoBack = () => {
+    Taro.navigateBack();
+  };
+
+  return (
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
+      {/* 导航栏 */}
+      <View
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '48px 20px 16px',
+          backgroundColor: '#111827',
+          borderBottom: '1px solid #1e3a5f',
+          zIndex: 100,
+        }}
+      >
+        <View onClick={handleGoBack} style={{ display: 'flex', alignItems: 'center' }}>
+          <ArrowLeft size={20} color="#38bdf8" />
+        </View>
+        <Text
+          style={{ flex: 1, textAlign: 'center', fontSize: '18px', fontWeight: '600', color: '#ffffff' }}
+        >
+          修改头像
+        </Text>
+        <View style={{ width: '20px' }} />
+      </View>
+
+      {/* 内容区域 */}
+      <View style={{ paddingTop: '100px', padding: '100px 20px 20px' }}>
+        {/* 当前头像预览 */}
+        <View
+          style={{
+            backgroundColor: '#111827',
+            border: '1px solid #1e3a5f',
+            borderRadius: '16px',
+            padding: '32px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ fontSize: '14px', color: '#71717a', marginBottom: '24px' }}>
+            当前头像
+          </Text>
+
+          <View
+            style={{
+              width: '120px',
+              height: '120px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '3px solid rgba(56, 189, 248, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            }}
+          >
+            {currentAvatar ? (
+              <Image src={currentAvatar} style={{ width: '100%', height: '100%' }} mode="aspectFill" />
+            ) : (
+              <User size={48} color="#38bdf8" />
+            )}
+          </View>
+
+          <Text
+            style={{ fontSize: '16px', color: '#ffffff', marginTop: '16px', fontWeight: '500' }}
+          >
+            {userInfo?.nickname || '用户'}
+          </Text>
+        </View>
+
+        {/* 选择新头像 */}
+        <View
+          style={{
+            backgroundColor: '#111827',
+            border: '1px solid #1e3a5f',
+            borderRadius: '16px',
+            padding: '20px',
+            marginTop: '20px',
+          }}
+        >
+          <Text
+            style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500', marginBottom: '16px' }}
+          >
+            选择新头像
+          </Text>
+
+          <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* 已选择的图片预览 */}
+            {selectedImage ? (
+              <View
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  border: '2px solid #38bdf8',
+                  position: 'relative',
+                }}
+              >
+                <Image src={selectedImage} style={{ width: '100%', height: '100%' }} mode="aspectFill" />
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: '4px',
+                    right: '4px',
+                    backgroundColor: '#22c55e',
+                    borderRadius: '50%',
+                    padding: '2px',
+                  }}
+                >
+                  <Check size={12} color="#ffffff" />
+                </View>
+              </View>
+            ) : (
+              <View
+                onClick={handleChooseImage}
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '12px',
+                  border: '2px dashed #38bdf8',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'rgba(56, 189, 248, 0.05)',
+                }}
+              >
+                <Camera size={24} color="#38bdf8" />
+                <Text style={{ fontSize: '10px', color: '#38bdf8', marginTop: '4px' }}>点击选择</Text>
+              </View>
+            )}
+
+            {/* 操作说明 */}
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: '14px', color: '#e4e4e7', marginBottom: '8px' }}>
+                支持 JPG、PNG、GIF、WebP 格式
+              </Text>
+              <Text style={{ fontSize: '12px', color: '#71717a' }}>
+                图片大小不超过 5MB
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 操作按钮 */}
+        <View style={{ marginTop: '32px' }}>
+          {/* 重新选择按钮 */}
+          <View
+            onClick={handleChooseImage}
+            style={{
+              backgroundColor: '#111827',
+              border: '1px solid #1e3a5f',
+              borderRadius: '12px',
+              padding: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '12px',
+            }}
+          >
+            <Camera size={18} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', color: '#38bdf8', marginLeft: '8px' }}>
+              {selectedImage ? '重新选择图片' : '选择图片'}
+            </Text>
+          </View>
+
+          {/* 上传按钮 */}
+          <View
+            onClick={handleUploadAvatar}
+            style={{
+              backgroundColor: isUploading || !selectedImage ? 'rgba(56, 189, 248, 0.3)' : '#38bdf8',
+              borderRadius: '12px',
+              padding: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: isUploading || !selectedImage ? 0.6 : 1,
+            }}
+          >
+            <Text style={{ fontSize: '14px', color: '#ffffff', fontWeight: '500' }}>
+              {isUploading ? '上传中...' : '保存头像'}
+            </Text>
+          </View>
+        </View>
+
+        {/* H5 端提示 */}
+        {!isWeapp && (
+          <View
+            style={{
+              marginTop: '24px',
+              padding: '16px',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              borderRadius: '12px',
+            }}
+          >
+            <Text style={{ fontSize: '12px', color: '#f59e0b' }}>
+              提示：当前为 H5 环境，头像上传功能已适配。如在微信小程序中使用，体验更佳。
+            </Text>
+          </View>
+        )}
+      </View>
+    </View>
+  );
+}

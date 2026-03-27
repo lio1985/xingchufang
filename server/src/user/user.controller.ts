@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Get, Put, Request, Query, ParseIntPipe, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Request, Query, ParseIntPipe, HttpException, HttpStatus, BadRequestException, UseInterceptors, UploadedFile, HttpCode } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
 import { parseOptionalUUID } from '../utils/uuid.util';
 
@@ -722,6 +723,107 @@ export class UserController {
         success: false,
         code: 500,
         msg: error.message || '初始化预设账号失败',
+        data: null
+      };
+    }
+  }
+
+  /**
+   * 上传头像
+   * POST /api/user/upload-avatar
+   */
+  @Post('upload-avatar')
+  @HttpCode(200)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
+    console.log('收到上传头像请求');
+    console.log('文件信息:', {
+      originalname: file?.originalname,
+      mimetype: file?.mimetype,
+      size: file?.size,
+      hasBuffer: !!file?.buffer,
+      hasPath: !!file?.path,
+    });
+
+    // 验证登录状态
+    const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        code: 401,
+        msg: '未授权',
+        data: null
+      };
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await this.userService.validateToken(token);
+
+    if (!payload) {
+      return {
+        code: 401,
+        msg: '无效的登录凭证',
+        data: null
+      };
+    }
+
+    // 验证文件
+    if (!file) {
+      return {
+        code: 400,
+        msg: '请选择要上传的头像图片',
+        data: null
+      };
+    }
+
+    // 验证文件类型
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      return {
+        code: 400,
+        msg: '只支持 JPG、PNG、GIF、WebP 格式的图片',
+        data: null
+      };
+    }
+
+    // 验证文件大小（最大 5MB）
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return {
+        code: 400,
+        msg: '图片大小不能超过 5MB',
+        data: null
+      };
+    }
+
+    try {
+      // 获取文件内容（支持小程序 file.path 和 H5 file.buffer）
+      let fileBuffer: Buffer;
+      if (file.buffer) {
+        fileBuffer = file.buffer;
+      } else if (file.path) {
+        const fs = await import('fs/promises');
+        fileBuffer = await fs.readFile(file.path);
+      } else {
+        return {
+          code: 400,
+          msg: '无法读取文件内容',
+          data: null
+        };
+      }
+
+      // 调用 service 上传头像
+      const result = await this.userService.updateAvatar(payload.sub, fileBuffer, file.originalname, file.mimetype);
+
+      return {
+        code: 200,
+        msg: '头像上传成功',
+        data: result
+      };
+    } catch (error) {
+      console.error('上传头像失败:', error);
+      return {
+        code: 500,
+        msg: error.message || '上传头像失败',
         data: null
       };
     }

@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, HttpException, HttpStatus, Inject, forwardRef } from '@nestjs/common';
 import { getSupabaseClient } from '../storage/database/supabase-client';
 import { JwtUtil, TokenPayload } from '../utils/jwt.util';
 import { Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { StorageService } from '../storage/storage.service';
 
 export interface User {
   id: string;
@@ -74,6 +75,11 @@ export interface UpdateUserProfileDto {
 export class UserService {
   private client = getSupabaseClient();
   private readonly logger = new Logger(UserService.name);
+
+  constructor(
+    @Inject(forwardRef(() => StorageService))
+    private readonly storageService: StorageService,
+  ) {}
 
   /**
    * 生成唯一的6位数员工ID
@@ -1452,6 +1458,55 @@ export class UserService {
         role: testUser.role,
         status: testUser.status,
       },
+    };
+  }
+
+  /**
+   * 更新用户头像
+   */
+  async updateAvatar(
+    userId: string,
+    fileBuffer: Buffer,
+    originalName: string,
+    mimeType: string,
+  ): Promise<{ avatarUrl: string; avatarKey: string }> {
+    this.logger.log(`更新用户头像: ${userId}`);
+
+    // 1. 上传头像到对象存储
+    const fileName = `avatars/${userId}_${Date.now()}_${originalName}`;
+    const avatarKey = await this.storageService.uploadFile(
+      fileBuffer,
+      fileName,
+      mimeType,
+    );
+
+    this.logger.log(`头像上传成功, key: ${avatarKey}`);
+
+    // 2. 获取头像访问 URL（有效期 1 年）
+    const avatarUrl = await this.storageService.getFileUrl(avatarKey, 365 * 24 * 60 * 60);
+
+    // 3. 更新用户表中的头像 URL
+    const now = new Date().toISOString();
+    const { error: updateError } = await this.client
+      .from('users')
+      .update({
+        avatar_url: avatarUrl,
+        updated_at: now,
+      })
+      .eq('id', userId);
+
+    if (updateError) {
+      this.logger.error('更新用户头像失败:', updateError);
+      // 如果更新失败，尝试删除已上传的文件
+      await this.storageService.deleteFile(avatarKey);
+      throw new HttpException('更新用户头像失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    this.logger.log(`用户头像更新成功: ${userId}`);
+
+    return {
+      avatarUrl,
+      avatarKey,
     };
   }
 }

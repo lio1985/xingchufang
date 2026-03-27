@@ -36,6 +36,7 @@ import { TeamModule } from './team/team.module';
 import { NotificationModule } from './notification/notification.module';
 import { LiveDataModule } from './live-data/live-data.module';
 import { EquipmentOrdersModule } from './equipment-orders/equipment-orders.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { EquipmentOrdersModule } from './equipment-orders/equipment-orders.modul
     NotificationModule,
     LiveDataModule,
     EquipmentOrdersModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

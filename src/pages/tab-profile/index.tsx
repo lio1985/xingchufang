@@ -43,6 +43,18 @@ const TabProfilePage = () => {
     }
   }, []);
 
+  // 监听页面显示，刷新用户信息
+  Taro.useDidShow(() => {
+    try {
+      const user = Taro.getStorageSync('user');
+      if (user) {
+        setUserInfo(user);
+      }
+    } catch (e) {
+      console.log('刷新用户信息失败');
+    }
+  });
+
   const handleLogin = () => {
     Taro.navigateTo({ url: '/pages/login/index' });
   };
@@ -72,6 +84,10 @@ const TabProfilePage = () => {
     Taro.navigateTo({ url: path });
   };
 
+  const handleEditAvatar = () => {
+    Taro.navigateTo({ url: '/pages/avatar-editor/index' });
+  };
+
   const handleExportData = () => {
     Taro.showModal({
       title: '数据导出',
@@ -99,7 +115,10 @@ const TabProfilePage = () => {
       {/* 用户信息区 */}
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         {isLoggedIn ? (
-          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+          <View 
+            style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}
+            onClick={handleEditAvatar}
+          >
             <View style={{ display: 'flex', alignItems: 'center' }}>
               {userInfo?.avatar ? (
                 <Image
@@ -120,6 +139,7 @@ const TabProfilePage = () => {
                   ID: {userInfo?.id || '-'} · {isAdmin ? '管理员' : '普通用户'}
                 </Text>
               </View>
+              <Text style={{ fontSize: '12px', color: '#38bdf8' }}>点击修改头像</Text>
             </View>
           </View>
         ) : (
