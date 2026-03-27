@@ -113,7 +113,7 @@ const EquipmentOrdersPage = () => {
             </View>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <ShoppingCart size={24} color="#38bdf8" />
-              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>设备接单系统</Text>
+              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>获取客资</Text>
             </View>
           </View>
           <View
@@ -131,7 +131,7 @@ const EquipmentOrdersPage = () => {
             <Text style={{ fontSize: '14px', fontWeight: '500', color: '#0a0f1a' }}>发布</Text>
           </View>
         </View>
-        <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '52px' }}>客户求购 / 设备转让信息接单</Text>
+        <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '52px' }}>客户求购 / 转让信息接单获取客资</Text>
       </View>
 
       {/* 类型筛选 */}
