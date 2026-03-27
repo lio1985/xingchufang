@@ -10,7 +10,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { FileParserService } from './file-parser.service';
 
-@Controller('api/file-parser')
+@Controller('file-parser')
 @UseGuards(JwtAuthGuard)
 export class FileParserController {
   constructor(private readonly fileParserService: FileParserService) {}
