@@ -38,6 +38,7 @@ import { NotificationModule } from './notification/notification.module';
 import { LiveDataModule } from './live-data/live-data.module';
 import { EquipmentOrdersModule } from './equipment-orders/equipment-orders.module';
 import { StorageModule } from './storage/storage.module';
+import { AiAdminModule } from './ai-admin/ai-admin.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { StorageModule } from './storage/storage.module';
     LiveDataModule,
     EquipmentOrdersModule,
     StorageModule,
+    AiAdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

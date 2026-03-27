@@ -81,6 +81,11 @@ export default defineAppConfig({
     'pages/notification-center/index',
     'pages/ai-assistant/index',
     'pages/avatar-editor/index',
+    'pages/admin/ai-management/index',
+    'pages/admin/ai-models/index',
+    'pages/admin/ai-modules/index',
+    'pages/admin/ai-stats/index',
+    'pages/admin/ai-settings/index',
   ],
   window: {
     backgroundTextStyle: 'light',
