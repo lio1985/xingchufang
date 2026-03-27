@@ -13,6 +13,7 @@ import {
   PenTool,
   Store,
   TrendingUp,
+  Users,
 } from 'lucide-react-taro';
 
 interface RecentActivity {
@@ -139,6 +140,15 @@ const TabHomePage = () => {
       color: '#38bdf8',
       bgColor: 'rgba(56, 189, 248, 0.15)',
       path: '/pages/equipment-orders/index',
+    },
+    {
+      id: 'team',
+      icon: Users,
+      label: '我的团队',
+      desc: '团队协作管理',
+      color: '#a78bfa',
+      bgColor: 'rgba(167, 139, 250, 0.15)',
+      path: '/pages/team/index',
     },
   ];
 
