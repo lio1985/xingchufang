@@ -105,6 +105,16 @@ const TabHomePage = () => {
 
   const quickActions: QuickAction[] = [
     {
+      id: 'orders',
+      icon: TrendingUp,
+      label: '获客接单',
+      desc: '获取客资信息，快速接单赚钱',
+      color: '#f97316',
+      bgColor: 'rgba(249, 115, 22, 0.15)',
+      path: '/pages/equipment-orders/index',
+      isHighlight: true,
+    },
+    {
       id: 'ai',
       icon: Sparkles,
       label: '星小帮',
@@ -131,15 +141,6 @@ const TabHomePage = () => {
       color: '#fbbf24',
       bgColor: 'rgba(251, 191, 36, 0.15)',
       path: '/pages/quick-note/index',
-    },
-    {
-      id: 'orders',
-      icon: TrendingUp,
-      label: '获客接单',
-      desc: '获取客资信息',
-      color: '#38bdf8',
-      bgColor: 'rgba(56, 189, 248, 0.15)',
-      path: '/pages/equipment-orders/index',
     },
     {
       id: 'team',
@@ -288,13 +289,18 @@ const TabHomePage = () => {
           {quickActions.map((action) => {
             const IconComp = action.icon;
             if (action.isHighlight) {
+              const isOrange = action.color === '#f97316';
               return (
                 <View
                   key={action.id}
                   style={{
                     flex: '1 1 100%',
-                    background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(167, 139, 250, 0.1))',
-                    border: '1px solid rgba(56, 189, 248, 0.3)',
+                    background: isOrange
+                      ? 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(234, 88, 12, 0.1))'
+                      : 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(167, 139, 250, 0.1))',
+                    border: isOrange
+                      ? '1px solid rgba(249, 115, 22, 0.3)'
+                      : '1px solid rgba(56, 189, 248, 0.3)',
                     borderRadius: '12px',
                     padding: '16px',
                     display: 'flex',
@@ -308,7 +314,9 @@ const TabHomePage = () => {
                       width: '52px',
                       height: '52px',
                       borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #38bdf8, #f97316)',
+                      background: isOrange
+                        ? 'linear-gradient(135deg, #f97316, #ea580c)'
+                        : 'linear-gradient(135deg, #38bdf8, #f97316)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -318,10 +326,10 @@ const TabHomePage = () => {
                     <IconComp size={26} color="#ffffff" />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: '17px', fontWeight: '600', color: '#38bdf8', display: 'block' }}>{action.label}</Text>
-                    <Text style={{ fontSize: '13px', color: 'rgba(56, 189, 248, 0.6)', display: 'block', marginTop: '2px' }}>{action.desc}</Text>
+                    <Text style={{ fontSize: '17px', fontWeight: '600', color: action.color, display: 'block' }}>{action.label}</Text>
+                    <Text style={{ fontSize: '13px', color: isOrange ? 'rgba(249, 115, 22, 0.6)' : 'rgba(56, 189, 248, 0.6)', display: 'block', marginTop: '2px' }}>{action.desc}</Text>
                   </View>
-                  <ChevronRight size={20} color="#38bdf8" />
+                  <ChevronRight size={20} color={action.color} />
                 </View>
               );
             }
