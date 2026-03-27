@@ -1,5 +1,6 @@
 export default defineAppConfig({
   pages: [
+    'pages/tab-home/index',
     'pages/tab-customer/index',
     'pages/tab-knowledge/index',
     'pages/tab-content/index',
@@ -99,6 +100,12 @@ export default defineAppConfig({
     backgroundColor: '#141416',
     borderStyle: 'black',
     list: [
+      {
+        pagePath: 'pages/tab-home/index',
+        text: '工作台',
+        iconPath: './assets/tabbar/layout-dashboard.png',
+        selectedIconPath: './assets/tabbar/layout-dashboard-active.png',
+      },
       {
         pagePath: 'pages/tab-customer/index',
         text: '客资管理',
