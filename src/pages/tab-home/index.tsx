@@ -7,15 +7,12 @@ import {
   Lightbulb,
   ChevronRight,
   Bell,
-  FileText,
   User,
-  Clock,
-  PenTool,
-  Store,
   TrendingUp,
   Users,
   Package,
   Phone,
+  Clock,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -28,14 +25,6 @@ interface RecentOrder {
   priority: string;
   expected_price?: number;
   created_at: string;
-}
-
-interface RecentActivity {
-  id: string;
-  type: 'customer' | 'content' | 'recycle' | 'message';
-  title: string;
-  description?: string;
-  time: string;
 }
 
 interface QuickAction {
@@ -65,12 +54,6 @@ const TabHomePage = () => {
     weekContent: 15,
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
-  const [recentActivities] = useState<RecentActivity[]>([
-    { id: '1', type: 'customer', title: '新增客户：张三', description: '意向：整店回收', time: '10分钟前' },
-    { id: '2', type: 'content', title: '完成写作：厨房收纳技巧', description: '灵感速记', time: '1小时前' },
-    { id: '3', type: 'recycle', title: '回收订单完成', description: '李四店铺 - ¥15,000', time: '2小时前' },
-    { id: '4', type: 'message', title: '系统通知', description: '您有新的客资待处理', time: '3小时前' },
-  ]);
 
   useEffect(() => {
     checkLoginStatus();
@@ -212,36 +195,6 @@ const TabHomePage = () => {
       return `${Math.floor(diff / 86400000)}天前`;
     }
     return date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
-  };
-
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'customer':
-        return User;
-      case 'content':
-        return PenTool;
-      case 'recycle':
-        return Store;
-      case 'message':
-        return Bell;
-      default:
-        return FileText;
-    }
-  };
-
-  const getActivityColor = (type: string) => {
-    switch (type) {
-      case 'customer':
-        return '#4ade80';
-      case 'content':
-        return '#fbbf24';
-      case 'recycle':
-        return '#60a5fa';
-      case 'message':
-        return '#38bdf8';
-      default:
-        return '#71717a';
-    }
   };
 
   return (
@@ -515,56 +468,6 @@ const TabHomePage = () => {
                   <IconComp size={20} color={action.color} />
                 </View>
                 <Text style={{ fontSize: '13px', fontWeight: '500', color: '#ffffff', display: 'block', textAlign: 'center' }}>{action.label}</Text>
-              </View>
-            );
-          })}
-        </View>
-      </View>
-
-      {/* 最近动态 */}
-      <View style={{ padding: '24px 20px 0' }}>
-        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>最近动态</Text>
-        </View>
-
-        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
-          {recentActivities.map((activity, index) => {
-            const ActivityIcon = getActivityIcon(activity.type);
-            const activityColor = getActivityColor(activity.type);
-            return (
-              <View
-                key={activity.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '12px 16px',
-                  borderBottom: index < recentActivities.length - 1 ? '1px solid #1e3a5f' : 'none',
-                }}
-              >
-                <View
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '10px',
-                    backgroundColor: `${activityColor}20`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <ActivityIcon size={16} color={activityColor} />
-                </View>
-                <View style={{ flex: 1, marginLeft: '12px', minWidth: 0 }}>
-                  <Text style={{ fontSize: '14px', color: '#ffffff', fontWeight: '500', display: 'block' }}>{activity.title}</Text>
-                  {activity.description && (
-                    <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>{activity.description}</Text>
-                  )}
-                </View>
-                <View style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                  <Clock size={12} color="#64748b" />
-                  <Text style={{ fontSize: '12px', color: '#64748b', marginLeft: '4px' }}>{activity.time}</Text>
-                </View>
               </View>
             );
           })}
