@@ -178,7 +178,7 @@ const TabHomePage = () => {
       {/* 消息入口 */}
       <View
         style={{
-          margin: '48px 20px 0',
+          margin: '16px 20px 0',
           backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
           borderRadius: '12px',
