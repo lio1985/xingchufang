@@ -90,8 +90,8 @@ const LoginPage = () => {
       });
 
       setTimeout(() => {
-        console.log('[登录] 执行跳转到首页');
-        Taro.switchTab({ url: '/pages/tab-customer/index' });
+        console.log('[登录] 执行跳转到我的页面');
+        Taro.switchTab({ url: '/pages/tab-profile/index' });
       }, 500);
     } catch (error: any) {
       console.error('登录接口异常=', error);

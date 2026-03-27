@@ -61,14 +61,23 @@ const TabProfilePage = () => {
   Taro.useDidShow(() => {
     try {
       const user = Taro.getStorageSync('user');
-      if (user) {
+      const token = Taro.getStorageSync('token');
+      console.log('useDidShow - user:', user, 'token:', token);
+      if (user && token) {
+        setIsLoggedIn(true);
         setUserInfo(user);
+        setIsAdmin(user.role === 'admin');
         // 刷新在线状态
         if (user.id) {
           getUserOnlineStatus(user.id).then(status => {
             setOnlineStatus(status);
           });
         }
+      } else {
+        // 如果没有用户信息或 token，重置状态
+        setIsLoggedIn(false);
+        setUserInfo(null);
+        setIsAdmin(false);
       }
     } catch (e) {
       console.log('刷新用户信息失败');
