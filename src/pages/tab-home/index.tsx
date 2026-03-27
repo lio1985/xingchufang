@@ -1,4 +1,4 @@
-import { View, Text } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import {
@@ -14,7 +14,21 @@ import {
   Store,
   TrendingUp,
   Users,
+  Package,
+  Phone,
 } from 'lucide-react-taro';
+import { Network } from '@/network';
+
+interface RecentOrder {
+  id: string;
+  order_no: string;
+  title: string;
+  customer_phone: string;
+  status: string;
+  priority: string;
+  expected_price?: number;
+  created_at: string;
+}
 
 interface RecentActivity {
   id: string;
@@ -50,6 +64,7 @@ const TabHomePage = () => {
     unreadMessage: 5,
     weekContent: 15,
   });
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [recentActivities] = useState<RecentActivity[]>([
     { id: '1', type: 'customer', title: '新增客户：张三', description: '意向：整店回收', time: '10分钟前' },
     { id: '2', type: 'content', title: '完成写作：厨房收纳技巧', description: '灵感速记', time: '1小时前' },
@@ -59,11 +74,27 @@ const TabHomePage = () => {
 
   useEffect(() => {
     checkLoginStatus();
+    fetchRecentOrders();
   }, []);
 
   Taro.useDidShow(() => {
     checkLoginStatus();
+    fetchRecentOrders();
   });
+
+  const fetchRecentOrders = async () => {
+    try {
+      const res = await Network.request({
+        url: '/api/equipment-orders?limit=5',
+        method: 'GET',
+      });
+      if (res.data?.success) {
+        setRecentOrders(res.data.data.list || []);
+      }
+    } catch (error) {
+      console.log('获取最近订单失败:', error);
+    }
+  };
 
   const checkLoginStatus = () => {
     try {
@@ -152,6 +183,36 @@ const TabHomePage = () => {
       path: '/pages/team/index',
     },
   ];
+
+  // 订单状态映射
+  const getOrderStatusInfo = (status: string) => {
+    const statusMap: Record<string, { text: string; color: string; bgColor: string }> = {
+      published: { text: '待接单', color: '#fbbf24', bgColor: 'rgba(251, 191, 36, 0.15)' },
+      taken: { text: '已接单', color: '#60a5fa', bgColor: 'rgba(96, 165, 250, 0.15)' },
+      completed: { text: '已完成', color: '#4ade80', bgColor: 'rgba(74, 222, 128, 0.15)' },
+      closed: { text: '已关闭', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.15)' },
+    };
+    return statusMap[status] || { text: '未知', color: '#71717a', bgColor: 'rgba(113, 113, 122, 0.15)' };
+  };
+
+  // 格式化时间
+  const formatOrderTime = (timeStr: string) => {
+    const date = new Date(timeStr);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+
+    if (diff < 3600000) {
+      const minutes = Math.floor(diff / 60000);
+      return minutes < 1 ? '刚刚' : `${minutes}分钟前`;
+    }
+    if (diff < 86400000) {
+      return `${Math.floor(diff / 3600000)}小时前`;
+    }
+    if (diff < 604800000) {
+      return `${Math.floor(diff / 86400000)}天前`;
+    }
+    return date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+  };
 
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -285,22 +346,114 @@ const TabHomePage = () => {
       {/* 快捷入口 */}
       <View style={{ padding: '24px 20px 0' }}>
         <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>快捷入口</Text>
+
+        {/* 获客接单 - 带滚动订单列表 */}
+        <View
+          style={{
+            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(234, 88, 12, 0.1))',
+            border: '1px solid rgba(249, 115, 22, 0.3)',
+            borderRadius: '12px',
+            marginBottom: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <View
+            style={{
+              padding: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+            onClick={() => handleNav('/pages/equipment-orders/index')}
+          >
+            <View
+              style={{
+                width: '52px',
+                height: '52px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #f97316, #ea580c)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <TrendingUp size={26} color="#ffffff" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: '17px', fontWeight: '600', color: '#f97316', display: 'block' }}>获客接单</Text>
+              <Text style={{ fontSize: '13px', color: 'rgba(249, 115, 22, 0.6)', display: 'block', marginTop: '2px' }}>获取客资信息，快速接单赚钱</Text>
+            </View>
+            <ChevronRight size={20} color="#f97316" />
+          </View>
+
+          {/* 最近5单滚动列表 */}
+          {recentOrders.length > 0 && (
+            <View style={{ borderTop: '1px solid rgba(249, 115, 22, 0.15)' }}>
+              <ScrollView scrollX style={{ padding: '12px 16px' }}>
+                <View style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+                  {recentOrders.map((order) => {
+                    const statusInfo = getOrderStatusInfo(order.status);
+                    return (
+                      <View
+                        key={order.id}
+                        style={{
+                          minWidth: '200px',
+                          backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                          border: '1px solid rgba(249, 115, 22, 0.2)',
+                          borderRadius: '10px',
+                          padding: '12px',
+                          flexShrink: 0,
+                        }}
+                        onClick={() => handleNav(`/pages/equipment-orders/detail?id=${order.id}`)}
+                      >
+                        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                          <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '120px' }}>{order.title}</Text>
+                          <View style={{ backgroundColor: statusInfo.bgColor, borderRadius: '4px', padding: '2px 6px' }}>
+                            <Text style={{ fontSize: '11px', color: statusInfo.color, display: 'block' }}>{statusInfo.text}</Text>
+                          </View>
+                        </View>
+                        <View style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                          <Phone size={12} color="#71717a" />
+                          <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>{order.customer_phone}</Text>
+                        </View>
+                        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Clock size={12} color="#64748b" />
+                            <Text style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{formatOrderTime(order.created_at)}</Text>
+                          </View>
+                          {order.expected_price && (
+                            <Text style={{ fontSize: '13px', fontWeight: '600', color: '#f97316', display: 'block' }}>¥{order.expected_price.toLocaleString()}</Text>
+                          )}
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              </ScrollView>
+            </View>
+          )}
+
+          {recentOrders.length === 0 && (
+            <View style={{ padding: '16px', borderTop: '1px solid rgba(249, 115, 22, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Package size={16} color="#64748b" style={{ marginRight: '8px' }} />
+              <Text style={{ fontSize: '13px', color: '#64748b', display: 'block' }}>暂无订单，快去接单吧</Text>
+            </View>
+          )}
+        </View>
+
+        {/* 其他快捷入口 */}
         <View style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          {quickActions.map((action) => {
+          {quickActions.filter(a => a.id !== 'orders').map((action) => {
             const IconComp = action.icon;
             if (action.isHighlight) {
-              const isOrange = action.color === '#f97316';
               return (
                 <View
                   key={action.id}
                   style={{
                     flex: '1 1 100%',
-                    background: isOrange
-                      ? 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(234, 88, 12, 0.1))'
-                      : 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(167, 139, 250, 0.1))',
-                    border: isOrange
-                      ? '1px solid rgba(249, 115, 22, 0.3)'
-                      : '1px solid rgba(56, 189, 248, 0.3)',
+                    background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(167, 139, 250, 0.1))',
+                    border: '1px solid rgba(56, 189, 248, 0.3)',
                     borderRadius: '12px',
                     padding: '16px',
                     display: 'flex',
@@ -314,9 +467,7 @@ const TabHomePage = () => {
                       width: '52px',
                       height: '52px',
                       borderRadius: '12px',
-                      background: isOrange
-                        ? 'linear-gradient(135deg, #f97316, #ea580c)'
-                        : 'linear-gradient(135deg, #38bdf8, #f97316)',
+                      background: 'linear-gradient(135deg, #38bdf8, #f97316)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -326,10 +477,10 @@ const TabHomePage = () => {
                     <IconComp size={26} color="#ffffff" />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: '17px', fontWeight: '600', color: action.color, display: 'block' }}>{action.label}</Text>
-                    <Text style={{ fontSize: '13px', color: isOrange ? 'rgba(249, 115, 22, 0.6)' : 'rgba(56, 189, 248, 0.6)', display: 'block', marginTop: '2px' }}>{action.desc}</Text>
+                    <Text style={{ fontSize: '17px', fontWeight: '600', color: '#38bdf8', display: 'block' }}>{action.label}</Text>
+                    <Text style={{ fontSize: '13px', color: 'rgba(56, 189, 248, 0.6)', display: 'block', marginTop: '2px' }}>{action.desc}</Text>
                   </View>
-                  <ChevronRight size={20} color={action.color} />
+                  <ChevronRight size={20} color="#38bdf8" />
                 </View>
               );
             }
