@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
@@ -11,146 +11,116 @@ import {
   Award,
   TrendingUp,
   FileText,
+  Image,
+  File,
+  Presentation,
   Video,
   MessageCircle,
-  Target,
-  ChartBarBig,
-  Star,
-  ChevronRight,
   Flame,
+  ChevronRight,
 } from 'lucide-react-taro';
+import { Network } from '@/network';
+
+interface Category {
+  id: string;
+  name: string;
+  description?: string;
+}
 
 interface Course {
   id: string;
   title: string;
   description?: string;
-  progress: number;
-  totalLessons: number;
-  completedLessons: number;
-  duration: string;
-  category: string;
-  coverUrl?: string;
+  content_type: 'text' | 'image_text' | 'pdf' | 'ppt' | 'video' | 'other';
+  cover_image?: string;
+  category?: Category;
+  duration: number;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
-  instructor?: string;
-  rating?: number;
+  view_count: number;
+  completion_count: number;
+  status: 'draft' | 'published' | 'archived';
+  tags?: string[];
+  learning?: {
+    progress: number;
+    status: 'not_started' | 'in_progress' | 'completed';
+    time_spent: number;
+  };
 }
 
 interface LearningStats {
-  todayMinutes: number;
-  weekMinutes: number;
   totalCourses: number;
-  completedCourses: number;
-  streak: number;
-  totalMinutes: number;
+  userStats?: {
+    completedCount: number;
+    inProgressCount: number;
+    totalTimeSpent: number;
+  };
 }
 
 const NewsPage = () => {
   const [activeTab, setActiveTab] = useState<'learning' | 'explore' | 'category'>('learning');
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [stats] = useState<LearningStats>({
-    todayMinutes: 45,
-    weekMinutes: 180,
-    totalCourses: 8,
-    completedCourses: 3,
-    streak: 5,
-    totalMinutes: 1260,
-  });
+  const [loading, setLoading] = useState(false);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [stats, setStats] = useState<LearningStats>({ totalCourses: 0 });
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      // 并行加载课程分类和统计数据
+      const [categoriesRes, statsRes, coursesRes] = await Promise.all([
+        Network.request({ url: '/api/course/categories', method: 'GET' }),
+        Network.request({ url: '/api/course/stats/overview', method: 'GET' }),
+        Network.request({ url: '/api/course', method: 'GET', data: { limit: 20, status: 'published' } }),
+      ]);
+
+      if (categoriesRes.data?.data) {
+        setCategories(categoriesRes.data.data);
+      }
+
+      if (statsRes.data?.data) {
+        setStats(statsRes.data.data);
+      }
+
+      if (coursesRes.data?.data?.list) {
+        setCourses(coursesRes.data.data.list);
+      }
+    } catch (error) {
+      console.error('加载数据失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // 按分类筛选课程
+  const filteredCourses = selectedCategory
+    ? courses.filter(c => c.category?.id === selectedCategory)
+    : courses;
 
   // 正在学习的课程
-  const ongoingCourses: Course[] = [
-    {
-      id: '1',
-      title: '内容创作入门指南',
-      description: '掌握内容创作的核心技巧，从选题到发布的完整流程',
-      progress: 60,
-      totalLessons: 12,
-      completedLessons: 7,
-      duration: '2小时30分',
-      category: '内容创作',
-      difficulty: 'beginner',
-      instructor: '张老师',
-      rating: 4.8,
-    },
-    {
-      id: '2',
-      title: '客户沟通技巧',
-      description: '提升与客户沟通的能力，建立良好的客户关系',
-      progress: 30,
-      totalLessons: 8,
-      completedLessons: 2,
-      duration: '1小时45分',
-      category: '客户管理',
-      difficulty: 'intermediate',
-      instructor: '李老师',
-      rating: 4.6,
-    },
-    {
-      id: '3',
-      title: '短视频拍摄技巧',
-      description: '学习短视频拍摄的专业技巧，打造高质量内容',
-      progress: 15,
-      totalLessons: 10,
-      completedLessons: 1,
-      duration: '2小时',
-      category: '视频制作',
-      difficulty: 'intermediate',
-      instructor: '王老师',
-      rating: 4.9,
-    },
-  ];
+  const ongoingCourses = courses.filter(c => c.learning?.status === 'in_progress');
 
-  // 推荐课程
-  const recommendedCourses: Course[] = [
-    {
-      id: '4',
-      title: '销售话术进阶',
-      description: '高级销售技巧，提升成交率',
-      progress: 0,
-      totalLessons: 15,
-      completedLessons: 0,
-      duration: '3小时',
-      category: '销售技巧',
-      difficulty: 'advanced',
-      rating: 4.7,
-    },
-    {
-      id: '5',
-      title: '平台运营全攻略',
-      description: '从零开始学习各平台运营技巧',
-      progress: 0,
-      totalLessons: 20,
-      completedLessons: 0,
-      duration: '4小时',
-      category: '平台运营',
-      difficulty: 'beginner',
-      rating: 4.5,
-    },
-    {
-      id: '6',
-      title: '产品知识深度解读',
-      description: '全面了解产品特性与卖点',
-      progress: 0,
-      totalLessons: 10,
-      completedLessons: 0,
-      duration: '2小时',
-      category: '产品知识',
-      difficulty: 'beginner',
-      rating: 4.8,
-    },
-  ];
-
-  // 课程分类
-  const categories = [
-    { id: 'content', name: '内容创作', icon: FileText, color: '#60a5fa', count: 12 },
-    { id: 'customer', name: '客户管理', icon: MessageCircle, color: '#4ade80', count: 8 },
-    { id: 'sales', name: '销售技巧', icon: Target, color: '#f59e0b', count: 15 },
-    { id: 'product', name: '产品知识', icon: BookOpen, color: '#a855f7', count: 6 },
-    { id: 'video', name: '视频制作', icon: Video, color: '#ec4899', count: 9 },
-    { id: 'operation', name: '平台运营', icon: ChartBarBig, color: '#06b6d4', count: 11 },
-  ];
+  // 已完成的课程
+  const completedCourses = courses.filter(c => c.learning?.status === 'completed');
 
   const handleCourseClick = (course: Course) => {
-    Taro.showToast({ title: `即将上线：${course.title}`, icon: 'none' });
+    Taro.navigateTo({ url: `/pages/course-detail/index?id=${course.id}` });
+  };
+
+  const getContentTypeIcon = (type: string) => {
+    switch (type) {
+      case 'text': return FileText;
+      case 'image_text': return Image;
+      case 'pdf': return File;
+      case 'ppt': return Presentation;
+      case 'video': return Video;
+      default: return FileText;
+    }
   };
 
   const getDifficultyLabel = (difficulty: string) => {
@@ -171,101 +141,133 @@ const NewsPage = () => {
     return map[difficulty] || '#71717a';
   };
 
-  const renderCourseCard = (course: Course, showProgress = true) => (
-    <View
-      key={course.id}
-      style={{
-        backgroundColor: '#111827',
-        border: '1px solid #1e3a5f',
-        borderRadius: '12px',
-        padding: '16px',
-        marginBottom: '12px',
-      }}
-      onClick={() => handleCourseClick(course)}
-    >
-      <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-        <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9', flex: 1 }}>
-          {course.title}
-        </Text>
-        <View
-          style={{
-            padding: '4px 8px',
-            borderRadius: '6px',
-            backgroundColor: `${getDifficultyColor(course.difficulty)}20`,
-          }}
-        >
-          <Text style={{ fontSize: '12px', color: getDifficultyColor(course.difficulty) }}>
-            {getDifficultyLabel(course.difficulty)}
-          </Text>
-        </View>
-      </View>
+  const formatDuration = (minutes: number) => {
+    if (minutes < 60) return `${minutes}分钟`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}小时${mins}分` : `${hours}小时`;
+  };
 
-      {course.description && (
-        <Text
-          style={{
-            fontSize: '13px',
-            color: '#64748b',
-            marginBottom: '12px',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
-          {course.description}
-        </Text>
-      )}
-
-      {showProgress && course.progress > 0 && (
-        <View style={{ marginBottom: '12px' }}>
-          <View
-            style={{
-              height: '6px',
-              backgroundColor: '#1e3a5f',
-              borderRadius: '3px',
-              overflow: 'hidden',
-            }}
-          >
-            <View
-              style={{
-                height: '100%',
-                width: `${course.progress}%`,
-                backgroundColor: '#06b6d4',
-                borderRadius: '3px',
-              }}
-            />
+  const renderCourseCard = (course: Course, showProgress = true) => {
+    const TypeIcon = getContentTypeIcon(course.content_type);
+    const progress = course.learning?.progress || 0;
+    
+    return (
+      <View
+        key={course.id}
+        style={{
+          backgroundColor: '#111827',
+          border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          marginBottom: '12px',
+        }}
+      >
+        {/* 封面区域 */}
+        {course.cover_image ? (
+          <View style={{ height: '120px', overflow: 'hidden' }}>
+            <img src={course.cover_image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
           </View>
-          <View style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
-            <Text style={{ fontSize: '12px', color: '#64748b' }}>
-              已完成 {course.completedLessons}/{course.totalLessons} 课时
+        ) : (
+          <View style={{ height: '80px', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <TypeIcon size={32} color="#64748b" />
+          </View>
+        )}
+        
+        <View style={{ padding: '16px' }}>
+          <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9', flex: 1 }}>
+              {course.title}
             </Text>
-            <Text style={{ fontSize: '12px', color: '#06b6d4' }}>{course.progress}%</Text>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <View
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  backgroundColor: `${getDifficultyColor(course.difficulty)}20`,
+                }}
+              >
+                <Text style={{ fontSize: '11px', color: getDifficultyColor(course.difficulty) }}>
+                  {getDifficultyLabel(course.difficulty)}
+                </Text>
+              </View>
+            </View>
           </View>
-        </View>
-      )}
 
-      <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Clock size={14} color="#71717a" />
-            <Text style={{ fontSize: '12px', color: '#71717a' }}>{course.duration}</Text>
-          </View>
-          {course.rating && (
-            <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Star size={14} color="#f59e0b" />
-              <Text style={{ fontSize: '12px', color: '#f59e0b' }}>{course.rating}</Text>
+          {course.description && (
+            <Text
+              style={{
+                fontSize: '13px',
+                color: '#64748b',
+                marginBottom: '12px',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
+              {course.description}
+            </Text>
+          )}
+
+          {showProgress && progress > 0 && (
+            <View style={{ marginBottom: '12px' }}>
+              <View
+                style={{
+                  height: '6px',
+                  backgroundColor: '#1e3a5f',
+                  borderRadius: '3px',
+                  overflow: 'hidden',
+                }}
+              >
+                <View
+                  style={{
+                    height: '100%',
+                    width: `${progress}%`,
+                    backgroundColor: '#ef4444',
+                    borderRadius: '3px',
+                  }}
+                />
+              </View>
+              <View style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>学习进度</Text>
+                <Text style={{ fontSize: '12px', color: '#ef4444' }}>{progress}%</Text>
+              </View>
             </View>
           )}
-        </View>
-        <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Play size={14} color="#06b6d4" />
-          <Text style={{ fontSize: '13px', color: '#06b6d4' }}>
-            {course.progress > 0 ? '继续学习' : '开始学习'}
-          </Text>
+
+          <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Clock size={14} color="#71717a" />
+                <Text style={{ fontSize: '12px', color: '#71717a' }}>{formatDuration(course.duration)}</Text>
+              </View>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <MessageCircle size={14} color="#71717a" />
+                <Text style={{ fontSize: '12px', color: '#71717a' }}>{course.view_count}人学习</Text>
+              </View>
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                backgroundColor: '#ef4444',
+                borderRadius: '6px',
+              }}
+              onClick={() => handleCourseClick(course)}
+            >
+              <Play size={14} color="#ffffff" />
+              <Text style={{ fontSize: '13px', color: '#ffffff' }}>
+                {progress > 0 ? '继续学习' : '开始学习'}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
@@ -285,10 +287,10 @@ const NewsPage = () => {
             }}
             onClick={() => Taro.navigateBack()}
           >
-            <ChevronLeft size={20} color="#38bdf8" />
+            <ChevronLeft size={20} color="#ef4444" />
           </View>
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <GraduationCap size={24} color="#06b6d4" />
+            <GraduationCap size={24} color="#ef4444" />
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>课程培训</Text>
           </View>
         </View>
@@ -305,21 +307,25 @@ const NewsPage = () => {
           <View style={{ textAlign: 'center' }}>
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginBottom: '4px' }}>
               <Flame size={14} color="#f59e0b" />
-              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#f59e0b' }}>{stats.streak}</Text>
+              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#f59e0b' }}>5</Text>
             </View>
             <Text style={{ fontSize: '11px', color: '#64748b' }}>连续学习</Text>
           </View>
           <View style={{ textAlign: 'center' }}>
-            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#06b6d4' }}>{stats.todayMinutes}</Text>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ef4444' }}>
+              {stats.userStats?.totalTimeSpent || 0}
+            </Text>
             <Text style={{ fontSize: '11px', color: '#64748b' }}>今日(分钟)</Text>
           </View>
           <View style={{ textAlign: 'center' }}>
-            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#4ade80' }}>{stats.completedCourses}</Text>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#4ade80' }}>
+              {stats.userStats?.completedCount || 0}
+            </Text>
             <Text style={{ fontSize: '11px', color: '#64748b' }}>已完成</Text>
           </View>
           <View style={{ textAlign: 'center' }}>
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#a855f7' }}>{stats.totalCourses}</Text>
-            <Text style={{ fontSize: '11px', color: '#64748b' }}>在学</Text>
+            <Text style={{ fontSize: '11px', color: '#64748b' }}>全部课程</Text>
           </View>
         </View>
 
@@ -336,7 +342,7 @@ const NewsPage = () => {
                 flex: 1,
                 padding: '12px',
                 borderRadius: '10px',
-                backgroundColor: activeTab === tab.key ? '#06b6d4' : '#1e293b',
+                backgroundColor: activeTab === tab.key ? '#ef4444' : '#1e293b',
                 textAlign: 'center',
               }}
               onClick={() => setActiveTab(tab.key as any)}
@@ -345,7 +351,7 @@ const NewsPage = () => {
                 style={{
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: activeTab === tab.key ? '#000' : '#94a3b8',
+                  color: activeTab === tab.key ? '#ffffff' : '#94a3b8',
                 }}
               >
                 {tab.label}
@@ -365,12 +371,38 @@ const NewsPage = () => {
                 <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                   <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9' }}>继续学习</Text>
                   <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <TrendingUp size={14} color="#06b6d4" />
-                    <Text style={{ fontSize: '12px', color: '#06b6d4' }}>本周 {stats.weekMinutes} 分钟</Text>
+                    <TrendingUp size={14} color="#ef4444" />
+                    <Text style={{ fontSize: '12px', color: '#ef4444' }}>本周 {stats.userStats?.totalTimeSpent || 0} 分钟</Text>
                   </View>
                 </View>
-                {ongoingCourses.map(course => renderCourseCard(course, true))}
+                {ongoingCourses.length > 0 ? (
+                  ongoingCourses.map(course => renderCourseCard(course, true))
+                ) : (
+                  <View style={{ padding: '40px 20px', textAlign: 'center' }}>
+                    <Text style={{ fontSize: '14px', color: '#64748b' }}>暂无学习中的课程</Text>
+                    <View
+                      style={{
+                        marginTop: '12px',
+                        padding: '8px 16px',
+                        backgroundColor: '#ef4444',
+                        borderRadius: '6px',
+                        display: 'inline-flex',
+                      }}
+                      onClick={() => setActiveTab('explore')}
+                    >
+                      <Text style={{ fontSize: '13px', color: '#ffffff' }}>去探索课程</Text>
+                    </View>
+                  </View>
+                )}
               </View>
+
+              {/* 已完成 */}
+              {completedCourses.length > 0 && (
+                <View style={{ marginBottom: '20px' }}>
+                  <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px' }}>已完成</Text>
+                  {completedCourses.slice(0, 3).map(course => renderCourseCard(course, true))}
+                </View>
+              )}
 
               {/* 学习成就 */}
               <View
@@ -389,17 +421,21 @@ const NewsPage = () => {
                   <View style={{ flex: 1, textAlign: 'center', padding: '12px', backgroundColor: '#1e293b', borderRadius: '10px' }}>
                     <Text style={{ fontSize: '24px', marginBottom: '4px' }}>🎯</Text>
                     <Text style={{ fontSize: '12px', color: '#64748b' }}>坚持学习</Text>
-                    <Text style={{ fontSize: '14px', color: '#f59e0b', fontWeight: '600' }}>{stats.streak}天</Text>
+                    <Text style={{ fontSize: '14px', color: '#f59e0b', fontWeight: '600' }}>5天</Text>
                   </View>
                   <View style={{ flex: 1, textAlign: 'center', padding: '12px', backgroundColor: '#1e293b', borderRadius: '10px' }}>
                     <Text style={{ fontSize: '24px', marginBottom: '4px' }}>📚</Text>
                     <Text style={{ fontSize: '12px', color: '#64748b' }}>累计学习</Text>
-                    <Text style={{ fontSize: '14px', color: '#06b6d4', fontWeight: '600' }}>{Math.floor(stats.totalMinutes / 60)}小时</Text>
+                    <Text style={{ fontSize: '14px', color: '#ef4444', fontWeight: '600' }}>
+                      {Math.floor((stats.userStats?.totalTimeSpent || 0) / 60)}小时
+                    </Text>
                   </View>
                   <View style={{ flex: 1, textAlign: 'center', padding: '12px', backgroundColor: '#1e293b', borderRadius: '10px' }}>
                     <Text style={{ fontSize: '24px', marginBottom: '4px' }}>🏆</Text>
                     <Text style={{ fontSize: '12px', color: '#64748b' }}>已完结</Text>
-                    <Text style={{ fontSize: '14px', color: '#4ade80', fontWeight: '600' }}>{stats.completedCourses}门</Text>
+                    <Text style={{ fontSize: '14px', color: '#4ade80', fontWeight: '600' }}>
+                      {stats.userStats?.completedCount || 0}门
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -432,15 +468,21 @@ const NewsPage = () => {
                 />
               </View>
 
-              {/* 推荐课程列表 */}
-              <Text style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>为你推荐</Text>
-              {recommendedCourses.map(course => renderCourseCard(course, false))}
-
-              {/* 热门课程 */}
-              <View style={{ marginTop: '20px' }}>
-                <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px' }}>热门课程</Text>
-                {ongoingCourses.slice(0, 2).map(course => renderCourseCard(course, false))}
-              </View>
+              {/* 课程列表 */}
+              {loading ? (
+                <View style={{ padding: '40px 20px', textAlign: 'center' }}>
+                  <Text style={{ fontSize: '14px', color: '#64748b' }}>加载中...</Text>
+                </View>
+              ) : filteredCourses.length > 0 ? (
+                <>
+                  <Text style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>全部课程</Text>
+                  {filteredCourses.map(course => renderCourseCard(course, false))}
+                </>
+              ) : (
+                <View style={{ padding: '40px 20px', textAlign: 'center' }}>
+                  <Text style={{ fontSize: '14px', color: '#64748b' }}>暂无课程</Text>
+                </View>
+              )}
             </>
           )}
 
@@ -449,76 +491,50 @@ const NewsPage = () => {
             <>
               <Text style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>选择分类浏览课程</Text>
               <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                {categories.map(category => (
-                  <View
-                    key={category.id}
-                    style={{
-                      backgroundColor: '#111827',
-                      border: '1px solid #1e3a5f',
-                      borderRadius: '12px',
-                      padding: '20px 16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                    }}
-                    onClick={() => Taro.showToast({ title: `${category.name}课程即将上线`, icon: 'none' })}
-                  >
+                {categories.map(category => {
+                  const count = courses.filter(c => c.category?.id === category.id).length;
+                  return (
                     <View
+                      key={category.id}
                       style={{
-                        width: '48px',
-                        height: '48px',
+                        backgroundColor: selectedCategory === category.id ? '#ef4444' : '#111827',
+                        border: selectedCategory === category.id ? '1px solid #ef4444' : '1px solid #1e3a5f',
                         borderRadius: '12px',
-                        backgroundColor: `${category.color}20`,
+                        padding: '20px 16px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
+                        gap: '12px',
+                      }}
+                      onClick={() => {
+                        setSelectedCategory(selectedCategory === category.id ? '' : category.id);
+                        setActiveTab('explore');
                       }}
                     >
-                      <category.icon size={24} color={category.color} />
+                      <View
+                        style={{
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '12px',
+                          backgroundColor: selectedCategory === category.id ? 'rgba(255,255,255,0.2)' : 'rgba(239, 68, 68, 0.15)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <BookOpen size={24} color={selectedCategory === category.id ? '#ffffff' : '#ef4444'} />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: '15px', fontWeight: '600', color: selectedCategory === category.id ? '#ffffff' : '#f1f5f9' }}>
+                          {category.name}
+                        </Text>
+                        <Text style={{ fontSize: '12px', color: selectedCategory === category.id ? 'rgba(255,255,255,0.7)' : '#64748b', marginTop: '2px' }}>
+                          {count} 门课程
+                        </Text>
+                      </View>
+                      <ChevronRight size={16} color={selectedCategory === category.id ? '#ffffff' : '#64748b'} />
                     </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: '15px', fontWeight: '600', color: '#f1f5f9' }}>{category.name}</Text>
-                      <Text style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{category.count} 门课程</Text>
-                    </View>
-                    <ChevronRight size={16} color="#64748b" />
-                  </View>
-                ))}
-              </View>
-
-              {/* 学习路径推荐 */}
-              <View
-                style={{
-                  marginTop: '24px',
-                  backgroundColor: '#111827',
-                  border: '1px solid #1e3a5f',
-                  borderRadius: '12px',
-                  padding: '16px',
-                }}
-              >
-                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                  <Target size={18} color="#f59e0b" />
-                  <Text style={{ fontSize: '15px', fontWeight: '600', color: '#f1f5f9' }}>推荐学习路径</Text>
-                </View>
-                <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '1.6' }}>
-                  根据您的角色和业务需求，我们为您规划了系统化的学习路径，帮助您快速提升专业技能。
-                </Text>
-                <View
-                  style={{
-                    marginTop: '12px',
-                    padding: '12px',
-                    backgroundColor: '#1e293b',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <View>
-                    <Text style={{ fontSize: '14px', color: '#f1f5f9', fontWeight: '500' }}>内容创作达人</Text>
-                    <Text style={{ fontSize: '12px', color: '#64748b' }}>6门课程 · 约8小时</Text>
-                  </View>
-                  <ChevronRight size={18} color="#38bdf8" />
-                </View>
+                  );
+                })}
               </View>
             </>
           )}

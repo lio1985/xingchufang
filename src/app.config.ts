@@ -86,6 +86,9 @@ export default defineAppConfig({
     'pages/admin/ai-modules/index',
     'pages/admin/ai-stats/index',
     'pages/admin/ai-settings/index',
+    'pages/admin/course-manage/index',
+    'pages/admin/course-create/index',
+    'pages/admin/course-edit/index',
   ],
   window: {
     backgroundTextStyle: 'light',

@@ -41,6 +41,7 @@ import { StorageModule } from './storage/storage.module';
 import { AiAdminModule } from './ai-admin/ai-admin.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 import { FileParserModule } from './file-parser/file-parser.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [
@@ -84,6 +85,7 @@ import { FileParserModule } from './file-parser/file-parser.module';
     AiAdminModule,
     KnowledgeModule,
     FileParserModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

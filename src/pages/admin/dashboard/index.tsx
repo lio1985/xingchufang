@@ -329,6 +329,7 @@ export default function AdminDashboardPage() {
               { icon: Building2, label: '回收门店', desc: '全局数据看板', color: '#06b6d4', path: '/pages/admin/recycle-management/index' },
               { icon: UsersRound, label: '团队管理', desc: '管理团队和成员', color: '#4ade80', path: '/pages/admin/team-management/index' },
               { icon: ShoppingCart, label: '设备订单', desc: '求购转让管理', color: '#38bdf8', path: '/pages/equipment-orders/index' },
+              { icon: BookOpen, label: '课程管理', desc: '上传培训课程', color: '#ef4444', path: '/pages/admin/course-manage/index' },
             ].map((item) => {
               const IconComp = item.icon;
               return (
