@@ -32,7 +32,7 @@ const TabContentPage = () => {
           </View>
           <View style={{ flex: 1, marginLeft: '16px' }}>
             <Text style={{ fontSize: '16px', fontWeight: '600', color: '#38bdf8', display: 'block' }}>星小帮</Text>
-            <Text style={{ fontSize: '12px', color: 'rgba(245, 158, 11, 0.6)', display: 'block', marginTop: '4px' }}>智能写作助手</Text>
+            <Text style={{ fontSize: '12px', color: 'rgba(245, 158, 11, 0.6)', display: 'block', marginTop: '4px' }}>写作助手</Text>
           </View>
           <ChevronRight size={20} color="#38bdf8" />
         </View>

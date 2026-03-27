@@ -146,7 +146,7 @@ const TabHomePage = () => {
       id: 'ai',
       icon: Sparkles,
       label: '星小帮',
-      desc: '智能写作助手',
+      desc: '写作助手',
       color: '#38bdf8',
       bgColor: 'rgba(56, 189, 248, 0.15)',
       path: '/pages/ai-assistant/index',

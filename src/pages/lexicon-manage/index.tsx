@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, Textarea, ScrollView } from '@tarojs/components';
 import {
-  User,
   Plus,
   Search,
   Pencil,
@@ -11,6 +10,9 @@ import {
   FileText,
   Clock,
   ChevronLeft,
+  Upload,
+  File,
+  Loader,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -32,6 +34,7 @@ export default function LexiconManagePage() {
   const [editingLexicon, setEditingLexicon] = useState<Lexicon | null>(null);
   const [formData, setFormData] = useState({ title: '', content: '', category: '' });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   // 加载语料列表
   const loadLexicons = useCallback(async () => {
@@ -150,6 +153,87 @@ export default function LexiconManagePage() {
     });
   };
 
+  // 选择并上传文件
+  const handleUploadFile = async () => {
+    try {
+      const res = await Taro.chooseMessageFile({
+        count: 1,
+        type: 'file',
+        extension: ['doc', 'docx', 'pdf', 'txt'],
+      });
+
+      if (res.errMsg !== 'chooseMessageFile:ok' || !res.tempFiles?.length) {
+        return;
+      }
+
+      const file = res.tempFiles[0];
+      const fileExt = file.path.split('.').pop()?.toLowerCase();
+
+      // 检查文件类型
+      if (!['doc', 'docx', 'pdf', 'txt'].includes(fileExt || '')) {
+        Taro.showToast({ title: '仅支持 Word、PDF、TXT 文件', icon: 'none' });
+        return;
+      }
+
+      // 检查文件大小（限制 10MB）
+      if (file.size > 10 * 1024 * 1024) {
+        Taro.showToast({ title: '文件大小不能超过 10MB', icon: 'none' });
+        return;
+      }
+
+      setUploading(true);
+      Taro.showLoading({ title: '上传中...', mask: true });
+
+      // 上传文件
+      const uploadRes = await Network.uploadFile({
+        url: '/api/lexicon/upload-file',
+        filePath: file.path,
+        name: 'file',
+      });
+
+      Taro.hideLoading();
+
+      console.log('[LexiconManage] 上传响应:', uploadRes);
+
+      // 解析上传响应
+      let responseData: any = {};
+      if (typeof uploadRes.data === 'string') {
+        try {
+          responseData = JSON.parse(uploadRes.data);
+        } catch (e) {
+          console.error('[LexiconManage] 解析响应失败:', e);
+        }
+      } else if (uploadRes.data && typeof uploadRes.data === 'object') {
+        responseData = uploadRes.data;
+      }
+
+      if (responseData.code === 200 && responseData.data) {
+        const { fileUrl, fileType } = responseData.data;
+
+        // 自动创建语料记录
+        const fileName = file.path.split('/').pop() || '上传文件';
+        const title = fileName.replace(/\.[^/.]+$/, ''); // 移除扩展名
+
+        // 弹窗让用户填写标题和分类
+        setFormData({
+          title,
+          content: `【上传文件】\n文件类型：${fileType === 'word' ? 'Word文档' : fileType === 'pdf' ? 'PDF文档' : '文本文件'}\n文件链接：${fileUrl}`,
+          category: fileType === 'word' ? 'Word文档' : fileType === 'pdf' ? 'PDF文档' : '文本文件',
+        });
+        setShowAddModal(true);
+        Taro.showToast({ title: '文件上传成功', icon: 'success' });
+      } else {
+        Taro.showToast({ title: responseData.msg || '上传失败', icon: 'none' });
+      }
+    } catch (error) {
+      console.error('[LexiconManage] 上传失败:', error);
+      Taro.hideLoading();
+      Taro.showToast({ title: '上传失败，请重试', icon: 'none' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   // 过滤语料
   const filteredLexicons = lexicons.filter(
     (item) =>
@@ -173,45 +257,58 @@ export default function LexiconManagePage() {
         <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
           <View
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.redirectTo({ url: '/pages/lexicon-system/index' });
+              }
+            }}
           >
             <ChevronLeft size={24} color="#38bdf8" />
             <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <View>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人IP语料库</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>管理你的个人风格语料</Text>
+          </View>
+          <View style={{ display: 'flex', gap: '8px' }}>
             <View
               style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '12px',
+                padding: '10px 14px',
+                borderRadius: '10px',
                 backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                gap: '6px',
               }}
+              onClick={handleUploadFile}
             >
-              <User size={24} color="#60a5fa" />
+              {uploading ? (
+                <Loader size={16} color="#60a5fa" />
+              ) : (
+                <Upload size={16} color="#60a5fa" />
+              )}
+              <Text style={{ fontSize: '13px', fontWeight: '500', color: '#60a5fa' }}>上传文件</Text>
             </View>
-            <View>
-              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人IP语料库</Text>
-              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>管理你的个人风格语料</Text>
+            <View
+              style={{
+                padding: '10px 16px',
+                borderRadius: '10px',
+                backgroundColor: '#38bdf8',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+              onClick={handleOpenAddModal}
+            >
+              <Plus size={16} color="#0a0f1a" />
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#0a0f1a' }}>添加</Text>
             </View>
-          </View>
-          <View
-            style={{
-              padding: '10px 16px',
-              borderRadius: '10px',
-              backgroundColor: '#38bdf8',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-            onClick={handleOpenAddModal}
-          >
-            <Plus size={16} color="#0a0f1a" />
-            <Text style={{ fontSize: '14px', fontWeight: '600', color: '#0a0f1a' }}>添加</Text>
           </View>
         </View>
 
@@ -225,6 +322,12 @@ export default function LexiconManagePage() {
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#60a5fa', display: 'block' }}>{todayCount}</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>今日新增</Text>
           </View>
+        </View>
+
+        {/* 支持的文件类型提示 */}
+        <View style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <File size={14} color="#64748b" />
+          <Text style={{ fontSize: '12px', color: '#64748b' }}>支持上传 Word、PDF、TXT 文件，最大 10MB</Text>
         </View>
       </View>
 
@@ -260,7 +363,7 @@ export default function LexiconManagePage() {
       </View>
 
       {/* 语料列表 */}
-      <ScrollView scrollY style={{ height: 'calc(100vh - 280px)' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 320px)' }}>
         <View style={{ padding: '16px 20px' }}>
           {loading ? (
             <View style={{ textAlign: 'center', padding: '40px 0' }}>
@@ -284,7 +387,7 @@ export default function LexiconManagePage() {
                 <FileText size={28} color="#64748b" />
               </View>
               <Text style={{ color: '#71717a', fontSize: '14px', display: 'block' }}>暂无语料</Text>
-              <Text style={{ color: '#64748b', fontSize: '12px', display: 'block', marginTop: '4px' }}>点击右上角添加按钮创建</Text>
+              <Text style={{ color: '#64748b', fontSize: '12px', display: 'block', marginTop: '4px' }}>点击上传文件或添加按钮创建</Text>
             </View>
           ) : (
             filteredLexicons.map((lexicon) => (

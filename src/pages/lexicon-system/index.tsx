@@ -145,31 +145,23 @@ export default function LexiconSystemPage() {
         <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
           <View
             style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => Taro.switchTab({ url: '/pages/index/index' })}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.redirectTo({ url: '/pages/tab-knowledge/index' });
+              }
+            }}
           >
             <ChevronLeft size={24} color="#38bdf8" />
             <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
           </View>
         </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <View
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '12px',
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <MessageSquareText size={24} color="#60a5fa" />
-            </View>
-            <View>
-              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人语料</Text>
-              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>语料优化系统</Text>
-            </View>
+          <View>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人语料</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>语料优化系统</Text>
           </View>
           <View
             style={{
