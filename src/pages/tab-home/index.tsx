@@ -274,10 +274,11 @@ const TabHomePage = () => {
           {/* 消息铃铛入口 */}
           <View
             style={{
-              width: '40px',
-              height: '40px',
+              width: '48px',
+              height: '48px',
               borderRadius: '50%',
-              backgroundColor: 'rgba(56, 189, 248, 0.1)',
+              backgroundColor: 'rgba(249, 115, 22, 0.15)',
+              border: '1px solid rgba(249, 115, 22, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -286,25 +287,26 @@ const TabHomePage = () => {
             }}
             onClick={() => Taro.navigateTo({ url: '/pages/notification/index' })}
           >
-            <Bell size={20} color="#38bdf8" />
+            <Bell size={24} color="#f97316" />
             {stats.unreadMessage > 0 && (
               <View
                 style={{
                   position: 'absolute',
-                  top: '-2px',
-                  right: '-2px',
-                  minWidth: '16px',
-                  height: '16px',
-                  borderRadius: '8px',
+                  top: '-4px',
+                  right: '-4px',
+                  minWidth: '18px',
+                  height: '18px',
+                  borderRadius: '9px',
                   backgroundColor: '#f87171',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  paddingLeft: '4px',
-                  paddingRight: '4px',
+                  paddingLeft: '5px',
+                  paddingRight: '5px',
+                  border: '2px solid #111827',
                 }}
               >
-                <Text style={{ fontSize: '10px', color: '#ffffff', fontWeight: '600' }}>
+                <Text style={{ fontSize: '10px', color: '#ffffff', fontWeight: '700' }}>
                   {stats.unreadMessage > 99 ? '99+' : stats.unreadMessage}
                 </Text>
               </View>
