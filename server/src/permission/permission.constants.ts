@@ -113,7 +113,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
     [PermissionResource.CUSTOMER]: [],
     [PermissionResource.RECYCLING]: [],
     [PermissionResource.AUDIT_LOG]: [],
-    [PermissionResource.KNOWLEDGE]: [PermissionAction.READ],
+    [PermissionResource.KNOWLEDGE]: [],
     [PermissionResource.FILE_PARSER]: [],
     [PermissionResource.CONTENT_CREATION]: [],
     [PermissionResource.AI_ASSISTANT]: [],
@@ -160,6 +160,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
     ],
     [PermissionResource.AUDIT_LOG]: [],
     [PermissionResource.KNOWLEDGE]: [
+      PermissionAction.CREATE,
       PermissionAction.READ,
     ],
     [PermissionResource.FILE_PARSER]: [
