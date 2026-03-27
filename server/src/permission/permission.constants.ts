@@ -162,6 +162,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
     [PermissionResource.KNOWLEDGE]: [
       PermissionAction.CREATE,
       PermissionAction.READ,
+      PermissionAction.UPDATE,
     ],
     [PermissionResource.FILE_PARSER]: [
       PermissionAction.CREATE,
