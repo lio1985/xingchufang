@@ -39,6 +39,8 @@ import { LiveDataModule } from './live-data/live-data.module';
 import { EquipmentOrdersModule } from './equipment-orders/equipment-orders.module';
 import { StorageModule } from './storage/storage.module';
 import { AiAdminModule } from './ai-admin/ai-admin.module';
+import { KnowledgeModule } from './knowledge/knowledge.module';
+import { FileParserModule } from './file-parser/file-parser.module';
 
 @Module({
   imports: [
@@ -80,6 +82,8 @@ import { AiAdminModule } from './ai-admin/ai-admin.module';
     EquipmentOrdersModule,
     StorageModule,
     AiAdminModule,
+    KnowledgeModule,
+    FileParserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

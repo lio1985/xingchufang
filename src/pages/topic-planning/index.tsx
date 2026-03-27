@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text } from '@tarojs/components';
+import { useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
   ChevronLeft,
@@ -7,8 +7,12 @@ import {
   RefreshCw,
   Target,
   Flame,
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
+import KnowledgeSelector from '@/components/KnowledgeSelector';
 import '@/styles/pages.css';
 import './index.css';
 
@@ -24,11 +28,12 @@ const TopicPlanningPage = () => {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  // 知识库相关状态
+  const [showKnowledgeSelector, setShowKnowledgeSelector] = useState(false);
+  const [selectedKnowledgeIds, setSelectedKnowledgeIds] = useState<string[]>([]);
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<string[]>([]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const res = await Network.request({
@@ -36,16 +41,22 @@ const TopicPlanningPage = () => {
         method: 'GET',
       });
 
-      if (res.data.code === 200) {
+      console.log('[TopicPlanning] 选题数据:', res);
+
+      if (res.data?.code === 200) {
         setTopicQuestions(res.data.data || []);
       }
     } catch (error) {
-      console.error('加载选题失败', error);
+      console.error('[TopicPlanning] 加载选题失败:', error);
       Taro.showToast({ title: '加载失败', icon: 'none' });
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const toggleTopicSelection = (question: string) => {
     setSelectedTopics((prev) =>
@@ -63,6 +74,11 @@ const TopicPlanningPage = () => {
     setSelectedTopics([]);
   };
 
+  const handleKnowledgeChange = (ids: string[], sources: string[]) => {
+    setSelectedKnowledgeIds(ids);
+    setSelectedKnowledgeSources(sources);
+  };
+
   const handleGenerate = async () => {
     if (selectedTopics.length === 0) {
       Taro.showToast({ title: '请先选择选题', icon: 'none' });
@@ -70,11 +86,15 @@ const TopicPlanningPage = () => {
     }
 
     try {
+      // 存储选中的选题和知识库
       Taro.setStorageSync('selectedTopics', selectedTopics);
-      Taro.navigateTo({ url: '/pages/content-system/index' });
+      Taro.setStorageSync('selectedKnowledgeIds', selectedKnowledgeIds);
+      Taro.setStorageSync('selectedKnowledgeSources', selectedKnowledgeSources);
+
+      Taro.navigateTo({ url: '/pages/content-creation/index' });
       Taro.showToast({ title: '已选择选题', icon: 'success' });
     } catch (error) {
-      console.error('创建失败', error);
+      console.error('[TopicPlanning] 创建失败:', error);
       Taro.showToast({ title: '创建失败', icon: 'error' });
     }
   };
@@ -111,6 +131,40 @@ const TopicPlanningPage = () => {
         </View>
       </View>
 
+      {/* 知识库选择区域 */}
+      <View style={{ padding: '16px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          onClick={() => setShowKnowledgeSelector(!showKnowledgeSelector)}
+        >
+          <View style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(56, 189, 248, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BookOpen size={18} color="#38bdf8" />
+            </View>
+            <View>
+              <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>知识库参考</Text>
+              {selectedKnowledgeIds.length > 0 ? (
+                <Text style={{ fontSize: '12px', color: '#38bdf8', display: 'block', marginTop: '2px' }}>已选 {selectedKnowledgeIds.length} 条知识内容</Text>
+              ) : (
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>选择知识库内容辅助创作</Text>
+              )}
+            </View>
+          </View>
+          {showKnowledgeSelector ? <ChevronUp size={20} color="#71717a" /> : <ChevronDown size={20} color="#71717a" />}
+        </View>
+
+        {/* 展开的知识库选择器 */}
+        {showKnowledgeSelector && (
+          <View style={{ marginTop: '12px' }}>
+            <KnowledgeSelector
+              selectedIds={selectedKnowledgeIds}
+              selectedSources={selectedKnowledgeSources}
+              onChange={handleKnowledgeChange}
+            />
+          </View>
+        )}
+      </View>
+
       {/* 操作栏 */}
       {topicQuestions.length > 0 && (
         <View
@@ -137,62 +191,64 @@ const TopicPlanningPage = () => {
       )}
 
       {/* 选题列表 */}
-      <View className="content-area">
-        {loading ? (
-          <View className="loading-state">
-            <RefreshCw size={64} color="#38bdf8" />
-            <Text className="loading-text">加载中...</Text>
-          </View>
-        ) : topicQuestions.length === 0 ? (
-          <View className="empty-state">
-            <Target size={80} color="#71717a" />
-            <Text className="empty-title">暂无选题数据</Text>
-            <Text className="empty-desc">请先配置输入来源</Text>
-          </View>
-        ) : (
-          topicQuestions.map((topic, index) => (
-            <View
-              key={index}
-              className={`topic-card ${selectedTopics.includes(topic.question) ? 'topic-card-selected' : ''}`}
-              onClick={() => toggleTopicSelection(topic.question)}
-            >
-              <View className="topic-header">
-                <View className="topic-content">
-                  <Text className="topic-title">{topic.question}</Text>
-                </View>
-                
-                <View className={`checkbox ${selectedTopics.includes(topic.question) ? 'checkbox-checked' : ''}`}>
-                  {selectedTopics.includes(topic.question) && (
-                    <Check size={24} color="#38bdf8" />
-                  )}
-                </View>
-              </View>
-
-              <View className="topic-labels">
-                <View className="topic-label label-category">
-                  {topic.category || '通用'}
-                </View>
-                <View className="topic-label label-source">
-                  {topic.source || '选题库'}
-                </View>
-                
-                <View className="hot-score">
-                  <Flame size={20} color={getScoreColor(topic.hotScore)} />
-                  <Text
-                    style={{
-                      fontSize: '22px',
-                      fontWeight: '600',
-                      color: getScoreColor(topic.hotScore),
-                    }}
-                  >
-                    {topic.hotScore}
-                  </Text>
-                </View>
-              </View>
+      <ScrollView scrollY style={{ flex: 1, height: 'calc(100vh - 320px)' }}>
+        <View className="content-area">
+          {loading ? (
+            <View className="loading-state">
+              <RefreshCw size={64} color="#38bdf8" />
+              <Text className="loading-text">加载中...</Text>
             </View>
-          ))
-        )}
-      </View>
+          ) : topicQuestions.length === 0 ? (
+            <View className="empty-state">
+              <Target size={80} color="#71717a" />
+              <Text className="empty-title">暂无选题数据</Text>
+              <Text className="empty-desc">请先配置输入来源</Text>
+            </View>
+          ) : (
+            topicQuestions.map((topic, index) => (
+              <View
+                key={index}
+                className={`topic-card ${selectedTopics.includes(topic.question) ? 'topic-card-selected' : ''}`}
+                onClick={() => toggleTopicSelection(topic.question)}
+              >
+                <View className="topic-header">
+                  <View className="topic-content">
+                    <Text className="topic-title">{topic.question}</Text>
+                  </View>
+                  
+                  <View className={`checkbox ${selectedTopics.includes(topic.question) ? 'checkbox-checked' : ''}`}>
+                    {selectedTopics.includes(topic.question) && (
+                      <Check size={24} color="#38bdf8" />
+                    )}
+                  </View>
+                </View>
+
+                <View className="topic-labels">
+                  <View className="topic-label label-category">
+                    {topic.category || '通用'}
+                  </View>
+                  <View className="topic-label label-source">
+                    {topic.source || '选题库'}
+                  </View>
+                  
+                  <View className="hot-score">
+                    <Flame size={20} color={getScoreColor(topic.hotScore)} />
+                    <Text
+                      style={{
+                        fontSize: '22px',
+                        fontWeight: '600',
+                        color: getScoreColor(topic.hotScore),
+                      }}
+                    >
+                      {topic.hotScore}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
 
       {/* 底部操作栏 */}
       {selectedTopics.length > 0 && (

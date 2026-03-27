@@ -84,6 +84,18 @@ export enum PermissionResource {
 
   // 审计日志
   AUDIT_LOG = 'audit_log',
+
+  // 知识库
+  KNOWLEDGE = 'knowledge',
+
+  // 文件解析
+  FILE_PARSER = 'file_parser',
+
+  // 内容创作
+  CONTENT_CREATION = 'content_creation',
+
+  // AI 功能
+  AI_ASSISTANT = 'ai_assistant',
 }
 
 /**
@@ -101,6 +113,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
     [PermissionResource.CUSTOMER]: [],
     [PermissionResource.RECYCLING]: [],
     [PermissionResource.AUDIT_LOG]: [],
+    [PermissionResource.KNOWLEDGE]: [PermissionAction.READ],
+    [PermissionResource.FILE_PARSER]: [],
+    [PermissionResource.CONTENT_CREATION]: [],
+    [PermissionResource.AI_ASSISTANT]: [],
   },
 
   [UserRole.EMPLOYEE]: {
@@ -143,6 +159,21 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
       PermissionAction.UPDATE,
     ],
     [PermissionResource.AUDIT_LOG]: [],
+    [PermissionResource.KNOWLEDGE]: [
+      PermissionAction.READ,
+    ],
+    [PermissionResource.FILE_PARSER]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+    ],
+    [PermissionResource.CONTENT_CREATION]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+    ],
+    [PermissionResource.AI_ASSISTANT]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+    ],
   },
 
   [UserRole.TEAM_LEADER]: {
@@ -188,6 +219,23 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
       PermissionAction.DELETE,
     ],
     [PermissionResource.AUDIT_LOG]: [PermissionAction.READ],
+    [PermissionResource.KNOWLEDGE]: [
+      PermissionAction.READ,
+      PermissionAction.UPDATE,
+    ],
+    [PermissionResource.FILE_PARSER]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+    ],
+    [PermissionResource.CONTENT_CREATION]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+      PermissionAction.UPDATE,
+    ],
+    [PermissionResource.AI_ASSISTANT]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+    ],
   },
 
   [UserRole.ADMIN]: {
@@ -253,6 +301,31 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
       PermissionAction.DELETE,
     ],
     [PermissionResource.AUDIT_LOG]: [PermissionAction.READ],
+    [PermissionResource.KNOWLEDGE]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+      PermissionAction.UPDATE,
+      PermissionAction.DELETE,
+    ],
+    [PermissionResource.FILE_PARSER]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+      PermissionAction.UPDATE,
+      PermissionAction.DELETE,
+    ],
+    [PermissionResource.CONTENT_CREATION]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+      PermissionAction.UPDATE,
+      PermissionAction.DELETE,
+    ],
+    [PermissionResource.AI_ASSISTANT]: [
+      PermissionAction.CREATE,
+      PermissionAction.READ,
+      PermissionAction.UPDATE,
+      PermissionAction.DELETE,
+      PermissionAction.MANAGE_CONTENT,
+    ],
   },
 };
 
