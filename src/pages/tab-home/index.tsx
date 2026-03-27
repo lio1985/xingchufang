@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import {
@@ -217,9 +217,11 @@ const TabHomePage = () => {
             onClick={() => handleSwitchTab('/pages/tab-profile/index')}
           >
             {userInfo?.avatar ? (
-              <Text style={{ fontSize: '20px', color: '#71717a' }}>
-                {(userInfo.nickname || userInfo.username || '用')[0]}
-              </Text>
+              <Image
+                src={userInfo.avatar}
+                mode="aspectFill"
+                style={{ width: '100%', height: '100%' }}
+              />
             ) : (
               <User size={24} color="#71717a" />
             )}
