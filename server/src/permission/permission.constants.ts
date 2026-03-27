@@ -221,6 +221,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<PermissionResource, Permi
     ],
     [PermissionResource.AUDIT_LOG]: [PermissionAction.READ],
     [PermissionResource.KNOWLEDGE]: [
+      PermissionAction.CREATE,
       PermissionAction.READ,
       PermissionAction.UPDATE,
     ],
