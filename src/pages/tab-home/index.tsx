@@ -5,7 +5,6 @@ import {
   Sparkles,
   UserPlus,
   Lightbulb,
-  BookOpen,
   ChevronRight,
   Bell,
   FileText,
@@ -13,6 +12,7 @@ import {
   Clock,
   PenTool,
   Store,
+  TrendingUp,
 } from 'lucide-react-taro';
 
 interface RecentActivity {
@@ -130,6 +130,15 @@ const TabHomePage = () => {
       color: '#fbbf24',
       bgColor: 'rgba(251, 191, 36, 0.15)',
       path: '/pages/quick-note/index',
+    },
+    {
+      id: 'orders',
+      icon: TrendingUp,
+      label: '获客接单',
+      desc: '获取客资信息',
+      color: '#38bdf8',
+      bgColor: 'rgba(56, 189, 248, 0.15)',
+      path: '/pages/equipment-orders/index',
     },
   ];
 
