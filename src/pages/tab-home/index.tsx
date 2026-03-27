@@ -131,16 +131,6 @@ const TabHomePage = () => {
       bgColor: 'rgba(251, 191, 36, 0.15)',
       path: '/pages/quick-note/index',
     },
-    {
-      id: 'knowledge',
-      icon: BookOpen,
-      label: '知识库',
-      desc: '企业知识',
-      color: '#a78bfa',
-      bgColor: 'rgba(167, 139, 250, 0.15)',
-      path: '/pages/tab-knowledge/index',
-      isTab: true,
-    },
   ];
 
   const getActivityIcon = (type: string) => {
