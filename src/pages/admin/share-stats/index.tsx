@@ -163,7 +163,7 @@ export default function AdminShareStatsPage() {
                   width: '100%',
                   height: '8px',
                   borderRadius: '4px',
-                  backgroundColor: '#27272a',
+                  backgroundColor: '#1e3a5f',
                   overflow: 'hidden',
                 }}
               >
@@ -212,7 +212,7 @@ export default function AdminShareStatsPage() {
                           width: '100%',
                           height: '6px',
                           borderRadius: '3px',
-                          backgroundColor: '#27272a',
+                          backgroundColor: '#1e3a5f',
                           overflow: 'hidden',
                         }}
                       >

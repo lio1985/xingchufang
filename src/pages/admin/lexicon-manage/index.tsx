@@ -263,7 +263,7 @@ const LexiconManagePage = () => {
               style={{
                 padding: '10px 20px',
                 borderRadius: '12px',
-                backgroundColor: categoryFilter === cat.value ? cat.color : '#1a1a1d',
+                backgroundColor: categoryFilter === cat.value ? cat.color : '#1e293b',
               }}
               onClick={() => setCategoryFilter(cat.value)}
             >
@@ -314,7 +314,7 @@ const LexiconManagePage = () => {
                       alignItems: 'center',
                       marginTop: '16px',
                       paddingTop: '16px',
-                      borderTop: '1px solid #27272a',
+                      borderTop: '1px solid #1e3a5f',
                     }}
                   >
                     <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -331,7 +331,7 @@ const LexiconManagePage = () => {
                         style={{
                           padding: '8px',
                           borderRadius: '8px',
-                          backgroundColor: '#1a1a1d',
+                          backgroundColor: '#1e293b',
                         }}
                         onClick={() => {
                           // 查看详情
@@ -343,7 +343,7 @@ const LexiconManagePage = () => {
                         style={{
                           padding: '8px',
                           borderRadius: '8px',
-                          backgroundColor: '#1a1a1d',
+                          backgroundColor: '#1e293b',
                         }}
                         onClick={() => {
                           Taro.showToast({ title: '编辑功能开发中', icon: 'none' });
@@ -355,7 +355,7 @@ const LexiconManagePage = () => {
                         style={{
                           padding: '8px',
                           borderRadius: '8px',
-                          backgroundColor: '#1a1a1d',
+                          backgroundColor: '#1e293b',
                         }}
                         onClick={() => handleDelete(lexicon)}
                       >
@@ -417,7 +417,7 @@ const LexiconManagePage = () => {
                   flex: 1,
                   padding: '14px',
                   borderRadius: '12px',
-                  backgroundColor: '#27272a',
+                  backgroundColor: '#1e3a5f',
                   textAlign: 'center',
                 }}
                 onClick={() => setShowCreateModal(false)}

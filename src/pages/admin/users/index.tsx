@@ -229,7 +229,7 @@ export default function AdminUsersPage() {
             onInput={(e) => handleSearch(e.detail.value)}
           />
           <View
-            style={{ padding: '8px', borderRadius: '8px', backgroundColor: showListFilters ? '#f59e0b' : '#1a1a1d' }}
+            style={{ padding: '8px', borderRadius: '8px', backgroundColor: showListFilters ? '#f59e0b' : '#1e293b' }}
             onClick={() => setShowListFilters(!showListFilters)}
           >
             <ListFilter size={20} color={showListFilters ? '#000' : '#71717a'} />

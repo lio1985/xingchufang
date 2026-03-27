@@ -138,9 +138,9 @@ export default function LexiconSystemPage() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416', position: 'relative' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', position: 'relative' }}>
         {/* 返回按钮 */}
         <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
           <View
@@ -193,8 +193,8 @@ export default function LexiconSystemPage() {
           {/* 语料库选择 */}
           <View
             style={{
-              backgroundColor: '#18181b',
-              border: '1px solid #27272a',
+              backgroundColor: '#111827',
+              border: '1px solid #1e3a5f',
               borderRadius: '12px',
               marginBottom: '16px',
               overflow: 'hidden',
@@ -207,7 +207,7 @@ export default function LexiconSystemPage() {
                 justifyContent: 'space-between',
                 padding: '14px 16px',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                borderBottom: isExpanded ? '1px solid #27272a' : 'none',
+                borderBottom: isExpanded ? '1px solid #1e3a5f' : 'none',
               }}
               onClick={() => setIsExpanded(!isExpanded)}
             >
@@ -235,7 +235,7 @@ export default function LexiconSystemPage() {
                         width: '48px',
                         height: '48px',
                         borderRadius: '24px',
-                        backgroundColor: '#27272a',
+                        backgroundColor: '#1e3a5f',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -259,7 +259,7 @@ export default function LexiconSystemPage() {
                         justifyContent: 'space-between',
                         padding: '8px 12px',
                         marginBottom: '8px',
-                        backgroundColor: '#0a0a0b',
+                        backgroundColor: '#0a0f1a',
                         borderRadius: '8px',
                       }}
                       onClick={handleSelectAll}
@@ -276,10 +276,10 @@ export default function LexiconSystemPage() {
                       <View
                         key={lexicon.id}
                         style={{
-                          backgroundColor: selectedLexicons.includes(lexicon.id) ? '#27272a' : '#1a1a1d',
+                          backgroundColor: selectedLexicons.includes(lexicon.id) ? '#1e3a5f' : '#1e293b',
                           border: selectedLexicons.includes(lexicon.id)
                             ? '1px solid rgba(59, 130, 246, 0.4)'
-                            : '1px solid #27272a',
+                            : '1px solid #1e3a5f',
                           borderRadius: '8px',
                           padding: '12px',
                           marginBottom: '8px',
@@ -356,8 +356,8 @@ export default function LexiconSystemPage() {
           {/* 输入区域 */}
           <View
             style={{
-              backgroundColor: '#18181b',
-              border: '1px solid #27272a',
+              backgroundColor: '#111827',
+              border: '1px solid #1e3a5f',
               borderRadius: '12px',
               padding: '16px',
               marginBottom: '16px',
@@ -367,7 +367,7 @@ export default function LexiconSystemPage() {
               <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>输入文本</Text>
               <Text style={{ fontSize: '12px', color: '#71717a' }}>{inputText.length}/2000</Text>
             </View>
-            <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', marginBottom: '12px' }}>
+            <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', marginBottom: '12px' }}>
               <Textarea
                 style={{ width: '100%', minHeight: '100px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                 placeholder="请输入需要优化的文本..."
@@ -381,7 +381,7 @@ export default function LexiconSystemPage() {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: isProcessing || !inputText.trim() ? '#27272a' : '#f59e0b',
+                  backgroundColor: isProcessing || !inputText.trim() ? '#1e3a5f' : '#f59e0b',
                   borderRadius: '8px',
                   padding: '12px',
                   textAlign: 'center',
@@ -392,7 +392,7 @@ export default function LexiconSystemPage() {
                   style={{
                     fontSize: '14px',
                     fontWeight: '600',
-                    color: isProcessing || !inputText.trim() ? '#71717a' : '#0a0a0b',
+                    color: isProcessing || !inputText.trim() ? '#71717a' : '#0a0f1a',
                   }}
                 >
                   {isProcessing ? '优化中...' : '开始优化'}
@@ -401,7 +401,7 @@ export default function LexiconSystemPage() {
               <View
                 style={{
                   width: '48px',
-                  backgroundColor: '#27272a',
+                  backgroundColor: '#1e3a5f',
                   borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
@@ -418,8 +418,8 @@ export default function LexiconSystemPage() {
           {outputText && (
             <View
               style={{
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
                 borderRadius: '12px',
                 padding: '16px',
                 marginBottom: '16px',
@@ -436,7 +436,7 @@ export default function LexiconSystemPage() {
                     alignItems: 'center',
                     gap: '4px',
                     padding: '6px 12px',
-                    backgroundColor: '#27272a',
+                    backgroundColor: '#1e3a5f',
                     borderRadius: '8px',
                   }}
                   onClick={handleCopy}
@@ -445,7 +445,7 @@ export default function LexiconSystemPage() {
                   <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>复制</Text>
                 </View>
               </View>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                 <Text style={{ fontSize: '14px', color: '#a1a1aa', display: 'block', lineHeight: '24px' }}>
                   {outputText}
                 </Text>

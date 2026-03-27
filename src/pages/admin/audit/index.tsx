@@ -203,14 +203,14 @@ export default function AdminAuditPage() {
             style={{
               padding: '8px',
               borderRadius: '8px',
-              backgroundColor: showFilters ? '#f59e0b' : '#1a1a1d',
+              backgroundColor: showFilters ? '#f59e0b' : '#1e293b',
             }}
             onClick={() => setShowFilters(!showFilters)}
           >
             <ListFilter size={20} color={showFilters ? '#000' : '#71717a'} />
           </View>
           <View
-            style={{ padding: '8px', borderRadius: '8px', backgroundColor: '#1a1a1d' }}
+            style={{ padding: '8px', borderRadius: '8px', backgroundColor: '#1e293b' }}
             onClick={exportLogs}
           >
             <Download size={20} color="#71717a" />

@@ -148,12 +148,12 @@ export default function CustomerList() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <View
-            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={() => Taro.navigateBack()}
           >
             <ChevronLeft size={24} color="#fafafa" />
@@ -167,7 +167,7 @@ export default function CustomerList() {
 
       {/* 统计概览 */}
       <View style={{ padding: '0 20px', marginTop: '-8px' }}>
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
           <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>客户总览</Text>
             <Text style={{ fontSize: '12px', color: '#f59e0b' }}>查看详情</Text>
@@ -195,8 +195,8 @@ export default function CustomerList() {
           <View
             style={{ 
               flex: 1, 
-              backgroundColor: statusFilter === '' ? 'rgba(245, 158, 11, 0.2)' : '#18181b', 
-              border: statusFilter === '' ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #27272a', 
+              backgroundColor: statusFilter === '' ? 'rgba(245, 158, 11, 0.2)' : '#111827', 
+              border: statusFilter === '' ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #1e3a5f', 
               borderRadius: '8px', 
               padding: '12px',
               display: 'flex',
@@ -211,8 +211,8 @@ export default function CustomerList() {
           <View
             style={{ 
               flex: 1, 
-              backgroundColor: statusFilter === 'normal' ? 'rgba(34, 197, 94, 0.2)' : '#18181b', 
-              border: statusFilter === 'normal' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid #27272a', 
+              backgroundColor: statusFilter === 'normal' ? 'rgba(34, 197, 94, 0.2)' : '#111827', 
+              border: statusFilter === 'normal' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid #1e3a5f', 
               borderRadius: '8px', 
               padding: '12px',
               display: 'flex',
@@ -227,8 +227,8 @@ export default function CustomerList() {
           <View
             style={{ 
               flex: 1, 
-              backgroundColor: statusFilter === 'at_risk' ? 'rgba(245, 158, 11, 0.2)' : '#18181b', 
-              border: statusFilter === 'at_risk' ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #27272a', 
+              backgroundColor: statusFilter === 'at_risk' ? 'rgba(245, 158, 11, 0.2)' : '#111827', 
+              border: statusFilter === 'at_risk' ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #1e3a5f', 
               borderRadius: '8px', 
               padding: '12px',
               display: 'flex',
@@ -243,8 +243,8 @@ export default function CustomerList() {
           <View
             style={{ 
               flex: 1, 
-              backgroundColor: statusFilter === 'lost' ? 'rgba(239, 68, 68, 0.2)' : '#18181b', 
-              border: statusFilter === 'lost' ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid #27272a', 
+              backgroundColor: statusFilter === 'lost' ? 'rgba(239, 68, 68, 0.2)' : '#111827', 
+              border: statusFilter === 'lost' ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid #1e3a5f', 
               borderRadius: '8px', 
               padding: '12px',
               display: 'flex',
@@ -262,7 +262,7 @@ export default function CustomerList() {
       {/* 搜索栏 */}
       <View style={{ padding: '16px 20px 0' }}>
         <View style={{ display: 'flex', gap: '12px' }}>
-          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '8px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '8px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}>
             <Search size={18} color="#71717a" />
             <Input
               style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -299,13 +299,13 @@ export default function CustomerList() {
           return (
             <View
               key={customer.id}
-              style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}
+              style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}
               onClick={() => goToDetail(customer.id)}
             >
               {/* 顶部：姓名 + 状态 */}
               <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <View style={{ display: 'flex', alignItems: 'center' }}>
-                  <View style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <User size={16} color="#71717a" />
                   </View>
                   <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', marginLeft: '12px' }}>{customer.name}</Text>
@@ -335,7 +335,7 @@ export default function CustomerList() {
               </View>
 
               {/* 底部：类型 + 金额 */}
-              <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+              <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                 <Text style={{ fontSize: '12px', color: '#71717a' }}>{customer.customer_type || '未分类'}</Text>
                 <View style={{ display: 'flex', alignItems: 'center' }}>
                   <Text style={{ fontSize: '12px', color: orderStatus.color, marginRight: '12px' }}>{orderStatus.label}</Text>
@@ -363,7 +363,7 @@ export default function CustomerList() {
         {/* 空状态 */}
         {customers.length === 0 && !loading && (
           <View style={{ padding: '48px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={48} color="#3f3f46" />
+            <User size={48} color="#334155" />
             <Text style={{ fontSize: '14px', color: '#71717a', marginTop: '16px' }}>暂无客户数据</Text>
             <Text style={{ fontSize: '12px', color: '#52525b', marginTop: '8px' }}>点击右下角添加新客户</Text>
           </View>

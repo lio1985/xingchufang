@@ -79,9 +79,9 @@ const KnowledgeSharePage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
           <Building2 size={24} color="#a855f7" />
           <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginLeft: '8px' }}>公司资料</Text>
@@ -92,7 +92,7 @@ const KnowledgeSharePage = () => {
       <ScrollView scrollY style={{ height: 'calc(100vh - 140px)' }}>
         <View style={{ padding: '16px 20px' }}>
           {/* 统计概览 */}
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <BookOpen size={20} color="#f59e0b" />
@@ -104,12 +104,12 @@ const KnowledgeSharePage = () => {
                 <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff' }}>86</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>知识总数</Text>
               </View>
-              <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+              <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
               <View style={{ textAlign: 'center' }}>
                 <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>4</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>知识分类</Text>
               </View>
-              <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+              <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
               <View style={{ textAlign: 'center' }}>
                 <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>12</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周更新</Text>
@@ -126,8 +126,8 @@ const KnowledgeSharePage = () => {
               <View
                 key={category.id}
                 style={{
-                  backgroundColor: '#18181b',
-                  border: '1px solid #27272a',
+                  backgroundColor: '#111827',
+                  border: '1px solid #1e3a5f',
                   borderRadius: '12px',
                   marginBottom: '12px',
                   overflow: 'hidden'
@@ -164,7 +164,7 @@ const KnowledgeSharePage = () => {
 
                 {/* 子分类（仅商厨设备维修维保显示） */}
                 {category.subCategories && category.subCategories.length > 0 && (
-                  <View style={{ borderTop: '1px solid #27272a' }}>
+                  <View style={{ borderTop: '1px solid #1e3a5f' }}>
                     {category.subCategories.map((sub, index) => (
                       <View
                         key={sub.id}
@@ -173,8 +173,8 @@ const KnowledgeSharePage = () => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          borderBottom: index < category.subCategories!.length - 1 ? '1px solid #27272a' : 'none',
-                          backgroundColor: '#141416'
+                          borderBottom: index < category.subCategories!.length - 1 ? '1px solid #1e3a5f' : 'none',
+                          backgroundColor: '#111827'
                         }}
                         onClick={() => handleSubCategoryClick(sub.id)}
                       >
@@ -205,8 +205,8 @@ const KnowledgeSharePage = () => {
             <View
               style={{
                 flex: 1,
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
                 borderRadius: '12px',
                 padding: '16px',
                 display: 'flex',
@@ -235,8 +235,8 @@ const KnowledgeSharePage = () => {
             <View
               style={{
                 flex: 1,
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
                 borderRadius: '12px',
                 padding: '16px',
                 display: 'flex',

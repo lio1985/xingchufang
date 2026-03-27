@@ -196,9 +196,9 @@ const NotificationPage = () => {
   }, []);
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ display: 'flex', alignItems: 'center' }}>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>消息中心</Text>
@@ -232,7 +232,7 @@ const NotificationPage = () => {
       <ScrollView scrollY style={{ height: 'calc(100vh - 140px)' }}>
         {notifications.length === 0 ? (
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' }}>
-            <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#18181b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <BellRing size={32} color="#52525b" />
             </View>
             <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '16px' }}>暂无消息</Text>
@@ -244,8 +244,8 @@ const NotificationPage = () => {
               <View
                 key={notification.id}
                 style={{
-                  backgroundColor: '#18181b',
-                  border: notification.isRead ? '1px solid #27272a' : '1px solid rgba(245, 158, 11, 0.3)',
+                  backgroundColor: '#111827',
+                  border: notification.isRead ? '1px solid #1e3a5f' : '1px solid rgba(245, 158, 11, 0.3)',
                   borderRadius: '12px',
                   padding: '16px',
                   marginBottom: '12px'

@@ -118,9 +118,9 @@ const DesignKnowledgePage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '20px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '20px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 16px', backgroundColor: '#141416', borderBottom: '1px solid #27272a' }}>
+      <View style={{ padding: '48px 20px 16px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <View style={{ display: 'flex', alignItems: 'center' }}>
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>商厨设计知识</Text>
@@ -131,7 +131,7 @@ const DesignKnowledgePage = () => {
                 width: '36px',
                 height: '36px',
                 borderRadius: '8px',
-                backgroundColor: '#18181b',
+                backgroundColor: '#111827',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -146,7 +146,7 @@ const DesignKnowledgePage = () => {
       </View>
 
       {/* 分类筛选 */}
-      <ScrollView scrollX style={{ backgroundColor: '#141416', padding: '12px 20px', whiteSpace: 'nowrap' }}>
+      <ScrollView scrollX style={{ backgroundColor: '#111827', padding: '12px 20px', whiteSpace: 'nowrap' }}>
         <View style={{ display: 'inline-flex', gap: '8px' }}>
           {designCategories.map((cat) => (
             <View
@@ -154,12 +154,12 @@ const DesignKnowledgePage = () => {
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
-                backgroundColor: cat.id === 'all' ? '#f59e0b' : '#27272a',
+                backgroundColor: cat.id === 'all' ? '#f59e0b' : '#1e3a5f',
                 flexShrink: 0
               }}
               onClick={() => handleCategoryClick(cat.id)}
             >
-              <Text style={{ fontSize: '13px', color: cat.id === 'all' ? '#0a0a0b' : '#a1a1aa', fontWeight: '500' }}>
+              <Text style={{ fontSize: '13px', color: cat.id === 'all' ? '#0a0f1a' : '#a1a1aa', fontWeight: '500' }}>
                 {cat.name} ({cat.count})
               </Text>
             </View>
@@ -174,8 +174,8 @@ const DesignKnowledgePage = () => {
           <View style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
             <View style={{
               flex: 1,
-              backgroundColor: '#18181b',
-              border: '1px solid #27272a',
+              backgroundColor: '#111827',
+              border: '1px solid #1e3a5f',
               borderRadius: '12px',
               padding: '12px',
               display: 'flex',
@@ -191,8 +191,8 @@ const DesignKnowledgePage = () => {
             </View>
             <View style={{
               flex: 1,
-              backgroundColor: '#18181b',
-              border: '1px solid #27272a',
+              backgroundColor: '#111827',
+              border: '1px solid #1e3a5f',
               borderRadius: '12px',
               padding: '12px',
               display: 'flex',
@@ -224,8 +224,8 @@ const DesignKnowledgePage = () => {
               <View
                 key={knowledge.id}
                 style={{
-                  backgroundColor: '#18181b',
-                  border: '1px solid #27272a',
+                  backgroundColor: '#111827',
+                  border: '1px solid #1e3a5f',
                   borderRadius: '12px',
                   padding: '16px',
                   marginBottom: '12px'
@@ -267,7 +267,7 @@ const DesignKnowledgePage = () => {
                 </View>
 
                 {/* 底部信息 */}
-                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #27272a', paddingTop: '12px' }}>
+                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #1e3a5f', paddingTop: '12px' }}>
                   <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Eye size={14} color="#71717a" />

@@ -48,7 +48,7 @@ export default function TeamCreate() {
   };
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b]">
+    <View className="min-h-screen bg-[#0a0f1a]">
       {/* Header */}
       <View className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
         <View className="flex items-center justify-between px-4 py-3">

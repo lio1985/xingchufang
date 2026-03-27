@@ -89,9 +89,9 @@ const TabProfilePage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>我</Text>
         <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>个人中心与设置</Text>
       </View>
@@ -99,7 +99,7 @@ const TabProfilePage = () => {
       {/* 用户信息区 */}
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         {isLoggedIn ? (
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <View style={{ display: 'flex', alignItems: 'center' }}>
               {userInfo?.avatar ? (
                 <Image
@@ -132,7 +132,7 @@ const TabProfilePage = () => {
               <Text style={{ fontSize: '14px', color: '#f59e0b', fontWeight: '500', marginTop: '4px' }}>登录账号</Text>
             </View>
             <View
-              style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               onClick={handleRegister}
             >
               <UserPlus size={20} color="#71717a" />
@@ -424,10 +424,10 @@ const TabProfilePage = () => {
       <View style={{ padding: '24px 20px 0' }}>
         <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>数据管理</Text>
         
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 数据看板 */}
           <View
-            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #27272a' }}
+            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleNav('/pages/data-stats/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -461,7 +461,7 @@ const TabProfilePage = () => {
       <View style={{ padding: '24px 20px 0' }}>
         <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>系统</Text>
         
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 设置 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '16px' }}
@@ -483,7 +483,7 @@ const TabProfilePage = () => {
       {isLoggedIn && (
         <View style={{ padding: '24px 20px 0' }}>
           <View
-            style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={handleLogout}
           >
             <LogOut size={18} color="#ef4444" />
@@ -494,7 +494,7 @@ const TabProfilePage = () => {
 
       {/* 版本信息 */}
       <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 0' }}>
-        <Text style={{ fontSize: '12px', color: '#3f3f46' }}>星厨房内容创作助手 v1.0.0</Text>
+        <Text style={{ fontSize: '12px', color: '#334155' }}>星厨房内容创作助手 v1.0.0</Text>
       </View>
     </View>
   );

@@ -316,7 +316,7 @@ const CustomerManagementPage = () => {
                       style={{
                         flexShrink: 0,
                         padding: '12px 20px',
-                        backgroundColor: newCustomer.source === source ? '#f59e0b' : '#1a1a1d',
+                        backgroundColor: newCustomer.source === source ? '#f59e0b' : '#1e293b',
                         borderRadius: '12px',
                         fontSize: '24px',
                         color: newCustomer.source === source ? '#000' : '#a1a1aa',

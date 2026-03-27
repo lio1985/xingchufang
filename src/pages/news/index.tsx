@@ -98,16 +98,16 @@ const NewsPage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
           <GraduationCap size={24} color="#06b6d4" />
           <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginLeft: '8px' }}>课程培训</Text>
         </View>
 
         {/* 搜索框 */}
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
           <Search size={18} color="#71717a" />
           <Input
             style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -132,8 +132,8 @@ const NewsPage = () => {
                 style={{
                   padding: '8px 16px',
                   borderRadius: '20px',
-                  backgroundColor: timeRange === item.value ? '#06b6d4' : '#18181b',
-                  border: timeRange === item.value ? 'none' : '1px solid #27272a'
+                  backgroundColor: timeRange === item.value ? '#06b6d4' : '#111827',
+                  border: timeRange === item.value ? 'none' : '1px solid #1e3a5f'
                 }}
                 onClick={() => setTimeRange(item.value)}
               >
@@ -149,13 +149,13 @@ const NewsPage = () => {
           {/* 正在学习 */}
           <View style={{ marginBottom: '20px' }}>
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>正在学习</Text>
-            <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
               {ongoingCourses.map((course, index) => (
                 <View
                   key={course.id}
                   style={{
                     padding: '16px',
-                    borderBottom: index < ongoingCourses.length - 1 ? '1px solid #27272a' : 'none'
+                    borderBottom: index < ongoingCourses.length - 1 ? '1px solid #1e3a5f' : 'none'
                   }}
                   onClick={() => handleContinueCourse(course)}
                 >
@@ -168,7 +168,7 @@ const NewsPage = () => {
                   </View>
                   
                   {/* 进度条 */}
-                  <View style={{ height: '4px', backgroundColor: '#27272a', borderRadius: '2px', marginBottom: '8px', overflow: 'hidden' }}>
+                  <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginBottom: '8px', overflow: 'hidden' }}>
                     <View style={{ height: '100%', width: `${course.progress}%`, backgroundColor: '#06b6d4', borderRadius: '2px' }} />
                   </View>
                   
@@ -199,7 +199,7 @@ const NewsPage = () => {
           {/* 搜索结果或空状态 */}
           {results.length === 0 && !loading && keyword === '' && (
             <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
-              <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#18181b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Globe size={32} color="#52525b" />
               </View>
               <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginTop: '16px' }}>搜索热点资讯</Text>
@@ -209,7 +209,7 @@ const NewsPage = () => {
 
           {results.length === 0 && !loading && keyword !== '' && (
             <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0' }}>
-              <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#18181b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Search size={32} color="#52525b" />
               </View>
               <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginTop: '16px' }}>未找到相关资讯</Text>
@@ -224,8 +224,8 @@ const NewsPage = () => {
                 <View
                   key={index}
                   style={{
-                    backgroundColor: '#18181b',
-                    border: '1px solid #27272a',
+                    backgroundColor: '#111827',
+                    border: '1px solid #1e3a5f',
                     borderRadius: '12px',
                     padding: '16px',
                     marginBottom: '12px'
@@ -257,7 +257,7 @@ const NewsPage = () => {
 
                   {/* 链接按钮 */}
                   <View
-                    style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px', backgroundColor: '#27272a', borderRadius: '8px', alignSelf: 'flex-start' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px', backgroundColor: '#1e3a5f', borderRadius: '8px', alignSelf: 'flex-start' }}
                     onClick={() => openUrl(item.url)}
                   >
                     <Text style={{ fontSize: '14px' }}>🔗</Text>

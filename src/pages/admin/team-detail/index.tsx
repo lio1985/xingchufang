@@ -262,7 +262,7 @@ export default function TeamDetail() {
 
   if (loading) {
     return (
-      <View className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+      <View className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
         <View className="text-center">
           <Loader size={24} color="#f59e0b" className="animate-spin" />
           <Text className="block text-zinc-500 mt-2">加载中...</Text>
@@ -273,7 +273,7 @@ export default function TeamDetail() {
 
   if (!team) {
     return (
-      <View className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+      <View className="min-h-screen bg-[#0a0f1a] flex items-center justify-center">
         <View className="text-center">
           <Users size={32} color="#71717a" />
           <Text className="block text-zinc-500 mt-2">团队不存在</Text>
@@ -283,7 +283,7 @@ export default function TeamDetail() {
   }
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b]">
+    <View className="min-h-screen bg-[#0a0f1a]">
       {/* Header */}
       <View className="sticky top-0 z-50 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
         <View className="flex items-center gap-3 px-4 py-3">

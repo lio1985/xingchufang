@@ -218,12 +218,12 @@ export default function AIAssistantPage() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', display: 'flex', flexDirection: 'column' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', flexDirection: 'column' }}>
       {/* 页面头部 */}
       <View style={{ 
         padding: '48px 16px 16px', 
-        backgroundColor: '#141416', 
-        borderBottom: '1px solid #27272a',
+        backgroundColor: '#111827', 
+        borderBottom: '1px solid #1e3a5f',
         position: 'relative',
       }}
       >
@@ -267,8 +267,8 @@ export default function AIAssistantPage() {
       {/* 快捷操作 */}
       <View style={{ 
         padding: '12px 16px', 
-        backgroundColor: '#141416',
-        borderBottom: '1px solid #27272a',
+        backgroundColor: '#111827',
+        borderBottom: '1px solid #1e3a5f',
       }}
       >
         <ScrollView scrollX style={{ whiteSpace: 'nowrap' }}>
@@ -283,7 +283,7 @@ export default function AIAssistantPage() {
                   padding: '10px 16px',
                   backgroundColor: 'rgba(255,255,255,0.05)',
                   borderRadius: '20px',
-                  border: '1px solid #27272a',
+                  border: '1px solid #1e3a5f',
                 }}
                 onClick={() => handleQuickAction(action)}
               >
@@ -331,7 +331,7 @@ export default function AIAssistantPage() {
                 width: '36px',
                 height: '36px',
                 borderRadius: '50%',
-                backgroundColor: '#27272a',
+                backgroundColor: '#1e3a5f',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -347,8 +347,8 @@ export default function AIAssistantPage() {
               maxWidth: '75%',
               padding: '12px 16px',
               borderRadius: message.role === 'user' ? '16px 4px 16px 16px' : '4px 16px 16px 16px',
-              backgroundColor: message.role === 'user' ? '#f59e0b' : '#18181b',
-              border: message.role === 'assistant' ? '1px solid #27272a' : 'none',
+              backgroundColor: message.role === 'user' ? '#f59e0b' : '#111827',
+              border: message.role === 'assistant' ? '1px solid #1e3a5f' : 'none',
             }}
             >
               <Text style={{ 
@@ -406,9 +406,9 @@ export default function AIAssistantPage() {
             </View>
             <View style={{
               padding: '12px 16px',
-              backgroundColor: '#18181b',
+              backgroundColor: '#111827',
               borderRadius: '4px 16px 16px 16px',
-              border: '1px solid #27272a',
+              border: '1px solid #1e3a5f',
             }}
             >
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -423,8 +423,8 @@ export default function AIAssistantPage() {
       {/* 底部输入区 */}
       <View style={{ 
         padding: '12px 16px', 
-        backgroundColor: '#141416',
-        borderTop: '1px solid #27272a',
+        backgroundColor: '#111827',
+        borderTop: '1px solid #1e3a5f',
         paddingBottom: 'calc(12px + env(safe-area-inset-bottom))',
       }}
       >
@@ -450,10 +450,10 @@ export default function AIAssistantPage() {
         <View style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
           <View style={{
             flex: 1,
-            backgroundColor: '#18181b',
+            backgroundColor: '#111827',
             borderRadius: '20px',
             padding: '10px 16px',
-            border: '1px solid #27272a',
+            border: '1px solid #1e3a5f',
           }}
           >
             <Textarea
@@ -478,7 +478,7 @@ export default function AIAssistantPage() {
               width: '44px',
               height: '44px',
               borderRadius: '50%',
-              backgroundColor: inputText.trim() ? '#f59e0b' : '#27272a',
+              backgroundColor: inputText.trim() ? '#f59e0b' : '#1e3a5f',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

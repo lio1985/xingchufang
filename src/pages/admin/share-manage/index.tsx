@@ -233,7 +233,7 @@ const ShareManagePage = () => {
                 style={{
                   padding: '10px 20px',
                   borderRadius: '12px',
-                  backgroundColor: scopeFilter === filter.value ? filter.color : '#1a1a1d',
+                  backgroundColor: scopeFilter === filter.value ? filter.color : '#1e293b',
                   flexShrink: 0,
                 }}
                 onClick={() => setScopeFilter(filter.value)}
@@ -340,7 +340,7 @@ const ShareManagePage = () => {
                       alignItems: 'center',
                       marginTop: '16px',
                       paddingTop: '16px',
-                      borderTop: '1px solid #27272a',
+                      borderTop: '1px solid #1e3a5f',
                     }}
                   >
                     <Text style={{ fontSize: '20px', color: '#52525b' }}>

@@ -15,9 +15,9 @@ const TabKnowledgePage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>知识库</Text>
         <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>企业知识沉淀与复用</Text>
       </View>
@@ -25,7 +25,7 @@ const TabKnowledgePage = () => {
       {/* 搜索栏 */}
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         <View 
-          style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}
+          style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}
           onClick={() => Taro.showToast({ title: '搜索功能开发中', icon: 'none' })}
         >
           <Search size={18} color="#71717a" />
@@ -38,7 +38,7 @@ const TabKnowledgePage = () => {
         <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
         <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           <View
-            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/favorite-list/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -49,7 +49,7 @@ const TabKnowledgePage = () => {
           </View>
 
           <View
-            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/knowledge-share/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -60,7 +60,7 @@ const TabKnowledgePage = () => {
           </View>
 
           <View
-            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/lexicon-system/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -71,7 +71,7 @@ const TabKnowledgePage = () => {
           </View>
 
           <View
-            style={{ width: 'calc(50% - 6px)', backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/news/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(6, 182, 212, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -95,10 +95,10 @@ const TabKnowledgePage = () => {
           </Text>
         </View>
         
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 课程项1 */}
           <View
-            style={{ padding: '16px', borderBottom: '1px solid #27272a' }}
+            style={{ padding: '16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleNav('/pages/news/index')}
           >
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -108,7 +108,7 @@ const TabKnowledgePage = () => {
                 <Text style={{ fontSize: '12px', color: '#f59e0b', marginLeft: '4px' }}>继续</Text>
               </View>
             </View>
-            <View style={{ height: '4px', backgroundColor: '#27272a', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
+            <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
               <View style={{ height: '100%', width: '60%', backgroundColor: '#f59e0b', borderRadius: '2px' }} />
             </View>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 7/12 课时 · 60%</Text>
@@ -126,7 +126,7 @@ const TabKnowledgePage = () => {
                 <Text style={{ fontSize: '12px', color: '#f59e0b', marginLeft: '4px' }}>继续</Text>
               </View>
             </View>
-            <View style={{ height: '4px', backgroundColor: '#27272a', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
+            <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
               <View style={{ height: '100%', width: '30%', backgroundColor: '#f59e0b', borderRadius: '2px' }} />
             </View>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 2/8 课时 · 30%</Text>

@@ -156,9 +156,9 @@ export default function RecycleStoreEdit() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
       {/* 头部 */}
-      <View style={{ padding: '48px 20px 16px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 16px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ display: 'flex', alignItems: 'center' }} onClick={goBack}>
             <ArrowLeft size={20} color="#ffffff" />
@@ -168,7 +168,7 @@ export default function RecycleStoreEdit() {
           </View>
           <View
             style={{ 
-              backgroundColor: saving ? '#27272a' : '#3b82f6', 
+              backgroundColor: saving ? '#1e3a5f' : '#3b82f6', 
               borderRadius: '20px', 
               padding: '8px 16px', 
               display: 'flex', 
@@ -185,12 +185,12 @@ export default function RecycleStoreEdit() {
       <ScrollView scrollY style={{ height: 'calc(100vh - 100px)' }}>
         {/* 基本信息 */}
         <View style={{ padding: '16px 20px 0' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '16px' }}>基本信息</Text>
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>门店名称 <Text style={{ color: '#ef4444' }}>*</Text></Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <Store size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -204,7 +204,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>手机号码</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <Phone size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -219,7 +219,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>微信号</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <MessageCircle size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -233,7 +233,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>小红书号</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ width: '100%', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入小红书号"
@@ -246,7 +246,7 @@ export default function RecycleStoreEdit() {
 
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>抖音号</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ width: '100%', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入抖音号"
@@ -261,12 +261,12 @@ export default function RecycleStoreEdit() {
 
         {/* 位置信息 */}
         <View style={{ padding: '16px 20px 0' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '16px' }}>位置信息</Text>
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>所在城市</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ width: '100%', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入城市"
@@ -279,7 +279,7 @@ export default function RecycleStoreEdit() {
 
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>详细地址</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请选择或输入地址"
@@ -297,7 +297,7 @@ export default function RecycleStoreEdit() {
 
         {/* 业务信息 */}
         <View style={{ padding: '16px 20px 0' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '16px' }}>业务信息</Text>
 
             <View style={{ marginBottom: '16px' }}>
@@ -312,7 +312,7 @@ export default function RecycleStoreEdit() {
                   handleInput('business_type', businessTypes[index]);
                 }}
               >
-                <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ fontSize: '14px', color: form.business_type ? '#ffffff' : '#52525b' }}>
                     {form.business_type || '请选择餐饮类别'}
                   </Text>
@@ -323,7 +323,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>面积（㎡）</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ width: '100%', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入面积"
@@ -342,7 +342,7 @@ export default function RecycleStoreEdit() {
                 value={form.open_date || ''}
                 onChange={(e) => handleInput('open_date', e.detail.value)}
               >
-                <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ fontSize: '14px', color: form.open_date ? '#ffffff' : '#52525b' }}>
                     {form.open_date || '请选择开业时间'}
                   </Text>
@@ -353,7 +353,7 @@ export default function RecycleStoreEdit() {
 
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>关店原因</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Textarea
                   style={{ width: '100%', minHeight: '80px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入关店原因"
@@ -368,7 +368,7 @@ export default function RecycleStoreEdit() {
 
         {/* 回收信息 */}
         <View style={{ padding: '16px 20px 80px' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '16px' }}>回收信息</Text>
 
             <View style={{ marginBottom: '16px' }}>
@@ -383,7 +383,7 @@ export default function RecycleStoreEdit() {
                   handleInput('recycle_status', statuses[index].value);
                 }}
               >
-                <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ fontSize: '14px', color: '#ffffff' }}>
                     {statuses[statusIndex].label}
                   </Text>
@@ -394,7 +394,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>预估设备清单</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Textarea
                   style={{ width: '100%', minHeight: '80px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入预估设备清单（如：冷柜2台、烤箱1台等）"
@@ -407,7 +407,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>预估价值（元）</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <CircleDollarSign size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -422,7 +422,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>收购价格（元）</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <CircleDollarSign size={16} color="#22c55e" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -437,7 +437,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>运输成本（元）</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ width: '100%', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入运输成本"
@@ -451,7 +451,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>人工成本（元）</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ width: '100%', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入人工成本"
@@ -470,7 +470,7 @@ export default function RecycleStoreEdit() {
                 value={form.recycle_date || ''}
                 onChange={(e) => handleInput('recycle_date', e.detail.value)}
               >
-                <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ fontSize: '14px', color: form.recycle_date ? '#ffffff' : '#52525b' }}>
                     {form.recycle_date || '请选择回收日期'}
                   </Text>
@@ -481,7 +481,7 @@ export default function RecycleStoreEdit() {
 
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>设备数量</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ width: '100%', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入设备数量"
@@ -505,7 +505,7 @@ export default function RecycleStoreEdit() {
                   handleInput('device_status', deviceStatuses[index]);
                 }}
               >
-                <View style={{ backgroundColor: '#27272a', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ backgroundColor: '#1e3a5f', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ fontSize: '14px', color: form.device_status ? '#ffffff' : '#52525b' }}>
                     {form.device_status || '请选择设备状态'}
                   </Text>

@@ -232,7 +232,7 @@ export default function UserDataPage() {
   const IconComponent = config.icon
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b]">
+    <View className="min-h-screen bg-[#0a0f1a]">
       {/* 顶部导航栏 */}
       <View className="bg-zinc-900 px-4 py-3 border-b border-zinc-800">
         <View className="flex items-center gap-3">

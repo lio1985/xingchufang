@@ -128,13 +128,13 @@ const QuickNotePage = () => {
   const allTags = [...new Set(notes.flatMap((note) => note.tags))];
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '120px' }}>
       {/* Header */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416', borderBottom: '1px solid #27272a' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View
-              style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={() => Taro.navigateBack()}
             >
               <ChevronLeft size={24} color="#fafafa" />
@@ -154,7 +154,7 @@ const QuickNotePage = () => {
         </View>
 
         {/* 搜索框 */}
-        <View style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#18181b', borderRadius: '12px', padding: '12px 16px', border: '1px solid #27272a' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#111827', borderRadius: '12px', padding: '12px 16px', border: '1px solid #1e3a5f' }}>
           <Search size={18} color="#71717a" />
           <Input
             style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
@@ -170,7 +170,7 @@ const QuickNotePage = () => {
           <ScrollView scrollX style={{ marginTop: '12px', whiteSpace: 'nowrap' }}>
             <View style={{ display: 'inline-flex', gap: '8px' }}>
               <View
-                style={{ padding: '6px 14px', borderRadius: '16px', backgroundColor: !searchKeyword ? 'rgba(245, 158, 11, 0.2)' : '#27272a', border: !searchKeyword ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #27272a' }}
+                style={{ padding: '6px 14px', borderRadius: '16px', backgroundColor: !searchKeyword ? 'rgba(245, 158, 11, 0.2)' : '#1e3a5f', border: !searchKeyword ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #1e3a5f' }}
                 onClick={() => setSearchKeyword('')}
               >
                 <Text style={{ fontSize: '13px', color: !searchKeyword ? '#f59e0b' : '#a1a1aa' }}>全部</Text>
@@ -190,7 +190,7 @@ const QuickNotePage = () => {
         <View style={{ padding: '16px 20px' }}>
           {filteredNotes.length === 0 ? (
             <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 0' }}>
-              <View style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#18181b', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', border: '1px solid #27272a' }}>
+              <View style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', border: '1px solid #1e3a5f' }}>
                 <Inbox size={40} color="#52525b" />
               </View>
               <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginBottom: '8px' }}>
@@ -206,7 +206,7 @@ const QuickNotePage = () => {
             filteredNotes.map((note) => (
               <View
                 key={note.id}
-                style={{ backgroundColor: '#18181b', borderRadius: '12px', padding: '16px', marginBottom: '12px', border: '1px solid #27272a' }}
+                style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '16px', marginBottom: '12px', border: '1px solid #1e3a5f' }}
               >
                 <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
@@ -219,7 +219,7 @@ const QuickNotePage = () => {
                   
                   <View style={{ display: 'flex', gap: '8px', marginLeft: '12px', flexShrink: 0 }}>
                     <View
-                      style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       onClick={() => handleToggleStar(note.id)}
                     >
                       {note.isStarred ? (
@@ -229,7 +229,7 @@ const QuickNotePage = () => {
                       )}
                     </View>
                     <View
-                      style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       onClick={() => handleDeleteNote(note.id)}
                     >
                       <Trash2 size={18} color="#ef4444" />
@@ -261,15 +261,15 @@ const QuickNotePage = () => {
           onClick={() => setShowAddDialog(false)}
         >
           <View
-            style={{ width: '100%', backgroundColor: '#141416', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', maxHeight: '80vh' }}
+            style={{ width: '100%', backgroundColor: '#111827', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', maxHeight: '80vh' }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* 弹窗头部 */}
-            <View style={{ padding: '20px', borderBottom: '1px solid #27272a' }}>
+            <View style={{ padding: '20px', borderBottom: '1px solid #1e3a5f' }}>
               <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>新建笔记</Text>
                 <View
-                  style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   onClick={() => setShowAddDialog(false)}
                 >
                   <X size={18} color="#71717a" />
@@ -281,7 +281,7 @@ const QuickNotePage = () => {
             <ScrollView scrollY style={{ padding: '20px', maxHeight: '50vh' }}>
               <View style={{ marginBottom: '16px' }}>
                 <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>标题 *</Text>
-                <View style={{ backgroundColor: '#18181b', borderRadius: '12px', padding: '14px', border: '1px solid #27272a' }}>
+                <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
                   <Input
                     style={{ width: '100%', fontSize: '15px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="请输入标题"
@@ -294,7 +294,7 @@ const QuickNotePage = () => {
 
               <View style={{ marginBottom: '16px' }}>
                 <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>内容</Text>
-                <View style={{ backgroundColor: '#18181b', borderRadius: '12px', padding: '14px', border: '1px solid #27272a' }}>
+                <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
                   <Textarea
                     style={{ width: '100%', minHeight: '120px', fontSize: '15px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="请输入内容..."
@@ -307,7 +307,7 @@ const QuickNotePage = () => {
 
               <View style={{ marginBottom: '16px' }}>
                 <Text style={{ fontSize: '13px', color: '#a1a1aa', marginBottom: '8px', display: 'block' }}>标签（逗号分隔）</Text>
-                <View style={{ backgroundColor: '#18181b', borderRadius: '12px', padding: '14px', border: '1px solid #27272a' }}>
+                <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
                   <Input
                     style={{ width: '100%', fontSize: '15px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="如：灵感, 工作, 生活"
@@ -320,12 +320,12 @@ const QuickNotePage = () => {
             </ScrollView>
 
             {/* 保存按钮 */}
-            <View style={{ padding: '20px', borderTop: '1px solid #27272a' }}>
+            <View style={{ padding: '20px', borderTop: '1px solid #1e3a5f' }}>
               <View
                 style={{ padding: '16px', borderRadius: '12px', backgroundColor: '#f59e0b', textAlign: 'center' }}
                 onClick={handleAddNote}
               >
-                <Text style={{ fontSize: '16px', fontWeight: '600', color: '#0a0a0b' }}>保存笔记</Text>
+                <Text style={{ fontSize: '16px', fontWeight: '600', color: '#0a0f1a' }}>保存笔记</Text>
               </View>
             </View>
           </View>

@@ -130,13 +130,13 @@ const ChangePasswordPage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* 页面头部 */}
       <View
         style={{
           padding: '48px 20px 20px',
-          backgroundColor: '#141416',
-          borderBottom: '1px solid #27272a',
+          backgroundColor: '#111827',
+          borderBottom: '1px solid #1e3a5f',
           position: 'relative',
         }}
       >
@@ -203,7 +203,7 @@ const ChangePasswordPage = () => {
             width: '48px',
             height: '2px',
             borderRadius: '1px',
-            backgroundColor: step === 2 ? '#f59e0b' : '#27272a',
+            backgroundColor: step === 2 ? '#f59e0b' : '#1e3a5f',
           }}
         />
 
@@ -217,7 +217,7 @@ const ChangePasswordPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: step === 2 ? '#f59e0b' : '#27272a',
+              backgroundColor: step === 2 ? '#f59e0b' : '#1e3a5f',
             }}
           >
             <Text style={{ fontSize: '14px', fontWeight: '600', color: step === 2 ? '#000000' : '#52525b' }}>2</Text>
@@ -273,8 +273,8 @@ const ChangePasswordPage = () => {
             </Text>
             <View
               style={{
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
                 borderRadius: '12px',
                 padding: '14px 16px',
                 display: 'flex',
@@ -301,8 +301,8 @@ const ChangePasswordPage = () => {
             </Text>
             <View
               style={{
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
                 borderRadius: '12px',
                 padding: '14px 16px',
                 display: 'flex',
@@ -396,8 +396,8 @@ const ChangePasswordPage = () => {
             </Text>
             <View
               style={{
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
                 borderRadius: '12px',
                 padding: '14px 16px',
                 display: 'flex',
@@ -431,8 +431,8 @@ const ChangePasswordPage = () => {
             </Text>
             <View
               style={{
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
                 borderRadius: '12px',
                 padding: '14px 16px',
                 display: 'flex',
@@ -500,7 +500,7 @@ const ChangePasswordPage = () => {
 
       {/* 底部提示 */}
       <View style={{ position: 'fixed', bottom: '32px', left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ fontSize: '12px', color: '#3f3f46' }}>星厨房内容创作助手 v1.0.0</Text>
+        <Text style={{ fontSize: '12px', color: '#334155' }}>星厨房内容创作助手 v1.0.0</Text>
       </View>
     </View>
   );

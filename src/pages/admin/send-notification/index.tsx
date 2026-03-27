@@ -202,8 +202,8 @@ const SendNotificationPage = () => {
                     flex: 1,
                     padding: '20px',
                     borderRadius: '16px',
-                    backgroundColor: targetType === item.value ? item.bgColor : '#1a1a1d',
-                    border: `2px solid ${targetType === item.value ? item.iconColor : '#27272a'}`,
+                    backgroundColor: targetType === item.value ? item.bgColor : '#1e293b',
+                    border: `2px solid ${targetType === item.value ? item.iconColor : '#1e3a5f'}`,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -216,7 +216,7 @@ const SendNotificationPage = () => {
                       width: '48px',
                       height: '48px',
                       borderRadius: '12px',
-                      backgroundColor: targetType === item.value ? item.bgColor : '#27272a',
+                      backgroundColor: targetType === item.value ? item.bgColor : '#1e3a5f',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -280,9 +280,9 @@ const SendNotificationPage = () => {
               </Text>
               <View
                 style={{
-                  backgroundColor: '#1a1a1d',
+                  backgroundColor: '#1e293b',
                   borderRadius: '16px',
-                  border: '1px solid #27272a',
+                  border: '1px solid #1e3a5f',
                 }}
               >
                 <Textarea
@@ -315,10 +315,10 @@ const SendNotificationPage = () => {
 
             <View
               style={{
-                backgroundColor: '#1a1a1d',
+                backgroundColor: '#1e293b',
                 borderRadius: '16px',
                 padding: '20px',
-                border: '1px solid #27272a',
+                border: '1px solid #1e3a5f',
               }}
             >
               <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>

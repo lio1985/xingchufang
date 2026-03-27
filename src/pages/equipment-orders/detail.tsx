@@ -230,7 +230,7 @@ const OrderDetailPage = () => {
 
   if (loading) {
     return (
-      <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: '#71717a' }}>加载中...</Text>
       </View>
     );
@@ -238,7 +238,7 @@ const OrderDetailPage = () => {
 
   if (!order) {
     return (
-      <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: '#71717a' }}>订单不存在</Text>
       </View>
     );
@@ -247,9 +247,9 @@ const OrderDetailPage = () => {
   const statusInfo = statusConfig[order.status] || statusConfig.published;
 
   return (
-    <ScrollView scrollY style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
+    <ScrollView scrollY style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '120px' }}>
       {/* 头部状态卡片 */}
-      <View style={{ backgroundColor: '#141416', padding: '48px 20px 20px', borderBottom: '1px solid #27272a' }}>
+      <View style={{ backgroundColor: '#111827', padding: '48px 20px 20px', borderBottom: '1px solid #1e3a5f' }}>
         {/* 返回按钮 */}
         <View style={{ marginBottom: '16px' }}>
           <View
@@ -276,14 +276,14 @@ const OrderDetailPage = () => {
         </View>
 
         {order.description && (
-          <View style={{ padding: '12px', backgroundColor: '#18181b', borderRadius: '8px', marginTop: '12px' }}>
+          <View style={{ padding: '12px', backgroundColor: '#111827', borderRadius: '8px', marginTop: '12px' }}>
             <Text style={{ fontSize: '14px', color: '#a1a1aa', lineHeight: '20px' }}>{order.description}</Text>
           </View>
         )}
       </View>
 
       {/* 设备信息 */}
-      <View style={{ backgroundColor: '#141416', padding: '20px', marginBottom: '8px' }}>
+      <View style={{ backgroundColor: '#111827', padding: '20px', marginBottom: '8px' }}>
         <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>设备信息</Text>
         <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           {[
@@ -296,7 +296,7 @@ const OrderDetailPage = () => {
           ]
             .filter((item) => item.value)
             .map((item) => (
-              <View key={item.label} style={{ padding: '8px 12px', backgroundColor: '#18181b', borderRadius: '6px' }}>
+              <View key={item.label} style={{ padding: '8px 12px', backgroundColor: '#111827', borderRadius: '6px' }}>
                 <Text style={{ fontSize: '11px', color: '#52525b', marginBottom: '4px' }}>{item.label}</Text>
                 <Text style={{ fontSize: '13px', color: '#ffffff' }}>{item.value}</Text>
               </View>
@@ -305,12 +305,12 @@ const OrderDetailPage = () => {
       </View>
 
       {/* 客户信息 */}
-      <View style={{ backgroundColor: '#141416', padding: '20px', marginBottom: '8px' }}>
+      <View style={{ backgroundColor: '#111827', padding: '20px', marginBottom: '8px' }}>
         <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>客户信息</Text>
         <View style={{ gap: '12px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }} onClick={handleCallPhone}>
             <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Phone size={18} color="#0a0a0b" />
+              <Phone size={18} color="#0a0f1a" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: '11px', color: '#52525b' }}>联系电话</Text>
@@ -322,7 +322,7 @@ const OrderDetailPage = () => {
           {order.customer_wechat && (
             <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <MessageCircle size={18} color="#0a0a0b" />
+                <MessageCircle size={18} color="#0a0f1a" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: '11px', color: '#52525b' }}>微信号</Text>
@@ -334,7 +334,7 @@ const OrderDetailPage = () => {
           {order.customer_address && (
             <View style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
               <View style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <MapPin size={18} color="#0a0a0b" />
+                <MapPin size={18} color="#0a0f1a" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: '11px', color: '#52525b' }}>地址</Text>
@@ -346,12 +346,12 @@ const OrderDetailPage = () => {
       </View>
 
       {/* 订单进度 */}
-      <View style={{ backgroundColor: '#141416', padding: '20px', marginBottom: '8px' }}>
+      <View style={{ backgroundColor: '#111827', padding: '20px', marginBottom: '8px' }}>
         <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', marginBottom: '16px' }}>订单进度</Text>
         <View style={{ gap: '12px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <CircleCheck size={16} color="#0a0a0b" />
+              <CircleCheck size={16} color="#0a0f1a" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: '14px', color: '#ffffff' }}>订单发布</Text>
@@ -374,7 +374,7 @@ const OrderDetailPage = () => {
           {order.completed_at && (
             <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <View style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <CircleCheck size={16} color="#0a0a0b" />
+                <CircleCheck size={16} color="#0a0f1a" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: '14px', color: '#ffffff' }}>已完成</Text>
@@ -387,7 +387,7 @@ const OrderDetailPage = () => {
 
       {/* 备注 */}
       {order.notes && (
-        <View style={{ backgroundColor: '#141416', padding: '20px', marginBottom: '8px' }}>
+        <View style={{ backgroundColor: '#111827', padding: '20px', marginBottom: '8px' }}>
           <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', marginBottom: '12px' }}>备注</Text>
           <Text style={{ fontSize: '14px', color: '#a1a1aa', lineHeight: '20px' }}>{order.notes}</Text>
         </View>
@@ -401,8 +401,8 @@ const OrderDetailPage = () => {
             bottom: 0,
             left: 0,
             right: 0,
-            backgroundColor: '#141416',
-            borderTop: '1px solid #27272a',
+            backgroundColor: '#111827',
+            borderTop: '1px solid #1e3a5f',
             padding: '16px 20px',
             paddingBottom: 'calc(16px + env(safe-area-inset-bottom))',
           }}
@@ -419,7 +419,7 @@ const OrderDetailPage = () => {
                 }}
                 onClick={handleTakeOrder}
               >
-                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#0a0a0b' }}>{actionLoading ? '处理中...' : '立即接单'}</Text>
+                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#0a0f1a' }}>{actionLoading ? '处理中...' : '立即接单'}</Text>
               </View>
             )}
 
@@ -429,7 +429,7 @@ const OrderDetailPage = () => {
                   flex: 1,
                   padding: '14px',
                   borderRadius: '12px',
-                  backgroundColor: '#27272a',
+                  backgroundColor: '#1e3a5f',
                   textAlign: 'center',
                 }}
                 onClick={handleFollowUp}
@@ -463,7 +463,7 @@ const OrderDetailPage = () => {
                 }}
                 onClick={handleCompleteOrder}
               >
-                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#0a0a0b' }}>{actionLoading ? '处理中...' : '完成订单'}</Text>
+                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#0a0f1a' }}>{actionLoading ? '处理中...' : '完成订单'}</Text>
               </View>
             )}
 

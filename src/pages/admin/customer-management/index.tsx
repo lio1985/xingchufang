@@ -892,7 +892,7 @@ export default function AdminCustomerManagement() {
   };
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b]">
+    <View className="min-h-screen bg-[#0a0f1a]">
       {/* Header */}
       <View className="pt-12 pb-4 px-4 bg-zinc-900/95 sticky top-0 z-20 border-b border-zinc-800">
         <View className="flex items-center justify-between mb-4">

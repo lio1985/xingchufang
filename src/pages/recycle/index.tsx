@@ -129,16 +129,16 @@ export default function RecycleStoreList() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
           <View
             style={{
               width: '40px',
               height: '40px',
               borderRadius: '12px',
-              backgroundColor: '#27272a',
+              backgroundColor: '#1e3a5f',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -154,7 +154,7 @@ export default function RecycleStoreList() {
 
       {/* 统计概览 */}
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '16px', padding: '20px' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '16px', padding: '20px' }}>
           <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>回收总览</Text>
             <View
@@ -169,14 +169,14 @@ export default function RecycleStoreList() {
               <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff' }}>{statistics?.total || 0}</Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>接触门店</Text>
             </View>
-            <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+            <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
             <View style={{ flex: 1, textAlign: 'center' }}>
               <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>
                 {statistics?.statusDistribution?.completed || 0}
               </Text>
               <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>已完成</Text>
             </View>
-            <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+            <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
             <View style={{ flex: 1, textAlign: 'center' }}>
               <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>
                 ¥{(statistics?.totalEstimatedValue || 0).toFixed(0)}
@@ -190,7 +190,7 @@ export default function RecycleStoreList() {
       {/* 搜索栏 */}
       <View style={{ padding: '16px 20px 0' }}>
         <View style={{ display: 'flex', gap: '12px' }}>
-          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center' }}>
             <Search size={18} color="#71717a" />
             <Input
               style={{ flex: 1, fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent', marginLeft: '8px' }}
@@ -218,8 +218,8 @@ export default function RecycleStoreList() {
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
-                backgroundColor: statusFilter === '' ? '#3b82f6' : '#18181b',
-                border: statusFilter === '' ? 'none' : '1px solid #27272a'
+                backgroundColor: statusFilter === '' ? '#3b82f6' : '#111827',
+                border: statusFilter === '' ? 'none' : '1px solid #1e3a5f'
               }}
               onClick={() => { setStatusFilter(''); loadStores(true, keyword, ''); }}
             >
@@ -231,8 +231,8 @@ export default function RecycleStoreList() {
                 style={{
                   padding: '8px 16px',
                   borderRadius: '20px',
-                  backgroundColor: statusFilter === key ? '#3b82f6' : '#18181b',
-                  border: statusFilter === key ? 'none' : '1px solid #27272a'
+                  backgroundColor: statusFilter === key ? '#3b82f6' : '#111827',
+                  border: statusFilter === key ? 'none' : '1px solid #1e3a5f'
                 }}
                 onClick={() => { setStatusFilter(key); loadStores(true, keyword, key); }}
               >
@@ -264,8 +264,8 @@ export default function RecycleStoreList() {
                 <View
                   key={store.id}
                   style={{
-                    backgroundColor: '#18181b',
-                    border: '1px solid #27272a',
+                    backgroundColor: '#111827',
+                    border: '1px solid #1e3a5f',
                     borderRadius: '12px',
                     padding: '16px',
                     marginBottom: '12px'
@@ -285,7 +285,7 @@ export default function RecycleStoreList() {
                     <ChevronRight size={18} color="#52525b" />
                   </View>
 
-                  <View style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Phone size={14} color="#52525b" />
                       <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.phone || '未填写'}</Text>
@@ -297,7 +297,7 @@ export default function RecycleStoreList() {
                   </View>
 
                   {store.estimated_value && (
-                    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+                    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                       <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <CircleDollarSign size={14} color="#52525b" />
                         <Text style={{ fontSize: '13px', color: '#71717a' }}>预估价值</Text>

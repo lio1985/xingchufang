@@ -113,7 +113,7 @@ export default function CustomerDetail() {
 
   if (!customer) {
     return (
-      <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: '#71717a' }}>加载中...</Text>
       </View>
     );
@@ -123,15 +123,15 @@ export default function CustomerDetail() {
   const orderStatus = orderStatusConfig[customer.order_status];
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
       {/* 头部 */}
-      <View style={{ padding: '48px 20px 16px', backgroundColor: '#141416', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <View style={{ padding: '48px 20px 16px', backgroundColor: '#111827', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <View style={{ display: 'flex', alignItems: 'center' }} onClick={goBack}>
           <ArrowLeft size={20} color="#ffffff" />
           <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', marginLeft: '12px' }}>客户详情</Text>
         </View>
         <View
-          style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center' }}
+          style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center' }}
           onClick={goToEdit}
         >
           <Pencil size={16} color="#f59e0b" />
@@ -141,7 +141,7 @@ export default function CustomerDetail() {
 
       <ScrollView style={{ padding: '16px 20px' }} scrollY>
         {/* 客户卡片 */}
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '20px', marginBottom: '16px' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '20px', marginBottom: '16px' }}>
           {/* 顶部：头像 + 姓名 + 状态 */}
           <View style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
             <View style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -159,7 +159,7 @@ export default function CustomerDetail() {
           </View>
 
           {/* 金额信息 */}
-          <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid #27272a' }}>
+          <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid #1e3a5f' }}>
             <View>
               <Text style={{ fontSize: '12px', color: '#71717a' }}>预计金额</Text>
               <Text style={{ fontSize: '24px', fontWeight: '700', color: '#22c55e', marginTop: '4px' }}>¥{(customer.estimated_amount || 0).toFixed(0)}万</Text>
@@ -174,10 +174,10 @@ export default function CustomerDetail() {
         {/* 联系方式 */}
         <View style={{ marginBottom: '16px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>联系方式</Text>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
             {/* 电话 */}
             {customer.phone && (
-              <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #27272a' }} onClick={handleCall}>
+              <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }} onClick={handleCall}>
                 <Phone size={18} color="#22c55e" />
                 <Text style={{ flex: 1, fontSize: '15px', color: '#ffffff', marginLeft: '12px' }}>{customer.phone}</Text>
                 <Text style={{ fontSize: '13px', color: '#22c55e' }}>拨打</Text>
@@ -185,7 +185,7 @@ export default function CustomerDetail() {
             )}
             {/* 微信 */}
             {customer.wechat && (
-              <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #27272a' }}>
+              <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}>
                 <MessageCircle size={18} color="#52525b" />
                 <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '12px' }}>微信：</Text>
                 <Text style={{ fontSize: '15px', color: '#ffffff' }}>{customer.wechat}</Text>
@@ -193,7 +193,7 @@ export default function CustomerDetail() {
             )}
             {/* 小红书 */}
             {customer.xiaohongshu && (
-              <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #27272a' }}>
+              <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}>
                 <User size={18} color="#52525b" />
                 <Text style={{ fontSize: '13px', color: '#71717a', marginLeft: '12px' }}>小红书：</Text>
                 <Text style={{ fontSize: '15px', color: '#ffffff' }}>{customer.xiaohongshu}</Text>
@@ -219,7 +219,7 @@ export default function CustomerDetail() {
         {/* 业务信息 */}
         <View style={{ marginBottom: '16px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>业务信息</Text>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <View style={{ display: 'flex', marginBottom: '12px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', width: '80px' }}>餐饮类别</Text>
               <Text style={{ fontSize: '14px', color: '#ffffff' }}>{customer.category || '-'}</Text>
@@ -250,7 +250,7 @@ export default function CustomerDetail() {
         {customer.requirements && (
           <View style={{ marginBottom: '16px' }}>
             <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>客户需求</Text>
-            <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
               <Text style={{ fontSize: '14px', color: '#a1a1aa', lineHeight: '22px' }}>{customer.requirements}</Text>
             </View>
           </View>
@@ -260,9 +260,9 @@ export default function CustomerDetail() {
         <View style={{ marginBottom: '32px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>跟进记录</Text>
           {followUps.length > 0 ? (
-            <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
               {followUps.map((item, index) => (
-                <View key={item.id} style={{ padding: '16px', borderBottom: index < followUps.length - 1 ? '1px solid #27272a' : 'none' }}>
+                <View key={item.id} style={{ padding: '16px', borderBottom: index < followUps.length - 1 ? '1px solid #1e3a5f' : 'none' }}>
                   <View style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                     <Clock size={14} color="#52525b" />
                     <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: '4px' }}>{formatDate(item.follow_up_time)}</Text>
@@ -274,7 +274,7 @@ export default function CustomerDetail() {
                   </View>
                   <Text style={{ fontSize: '14px', color: '#ffffff', lineHeight: '22px' }}>{item.content}</Text>
                   {item.next_follow_up_plan && (
-                    <View style={{ marginTop: '8px', padding: '8px', backgroundColor: '#0a0a0b', borderRadius: '6px' }}>
+                    <View style={{ marginTop: '8px', padding: '8px', backgroundColor: '#0a0f1a', borderRadius: '6px' }}>
                       <Text style={{ fontSize: '12px', color: '#f59e0b' }}>下次跟进：{item.next_follow_up_plan}</Text>
                     </View>
                   )}
@@ -282,7 +282,7 @@ export default function CustomerDetail() {
               ))}
             </View>
           ) : (
-            <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ fontSize: '14px', color: '#52525b' }}>暂无跟进记录</Text>
             </View>
           )}

@@ -74,13 +74,13 @@ const ContentSystemPage = () => {
   const filteredContents = getFilteredContents();
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '120px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '120px' }}>
       {/* Header */}
       <View 
         style={{ 
-          background: 'linear-gradient(180deg, #141416 0%, #0a0a0b 100%)',
+          background: 'linear-gradient(180deg, #111827 0%, #0a0f1a 100%)',
           padding: '48px 32px 32px',
-          borderBottom: '1px solid #27272a'
+          borderBottom: '1px solid #1e3a5f'
         }}
       >
         <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
@@ -98,10 +98,10 @@ const ContentSystemPage = () => {
               style={{
                 flex: 1,
                 padding: '16px 8px',
-                backgroundColor: selectedStatus === status.key ? '#f59e0b' : '#141416',
+                backgroundColor: selectedStatus === status.key ? '#f59e0b' : '#111827',
                 borderRadius: '12px',
                 textAlign: 'center',
-                border: selectedStatus === status.key ? 'none' : '1px solid #27272a'
+                border: selectedStatus === status.key ? 'none' : '1px solid #1e3a5f'
               }}
               onClick={() => setSelectedStatus(status.key)}
             >
@@ -153,11 +153,11 @@ const ContentSystemPage = () => {
             <View
               key={content.id}
               style={{
-                backgroundColor: '#141416',
+                backgroundColor: '#111827',
                 borderRadius: '20px',
                 padding: '28px',
                 marginBottom: '16px',
-                border: '1px solid #27272a'
+                border: '1px solid #1e3a5f'
               }}
             >
               <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -232,13 +232,13 @@ const ContentSystemPage = () => {
                   </View>
                 )}
                 <View 
-                  style={{ flex: 1, padding: '14px', backgroundColor: '#1a1a1d', borderRadius: '12px', textAlign: 'center', border: '1px solid #27272a' }}
+                  style={{ flex: 1, padding: '14px', backgroundColor: '#1e293b', borderRadius: '12px', textAlign: 'center', border: '1px solid #1e3a5f' }}
                   onClick={() => Taro.showToast({ title: '编辑内容', icon: 'none' })}
                 >
                   <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>编辑</Text>
                 </View>
                 <View 
-                  style={{ flex: 1, padding: '14px', backgroundColor: '#1a1a1d', borderRadius: '12px', textAlign: 'center', border: '1px solid #27272a' }}
+                  style={{ flex: 1, padding: '14px', backgroundColor: '#1e293b', borderRadius: '12px', textAlign: 'center', border: '1px solid #1e3a5f' }}
                   onClick={() => Taro.setClipboardData({ data: content.title })}
                 >
                   <Text style={{ fontSize: '24px', color: '#a1a1aa' }}>复制</Text>

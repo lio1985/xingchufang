@@ -103,9 +103,9 @@ export default function FavoriteListPage() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ display: 'flex', alignItems: 'center' }}>
             <Heart size={24} color="#ef4444" />
@@ -123,7 +123,7 @@ export default function FavoriteListPage() {
           </View>
         ) : favorites.length === 0 ? (
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 20px' }}>
-            <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#18181b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: '64px', height: '64px', borderRadius: '32px', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Heart size={32} color="#52525b" />
             </View>
             <Text style={{ fontSize: '16px', color: '#71717a', display: 'block', marginTop: '16px' }}>暂无收藏内容</Text>
@@ -139,15 +139,15 @@ export default function FavoriteListPage() {
                 <View
                   key={item.id}
                   style={{
-                    backgroundColor: '#18181b',
-                    border: '1px solid #27272a',
+                    backgroundColor: '#111827',
+                    border: '1px solid #1e3a5f',
                     borderRadius: '12px',
                     padding: '16px',
                     marginBottom: '12px'
                   }}
                 >
                   {/* 热点标题 */}
-                  <View style={{ marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #27272a' }}>
+                  <View style={{ marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #1e3a5f' }}>
                     <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>热点标题</Text>
                     <Text style={{ fontSize: '14px', color: '#a1a1aa' }}>{item.hotTitle}</Text>
                   </View>
@@ -181,7 +181,7 @@ export default function FavoriteListPage() {
                   </View>
 
                   {/* 状态和操作 */}
-                  <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+                  <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '20px', backgroundColor: statusConfig.bgColor }}>
                       <StatusIcon size={14} color={statusConfig.color} />
                       <Text style={{ fontSize: '12px', color: statusConfig.color }}>{item.status}</Text>
@@ -205,7 +205,7 @@ export default function FavoriteListPage() {
                         </View>
                       )}
                       <View
-                        style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#27272a', display: 'flex', alignItems: 'center' }}
+                        style={{ padding: '6px 12px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center' }}
                         onClick={() => handleDeleteFavorite(item.id)}
                       >
                         <Trash2 size={14} color="#ef4444" />

@@ -14,9 +14,9 @@ const TabCustomerPage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>客资管理</Text>
         <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>管理客户与回收业务</Text>
       </View>
@@ -24,11 +24,11 @@ const TabCustomerPage = () => {
       {/* 数据概览 */}
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         <View style={{ display: 'flex', gap: '12px' }}>
-          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>12</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>今日新增</Text>
           </View>
-          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#f59e0b' }}>8</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>待跟进</Text>
           </View>
@@ -40,7 +40,7 @@ const TabCustomerPage = () => {
         <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>功能入口</Text>
         <View style={{ display: 'flex', gap: '12px' }}>
           <View
-            style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/customer/index')}
           >
             <View style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -51,7 +51,7 @@ const TabCustomerPage = () => {
           </View>
 
           <View
-            style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/pages/recycle/index')}
           >
             <View style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -67,8 +67,8 @@ const TabCustomerPage = () => {
       <View style={{ padding: '12px 20px 0' }}>
         <View
           style={{
-            backgroundColor: '#18181b',
-            border: '1px solid #27272a',
+            backgroundColor: '#111827',
+            border: '1px solid #1e3a5f',
             borderRadius: '12px',
             padding: '16px',
             display: 'flex',
@@ -102,13 +102,13 @@ const TabCustomerPage = () => {
           </Text>
         </View>
         
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 客户项1 */}
           <View
-            style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #27272a' }}
+            style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleNav('/pages/customer/detail?id=1')}
           >
-            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
             </View>
             <View style={{ flex: 1, marginLeft: '12px' }}>
@@ -125,10 +125,10 @@ const TabCustomerPage = () => {
 
           {/* 客户项2 */}
           <View
-            style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #27272a' }}
+            style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleNav('/pages/customer/detail?id=2')}
           >
-            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
             </View>
             <View style={{ flex: 1, marginLeft: '12px' }}>
@@ -148,7 +148,7 @@ const TabCustomerPage = () => {
             style={{ display: 'flex', alignItems: 'center', padding: '12px 16px' }}
             onClick={() => handleNav('/pages/customer/detail?id=3')}
           >
-            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#27272a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
             </View>
             <View style={{ flex: 1, marginLeft: '12px' }}>

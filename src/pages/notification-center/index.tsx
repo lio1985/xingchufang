@@ -118,9 +118,9 @@ const NotificationCenterPage = () => {
   ];
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
       {/* 页面头部 */}
-      <View style={{ backgroundColor: '#141416', padding: '48px 20px 16px', borderBottom: '1px solid #27272a' }}>
+      <View style={{ backgroundColor: '#111827', padding: '48px 20px 16px', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Bell size={24} color="#f59e0b" />
@@ -143,7 +143,7 @@ const NotificationCenterPage = () => {
       </View>
 
       {/* 类型筛选 */}
-      <View style={{ backgroundColor: '#141416', padding: '12px 20px', borderBottom: '1px solid #27272a' }}>
+      <View style={{ backgroundColor: '#111827', padding: '12px 20px', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', gap: '8px' }}>
           {typeFilters.map((filter) => (
             <View
@@ -151,12 +151,12 @@ const NotificationCenterPage = () => {
               style={{
                 padding: '8px 16px',
                 borderRadius: '20px',
-                backgroundColor: activeType === filter.key ? '#f59e0b' : '#27272a',
+                backgroundColor: activeType === filter.key ? '#f59e0b' : '#1e3a5f',
                 flexShrink: 0
               }}
               onClick={() => setActiveType(filter.key)}
             >
-              <Text style={{ fontSize: '13px', color: activeType === filter.key ? '#0a0a0b' : '#a1a1aa', fontWeight: '500' }}>
+              <Text style={{ fontSize: '13px', color: activeType === filter.key ? '#0a0f1a' : '#a1a1aa', fontWeight: '500' }}>
                 {filter.label}
               </Text>
             </View>
@@ -174,7 +174,7 @@ const NotificationCenterPage = () => {
           ) : notifications.length === 0 ? (
             <View style={{ textAlign: 'center', padding: '40px 0' }}>
               <View style={{ marginBottom: '12px' }}>
-                <BellOff size={48} color="#27272a" />
+                <BellOff size={48} color="#1e3a5f" />
               </View>
               <Text style={{ color: '#71717a', fontSize: '14px' }}>暂无消息</Text>
             </View>
@@ -183,8 +183,8 @@ const NotificationCenterPage = () => {
               <View
                 key={notification.id}
                 style={{
-                  backgroundColor: notification.is_read ? '#18181b' : '#1a1a1f',
-                  border: notification.is_read ? '1px solid #27272a' : '1px solid #f59e0b',
+                  backgroundColor: notification.is_read ? '#111827' : '#1a1a1f',
+                  border: notification.is_read ? '1px solid #1e3a5f' : '1px solid #f59e0b',
                   borderRadius: '12px',
                   padding: '16px',
                   marginBottom: '12px',
@@ -198,7 +198,7 @@ const NotificationCenterPage = () => {
                       width: '40px',
                       height: '40px',
                       borderRadius: '50%',
-                      backgroundColor: notification.is_read ? '#27272a' : 'rgba(245, 158, 11, 0.2)',
+                      backgroundColor: notification.is_read ? '#1e3a5f' : 'rgba(245, 158, 11, 0.2)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

@@ -116,7 +116,7 @@ const LoginPage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {/* 背景装饰 */}
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '400px', background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%)', pointerEvents: 'none' }} />
 
@@ -140,9 +140,9 @@ const LoginPage = () => {
         <View style={{ marginBottom: '24px' }}>
           <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>账号</Text>
           <View style={{ 
-            backgroundColor: '#18181b', 
+            backgroundColor: '#111827', 
             borderRadius: '16px', 
-            border: focusedField === 'username' ? '2px solid #f59e0b' : '1px solid #27272a', 
+            border: focusedField === 'username' ? '2px solid #f59e0b' : '1px solid #1e3a5f', 
             padding: '24px', 
             display: 'flex', 
             alignItems: 'center', 
@@ -167,9 +167,9 @@ const LoginPage = () => {
         <View style={{ marginBottom: '24px' }}>
           <Text style={{ fontSize: '24px', color: '#a1a1aa', marginBottom: '12px', display: 'block' }}>密码</Text>
           <View style={{ 
-            backgroundColor: '#18181b', 
+            backgroundColor: '#111827', 
             borderRadius: '16px', 
-            border: focusedField === 'password' ? '2px solid #f59e0b' : '1px solid #27272a', 
+            border: focusedField === 'password' ? '2px solid #f59e0b' : '1px solid #1e3a5f', 
             padding: '24px', 
             display: 'flex', 
             alignItems: 'center', 
@@ -211,7 +211,7 @@ const LoginPage = () => {
         {/* 登录按钮 */}
         <View
           style={{ 
-            background: loading ? '#27272a' : 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)', 
+            background: loading ? '#1e3a5f' : 'linear-gradient(135deg, #f59e0b 0%, #fb923c 100%)', 
             borderRadius: '16px', 
             padding: '28px', 
             textAlign: 'center', 
@@ -235,7 +235,7 @@ const LoginPage = () => {
 
       {/* 底部版权 */}
       <View style={{ padding: '48px 32px', textAlign: 'center' }}>
-        <Text style={{ fontSize: '20px', color: '#3f3f46' }}>星厨房 · 让创作更高效</Text>
+        <Text style={{ fontSize: '20px', color: '#334155' }}>星厨房 · 让创作更高效</Text>
       </View>
     </View>
   );

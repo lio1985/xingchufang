@@ -90,7 +90,7 @@ const ProductManualDetailPage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '80px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 导航栏 */}
       <View style={{
         position: 'fixed',
@@ -98,8 +98,8 @@ const ProductManualDetailPage = () => {
         left: 0,
         right: 0,
         height: '48px',
-        backgroundColor: '#141416',
-        borderBottom: '1px solid #27272a',
+        backgroundColor: '#111827',
+        borderBottom: '1px solid #1e3a5f',
         display: 'flex',
         alignItems: 'center',
         padding: '0 16px',
@@ -150,7 +150,7 @@ const ProductManualDetailPage = () => {
               <View key={index} style={{
                 padding: '6px 12px',
                 borderRadius: '16px',
-                backgroundColor: '#27272a'
+                backgroundColor: '#1e3a5f'
               }}
               >
                 <Text style={{ fontSize: '12px', color: '#a1a1aa' }}>#{tag}</Text>
@@ -178,8 +178,8 @@ const ProductManualDetailPage = () => {
 
           {/* 正文内容 */}
           <View style={{
-            backgroundColor: '#18181b',
-            border: '1px solid #27272a',
+            backgroundColor: '#111827',
+            border: '1px solid #1e3a5f',
             borderRadius: '12px',
             padding: '20px'
           }}
@@ -192,8 +192,8 @@ const ProductManualDetailPage = () => {
 
           {/* 文档信息 */}
           <View style={{
-            backgroundColor: '#18181b',
-            border: '1px solid #27272a',
+            backgroundColor: '#111827',
+            border: '1px solid #1e3a5f',
             borderRadius: '12px',
             padding: '16px',
             marginTop: '16px'
@@ -228,8 +228,8 @@ const ProductManualDetailPage = () => {
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#141416',
-        borderTop: '1px solid #27272a',
+        backgroundColor: '#111827',
+        borderTop: '1px solid #1e3a5f',
         padding: '12px 20px',
         display: 'flex',
         alignItems: 'center',
@@ -241,7 +241,7 @@ const ProductManualDetailPage = () => {
             width: '44px',
             height: '44px',
             borderRadius: '12px',
-            backgroundColor: isFavorite ? 'rgba(245, 158, 11, 0.2)' : '#27272a',
+            backgroundColor: isFavorite ? 'rgba(245, 158, 11, 0.2)' : '#1e3a5f',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -255,7 +255,7 @@ const ProductManualDetailPage = () => {
             width: '44px',
             height: '44px',
             borderRadius: '12px',
-            backgroundColor: '#27272a',
+            backgroundColor: '#1e3a5f',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -277,8 +277,8 @@ const ProductManualDetailPage = () => {
           }}
           onClick={handleDownload}
         >
-          <Download size={18} color="#0a0a0b" />
-          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#0a0a0b' }}>下载PDF</Text>
+          <Download size={18} color="#0a0f1a" />
+          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#0a0f1a' }}>下载PDF</Text>
         </View>
       </View>
     </View>

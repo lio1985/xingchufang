@@ -211,7 +211,7 @@ const DataExportPage: React.FC = () => {
                 flex: 1,
                 padding: '14px',
                 borderRadius: '12px',
-                backgroundColor: activeTab === tab.key ? '#f59e0b' : '#1a1a1d',
+                backgroundColor: activeTab === tab.key ? '#f59e0b' : '#1e293b',
                 textAlign: 'center',
               }}
               onClick={() => setActiveTab(tab.key as any)}
@@ -313,8 +313,8 @@ const DataExportPage: React.FC = () => {
                         flex: 1,
                         padding: '16px',
                         borderRadius: '12px',
-                        backgroundColor: config.format === option.value ? `${option.color}20` : '#1a1a1d',
-                        border: `2px solid ${config.format === option.value ? option.color : '#27272a'}`,
+                        backgroundColor: config.format === option.value ? `${option.color}20` : '#1e293b',
+                        border: `2px solid ${config.format === option.value ? option.color : '#1e3a5f'}`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',

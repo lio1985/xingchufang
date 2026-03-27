@@ -228,7 +228,7 @@ export default function AdminRecycleManagementPage() {
   };
 
   return (
-    <View className="min-h-screen bg-[#0a0a0b]">
+    <View className="min-h-screen bg-[#0a0f1a]">
       {/* 顶部标题栏 */}
       <View className="admin-header">
         <View className="admin-header-content">

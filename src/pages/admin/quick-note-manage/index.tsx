@@ -275,7 +275,7 @@ export default function AdminQuickNoteManagePage() {
       </View>
 
       {/* 搜索栏和操作区 */}
-      <View style={{ backgroundColor: '#0a0a0b', padding: '16px 24px', borderBottom: '1px solid #18181b' }}>
+      <View style={{ backgroundColor: '#0a0f1a', padding: '16px 24px', borderBottom: '1px solid #111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <Text style={{ fontSize: '14px', color: '#71717a' }}>共 {notes.length} 条</Text>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -299,7 +299,7 @@ export default function AdminQuickNoteManagePage() {
               style={{
                 padding: '8px 16px',
                 borderRadius: '12px',
-                backgroundColor: isBatchMode ? '#ef4444' : '#1a1a1d',
+                backgroundColor: isBatchMode ? '#ef4444' : '#1e293b',
               }}
               onClick={() => {
                 setIsBatchMode(!isBatchMode);
@@ -331,14 +331,14 @@ export default function AdminQuickNoteManagePage() {
 
       {/* 标签筛选 */}
       {allTags.length > 0 && (
-        <View style={{ backgroundColor: '#0a0a0b', padding: '16px 24px', borderBottom: '1px solid #18181b' }}>
+        <View style={{ backgroundColor: '#0a0f1a', padding: '16px 24px', borderBottom: '1px solid #111827' }}>
           <ScrollView scrollX style={{ whiteSpace: 'nowrap' }}>
             <View style={{ display: 'inline-flex', gap: '12px' }}>
               <View
                 style={{
                   padding: '10px 20px',
                   borderRadius: '12px',
-                  backgroundColor: !activeTag ? '#f59e0b' : '#1a1a1d',
+                  backgroundColor: !activeTag ? '#f59e0b' : '#1e293b',
                 }}
                 onClick={() => setActiveTag('')}
               >
@@ -350,7 +350,7 @@ export default function AdminQuickNoteManagePage() {
                   style={{
                     padding: '10px 20px',
                     borderRadius: '12px',
-                    backgroundColor: activeTag === tag ? '#f59e0b' : '#1a1a1d',
+                    backgroundColor: activeTag === tag ? '#f59e0b' : '#1e293b',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
@@ -392,7 +392,7 @@ export default function AdminQuickNoteManagePage() {
                       height: '24px',
                       borderRadius: '6px',
                       border: '2px solid',
-                      borderColor: selectedNoteIds.includes(note.id) ? '#f59e0b' : '#27272a',
+                      borderColor: selectedNoteIds.includes(note.id) ? '#f59e0b' : '#1e3a5f',
                       backgroundColor: selectedNoteIds.includes(note.id) ? '#f59e0b' : 'transparent',
                       display: 'flex',
                       alignItems: 'center',
@@ -457,7 +457,7 @@ export default function AdminQuickNoteManagePage() {
                         />
                       ))}
                       {note.images.length > 3 && (
-                        <View style={{ width: '80px', height: '80px', borderRadius: '12px', backgroundColor: '#1a1a1d', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <View style={{ width: '80px', height: '80px', borderRadius: '12px', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           <Text style={{ fontSize: '22px', color: '#71717a' }}>+{note.images.length - 3}</Text>
                         </View>
                       )}
@@ -562,7 +562,7 @@ export default function AdminQuickNoteManagePage() {
               {selectedNote.audio && (
                 <View>
                   <Text style={{ fontSize: '24px', fontWeight: '600', color: '#fafafa', display: 'block', marginBottom: '12px' }}>语音</Text>
-                  <View style={{ backgroundColor: '#1a1a1d', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <View style={{ backgroundColor: '#1e293b', borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <Mic size={24} color="#f59e0b" />
                     <Text style={{ fontSize: '22px', color: '#a1a1aa', flex: 1 }}>语音记录</Text>
                     {isWeapp && (
@@ -592,7 +592,7 @@ export default function AdminQuickNoteManagePage() {
                 </View>
               )}
 
-              <View style={{ fontSize: '20px', color: '#52525b', paddingTop: '16px', borderTop: '1px solid #27272a', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <View style={{ fontSize: '20px', color: '#52525b', paddingTop: '16px', borderTop: '1px solid #1e3a5f', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <Text style={{ display: 'block' }}>
                   创建时间: {new Date(selectedNote.createdAt).toLocaleString('zh-CN')}
                 </Text>

@@ -243,7 +243,7 @@ const RecyclingOrderPage = () => {
                 style={{
                   flexShrink: 0,
                   padding: '10px 16px',
-                  backgroundColor: selectedCategory === cat ? '#f59e0b' : '#141416',
+                  backgroundColor: selectedCategory === cat ? '#f59e0b' : '#111827',
                   color: selectedCategory === cat ? '#000' : '#a1a1aa',
                   borderRadius: '10px',
                   fontSize: '22px',
@@ -390,7 +390,7 @@ const RecyclingOrderPage = () => {
                       style={{
                         flexShrink: 0,
                         padding: '12px 20px',
-                        backgroundColor: newOrder.category === cat ? '#f59e0b' : '#1a1a1d',
+                        backgroundColor: newOrder.category === cat ? '#f59e0b' : '#1e293b',
                         borderRadius: '12px',
                         fontSize: '24px',
                         color: newOrder.category === cat ? '#000' : '#a1a1aa',

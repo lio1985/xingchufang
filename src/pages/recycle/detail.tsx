@@ -195,7 +195,7 @@ export default function RecycleStoreDetail() {
 
   if (!store) {
     return (
-      <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: '#71717a' }}>加载中...</Text>
       </View>
     );
@@ -204,9 +204,9 @@ export default function RecycleStoreDetail() {
   const statusConfig = statusMap[store.recycle_status];
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
       {/* 头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ display: 'flex', alignItems: 'center' }} onClick={goBack}>
             <ArrowLeft size={20} color="#ffffff" />
@@ -235,7 +235,7 @@ export default function RecycleStoreDetail() {
       <ScrollView scrollY style={{ height: 'calc(100vh - 180px)' }}>
         {/* 核心数据卡片 */}
         <View style={{ padding: '16px 20px' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '16px', padding: '20px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '16px', padding: '20px' }}>
             <View style={{ display: 'flex', justifyContent: 'space-between' }}>
               <View style={{ flex: 1, textAlign: 'center' }}>
                 <Text style={{ fontSize: '28px', fontWeight: '700', color: '#3b82f6' }}>
@@ -245,7 +245,7 @@ export default function RecycleStoreDetail() {
               </View>
               {store.total_cost && (
                 <>
-                  <View style={{ width: '1px', backgroundColor: '#27272a' }} />
+                  <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
                   <View style={{ flex: 1, textAlign: 'center' }}>
                     <Text style={{ fontSize: '28px', fontWeight: '700', color: '#22c55e' }}>
                       ¥{store.total_cost.toFixed(0)}
@@ -260,21 +260,21 @@ export default function RecycleStoreDetail() {
 
         {/* 联系方式 */}
         <View style={{ padding: '0 20px' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>联系方式</Text>
             
-            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #27272a' }} onClick={makePhoneCall}>
+            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e3a5f' }} onClick={makePhoneCall}>
               <Phone size={16} color="#3b82f6" />
               <Text style={{ fontSize: '14px', color: '#ffffff', marginLeft: '12px', flex: 1 }}>{store.phone || '未填写'}</Text>
               {store.phone && <Text style={{ fontSize: '12px', color: '#3b82f6' }}>拨打</Text>}
             </View>
             
-            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #27272a' }}>
+            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e3a5f' }}>
               <MessageCircle size={16} color="#22c55e" />
               <Text style={{ fontSize: '14px', color: '#ffffff', marginLeft: '12px' }}>{store.wechat || '未填写'}</Text>
             </View>
             
-            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #27272a' }}>
+            <View style={{ display: 'flex', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #1e3a5f' }}>
               <Text style={{ fontSize: '12px', color: '#ef4444', marginLeft: '28px' }}>小红书: {store.xiaohongshu || '未填写'}</Text>
             </View>
             
@@ -286,7 +286,7 @@ export default function RecycleStoreDetail() {
 
         {/* 位置信息 */}
         <View style={{ padding: '16px 20px 0' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }} onClick={openLocation}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }} onClick={openLocation}>
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <View style={{ display: 'flex', alignItems: 'center' }}>
                 <MapPin size={16} color="#f59e0b" />
@@ -302,7 +302,7 @@ export default function RecycleStoreDetail() {
 
         {/* 业务信息 */}
         <View style={{ padding: '16px 20px 0' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>业务信息</Text>
 
             <View style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
@@ -318,7 +318,7 @@ export default function RecycleStoreDetail() {
               <Text style={{ fontSize: '13px', color: '#ffffff' }}>{store.open_date || '未填写'}</Text>
             </View>
             {store.close_reason && (
-              <View style={{ marginTop: '8px', paddingTop: '12px', borderTop: '1px solid #27272a' }}>
+              <View style={{ marginTop: '8px', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginBottom: '4px' }}>关店原因</Text>
                 <Text style={{ fontSize: '13px', color: '#a1a1aa' }}>{store.close_reason}</Text>
               </View>
@@ -329,7 +329,7 @@ export default function RecycleStoreDetail() {
         {/* 回收信息 */}
         {(store.estimated_devices || store.purchase_price || store.recycle_date) && (
           <View style={{ padding: '16px 20px 0' }}>
-            <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+            <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
               <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '12px' }}>回收信息</Text>
 
               {store.estimated_devices && (
@@ -365,7 +365,7 @@ export default function RecycleStoreDetail() {
 
         {/* 跟进记录 */}
         <View style={{ padding: '16px 20px 80px' }}>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>跟进记录</Text>
               <View
@@ -388,14 +388,14 @@ export default function RecycleStoreDetail() {
                     <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                       <Text style={{ fontSize: '12px', color: '#52525b' }}>{formatDateTime(followUp.follow_up_time)}</Text>
                       {followUp.follow_up_method && (
-                        <View style={{ backgroundColor: '#27272a', borderRadius: '4px', padding: '2px 8px' }}>
+                        <View style={{ backgroundColor: '#1e3a5f', borderRadius: '4px', padding: '2px 8px' }}>
                           <Text style={{ fontSize: '11px', color: '#71717a' }}>{followUp.follow_up_method}</Text>
                         </View>
                       )}
                     </View>
                     <Text style={{ fontSize: '14px', color: '#a1a1aa', display: 'block' }}>{followUp.content}</Text>
                     {followUp.next_follow_up_plan && (
-                      <View style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #27272a' }}>
+                      <View style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #1e3a5f' }}>
                         <Text style={{ fontSize: '12px', color: '#f59e0b' }}>下次计划：{followUp.next_follow_up_plan}</Text>
                       </View>
                     )}
@@ -410,7 +410,7 @@ export default function RecycleStoreDetail() {
       {/* 新增跟进弹窗 */}
       {showAddFollowUp && (
         <View style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)', display: 'flex', alignItems: 'flex-end', zIndex: 100 }}>
-          <View style={{ backgroundColor: '#18181b', width: '100%', borderRadius: '20px 20px 0 0', padding: '20px' }}>
+          <View style={{ backgroundColor: '#111827', width: '100%', borderRadius: '20px 20px 0 0', padding: '20px' }}>
             <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>新增跟进记录</Text>
               <View onClick={() => setShowAddFollowUp(false)}>
@@ -427,7 +427,7 @@ export default function RecycleStoreDetail() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      backgroundColor: followUpMethod === method ? '#3b82f6' : '#27272a'
+                      backgroundColor: followUpMethod === method ? '#3b82f6' : '#1e3a5f'
                     }}
                     onClick={() => setFollowUpMethod(method)}
                   >
@@ -439,7 +439,7 @@ export default function RecycleStoreDetail() {
 
             <View style={{ marginBottom: '20px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginBottom: '8px' }}>跟进内容</Text>
-              <View style={{ backgroundColor: '#27272a', borderRadius: '12px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#1e3a5f', borderRadius: '12px', padding: '12px' }}>
                 <Textarea
                   style={{ width: '100%', minHeight: '100px', fontSize: '14px', color: '#ffffff', backgroundColor: 'transparent' }}
                   placeholder="请输入跟进内容"

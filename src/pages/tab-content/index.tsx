@@ -14,9 +14,9 @@ const TabContentPage = () => {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b', paddingBottom: '60px' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 24px', backgroundColor: '#141416' }}>
+      <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>内容创作</Text>
         <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>释放你的创作潜能</Text>
       </View>
@@ -41,11 +41,11 @@ const TabContentPage = () => {
       {/* 创作数据统计 */}
       <View style={{ padding: '20px 20px 0' }}>
         <View style={{ display: 'flex', gap: '12px' }}>
-          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>15</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周创作</Text>
           </View>
-          <View style={{ flex: 1, backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#f59e0b' }}>42</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>灵感数量</Text>
           </View>
@@ -56,10 +56,10 @@ const TabContentPage = () => {
       <View style={{ padding: '24px 20px 0' }}>
         <Text style={{ fontSize: '12px', color: '#52525b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>创作工具</Text>
         
-        <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', overflow: 'hidden' }}>
+        <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
           {/* 灵感速记 */}
           <View
-            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #27272a' }}
+            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleNav('/pages/quick-note/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -74,7 +74,7 @@ const TabContentPage = () => {
 
           {/* 选题策划 */}
           <View
-            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #27272a' }}
+            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
             onClick={() => handleNav('/pages/topic-planning/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(6, 182, 212, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

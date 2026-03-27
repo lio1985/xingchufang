@@ -145,9 +145,9 @@ export default function CustomerEdit() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0a0b' }}>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
       {/* 头部 */}
-      <View style={{ padding: '48px 20px 16px', backgroundColor: '#141416', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <View style={{ padding: '48px 20px 16px', backgroundColor: '#111827', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <View style={{ display: 'flex', alignItems: 'center' }} onClick={goBack}>
           <ArrowLeft size={20} color="#ffffff" />
           <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', marginLeft: '12px' }}>
@@ -167,11 +167,11 @@ export default function CustomerEdit() {
         {/* 基本信息 */}
         <View style={{ marginBottom: '16px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>基本信息</Text>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 客户称呼 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>客户称呼 <Text style={{ color: '#ef4444' }}>*</Text></Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ fontSize: '14px', color: '#ffffff' }}
                   placeholder="请输入客户姓名"
@@ -185,7 +185,7 @@ export default function CustomerEdit() {
             {/* 手机号码 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>手机号码</Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <Phone size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
@@ -201,7 +201,7 @@ export default function CustomerEdit() {
             {/* 微信号 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>微信号</Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <MessageCircle size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
@@ -216,7 +216,7 @@ export default function CustomerEdit() {
             {/* 小红书号 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>小红书号</Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <User size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
@@ -231,7 +231,7 @@ export default function CustomerEdit() {
             {/* 抖音号 */}
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>抖音号</Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <User size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
@@ -248,11 +248,11 @@ export default function CustomerEdit() {
         {/* 业务信息 */}
         <View style={{ marginBottom: '16px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>业务信息</Text>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 餐饮类别 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>餐饮类别</Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                 <Input
                   style={{ fontSize: '14px', color: '#ffffff' }}
                   placeholder="如：火锅、烧烤、中餐等"
@@ -276,7 +276,7 @@ export default function CustomerEdit() {
                   handleInput('source', customerSources[index]);
                 }}
               >
-                <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                   <Text style={{ fontSize: '14px', color: form.source ? '#ffffff' : '#52525b' }}>{form.source || '请选择客户来源'}</Text>
                 </View>
               </Picker>
@@ -295,7 +295,7 @@ export default function CustomerEdit() {
                   handleInput('customer_type', customerTypes[index]);
                 }}
               >
-                <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                   <Text style={{ fontSize: '14px', color: form.customer_type ? '#ffffff' : '#52525b' }}>{form.customer_type || '请选择客户类别'}</Text>
                 </View>
               </Picker>
@@ -304,7 +304,7 @@ export default function CustomerEdit() {
             {/* 预计销售金额 */}
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>预计销售金额（万元）</Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <Text style={{ fontSize: '14px', color: '#22c55e' }}>¥</Text>
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '4px' }}
@@ -322,11 +322,11 @@ export default function CustomerEdit() {
         {/* 位置信息 */}
         <View style={{ marginBottom: '16px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>位置信息</Text>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 所在城市 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>所在城市</Text>
-              <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}>
                 <MapPin size={16} color="#52525b" />
                 <Input
                   style={{ flex: 1, fontSize: '14px', color: '#ffffff', marginLeft: '8px' }}
@@ -342,7 +342,7 @@ export default function CustomerEdit() {
             <View>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>项目详细位置</Text>
               <View
-                style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}
+                style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center' }}
                 onClick={handleLocation}
               >
                 <MapPin size={16} color="#f59e0b" />
@@ -357,7 +357,7 @@ export default function CustomerEdit() {
         {/* 订单信息 */}
         <View style={{ marginBottom: '16px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>订单信息</Text>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
             {/* 订单归属 */}
             <View style={{ marginBottom: '16px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px' }}>订单归属</Text>
@@ -371,7 +371,7 @@ export default function CustomerEdit() {
                   handleInput('order_belonging', orderBelongings[index]);
                 }}
               >
-                <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                   <Text style={{ fontSize: '14px', color: form.order_belonging ? '#ffffff' : '#52525b' }}>{form.order_belonging || '请选择订单归属'}</Text>
                 </View>
               </Picker>
@@ -390,7 +390,7 @@ export default function CustomerEdit() {
                   handleInput('status', statuses[index].value as any);
                 }}
               >
-                <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                   <Text style={{ fontSize: '14px', color: '#ffffff' }}>{statuses[statusIndex].label}</Text>
                 </View>
               </Picker>
@@ -409,7 +409,7 @@ export default function CustomerEdit() {
                   handleInput('order_status', orderStatuses[index].value as any);
                 }}
               >
-                <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
                   <Text style={{ fontSize: '14px', color: '#ffffff' }}>{orderStatuses[orderStatusIndex].label}</Text>
                 </View>
               </Picker>
@@ -420,8 +420,8 @@ export default function CustomerEdit() {
         {/* 客户需求 */}
         <View style={{ marginBottom: '32px' }}>
           <Text style={{ fontSize: '12px', color: '#52525b', fontWeight: '500', marginBottom: '12px' }}>客户需求</Text>
-          <View style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', padding: '16px' }}>
-            <View style={{ backgroundColor: '#0a0a0b', borderRadius: '8px', padding: '12px' }}>
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
+            <View style={{ backgroundColor: '#0a0f1a', borderRadius: '8px', padding: '12px' }}>
               <Textarea
                 style={{ width: '100%', height: '100px', fontSize: '14px', color: '#ffffff' }}
                 placeholder="请输入客户的具体需求..."
