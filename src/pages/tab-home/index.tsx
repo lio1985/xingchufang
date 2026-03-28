@@ -75,10 +75,6 @@ const TabHomePage = () => {
   });
 
   const fetchRecentOrders = async () => {
-    // 暂时禁用，后端接口尚未部署
-    setRecentOrders([]);
-    return;
-    /*
     try {
       const res = await Network.request({
         url: '/api/equipment-orders?limit=5',
@@ -90,7 +86,6 @@ const TabHomePage = () => {
     } catch (error) {
       console.log('获取最近订单失败:', error);
     }
-    */
   };
 
   const checkLoginStatus = () => {
