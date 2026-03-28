@@ -18,6 +18,20 @@ import {
 import { Network } from '@/network';
 import { useOnlineStatus, getUserOnlineStatus } from '@/hooks/useOnlineStatus';
 
+// 用户角色枚举
+enum UserRole {
+  GUEST = 'guest',
+  EMPLOYEE = 'employee',
+  TEAM_LEADER = 'team_leader',
+  ADMIN = 'admin',
+}
+
+// 检查用户是否有接单权限（员工、团队队长、管理员）
+const hasOrderPermission = (role?: string): boolean => {
+  if (!role) return false;
+  return [UserRole.EMPLOYEE, UserRole.TEAM_LEADER, UserRole.ADMIN].includes(role as UserRole);
+};
+
 interface RecentOrder {
   id: string;
   order_no: string;
@@ -372,7 +386,8 @@ const TabHomePage = () => {
       <View style={{ padding: '24px 20px 0' }}>
         <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>快捷入口</Text>
 
-        {/* 获客接单 - 带滚动订单列表 */}
+        {/* 获客接单 - 带滚动订单列表 - 仅员工及以上权限可见 */}
+        {hasOrderPermission(userInfo?.role) && (
         <View
           style={{
             background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(234, 88, 12, 0.1))',
@@ -466,6 +481,7 @@ const TabHomePage = () => {
             </View>
           )}
         </View>
+        )}
 
         {/* 直播数据 - 与获客接单样式一致 */}
         <View

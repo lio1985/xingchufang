@@ -14,7 +14,7 @@ import {
   Inbox,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
-import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { useAuthGuard, UserRole } from '@/hooks/useAuthGuard';
 import { colors, fontSize, spacing, containerStyles } from '@/styles/common';
 import { formatRelativeTime, formatMoney } from '@/utils/format';
 import { debounce } from '@/utils/loading';
@@ -63,8 +63,13 @@ const priorityMap: Record<string, { text: string; color: string }> = {
 const PAGE_SIZE = 20;
 
 const EquipmentOrdersPage = () => {
-  // 登录状态检查
-  const { canAccess, loading: authLoading } = useAuthGuard({ requireLogin: true });
+  // 登录状态和权限检查 - 仅员工及以上权限可访问
+  const { canAccess, loading: authLoading } = useAuthGuard({
+    requireLogin: true,
+    allowedRoles: ['employee', 'team_leader', 'admin'] as UserRole[],
+    forbiddenMessage: '该功能仅对员工及以上权限开放',
+    forbiddenPath: '/pages/tab-home/index',
+  });
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
