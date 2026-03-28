@@ -357,4 +357,127 @@ export class TeamService {
 
     return this.getTeam(user.team_id);
   }
+
+  /**
+   * 获取用户所在团队的成员列表
+   */
+  async getTeamMembers(userId: string) {
+    const supabase = getSupabaseClient();
+
+    // 获取用户的团队ID
+    const { data: user } = await supabase
+      .from('users')
+      .select('team_id')
+      .eq('id', userId)
+      .single();
+
+    if (!user?.team_id) {
+      return [];
+    }
+
+    // 获取团队成员
+    const { data: members, error } = await supabase
+      .from('users')
+      .select('id, nickname, avatar_url, role, status, is_team_leader, created_at')
+      .eq('team_id', user.team_id)
+      .eq('status', 'active')
+      .order('is_team_leader', { ascending: false });
+
+    if (error) {
+      return [];
+    }
+
+    return (members || []).map(m => ({
+      id: m.id,
+      user_id: m.id,
+      role: m.is_team_leader ? 'leader' : 'member',
+      joined_at: m.created_at,
+      user: {
+        id: m.id,
+        nickname: m.nickname,
+        avatarUrl: m.avatar_url,
+      },
+    }));
+  }
+
+  /**
+   * 获取团队统计数据
+   */
+  async getTeamStatistics(userId: string) {
+    const supabase = getSupabaseClient();
+
+    // 获取用户的团队
+    const team = await this.getUserTeam(userId);
+    if (!team) {
+      return null;
+    }
+
+    // 获取团队成员
+    const members = await this.getTeamMembers(userId);
+    const memberIds = members.map(m => m.user_id);
+
+    // 获取客户统计
+    const { count: totalCustomers } = await supabase
+      .from('customers')
+      .select('*', { count: 'exact', head: true })
+      .in('owner_id', memberIds);
+
+    // 获取回收门店数
+    const { count: totalRecycleStores } = await supabase
+      .from('recycle_stores')
+      .select('*', { count: 'exact', head: true })
+      .in('owner_id', memberIds);
+
+    // 获取成交总额（从回收订单）
+    const { data: recycleOrders } = await supabase
+      .from('recycle_orders')
+      .select('deal_value')
+      .in('owner_id', memberIds)
+      .eq('status', 'completed');
+
+    const totalDealValue = (recycleOrders || []).reduce((sum, order) => sum + (order.deal_value || 0), 0);
+
+    // 成员业绩排行
+    const memberRanking = await Promise.all(
+      members.map(async (member) => {
+        // 获取该成员的客户数
+        const { count: customerCount } = await supabase
+          .from('customers')
+          .select('*', { count: 'exact', head: true })
+          .eq('owner_id', member.user_id);
+
+        // 获取该成员的成交额
+        const { data: memberOrders } = await supabase
+          .from('recycle_orders')
+          .select('deal_value')
+          .eq('owner_id', member.user_id)
+          .eq('status', 'completed');
+
+        const recycleDealValue = (memberOrders || []).reduce((sum, order) => sum + (order.deal_value || 0), 0);
+
+        return {
+          userId: member.user_id,
+          name: member.user?.nickname || '未知',
+          role: member.role,
+          customerCount: customerCount || 0,
+          recycleDealValue,
+          contributionRate: totalDealValue > 0 ? Math.round((recycleDealValue / totalDealValue) * 100) : 0,
+        };
+      })
+    );
+
+    // 按成交额排序
+    memberRanking.sort((a, b) => b.recycleDealValue - a.recycleDealValue);
+
+    return {
+      teamId: team.id,
+      teamName: team.name,
+      memberCount: members.length,
+      totalCustomers: totalCustomers || 0,
+      activeCustomers: totalCustomers || 0,
+      totalRecycleStores: totalRecycleStores || 0,
+      totalDealValue,
+      memberRanking,
+    };
+  }
 }

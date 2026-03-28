@@ -24,11 +24,35 @@ export class TeamController {
   }
 
   /**
-   * 获取当前用户的团队
+   * 获取当前用户的团队信息（兼容多种路径）
    */
   @Get('my-team')
   async getMyTeam(@Request() req) {
     return this.teamService.getUserTeam(req.user.id);
+  }
+
+  /**
+   * 获取当前用户的团队信息（兼容前端调用路径）
+   */
+  @Get('my/team')
+  async getMyTeamAlt(@Request() req) {
+    return this.teamService.getUserTeam(req.user.id);
+  }
+
+  /**
+   * 获取当前用户的团队成员
+   */
+  @Get('my/members')
+  async getMyTeamMembers(@Request() req) {
+    return this.teamService.getTeamMembers(req.user.id);
+  }
+
+  /**
+   * 获取当前用户的团队统计
+   */
+  @Get('my/statistics')
+  async getMyTeamStatistics(@Request() req) {
+    return this.teamService.getTeamStatistics(req.user.id);
   }
 
   /**

@@ -2,7 +2,20 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
 import { Network } from '@/network';
-import { Users, UserCheck, Store, DollarSign, Crown, Medal, Award, ChevronRight, TrendingUp } from 'lucide-react-taro';
+import {
+  Users,
+  Crown,
+  Medal,
+  Award,
+  ChevronRight,
+  TrendingUp,
+  Megaphone,
+  ClipboardList,
+  Target,
+  ChartBarBig,
+  MessageCircle,
+  Phone,
+} from 'lucide-react-taro';
 
 interface TeamMember {
   id: string;
@@ -34,6 +47,16 @@ interface TeamStats {
   }[];
 }
 
+interface QuickAction {
+  id: string;
+  icon: typeof Users;
+  label: string;
+  color: string;
+  bgColor: string;
+  path?: string;
+  onClick?: () => void;
+}
+
 export default function MyTeam() {
   const [team, setTeam] = useState<{ id: string; name: string; description?: string } | null>(null);
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -43,6 +66,10 @@ export default function MyTeam() {
   useEffect(() => {
     fetchMyTeam();
   }, []);
+
+  Taro.useDidShow(() => {
+    fetchMyTeam();
+  });
 
   const fetchMyTeam = async () => {
     setLoading(true);
@@ -54,7 +81,7 @@ export default function MyTeam() {
       });
       console.log('[MyTeam] Team response:', teamRes);
 
-      if (teamRes.data.code === 200 && teamRes.data.data) {
+      if (teamRes.data?.code === 200 && teamRes.data?.data) {
         setTeam(teamRes.data.data);
 
         // 获取团队成员
@@ -63,7 +90,7 @@ export default function MyTeam() {
           method: 'GET',
         });
         console.log('[MyTeam] Members response:', membersRes);
-        if (membersRes.data.code === 200) {
+        if (membersRes.data?.code === 200) {
           setMembers(membersRes.data.data || []);
         }
 
@@ -73,17 +100,84 @@ export default function MyTeam() {
           method: 'GET',
         });
         console.log('[MyTeam] Stats response:', statsRes);
-        if (statsRes.data.code === 200 && statsRes.data.data) {
+        if (statsRes.data?.code === 200 && statsRes.data?.data) {
           setStats(statsRes.data.data);
         }
       }
     } catch (error) {
       console.error('[MyTeam] Fetch error:', error);
-      Taro.showToast({ title: '获取团队信息失败', icon: 'none' });
     } finally {
       setLoading(false);
     }
   };
+
+  const handleNav = (path: string) => {
+    Taro.navigateTo({ url: path });
+  };
+
+  const handleCallAdmin = () => {
+    Taro.showModal({
+      title: '联系管理员',
+      content: '请联系管理员将您添加到相应的销售团队',
+      confirmText: '知道了',
+      showCancel: false,
+    });
+  };
+
+  const myInfo = members.find(m => m.user_id === Taro.getStorageSync('user')?.id);
+  const isLeader = myInfo?.role === 'leader';
+
+  // 快捷功能入口
+  const quickActions: QuickAction[] = [
+    {
+      id: 'announcement',
+      icon: Megaphone,
+      label: '团队公告',
+      color: '#f97316',
+      bgColor: 'rgba(249, 115, 22, 0.15)',
+      onClick: () => Taro.showToast({ title: '功能开发中', icon: 'none' }),
+    },
+    {
+      id: 'tasks',
+      icon: ClipboardList,
+      label: '任务分配',
+      color: '#38bdf8',
+      bgColor: 'rgba(56, 189, 248, 0.15)',
+      onClick: () => Taro.showToast({ title: '功能开发中', icon: 'none' }),
+    },
+    {
+      id: 'target',
+      icon: Target,
+      label: '业绩目标',
+      color: '#4ade80',
+      bgColor: 'rgba(74, 222, 128, 0.15)',
+      path: '/pages/customer/sales-target',
+    },
+    {
+      id: 'members',
+      icon: Users,
+      label: '成员管理',
+      color: '#a78bfa',
+      bgColor: 'rgba(167, 139, 250, 0.15)',
+      onClick: () => Taro.showToast({ title: '功能开发中', icon: 'none' }),
+    },
+    {
+      id: 'report',
+      icon: ChartBarBig,
+      label: '数据报告',
+      color: '#f43f5e',
+      bgColor: 'rgba(244, 63, 94, 0.15)',
+      path: '/pages/data-stats/index',
+    },
+    {
+      id: 'chat',
+      icon: MessageCircle,
+      label: '团队聊天',
+      color: '#fbbf24',
+      bgColor: 'rgba(251, 191, 36, 0.15)',
+      onClick: () => Taro.showToast({ title: '功能开发中', icon: 'none' }),
+    },
+  ];
 
   if (loading) {
     return (
@@ -93,22 +187,98 @@ export default function MyTeam() {
     );
   }
 
+  // 未加入团队的空状态
   if (!team) {
     return (
-      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-        <View style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', border: '1px solid #1e3a5f' }}>
-          <Users size={40} color="#38bdf8" />
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', padding: '20px' }}>
+        {/* Header */}
+        <View style={{ padding: '48px 0 24px' }}>
+          <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>我的团队</Text>
+          <Text style={{ fontSize: '14px', color: '#64748b', display: 'block', marginTop: '4px' }}>团队协作，高效获客</Text>
         </View>
-        <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', marginBottom: '8px', display: 'block' }}>尚未加入团队</Text>
-        <Text style={{ fontSize: '14px', color: '#71717a', textAlign: 'center', display: 'block', marginBottom: '24px' }}>
-          您还没有加入任何团队{'\n'}请联系管理员添加您到相应的销售团队
-        </Text>
+
+        {/* 空状态 */}
+        <View style={{
+          backgroundColor: '#111827',
+          borderRadius: '16px',
+          border: '1px solid #1e3a5f',
+          padding: '40px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginTop: '40px',
+        }}
+        >
+          <View
+            style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '20px',
+            }}
+          >
+            <Users size={40} color="#38bdf8" />
+          </View>
+          <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', marginBottom: '8px', display: 'block' }}>尚未加入团队</Text>
+          <Text style={{ fontSize: '14px', color: '#71717a', textAlign: 'center', display: 'block', marginBottom: '24px' }}>
+            您还没有加入任何团队{'\n'}请联系管理员添加您到相应的销售团队
+          </Text>
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              borderRadius: '24px',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+            }}
+            onClick={handleCallAdmin}
+          >
+            <Phone size={18} color="#38bdf8" />
+            <Text style={{ fontSize: '14px', fontWeight: '500', color: '#38bdf8' }}>联系管理员</Text>
+          </View>
+        </View>
+
+        {/* 功能介绍 */}
+        <View style={{ marginTop: '32px' }}>
+          <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', marginBottom: '16px', display: 'block' }}>团队功能</Text>
+          <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '12px' }}>
+            {[
+              { icon: Users, label: '成员管理', desc: '管理团队成员' },
+              { icon: Target, label: '业绩目标', desc: '设定团队目标' },
+              { icon: ChartBarBig, label: '数据分析', desc: '团队数据报表' },
+              { icon: MessageCircle, label: '团队沟通', desc: '高效协作沟通' },
+            ].map((item, index) => {
+              const IconComp = item.icon;
+              return (
+                <View
+                  key={index}
+                  style={{
+                    width: 'calc(50% - 6px)',
+                    backgroundColor: '#111827',
+                    borderRadius: '12px',
+                    border: '1px solid #1e3a5f',
+                    padding: '16px',
+                  }}
+                >
+                  <View style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
+                    <IconComp size={18} color="#38bdf8" />
+                  </View>
+                  <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', display: 'block', marginBottom: '4px' }}>{item.label}</Text>
+                  <Text style={{ fontSize: '12px', color: '#64748b', display: 'block' }}>{item.desc}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
       </View>
     );
   }
-
-  const myInfo = members.find(m => m.user_id === Taro.getStorageSync('userInfo')?.id);
-  const isLeader = myInfo?.role === 'leader';
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '100px' }}>
@@ -131,56 +301,81 @@ export default function MyTeam() {
         </View>
       </View>
 
-      <ScrollView scrollY style={{ height: 'calc(100vh - 200px)' }}>
-        {/* Stats Cards */}
+      <ScrollView scrollY style={{ flex: 1 }}>
+        {/* 团队数据概览 - 4个卡片一排 */}
         {stats && (
           <View style={{ padding: '20px 20px 16px' }}>
             <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>团队业绩概览</Text>
-            <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-              <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '16px', border: '1px solid #1e3a5f' }}>
-                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Users size={16} color="#60a5fa" />
-                  </View>
-                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>团队成员</Text>
-                </View>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.memberCount}</Text>
+            <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+              <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '10px', padding: '12px 8px', border: '1px solid #1e3a5f', textAlign: 'center' }}>
+                <Text style={{ fontSize: '22px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.memberCount}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>团队成员</Text>
               </View>
-
-              <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '16px', border: '1px solid #1e3a5f' }}>
-                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <UserCheck size={16} color="#10b981" />
-                  </View>
-                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>客户总数</Text>
-                </View>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.totalCustomers}</Text>
+              <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '10px', padding: '12px 8px', border: '1px solid #1e3a5f', textAlign: 'center' }}>
+                <Text style={{ fontSize: '22px', fontWeight: '700', color: '#10b981', display: 'block' }}>{stats.totalCustomers}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>客户总数</Text>
               </View>
-
-              <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '16px', border: '1px solid #1e3a5f' }}>
-                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Store size={16} color="#a855f7" />
-                  </View>
-                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>回收门店</Text>
-                </View>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.totalRecycleStores}</Text>
+              <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '10px', padding: '12px 8px', border: '1px solid #1e3a5f', textAlign: 'center' }}>
+                <Text style={{ fontSize: '22px', fontWeight: '700', color: '#a855f7', display: 'block' }}>{stats.totalRecycleStores}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>回收门店</Text>
               </View>
-
-              <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '16px', border: '1px solid #1e3a5f' }}>
-                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <View style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: 'rgba(251, 191, 36, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <DollarSign size={16} color="#fbbf24" />
-                  </View>
-                  <Text style={{ fontSize: '13px', color: '#94a3b8' }}>成交总额</Text>
-                </View>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff', display: 'block' }}>¥{(stats.totalDealValue / 10000).toFixed(1)}万</Text>
+              <View style={{ flex: 1, backgroundColor: '#111827', borderRadius: '10px', padding: '12px 8px', border: '1px solid #1e3a5f', textAlign: 'center' }}>
+                <Text style={{ fontSize: '18px', fontWeight: '700', color: '#fbbf24', display: 'block' }}>{(stats.totalDealValue / 10000).toFixed(1)}万</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>成交总额</Text>
               </View>
             </View>
           </View>
         )}
 
-        {/* Member Ranking */}
+        {/* 快捷功能入口 */}
+        <View style={{ padding: '16px 20px' }}>
+          <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>快捷功能</Text>
+          <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px' }}>
+            {quickActions.map((action) => {
+              const IconComp = action.icon;
+              return (
+                <View
+                  key={action.id}
+                  style={{
+                    width: 'calc(33.33% - 7px)',
+                    backgroundColor: '#111827',
+                    borderRadius: '12px',
+                    border: '1px solid #1e3a5f',
+                    padding: '14px 8px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => {
+                    if (action.path) {
+                      handleNav(action.path);
+                    } else if (action.onClick) {
+                      action.onClick();
+                    }
+                  }}
+                >
+                  <View
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '10px',
+                      backgroundColor: action.bgColor,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '8px',
+                    }}
+                  >
+                    <IconComp size={18} color={action.color} />
+                  </View>
+                  <Text style={{ fontSize: '12px', fontWeight: '500', color: '#ffffff', display: 'block', textAlign: 'center' }}>{action.label}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* 成员排行榜 */}
         <View style={{ padding: '16px 20px' }}>
           <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', display: 'block' }}>成员排行榜</Text>
@@ -282,7 +477,7 @@ export default function MyTeam() {
           </View>
         </View>
 
-        {/* Team Activity */}
+        {/* 团队动态 */}
         <View style={{ padding: '16px 20px 24px' }}>
           <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', marginBottom: '12px', display: 'block' }}>团队动态</Text>
           

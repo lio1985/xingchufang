@@ -326,24 +326,24 @@ const TabHomePage = () => {
         </View>
       </View>
 
-      {/* 数据概览 */}
+      {/* 数据概览 - 4个卡片一排 */}
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
-        <View style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-            <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff' }}>{stats.todayNew}</Text>
-            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>今日新增</Text>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' }}>
+            <Text style={{ fontSize: '22px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.todayNew}</Text>
+            <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>今日新增</Text>
           </View>
-          <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-            <Text style={{ fontSize: '28px', fontWeight: '700', color: '#38bdf8' }}>{stats.pendingFollow}</Text>
-            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>待跟进</Text>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' }}>
+            <Text style={{ fontSize: '22px', fontWeight: '700', color: '#38bdf8', display: 'block' }}>{stats.pendingFollow}</Text>
+            <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>待跟进</Text>
           </View>
-          <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-            <Text style={{ fontSize: '28px', fontWeight: '700', color: '#fbbf24' }}>{stats.unreadMessage}</Text>
-            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>待处理消息</Text>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' }}>
+            <Text style={{ fontSize: '22px', fontWeight: '700', color: '#fbbf24', display: 'block' }}>{stats.unreadMessage}</Text>
+            <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>待处理</Text>
           </View>
-          <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-            <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>{stats.weekContent}</Text>
-            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周写作</Text>
+          <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' }}>
+            <Text style={{ fontSize: '22px', fontWeight: '700', color: '#4ade80', display: 'block' }}>{stats.weekContent}</Text>
+            <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>本周写作</Text>
           </View>
         </View>
       </View>
