@@ -4,6 +4,7 @@ import { JwtUtil, TokenPayload } from '../utils/jwt.util';
 import { Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { StorageService } from '../storage/storage.service';
+import { NotificationService } from '../notification/notification.service';
 
 export interface User {
   id: string;
@@ -79,6 +80,8 @@ export class UserService {
   constructor(
     @Inject(forwardRef(() => StorageService))
     private readonly storageService: StorageService,
+    @Inject(forwardRef(() => NotificationService))
+    private readonly notificationService: NotificationService,
   ) {}
 
   /**
@@ -1169,6 +1172,14 @@ export class UserService {
 
     this.logger.log(`新用户注册成功: ${createdUser.id}`);
 
+    // 通知所有管理员有新用户待审核
+    try {
+      await this.notifyAdminsForNewUser(createdUser);
+    } catch (error) {
+      this.logger.error('通知管理员失败:', error);
+      // 不影响注册流程，只记录错误
+    }
+
     return {
       user: {
         id: createdUser.id,
@@ -1178,6 +1189,45 @@ export class UserService {
         status: createdUser.status,
       },
     };
+  }
+
+  /**
+   * 通知管理员有新用户待审核
+   */
+  private async notifyAdminsForNewUser(newUser: any) {
+    this.logger.log('开始通知管理员有新用户待审核');
+
+    // 查询所有管理员
+    const { data: admins, error } = await this.client
+      .from('users')
+      .select('id')
+      .eq('role', 'admin')
+      .eq('status', 'active');
+
+    if (error) {
+      this.logger.error('查询管理员失败:', error);
+      return;
+    }
+
+    if (!admins || admins.length === 0) {
+      this.logger.warn('没有找到活跃的管理员用户');
+      return;
+    }
+
+    this.logger.log(`找到 ${admins.length} 位管理员，准备发送通知`);
+
+    // 发送通知给所有管理员
+    const adminIds = admins.map(admin => admin.id);
+
+    await this.notificationService.sendNotification({
+      title: '新用户注册待审核',
+      content: `用户「${newUser.nickname || newUser.employee_id}」已完成注册，请及时审核。`,
+      type: 'system',
+      targetType: 'user',
+      targetUsers: adminIds,
+    });
+
+    this.logger.log(`已向 ${adminIds.length} 位管理员发送新用户审核通知`);
   }
 
   /**

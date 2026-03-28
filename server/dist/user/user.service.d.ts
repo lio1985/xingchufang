@@ -1,5 +1,6 @@
 import { TokenPayload } from '../utils/jwt.util';
 import { StorageService } from '../storage/storage.service';
+import { NotificationService } from '../notification/notification.service';
 export interface User {
     id: string;
     openid: string;
@@ -63,9 +64,10 @@ export interface UpdateUserProfileDto {
 }
 export declare class UserService {
     private readonly storageService;
+    private readonly notificationService;
     private client;
     private readonly logger;
-    constructor(storageService: StorageService);
+    constructor(storageService: StorageService, notificationService: NotificationService);
     private generateUniqueEmployeeId;
     wechatLogin(code: string): Promise<LoginResponse>;
     findByOpenid(openid: string): Promise<User | null>;
@@ -132,6 +134,7 @@ export declare class UserService {
     register(username: string, password: string, nickname?: string): Promise<{
         user: any;
     }>;
+    private notifyAdminsForNewUser;
     changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void>;
     resetPassword(userId: string, newPassword: string): Promise<void>;
     auditUser(userId: string, status: 'active' | 'disabled', operatorId: string): Promise<void>;

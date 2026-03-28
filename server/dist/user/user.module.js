@@ -11,13 +11,14 @@ const common_1 = require("@nestjs/common");
 const user_controller_1 = require("./user.controller");
 const user_service_1 = require("./user.service");
 const storage_module_1 = require("../storage/storage.module");
+const notification_module_1 = require("../notification/notification.module");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
-        imports: [storage_module_1.StorageModule],
+        imports: [storage_module_1.StorageModule, (0, common_1.forwardRef)(() => notification_module_1.NotificationModule)],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService],
         exports: [user_service_1.UserService],

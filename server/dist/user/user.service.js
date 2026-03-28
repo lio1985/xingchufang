@@ -20,9 +20,11 @@ const jwt_util_1 = require("../utils/jwt.util");
 const common_2 = require("@nestjs/common");
 const bcrypt = require("bcrypt");
 const storage_service_1 = require("../storage/storage.service");
+const notification_service_1 = require("../notification/notification.service");
 let UserService = UserService_1 = class UserService {
-    constructor(storageService) {
+    constructor(storageService, notificationService) {
         this.storageService = storageService;
+        this.notificationService = notificationService;
         this.client = (0, supabase_client_1.getSupabaseClient)();
         this.logger = new common_2.Logger(UserService_1.name);
     }
@@ -789,6 +791,12 @@ let UserService = UserService_1 = class UserService {
             throw new common_1.HttpException('注册失败', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
         this.logger.log(`新用户注册成功: ${createdUser.id}`);
+        try {
+            await this.notifyAdminsForNewUser(createdUser);
+        }
+        catch (error) {
+            this.logger.error('通知管理员失败:', error);
+        }
         return {
             user: {
                 id: createdUser.id,
@@ -798,6 +806,32 @@ let UserService = UserService_1 = class UserService {
                 status: createdUser.status,
             },
         };
+    }
+    async notifyAdminsForNewUser(newUser) {
+        this.logger.log('开始通知管理员有新用户待审核');
+        const { data: admins, error } = await this.client
+            .from('users')
+            .select('id')
+            .eq('role', 'admin')
+            .eq('status', 'active');
+        if (error) {
+            this.logger.error('查询管理员失败:', error);
+            return;
+        }
+        if (!admins || admins.length === 0) {
+            this.logger.warn('没有找到活跃的管理员用户');
+            return;
+        }
+        this.logger.log(`找到 ${admins.length} 位管理员，准备发送通知`);
+        const adminIds = admins.map(admin => admin.id);
+        await this.notificationService.sendNotification({
+            title: '新用户注册待审核',
+            content: `用户「${newUser.nickname || newUser.employee_id}」已完成注册，请及时审核。`,
+            type: 'system',
+            targetType: 'user',
+            targetUsers: adminIds,
+        });
+        this.logger.log(`已向 ${adminIds.length} 位管理员发送新用户审核通知`);
     }
     async changePassword(userId, oldPassword, newPassword) {
         this.logger.log(`修改密码: ${userId}`);
@@ -1119,6 +1153,8 @@ exports.UserService = UserService;
 exports.UserService = UserService = UserService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)((0, common_1.forwardRef)(() => storage_service_1.StorageService))),
-    __metadata("design:paramtypes", [storage_service_1.StorageService])
+    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => notification_service_1.NotificationService))),
+    __metadata("design:paramtypes", [storage_service_1.StorageService,
+        notification_service_1.NotificationService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map
