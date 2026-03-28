@@ -9,12 +9,12 @@ import {
   FileText,
   PenTool,
   Target,
-  Image,
-  Video,
-  Mic,
   RefreshCw,
   Copy,
   Trash2,
+  BookOpen,
+  ChevronDown,
+  Check,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -23,7 +23,21 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  knowledgeUsed?: string[];
 }
+
+interface KnowledgeSource {
+  key: string;
+  name: string;
+  color: string;
+}
+
+const KNOWLEDGE_SOURCES: KnowledgeSource[] = [
+  { key: 'lexicon', name: '个人语料', color: '#38bdf8' },
+  { key: 'knowledge_share', name: '公司资料', color: '#a855f7' },
+  { key: 'product_manual', name: '产品手册', color: '#10b981' },
+  { key: 'design_knowledge', name: '设计知识', color: '#f59e0b' },
+];
 
 const quickActions = [
   { id: 'script', icon: FileText, label: '写脚本', color: '#38bdf8', prompt: '帮我写一个短视频脚本' },
@@ -43,6 +57,9 @@ export default function AIAssistantPage() {
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showKnowledgePicker, setShowKnowledgePicker] = useState(false);
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<string[]>([]);
+  const [knowledgeContext, setKnowledgeContext] = useState<string>('');
 
   const handleSend = async () => {
     if (!inputText.trim() || isLoading) return;
@@ -59,25 +76,35 @@ export default function AIAssistantPage() {
     setIsLoading(true);
 
     try {
+      // 构建请求数据
+      const requestData: any = {
+        message: userMessage.content,
+        context: messages.slice(-5).map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+      };
+
+      // 如果选择了知识库，添加上下文
+      if (knowledgeContext) {
+        requestData.knowledgeContext = knowledgeContext;
+        requestData.knowledgeSources = selectedKnowledgeSources;
+      }
+
       // 调用 AI 接口
       const response = await Network.request({
-        url: '/api/ai/chat',
+        url: '/api/ai-chat/chat',
         method: 'POST',
-        data: {
-          message: userMessage.content,
-          context: messages.slice(-5).map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-        },
+        data: requestData,
       });
 
       if (response.data?.code === 200 && response.data?.data) {
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: response.data.data.reply || '抱歉，我暂时无法回答这个问题。',
+          content: response.data.data.content || response.data.data.reply || '抱歉，我暂时无法回答这个问题。',
           timestamp: new Date(),
+          knowledgeUsed: selectedKnowledgeSources.length > 0 ? selectedKnowledgeSources : undefined,
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
@@ -208,9 +235,48 @@ export default function AIAssistantPage() {
               timestamp: new Date(),
             },
           ]);
+          setKnowledgeContext('');
+          setSelectedKnowledgeSources([]);
         }
       },
     });
+  };
+
+  const toggleKnowledgeSource = (key: string) => {
+    setSelectedKnowledgeSources(prev => {
+      if (prev.includes(key)) {
+        return prev.filter(k => k !== key);
+      } else {
+        return [...prev, key];
+      }
+    });
+  };
+
+  const loadKnowledgeContext = async () => {
+    if (selectedKnowledgeSources.length === 0) {
+      setKnowledgeContext('');
+      return;
+    }
+
+    try {
+      const res = await Network.request({
+        url: '/api/knowledge/search',
+        method: 'GET',
+        data: {
+          sources: selectedKnowledgeSources.join(','),
+          limit: 5,
+        },
+      });
+
+      if (res.data?.code === 200 && res.data?.data) {
+        const context = res.data.data
+          .map((item: any) => `【${item.title}】\n${item.content || ''}`)
+          .join('\n\n');
+        setKnowledgeContext(context);
+      }
+    } catch (error) {
+      console.error('加载知识库失败:', error);
+    }
   };
 
   const formatTime = (date: Date) => {
@@ -436,15 +502,89 @@ export default function AIAssistantPage() {
           marginBottom: '12px',
         }}
         >
-          <View style={{ display: 'flex', gap: '16px' }}>
-            <Image size={20} color="#71717a" />
-            <Video size={20} color="#71717a" />
-            <Mic size={20} color="#71717a" />
+          <View 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px',
+              padding: '6px 12px',
+              backgroundColor: selectedKnowledgeSources.length > 0 ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
+              borderRadius: '16px',
+              border: selectedKnowledgeSources.length > 0 ? '1px solid #38bdf8' : '1px solid transparent',
+            }}
+            onClick={() => setShowKnowledgePicker(!showKnowledgePicker)}
+          >
+            <BookOpen size={16} color={selectedKnowledgeSources.length > 0 ? '#38bdf8' : '#71717a'} />
+            <Text style={{ fontSize: '13px', color: selectedKnowledgeSources.length > 0 ? '#38bdf8' : '#71717a' }}>
+              知识库 {selectedKnowledgeSources.length > 0 ? `(${selectedKnowledgeSources.length})` : ''}
+            </Text>
+            <ChevronDown size={14} color={selectedKnowledgeSources.length > 0 ? '#38bdf8' : '#71717a'} />
           </View>
           <View onClick={handleClear}>
             <Trash2 size={18} color="#71717a" />
           </View>
         </View>
+
+        {/* 知识库选择器 */}
+        {showKnowledgePicker && (
+          <View style={{
+            backgroundColor: '#0f172a',
+            borderRadius: '12px',
+            padding: '12px',
+            marginBottom: '12px',
+            border: '1px solid #1e3a5f',
+          }}
+          >
+            <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '10px', display: 'block' }}>
+              选择知识库来源，让回答更精准
+            </Text>
+            <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {KNOWLEDGE_SOURCES.map((source) => (
+                <View
+                  key={source.key}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 12px',
+                    borderRadius: '16px',
+                    backgroundColor: selectedKnowledgeSources.includes(source.key) ? source.color + '20' : '#1e293b',
+                    border: selectedKnowledgeSources.includes(source.key) ? `1px solid ${source.color}` : '1px solid transparent',
+                  }}
+                  onClick={() => toggleKnowledgeSource(source.key)}
+                >
+                  {selectedKnowledgeSources.includes(source.key) && <Check size={12} color={source.color} />}
+                  <Text style={{ 
+                    fontSize: '13px', 
+                    color: selectedKnowledgeSources.includes(source.key) ? source.color : '#94a3b8' 
+                  }}
+                  >
+                    {source.name}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            {selectedKnowledgeSources.length > 0 && (
+              <View
+                style={{
+                  marginTop: '12px',
+                  padding: '10px 16px',
+                  backgroundColor: '#38bdf8',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onClick={() => {
+                  loadKnowledgeContext();
+                  setShowKnowledgePicker(false);
+                }}
+              >
+                <Text style={{ fontSize: '13px', color: '#000', fontWeight: '600' }}>确认选择</Text>
+              </View>
+            )}
+          </View>
+        )}
 
         {/* 输入框 */}
         <View style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
