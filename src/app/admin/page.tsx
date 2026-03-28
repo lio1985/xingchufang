@@ -6,6 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import {
   Package,
   Image as ImageIcon,
@@ -20,6 +35,11 @@ import {
   Users,
   TrendingUp,
   Loader2,
+  Plus,
+  Edit,
+  X,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
 
 interface Stats {
@@ -40,12 +60,10 @@ interface Product {
   has_image: boolean;
 }
 
-interface ImageInfo {
-  id: number;
-  product_id: number;
-  product_name: string;
-  image_url: string;
-  created_at: string;
+interface FilterOptions {
+  suppliers: string[];
+  level1Categories: string[];
+  level2Categories: string[];
 }
 
 export default function AdminPage() {
@@ -57,15 +75,43 @@ export default function AdminPage() {
   // 数据状态
   const [stats, setStats] = useState<Stats | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const [images, setImages] = useState<ImageInfo[]>([]);
+  const [images, setImages] = useState<any[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [productPage, setProductPage] = useState(1);
   const [productTotal, setProductTotal] = useState(0);
   const [imagePage, setImagePage] = useState(1);
   const [imageTotal, setImageTotal] = useState(0);
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+    suppliers: [],
+    level1Categories: [],
+    level2Categories: [],
+  });
   
   // 操作状态
   const [actionLoading, setActionLoading] = useState(false);
+  
+  // 新建/编辑商品
+  const [showProductDialog, setShowProductDialog] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [productForm, setProductForm] = useState({
+    name: '',
+    product_code: '',
+    brand: '',
+    spec: '',
+    params: '',
+    price: '',
+    supplier: '',
+    level1_category: '',
+    level2_category: '',
+    origin: '',
+    warranty: '',
+    selling_points: '',
+    remarks: '',
+  });
+  
+  // 批量选择
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [showBatchDeleteConfirm, setShowBatchDeleteConfirm] = useState(false);
 
   // 检查登录状态和权限
   useEffect(() => {
@@ -79,6 +125,7 @@ export default function AdminPage() {
         setCurrentUser(data.user);
         setLoading(false);
         loadStats();
+        loadFilterOptions();
       })
       .catch(() => {
         router.push('/login');
@@ -98,6 +145,19 @@ export default function AdminPage() {
     }
   };
 
+  // 加载筛选选项
+  const loadFilterOptions = async () => {
+    try {
+      const res = await fetch('/api/filter-options', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        setFilterOptions(data.data);
+      }
+    } catch (error) {
+      console.error('加载筛选选项失败:', error);
+    }
+  };
+
   // 加载商品列表
   const loadProducts = async (page = 1) => {
     try {
@@ -112,6 +172,7 @@ export default function AdminPage() {
         setProducts(data.data.products);
         setProductPage(data.data.page);
         setProductTotal(data.data.total);
+        setSelectedIds(new Set()); // 清空选择
       }
     } catch (error) {
       console.error('加载商品失败:', error);
@@ -153,6 +214,166 @@ export default function AdminPage() {
   // 导出数据
   const handleExport = () => {
     window.open('/api/products/export', '_blank');
+  };
+
+  // 打开新建商品对话框
+  const openCreateDialog = () => {
+    setEditingProduct(null);
+    setProductForm({
+      name: '',
+      product_code: '',
+      brand: '',
+      spec: '',
+      params: '',
+      price: '',
+      supplier: '',
+      level1_category: '',
+      level2_category: '',
+      origin: '',
+      warranty: '',
+      selling_points: '',
+      remarks: '',
+    });
+    setShowProductDialog(true);
+  };
+
+  // 打开编辑商品对话框
+  const openEditDialog = async (product: Product) => {
+    setEditingProduct(product);
+    // 获取完整商品信息
+    try {
+      const res = await fetch(`/api/products/${product.id}`, { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        const p = data.data;
+        setProductForm({
+          name: p.name || '',
+          product_code: p.product_code || '',
+          brand: p.brand || '',
+          spec: p.spec || '',
+          params: p.params || '',
+          price: p.price || '',
+          supplier: p.supplier || '',
+          level1_category: p.level1_category || '',
+          level2_category: p.level2_category || '',
+          origin: p.origin || '',
+          warranty: p.warranty || '',
+          selling_points: p.selling_points || '',
+          remarks: p.remarks || '',
+        });
+        setShowProductDialog(true);
+      }
+    } catch (error) {
+      console.error('获取商品详情失败:', error);
+    }
+  };
+
+  // 保存商品
+  const handleSaveProduct = async () => {
+    if (!productForm.name.trim()) {
+      alert('请输入商品名称');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const url = editingProduct
+        ? `/api/admin/products/${editingProduct.id}`
+        : '/api/admin/products';
+      const method = editingProduct ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(productForm),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setShowProductDialog(false);
+        loadProducts(productPage);
+        loadStats();
+      } else {
+        alert(data.error || '保存失败');
+      }
+    } catch (error) {
+      alert('保存失败');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // 删除商品
+  const handleDeleteProduct = async (productId: number) => {
+    if (!confirm('确定要删除这个商品吗？此操作不可恢复。')) return;
+    
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/products/${productId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadProducts(productPage);
+        loadStats();
+      } else {
+        alert(data.error || '删除失败');
+      }
+    } catch (error) {
+      alert('删除失败');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // 切换选择
+  const toggleSelect = (id: number) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  // 全选/取消全选
+  const toggleSelectAll = () => {
+    if (selectedIds.size === products.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(products.map(p => p.id)));
+    }
+  };
+
+  // 批量删除
+  const handleBatchDelete = async () => {
+    if (selectedIds.size === 0) return;
+    
+    setActionLoading(true);
+    try {
+      const res = await fetch('/api/admin/products/batch-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ product_ids: Array.from(selectedIds) }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowBatchDeleteConfirm(false);
+        loadProducts(productPage);
+        loadStats();
+        alert(data.message);
+      } else {
+        alert(data.error || '删除失败');
+      }
+    } catch (error) {
+      alert('删除失败');
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   // 删除图片
@@ -198,7 +419,7 @@ export default function AdminPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => router.push('/')}
-                className="text-white hover:bg-blue-700"
+                className="text-white hover:bg-blue-700 px-3 py-1.5 h-auto"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 返回首页
@@ -218,7 +439,7 @@ export default function AdminPage() {
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                className="text-white hover:bg-blue-700"
+                className="text-white hover:bg-blue-700 px-3 py-1.5 h-auto"
               >
                 退出
               </Button>
@@ -240,7 +461,7 @@ export default function AdminPage() {
               key={tab.key}
               variant={activeTab === tab.key ? 'default' : 'outline'}
               onClick={() => setActiveTab(tab.key as typeof activeTab)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 px-4 py-2"
             >
               <tab.icon className="h-4 w-4" />
               {tab.label}
@@ -320,6 +541,14 @@ export default function AdminPage() {
                   <Button
                     variant="outline"
                     className="h-20 flex flex-col gap-2"
+                    onClick={() => { setActiveTab('products'); openCreateDialog(); }}
+                  >
+                    <Plus className="h-5 w-5" />
+                    <span>新建商品</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col gap-2"
                     onClick={() => router.push('/batch-import')}
                   >
                     <Upload className="h-5 w-5" />
@@ -332,14 +561,6 @@ export default function AdminPage() {
                   >
                     <Download className="h-5 w-5" />
                     <span>导出商品数据</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-20 flex flex-col gap-2"
-                    onClick={() => setActiveTab('products')}
-                  >
-                    <Package className="h-5 w-5" />
-                    <span>商品管理</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -359,9 +580,19 @@ export default function AdminPage() {
         {activeTab === 'products' && (
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-2">
                 <CardTitle>商品列表 ({productTotal} 条)</CardTitle>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
+                  {selectedIds.size > 0 && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setShowBatchDeleteConfirm(true)}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      删除选中 ({selectedIds.size})
+                    </Button>
+                  )}
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
@@ -376,6 +607,10 @@ export default function AdminPage() {
                     <RefreshCw className="h-4 w-4 mr-1" />
                     刷新
                   </Button>
+                  <Button size="sm" onClick={openCreateDialog}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    新建商品
+                  </Button>
                 </div>
               </div>
             </CardHeader>
@@ -384,6 +619,18 @@ export default function AdminPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b">
+                      <th className="py-3 px-2 w-8">
+                        <button
+                          onClick={toggleSelectAll}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          {selectedIds.size === products.length && products.length > 0 ? (
+                            <CheckSquare className="h-4 w-4 text-blue-600" />
+                          ) : (
+                            <Square className="h-4 w-4" />
+                          )}
+                        </button>
+                      </th>
                       <th className="text-left py-3 px-2">ID</th>
                       <th className="text-left py-3 px-2">商品名称</th>
                       <th className="text-left py-3 px-2">品牌</th>
@@ -396,6 +643,18 @@ export default function AdminPage() {
                   <tbody>
                     {products.map((product) => (
                       <tr key={product.id} className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-2">
+                          <button
+                            onClick={() => toggleSelect(product.id)}
+                            className="text-gray-400 hover:text-gray-600"
+                          >
+                            {selectedIds.has(product.id) ? (
+                              <CheckSquare className="h-4 w-4 text-blue-600" />
+                            ) : (
+                              <Square className="h-4 w-4" />
+                            )}
+                          </button>
+                        </td>
                         <td className="py-3 px-2">{product.id}</td>
                         <td className="py-3 px-2 max-w-[200px] truncate">{product.name}</td>
                         <td className="py-3 px-2">{product.brand || '-'}</td>
@@ -407,13 +666,33 @@ export default function AdminPage() {
                           </Badge>
                         </td>
                         <td className="py-3 px-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => router.push(`/products/${product.id}`)}
-                          >
-                            查看
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openEditDialog(product)}
+                              title="编辑"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => router.push(`/products/${product.id}`)}
+                              title="查看"
+                            >
+                              查看
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteProduct(product.id)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              title="删除"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -555,6 +834,189 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+
+      {/* 新建/编辑商品对话框 */}
+      <Dialog open={showProductDialog} onOpenChange={setShowProductDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingProduct ? '编辑商品' : '新建商品'}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">商品名称 *</label>
+                <Input
+                  value={productForm.name}
+                  onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                  placeholder="请输入商品名称"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">商品编码</label>
+                <Input
+                  value={productForm.product_code}
+                  onChange={(e) => setProductForm({ ...productForm, product_code: e.target.value })}
+                  placeholder="请输入商品编码"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">品牌</label>
+                <Input
+                  value={productForm.brand}
+                  onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
+                  placeholder="请输入品牌"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">规格</label>
+                <Input
+                  value={productForm.spec}
+                  onChange={(e) => setProductForm({ ...productForm, spec: e.target.value })}
+                  placeholder="请输入规格"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">价格</label>
+                <Input
+                  value={productForm.price}
+                  onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                  placeholder="请输入价格"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">供应商</label>
+                <Select
+                  value={productForm.supplier || ''}
+                  onValueChange={(value) => setProductForm({ ...productForm, supplier: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择供应商" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">无</SelectItem>
+                    {filterOptions.suppliers.map((s) => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">一级分类</label>
+                <Select
+                  value={productForm.level1_category || ''}
+                  onValueChange={(value) => setProductForm({ ...productForm, level1_category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择一级分类" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">无</SelectItem>
+                    {filterOptions.level1Categories.map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">二级分类</label>
+                <Select
+                  value={productForm.level2_category || ''}
+                  onValueChange={(value) => setProductForm({ ...productForm, level2_category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择二级分类" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">无</SelectItem>
+                    {filterOptions.level2Categories.map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">产地</label>
+                <Input
+                  value={productForm.origin}
+                  onChange={(e) => setProductForm({ ...productForm, origin: e.target.value })}
+                  placeholder="请输入产地"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">质保</label>
+                <Input
+                  value={productForm.warranty}
+                  onChange={(e) => setProductForm({ ...productForm, warranty: e.target.value })}
+                  placeholder="请输入质保信息"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">参数</label>
+              <Textarea
+                value={productForm.params}
+                onChange={(e) => setProductForm({ ...productForm, params: e.target.value })}
+                placeholder="请输入商品参数"
+                rows={2}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">产品优势/卖点</label>
+              <Textarea
+                value={productForm.selling_points}
+                onChange={(e) => setProductForm({ ...productForm, selling_points: e.target.value })}
+                placeholder="请输入产品优势/卖点"
+                rows={2}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">备注</label>
+              <Textarea
+                value={productForm.remarks}
+                onChange={(e) => setProductForm({ ...productForm, remarks: e.target.value })}
+                placeholder="请输入备注"
+                rows={2}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowProductDialog(false)}>
+              取消
+            </Button>
+            <Button onClick={handleSaveProduct} disabled={actionLoading}>
+              {actionLoading ? '保存中...' : '保存'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 批量删除确认对话框 */}
+      <Dialog open={showBatchDeleteConfirm} onOpenChange={setShowBatchDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>确认批量删除</DialogTitle>
+          </DialogHeader>
+          <p className="py-4">
+            确定要删除选中的 {selectedIds.size} 个商品吗？此操作不可恢复，关联的图片也会被删除。
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowBatchDeleteConfirm(false)}>
+              取消
+            </Button>
+            <Button variant="destructive" onClick={handleBatchDelete} disabled={actionLoading}>
+              {actionLoading ? '删除中...' : '确认删除'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
