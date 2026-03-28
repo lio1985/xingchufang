@@ -1,10 +1,8 @@
-# 多阶段构建 - 减小镜像大小
 # ===================================
-# 阶段 1: 构建应用
+# 多阶段构建 - 仅后端
 # ===================================
 FROM node:20 AS builder
 
-# 设置工作目录
 WORKDIR /app
 
 # 安装 pnpm
@@ -17,41 +15,38 @@ COPY server/package.json ./server/
 # 安装所有依赖
 RUN pnpm install
 
-# 复制源代码
-COPY . .
+# 复制后端源代码
+COPY server ./server
+COPY tsconfig.json ./
 
-# 构建应用
-RUN pnpm build
-
-# 剔除开发依赖，只保留生产依赖
-RUN pnpm prune --prod
+# 构建后端
+RUN cd server && pnpm build
 
 # ===================================
-# 阶段 2: 生产环境
+# 生产环境
 # ===================================
 FROM node:20
 
-# 设置工作目录
 WORKDIR /app
 
-# 从构建阶段复制 node_modules（只包含生产依赖）
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/server/node_modules ./server/node_modules
+# 安装 pnpm
+RUN npm install -g pnpm
 
-# 复制构建产物
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/dist-web ./dist-web
-COPY --from=builder /app/server/dist ./server/dist
-
-# 复制 package.json（运行时需要）
-COPY package.json pnpm-workspace.yaml ./
+# 复制依赖文件
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY server/package.json ./server/
 
-# 创建日志目录
-RUN mkdir -p /app/logs
+# 安装生产依赖
+RUN pnpm install --prod --ignore-scripts
+
+# 从构建阶段复制后端产物
+COPY --from=builder /app/server/dist ./server/dist
+
+# 创建必要目录
+RUN mkdir -p /app/logs /app/uploads
 
 # 暴露端口
-EXPOSE 3000 5000
+EXPOSE 3000
 
 # 环境变量
 ARG NODE_ENV=production
