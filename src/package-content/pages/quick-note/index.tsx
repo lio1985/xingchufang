@@ -143,6 +143,25 @@ const QuickNotePage = () => {
 
   // 打开转化为选题弹窗
   const openConvertDialog = (note: Note) => {
+    // 检查登录状态
+    const token = Taro.getStorageSync('token');
+    const user = Taro.getStorageSync('user');
+    
+    if (!token || !user) {
+      Taro.showModal({
+        title: '需要登录',
+        content: '转化为选题功能需要登录，是否前往登录？',
+        confirmText: '去登录',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            Taro.navigateTo({ url: '/pages/login/index' });
+          }
+        },
+      });
+      return;
+    }
+    
     setConvertingNote(note);
     setConvertPlatform('公众号');
     setConvertContentType('图文');
@@ -175,6 +194,23 @@ const QuickNotePage = () => {
 
       console.log('[QuickNote] 创建选题结果:', res);
 
+      // 检查 HTTP 状态码
+      if (res.statusCode === 401) {
+        setShowConvertDialog(false);
+        Taro.showModal({
+          title: '登录已过期',
+          content: '请重新登录后再试',
+          confirmText: '去登录',
+          cancelText: '取消',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              Taro.navigateTo({ url: '/pages/login/index' });
+            }
+          },
+        });
+        return;
+      }
+
       if (res.data?.code === 200) {
         const topicId = res.data.data?.id;
         
@@ -196,9 +232,25 @@ const QuickNotePage = () => {
       } else {
         Taro.showToast({ title: res.data?.msg || '创建失败', icon: 'none' });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('[QuickNote] 转化失败:', error);
-      Taro.showToast({ title: '转化失败', icon: 'none' });
+      
+      // 检查是否是认证错误
+      if (error.statusCode === 401 || error.errMsg?.includes('401')) {
+        Taro.showModal({
+          title: '登录已过期',
+          content: '请重新登录后再试',
+          confirmText: '去登录',
+          cancelText: '取消',
+          success: (res) => {
+            if (res.confirm) {
+              Taro.navigateTo({ url: '/pages/login/index' });
+            }
+          },
+        });
+      } else {
+        Taro.showToast({ title: error.message || '转化失败', icon: 'none' });
+      }
     } finally {
       setIsConverting(false);
     }
