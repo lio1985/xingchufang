@@ -85,6 +85,32 @@ export default defineConfig<'vite'>(async (merge, _env) => {
             }
             config.build.minify = 'terser';
             config.build.cssMinify = false; // 禁用 CSS 压缩中的 esbuild
+            
+            // 优化 chunk 拆分，避免单个文件过大
+            config.build.chunkSizeWarningLimit = 1000;
+            config.build.rollupOptions = {
+              output: {
+                // 手动拆分大依赖
+                manualChunks: (id) => {
+                  // lucide-react-taro 单独拆包
+                  if (id.includes('lucide-react-taro')) {
+                    return 'lucide-icons';
+                  }
+                  // taro 相关依赖拆分
+                  if (id.includes('@tarojs') && !id.includes('tarojs/components')) {
+                    return 'taro-core';
+                  }
+                  // react 相关
+                  if (id.includes('react') || id.includes('react-dom')) {
+                    return 'react-vendor';
+                  }
+                  // zustand 状态管理
+                  if (id.includes('zustand')) {
+                    return 'zustand';
+                  }
+                },
+              },
+            };
           },
         },
         {
@@ -156,6 +182,32 @@ export default defineConfig<'vite'>(async (merge, _env) => {
         ignoreOrder: true,
         filename: 'css/[name].[hash].css',
         chunkFilename: 'css/[name].[chunkhash].css',
+      },
+      // H5 端 chunk 拆分配置
+      chunk: {
+        optimize: {
+          splitChunks: {
+            chunks: 'all',
+            maxSize: 500000, // 500KB
+            cacheGroups: {
+              lucide: {
+                name: 'lucide-icons',
+                test: /[\\/]node_modules[\\/]lucide-react-taro[\\/]/,
+                priority: 100,
+              },
+              taro: {
+                name: 'taro-core',
+                test: /[\\/]node_modules[\\/]@tarojs[\\/]/,
+                priority: 90,
+              },
+              react: {
+                name: 'react-vendor',
+                test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+                priority: 80,
+              },
+            },
+          },
+        },
       },
       postcss: {
         autoprefixer: {
