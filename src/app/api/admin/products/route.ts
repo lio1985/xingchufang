@@ -72,9 +72,14 @@ export async function GET(request: NextRequest) {
 
 // 新建商品
 export async function POST(request: NextRequest) {
+  console.log('[Admin Products] POST request received');
+  
   // 验证管理员权限
   const auth = requireAdmin(request);
+  console.log('[Admin Products] Auth result:', auth);
+  
   if (!auth.authorized) {
+    console.log('[Admin Products] Unauthorized:', auth.error);
     return unauthorizedResponse(auth.error);
   }
 

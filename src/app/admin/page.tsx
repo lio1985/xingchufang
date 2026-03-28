@@ -270,6 +270,8 @@ export default function AdminPage() {
 
   // 保存商品
   const handleSaveProduct = async () => {
+    console.log('[handleSaveProduct] Starting...', { productForm, editingProduct });
+    
     if (!productForm.name.trim()) {
       alert('请输入商品名称');
       return;
@@ -282,6 +284,8 @@ export default function AdminPage() {
         : '/api/admin/products';
       const method = editingProduct ? 'PUT' : 'POST';
 
+      console.log('[handleSaveProduct] Sending request:', { url, method, body: productForm });
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -290,6 +294,8 @@ export default function AdminPage() {
       });
 
       const data = await res.json();
+      console.log('[handleSaveProduct] Response:', data);
+      
       if (data.success) {
         setShowProductDialog(false);
         loadProducts(productPage);
@@ -298,6 +304,7 @@ export default function AdminPage() {
         alert(data.error || '保存失败');
       }
     } catch (error) {
+      console.error('[handleSaveProduct] Error:', error);
       alert('保存失败');
     } finally {
       setActionLoading(false);
