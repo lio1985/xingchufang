@@ -79,14 +79,21 @@ export default defineConfig<'vite'>(async (merge, _env) => {
             if (typeof config.css?.postcss === 'object') {
               config.css?.postcss.plugins?.unshift(tailwindcss());
             }
-            // 禁用 esbuild，解决 Node.js v24 兼容性问题
+            // 禁用 esbuild 压缩，使用 terser 代替
             if (!config.build) {
               config.build = {};
             }
             config.build.minify = 'terser';
-            config.build.cssMinify = false; // 禁用 CSS 压缩中的 esbuild
-            
+            config.build.cssMinify = false;
+          },
+        },
+        {
+          name: 'chunk-split-plugin',
+          config(config) {
             // 优化 chunk 拆分，避免单个文件过大
+            if (!config.build) {
+              config.build = {};
+            }
             config.build.chunkSizeWarningLimit = 1000;
             config.build.rollupOptions = {
               output: {
