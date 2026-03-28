@@ -52,8 +52,13 @@ let AdminController = class AdminController {
             if (cleanSearch) {
                 query = query.or(`nickname.ilike.%${cleanSearch}%,employee_id.ilike.%${cleanSearch}%`);
             }
-            const { count: totalCount, error: countError } = await query;
-            console.log('直接查询总数:', totalCount, 'countError:', countError);
+            const countResult = await query;
+            const totalCount = countResult.count || 0;
+            console.log('查询总数结果:', {
+                count: countResult.count,
+                dataLength: countResult.data?.length,
+                error: countResult.error
+            });
             const from = (pageNum - 1) * limit;
             const to = from + limit - 1;
             let dataQuery = client.from('users').select('*');

@@ -66,16 +66,27 @@ export default function AdminUsersPage() {
 
     setLoading(true);
     try {
+      // 构建查询参数，过滤掉 undefined 值
+      const params: Record<string, any> = {
+        page: pageNum,
+        pageSize,
+      };
+      
+      // 只添加有值的参数
+      if (roleListFilter !== 'all') {
+        params.role = roleListFilter;
+      }
+      if (statusListFilter !== 'all') {
+        params.status = statusListFilter;
+      }
+      if (searchText) {
+        params.search = searchText;
+      }
+
       const res = await Network.request({
         url: '/api/admin/users',
         method: 'GET',
-        data: {
-          page: pageNum,
-          pageSize,
-          role: roleListFilter === 'all' ? undefined : roleListFilter,
-          status: statusListFilter === 'all' ? undefined : statusListFilter,
-          search: searchText || undefined,
-        },
+        data: params,
       });
 
       console.log('用户列表响应:', res.data);

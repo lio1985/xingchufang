@@ -68,10 +68,15 @@ export class AdminController {
         query = query.or(`nickname.ilike.%${cleanSearch}%,employee_id.ilike.%${cleanSearch}%`);
       }
       
-      // 先查询总数
-      const { count: totalCount, error: countError } = await query;
+      // 执行查询获取数据总数
+      const countResult = await query;
+      const totalCount = countResult.count || 0;
       
-      console.log('直接查询总数:', totalCount, 'countError:', countError);
+      console.log('查询总数结果:', { 
+        count: countResult.count, 
+        dataLength: countResult.data?.length,
+        error: countResult.error 
+      });
       
       // 再查询用户数据
       const from = (pageNum - 1) * limit;
