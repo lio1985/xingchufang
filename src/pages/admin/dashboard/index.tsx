@@ -11,7 +11,6 @@ import {
   Bell,
   TrendingUp,
   ChevronLeft,
-  ChevronRight,
   TriangleAlert,
   FileChartColumn,
   Database,
@@ -144,40 +143,168 @@ export default function AdminDashboardPage() {
     return `${Math.floor(diff / 86400000)}天前`;
   };
 
+  // 快捷功能入口
+  const quickActions = [
+    {
+      icon: FileChartColumn,
+      title: '运营报告',
+      desc: '分析用户行为与系统运营数据',
+      path: '/pages/admin/ai-report/index',
+      color: '#8b5cf6',
+      bgColor: 'rgba(139, 92, 246, 0.2)',
+    },
+    {
+      icon: Share2,
+      title: '共享管理',
+      desc: '管理语料库共享权限',
+      path: '/pages/admin/share-manage/index',
+      color: '#10b981',
+      bgColor: 'rgba(16, 185, 129, 0.2)',
+    },
+    {
+      icon: Download,
+      title: '数据导出',
+      desc: '导出用户数据、语料库、日志',
+      path: '/pages/admin/data-export/index',
+      color: '#38bdf8',
+      bgColor: 'rgba(56, 189, 248, 0.2)',
+    },
+    {
+      icon: Bell,
+      title: '发送通知',
+      desc: '给用户发送消息通知',
+      path: '/pages/admin/send-notification/index',
+      color: '#ec4899',
+      bgColor: 'rgba(236, 72, 153, 0.2)',
+    },
+  ];
+
+  // 管理功能入口
+  const manageActions = [
+    {
+      icon: Users,
+      title: '用户管理',
+      desc: '查看/审核用户',
+      path: '/pages/admin/users/index',
+      color: '#60a5fa',
+      bgColor: 'rgba(96, 165, 250, 0.2)',
+    },
+    {
+      icon: Bot,
+      title: 'AI 管理',
+      desc: '模型与模块配置',
+      path: '/pages/admin/ai-management/index',
+      color: '#8b5cf6',
+      bgColor: 'rgba(139, 92, 246, 0.2)',
+    },
+    {
+      icon: BookOpen,
+      title: '语料库',
+      desc: '管理语料库',
+      path: '/pages/admin/lexicon-manage/index',
+      color: '#4ade80',
+      bgColor: 'rgba(74, 222, 128, 0.2)',
+    },
+    {
+      icon: Database,
+      title: '用户数据',
+      desc: '查看详细数据',
+      path: '/pages/admin/user-data/index',
+      color: '#a855f7',
+      bgColor: 'rgba(168, 85, 247, 0.2)',
+    },
+    {
+      icon: StickyNote,
+      title: '快速笔记',
+      desc: '管理用户笔记',
+      path: '/pages/admin/quick-note-manage/index',
+      color: '#38bdf8',
+      bgColor: 'rgba(56, 189, 248, 0.2)',
+    },
+    {
+      icon: ScrollText,
+      title: '审计日志',
+      desc: '操作记录',
+      path: '/pages/admin/audit/index',
+      color: '#f87171',
+      bgColor: 'rgba(248, 113, 113, 0.2)',
+    },
+    {
+      icon: TrendingUp,
+      title: '共享统计',
+      desc: '共享数据分析',
+      path: '/pages/admin/share-stats/index',
+      color: '#06b6d4',
+      bgColor: 'rgba(6, 182, 212, 0.2)',
+    },
+    {
+      icon: Users,
+      title: '客户管理',
+      desc: '全局数据看板',
+      path: '/pages/admin/customer-management/index',
+      color: '#60a5fa',
+      bgColor: 'rgba(96, 165, 250, 0.2)',
+    },
+    {
+      icon: Building2,
+      title: '回收门店',
+      desc: '全局数据看板',
+      path: '/pages/admin/recycle-management/index',
+      color: '#06b6d4',
+      bgColor: 'rgba(6, 182, 212, 0.2)',
+    },
+    {
+      icon: UsersRound,
+      title: '团队管理',
+      desc: '管理团队和成员',
+      path: '/pages/admin/team-management/index',
+      color: '#4ade80',
+      bgColor: 'rgba(74, 222, 128, 0.2)',
+    },
+    {
+      icon: ShoppingCart,
+      title: '设备订单',
+      desc: '求购转让管理',
+      path: '/pages/equipment-orders/index',
+      color: '#38bdf8',
+      bgColor: 'rgba(56, 189, 248, 0.2)',
+    },
+    {
+      icon: BookOpen,
+      title: '课程管理',
+      desc: '上传培训课程',
+      path: '/pages/admin/course-manage/index',
+      color: '#ef4444',
+      bgColor: 'rgba(239, 68, 68, 0.2)',
+    },
+    {
+      icon: Radio,
+      title: '直播数据',
+      desc: '数据上传分析',
+      path: '/pages/live-data/admin/index',
+      color: '#f43f5e',
+      bgColor: 'rgba(244, 63, 94, 0.2)',
+    },
+  ];
+
+  const handleNav = (path: string) => {
+    Taro.navigateTo({ url: path });
+  };
+
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* Header */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
-        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
           <View
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(56, 189, 248, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })}
           >
-            <ChevronLeft size={18} color="#38bdf8" />
+            <ChevronLeft size={24} color="#f1f5f9" />
           </View>
-          <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>数据监控</Text>
-          <View
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(56, 189, 248, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              opacity: loading ? 0.5 : 1,
-            }}
-            onClick={handleRefresh}
-          >
-            <RefreshCw size={18} color={loading ? '#64748b' : '#38bdf8'} />
+          <View>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>数据监控</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>全局数据统计与快捷入口</Text>
           </View>
         </View>
       </View>
@@ -189,183 +316,123 @@ export default function AdminDashboardPage() {
         refresherTriggered={loading}
         onRefresherRefresh={handleRefresh}
       >
-        {/* 快捷功能 */}
-        <View style={{ padding: '16px 20px 0' }}>
-          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px', display: 'block' }}>快捷功能</Text>
-
-          {/* 运营报告 */}
-          <View
-            style={{
-              backgroundColor: '#111827',
-              border: '1px solid #1e3a5f',
-              borderRadius: '12px',
-              padding: '14px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '10px',
-            }}
-            onClick={() => Taro.navigateTo({ url: '/pages/admin/ai-report/index' })}
-          >
-            <View style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'rgba(139, 92, 246, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <FileChartColumn size={20} color="#8b5cf6" />
-            </View>
-            <View style={{ flex: 1, marginLeft: '12px' }}>
-              <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>运营报告</Text>
-              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>分析用户行为与系统运营数据</Text>
-            </View>
-            <ChevronRight size={18} color="#64748b" />
-          </View>
-
-          {/* 共享管理 */}
-          <View
-            style={{
-              backgroundColor: '#111827',
-              border: '1px solid #1e3a5f',
-              borderRadius: '12px',
-              padding: '14px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '10px',
-            }}
-            onClick={() => Taro.navigateTo({ url: '/pages/admin/share-manage/index' })}
-          >
-            <View style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Share2 size={20} color="#10b981" />
-            </View>
-            <View style={{ flex: 1, marginLeft: '12px' }}>
-              <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>共享管理</Text>
-              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>管理语料库共享权限</Text>
-            </View>
-            <ChevronRight size={18} color="#64748b" />
-          </View>
-
-          {/* 数据导出 */}
-          <View
-            style={{
-              backgroundColor: '#111827',
-              border: '1px solid #1e3a5f',
-              borderRadius: '12px',
-              padding: '14px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '10px',
-            }}
-            onClick={() => Taro.navigateTo({ url: '/pages/admin/data-export/index' })}
-          >
-            <View style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Download size={20} color="#38bdf8" />
-            </View>
-            <View style={{ flex: 1, marginLeft: '12px' }}>
-              <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>数据导出</Text>
-              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>导出用户数据、语料库、日志</Text>
-            </View>
-            <ChevronRight size={18} color="#64748b" />
-          </View>
-
-          {/* 待审核用户提示 */}
-          {pendingUsersCount > 0 && (
+        {/* 待审核用户提示 */}
+        {pendingUsersCount > 0 && (
+          <View style={{ padding: '20px 20px 0' }}>
             <View
               style={{
                 backgroundColor: '#111827',
                 border: '1px solid rgba(248, 113, 113, 0.3)',
                 borderRadius: '12px',
-                padding: '14px 16px',
+                padding: '16px',
                 display: 'flex',
                 alignItems: 'center',
-                marginBottom: '10px',
               }}
               onClick={() => Taro.navigateTo({ url: '/pages/admin/users/index?status=pending' })}
             >
-              <View style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'rgba(248, 113, 113, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <TriangleAlert size={20} color="#f87171" />
+              <View style={{ width: '44px', height: '44px', borderRadius: '10px', backgroundColor: 'rgba(248, 113, 113, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <TriangleAlert size={22} color="#f87171" />
               </View>
               <View style={{ flex: 1, marginLeft: '12px' }}>
-                <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>待审核用户</Text>
-                <Text style={{ fontSize: '12px', color: '#f87171', display: 'block', marginTop: '2px' }}>有 {pendingUsersCount} 位用户等待审核</Text>
+                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>待审核用户</Text>
+                <Text style={{ fontSize: '12px', color: '#f87171', display: 'block', marginTop: '4px' }}>有 {pendingUsersCount} 位用户等待审核</Text>
               </View>
-              <View style={{ backgroundColor: '#f87171', borderRadius: '12px', padding: '4px 10px' }}>
-                <Text style={{ fontSize: '13px', fontWeight: '600', color: '#ffffff', display: 'block' }}>{pendingUsersCount}</Text>
-              </View>
-            </View>
-          )}
-        </View>
-
-        {/* 统计数据 */}
-        {statistics && (
-          <View style={{ padding: '20px 20px 0' }}>
-            <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px', display: 'block' }}>全局统计</Text>
-            <View style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '14px' }}>
-                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{statistics.totalUsers}</Text>
-                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>总用户数</Text>
-              </View>
-              <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '14px' }}>
-                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#4ade80', display: 'block' }}>{statistics.activeUsers}</Text>
-                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>活跃用户</Text>
-              </View>
-              <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '14px' }}>
-                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#60a5fa', display: 'block' }}>{statistics.totalConversations}</Text>
-                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>对话总数</Text>
-              </View>
-              <View style={{ flex: '1 1 45%', minWidth: '140px', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '14px' }}>
-                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#fbbf24', display: 'block' }}>{statistics.totalMessages}</Text>
-                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>消息总数</Text>
+              <View style={{ backgroundColor: '#f87171', borderRadius: '12px', padding: '6px 12px' }}>
+                <Text style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{pendingUsersCount}</Text>
               </View>
             </View>
           </View>
         )}
 
-        {/* 管理功能 */}
-        <View style={{ padding: '20px 20px 0' }}>
-          <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px', display: 'block' }}>管理功能</Text>
-          <View style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {[
-              { icon: Users, label: '用户管理', desc: '查看/审核用户', color: '#60a5fa', path: '/pages/admin/users/index' },
-              { icon: Bot, label: 'AI 管理', desc: '模型与模块配置', color: '#8b5cf6', path: '/pages/admin/ai-management/index' },
-              { icon: BookOpen, label: '语料库', desc: '管理语料库', color: '#4ade80', path: '/pages/admin/lexicon-manage/index' },
-              { icon: Database, label: '用户数据', desc: '查看详细数据', color: '#a855f7', path: '/pages/admin/user-data/index' },
-              { icon: StickyNote, label: '快速笔记', desc: '管理用户笔记', color: '#38bdf8', path: '/pages/admin/quick-note-manage/index' },
-              { icon: ScrollText, label: '审计日志', desc: '操作记录', color: '#f87171', path: '/pages/admin/audit/index' },
-              { icon: TrendingUp, label: '共享统计', desc: '共享数据分析', color: '#06b6d4', path: '/pages/admin/share-stats/index' },
-              { icon: Bell, label: '发送通知', desc: '给用户发消息', color: '#ec4899', path: '/pages/admin/send-notification/index' },
-              { icon: Users, label: '客户管理', desc: '全局数据看板', color: '#60a5fa', path: '/pages/admin/customer-management/index' },
-              { icon: Building2, label: '回收门店', desc: '全局数据看板', color: '#06b6d4', path: '/pages/admin/recycle-management/index' },
-              { icon: UsersRound, label: '团队管理', desc: '管理团队和成员', color: '#4ade80', path: '/pages/admin/team-management/index' },
-              { icon: ShoppingCart, label: '设备订单', desc: '求购转让管理', color: '#38bdf8', path: '/pages/equipment-orders/index' },
-              { icon: BookOpen, label: '课程管理', desc: '上传培训课程', color: '#ef4444', path: '/pages/admin/course-manage/index' },
-              { icon: Radio, label: '直播数据', desc: '数据上传分析', color: '#f43f5e', path: '/pages/live-data/admin/index' },
-            ].map((item) => {
-              const IconComp = item.icon;
-              return (
-                <View
-                  key={item.path}
-                  style={{
-                    flex: '1 1 30%',
-                    minWidth: '100px',
-                    backgroundColor: '#111827',
-                    border: '1px solid #1e3a5f',
-                    borderRadius: '12px',
-                    padding: '14px 12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
-                  onClick={() => Taro.navigateTo({ url: item.path })}
-                >
-                  <View style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: `${item.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
-                    <IconComp size={18} color={item.color} />
-                  </View>
-                  <Text style={{ fontSize: '13px', fontWeight: '500', color: '#ffffff', display: 'block', textAlign: 'center' }}>{item.label}</Text>
+        {/* 统计卡片 */}
+        {statistics && (
+          <View style={{ padding: '20px 20px 0' }}>
+            <View style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                <Users size={20} color="#60a5fa" />
+                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block', marginTop: '8px' }}>{statistics.totalUsers}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>总用户</Text>
+              </View>
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                <Users size={20} color="#4ade80" />
+                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#4ade80', display: 'block', marginTop: '8px' }}>{statistics.activeUsers}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>活跃用户</Text>
+              </View>
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                <MessageSquare size={20} color="#60a5fa" />
+                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block', marginTop: '8px' }}>{statistics.totalConversations}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>对话数</Text>
+              </View>
+              <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
+                <BookOpen size={20} color="#fbbf24" />
+                <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block', marginTop: '8px' }}>{statistics.totalMessages}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>消息数</Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* 快捷功能 */}
+        <View style={{ padding: '24px 20px 0' }}>
+          <Text style={{ fontSize: '14px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>快捷功能</Text>
+          <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            {quickActions.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  backgroundColor: '#111827',
+                  border: '1px solid #1e3a5f',
+                  borderRadius: '12px',
+                  padding: '16px',
+                }}
+                onClick={() => handleNav(item.path)}
+              >
+                <View style={{ width: '44px', height: '44px', borderRadius: '10px', backgroundColor: item.bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
+                  <item.icon size={22} color={item.color} />
                 </View>
-              );
-            })}
+                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>{item.title}</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>{item.desc}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* 管理功能 */}
+        <View style={{ padding: '24px 20px 0' }}>
+          <Text style={{ fontSize: '14px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>管理功能</Text>
+          <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            {manageActions.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  backgroundColor: '#111827',
+                  border: '1px solid #1e3a5f',
+                  borderRadius: '12px',
+                  padding: '16px',
+                }}
+                onClick={() => handleNav(item.path)}
+              >
+                <View style={{ width: '44px', height: '44px', borderRadius: '10px', backgroundColor: item.bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
+                  <item.icon size={22} color={item.color} />
+                </View>
+                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>{item.title}</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>{item.desc}</Text>
+              </View>
+            ))}
           </View>
         </View>
 
         {/* 活跃用户排行 */}
         {userRankings.length > 0 && (
-          <View style={{ padding: '20px 20px 0' }}>
-            <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500', marginBottom: '12px', display: 'block' }}>活跃用户排行</Text>
+          <View style={{ padding: '24px 20px 0' }}>
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <Text style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>活跃用户排行</Text>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }} onClick={handleRefresh}>
+                <RefreshCw size={14} color="#38bdf8" />
+                <Text style={{ fontSize: '12px', color: '#38bdf8' }}>刷新</Text>
+              </View>
+            </View>
+
             <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
               {userRankings.slice(0, 5).map((user, index) => (
                 <View
