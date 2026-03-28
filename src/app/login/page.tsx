@@ -20,6 +20,20 @@ function LoginForm() {
   // 检查是否已登录
   useEffect(() => {
     const checkAuth = async () => {
+      // 首先检查localStorage中的token
+      const token = localStorage.getItem('auth_token');
+      const storedUser = localStorage.getItem('admin_user');
+      
+      if (token && storedUser) {
+        try {
+          // 有token，直接跳转
+          window.location.href = '/';
+          return;
+        } catch {
+          // 解析失败，继续检查Cookie
+        }
+      }
+      
       try {
         const res = await fetch('/api/auth', {
           credentials: 'include',
@@ -49,6 +63,7 @@ function LoginForm() {
     setError('');
 
     try {
+      console.log('[Login] Sending login request...');
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,18 +75,22 @@ function LoginForm() {
       });
 
       const data = await res.json();
+      console.log('[Login] Response:', data);
       
-      if (data.success) {
-        // 延迟跳转，确保cookie已设置
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 100);
+      if (data.success && data.token) {
+        // 保存token到localStorage
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('admin_user', JSON.stringify(data.user));
+        console.log('[Login] Success! Redirecting to home...');
+        // 登录成功，直接跳转到首页
+        window.location.href = '/';
       } else {
+        console.log('[Login] Failed:', data.error);
         setError(data.error || '登录失败');
         setLoading(false);
       }
     } catch (err) {
-      console.error('登录错误:', err);
+      console.error('[Login] Error:', err);
       setError('网络错误，请重试');
       setLoading(false);
     }

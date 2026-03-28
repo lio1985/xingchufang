@@ -27,17 +27,20 @@ export function middleware(request: NextRequest) {
 
   // 检查登录状态
   const token = request.cookies.get('admin_token');
+  const allCookies = request.cookies.getAll();
   
   // 调试日志
-  console.log(`[Middleware] ${pathname} - token: ${token?.value || 'none'}`);
+  console.log(`[Middleware] ${pathname} - token: ${token?.value || 'none'}, cookies: [${allCookies.map(c => c.name).join(', ')}]`);
 
   if (!token || token.value !== 'authenticated') {
     // 未登录，重定向到登录页
+    console.log(`[Middleware] Redirecting to login - no valid token`);
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
+  console.log(`[Middleware] Access granted to ${pathname}`);
   return NextResponse.next();
 }
 

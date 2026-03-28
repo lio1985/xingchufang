@@ -9,6 +9,22 @@ export interface UserInfo {
   role: UserRole;
 }
 
+// Cookie设置选项
+// 根据请求的实际协议决定是否使用Secure
+const getCookieOptions = (request: NextRequest) => {
+  // 检查原始请求是否通过HTTPS
+  const forwardedProto = request.headers.get('x-forwarded-proto');
+  const isHttps = forwardedProto === 'https';
+  
+  return {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7, // 7天
+    httpOnly: true,
+    secure: isHttps, // 仅当原始请求是HTTPS时才设置Secure
+    sameSite: 'lax' as const,
+  };
+};
+
 // 登录验证
 export async function POST(request: NextRequest) {
   try {
@@ -55,25 +71,21 @@ export async function POST(request: NextRequest) {
         user: userInfo,
       });
       
-      // 设置 cookie
-      // 检查原始请求是否通过HTTPS（代理环境）
-      const forwardedProto = request.headers.get('x-forwarded-proto');
-      const isSecureRequest = forwardedProto === 'https' || 
-                              request.nextUrl.protocol === 'https:' ||
-                              process.env.COZE_PROJECT_ENV === 'PROD';
-      
-      const cookieOptions = {
-        httpOnly: true,
-        secure: isSecureRequest, // HTTPS请求使用secure
-        sameSite: 'lax' as const,
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 7天
-      };
-      
+      // 设置Cookie
+      const cookieOptions = getCookieOptions(request);
       response.cookies.set('admin_token', 'authenticated', cookieOptions);
       response.cookies.set('admin_user', JSON.stringify(userInfo), cookieOptions);
       
-      return response;
+      // 同时返回一个token，前端可以存储在localStorage中作为备用
+      const token = Buffer.from(JSON.stringify(userInfo)).toString('base64');
+      
+      console.log('[Auth] Cookie options:', cookieOptions);
+      
+      return NextResponse.json({ 
+        success: true,
+        user: userInfo,
+        token, // 返回token，前端可以存储在localStorage
+      });
     } else {
       return NextResponse.json(
         { success: false, error: '账号或密码错误' },
