@@ -91,7 +91,7 @@ const ProductManualPage = () => {
   };
 
   const handleManualClick = (manualId: string) => {
-    Taro.navigateTo({ url: `/pages/knowledge/product-manual/detail?id=${manualId}` });
+    Taro.navigateTo({ url: `/package-knowledge/pages/knowledge/product-manual/detail?id=${manualId}` });
   };
 
   const handleSearch = () => {

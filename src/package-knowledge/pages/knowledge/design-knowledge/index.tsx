@@ -111,7 +111,7 @@ const DesignKnowledgePage = () => {
   };
 
   const handleKnowledgeClick = (knowledgeId: string) => {
-    Taro.navigateTo({ url: `/pages/knowledge/design-knowledge/detail?id=${knowledgeId}` });
+    Taro.navigateTo({ url: `/package-knowledge/pages/knowledge/design-knowledge/detail?id=${knowledgeId}` });
   };
 
   const handleSearch = () => {

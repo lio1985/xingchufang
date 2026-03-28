@@ -64,8 +64,10 @@ export default defineAppConfig({
         'pages/knowledge-share/detail',
         'pages/admin-knowledge-share/index',
         'pages/knowledge/product-manual/index',
+        'pages/knowledge/product-manual/detail',
         'pages/knowledge/design-knowledge/index',
         'pages/knowledge/design-knowledge/detail',
+        'pages/knowledge/category-list',
       ],
     },
     {

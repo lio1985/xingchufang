@@ -66,7 +66,8 @@ const KnowledgeSharePage = () => {
       // 商厨设备维修维保是主分类，展开子分类
       return;
     }
-    Taro.showToast({ title: '功能开发中', icon: 'none' });
+    // 跳转到分类列表页面
+    handleNavigate(`/package-knowledge/pages/knowledge/category-list?category=${categoryId}`);
   };
 
   const handleSubCategoryClick = (subId: string) => {
