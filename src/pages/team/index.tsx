@@ -20,6 +20,7 @@ import {
   Search,
   X,
   Check,
+  ArrowLeft,
 } from 'lucide-react-taro';
 
 interface TeamMember {
@@ -246,7 +247,7 @@ export default function MyTeam() {
       label: '团队公告',
       color: '#f97316',
       bgColor: 'rgba(249, 115, 22, 0.15)',
-      onClick: () => Taro.showToast({ title: '功能开发中', icon: 'none' }),
+      path: '/pages/team/announcement',
     },
     {
       id: 'tasks',
@@ -254,7 +255,7 @@ export default function MyTeam() {
       label: '任务分配',
       color: '#38bdf8',
       bgColor: 'rgba(56, 189, 248, 0.15)',
-      onClick: () => Taro.showToast({ title: '功能开发中', icon: 'none' }),
+      path: '/pages/team/task',
     },
     {
       id: 'target',
@@ -286,7 +287,7 @@ export default function MyTeam() {
       label: '团队聊天',
       color: '#fbbf24',
       bgColor: 'rgba(251, 191, 36, 0.15)',
-      onClick: () => Taro.showToast({ title: '功能开发中', icon: 'none' }),
+      path: '/pages/team/chat',
     },
   ];
 
@@ -392,9 +393,28 @@ export default function MyTeam() {
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '100px' }}>
       {/* Header */}
       <View style={{ padding: '48px 20px 24px', background: 'linear-gradient(135deg, #1e3a8a 0%, #0a0f1a 100%)' }}>
-        <View style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
+        {/* 返回按钮和标题行 */}
+        <View style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+          <View
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '12px',
+            }}
+            onClick={() => Taro.navigateBack()}
+          >
+            <ArrowLeft size={20} color="#ffffff" />
+          </View>
+          <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>我的团队</Text>
+        </View>
+        
+        <View style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: '13px', color: '#60a5fa', marginBottom: '4px', display: 'block' }}>我的团队</Text>
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginBottom: '6px', display: 'block' }}>{team.name}</Text>
             {team.description && (
               <Text style={{ fontSize: '13px', color: '#94a3b8', display: 'block' }}>{team.description}</Text>
