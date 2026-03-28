@@ -93,6 +93,9 @@ export default defineAppConfig({
     'pages/admin/course-create/index',
     'pages/admin/course-edit/index',
     'pages/subscribe-message/index',
+    'pages/file-parser/index',
+    'pages/multimedia/index',
+    'pages/task-schedule/index',
   ],
   window: {
     backgroundTextStyle: 'light',
