@@ -26,11 +26,18 @@ const safeBase64Decode = (str: string): string => {
 const getCookieOptions = (request: NextRequest) => {
   // 检查原始请求是否通过HTTPS
   const forwardedProto = request.headers.get('x-forwarded-proto');
+  const forwardedHost = request.headers.get('x-forwarded-host');
   const host = request.headers.get('host') || '';
-  // 判断是否HTTPS：检查x-forwarded-proto或域名
-  const isHttps = forwardedProto === 'https' || host.includes('.coze.site');
   
-  console.log('[Auth] Cookie settings - forwardedProto:', forwardedProto, 'host:', host, 'isHttps:', isHttps);
+  // 判断是否HTTPS：
+  // 1. x-forwarded-proto 为 https
+  // 2. 域名包含 .coze.site（生产环境）
+  // 3. forwarded-host 包含 .coze.site
+  const isHttps = forwardedProto === 'https' 
+    || host.includes('.coze.site') 
+    || (forwardedHost?.includes('.coze.site') ?? false);
+  
+  console.log('[Auth] Cookie settings - forwardedProto:', forwardedProto, 'forwardedHost:', forwardedHost, 'host:', host, 'isHttps:', isHttps);
   
   return {
     path: '/',
@@ -101,7 +108,10 @@ export async function POST(request: NextRequest) {
       
       // 验证Cookie是否设置成功
       const setCookies = response.headers.getSetCookie();
-      console.log('[Auth] Set-Cookie headers:', setCookies);
+      console.log('[Auth] Set-Cookie count:', setCookies.length);
+      setCookies.forEach((cookie, index) => {
+        console.log(`[Auth] Cookie ${index + 1}:`, cookie.substring(0, 200));
+      });
       
       return response;
     } else {

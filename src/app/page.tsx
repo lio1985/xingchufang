@@ -63,17 +63,14 @@ export default function Home() {
     // 检查Cookie认证
     fetch('/api/auth', { 
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('[Home] Auth check result:', data);
+        console.log('[Home] Auth check result:', JSON.stringify(data));
         if (data.authenticated && data.user) {
+          console.log('[Home] Setting currentUser:', data.user.username, 'role:', data.user.role);
           setCurrentUser(data.user);
         } else {
-          // 未认证，由middleware处理重定向，这里不做处理
           console.log('[Home] Not authenticated, middleware will handle redirect');
         }
       })
@@ -188,31 +185,39 @@ export default function Home() {
                   批量导入
                 </Button>
               )}
-              {currentUser && (
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
-                    {currentUser.role === 'admin' ? (
-                      <Shield className="h-4 w-4 text-yellow-300" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-green-300" />
-                    )}
-                    <span className="text-sm text-white">
-                      {currentUser.username}
-                      <span className="text-xs text-blue-200 ml-1">
-                        ({currentUser.role === 'admin' ? '管理员' : '销售'})
+              {/* 用户信息和退出按钮 */}
+              <div className="flex items-center gap-2">
+                {currentUser ? (
+                  <>
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                      {currentUser.role === 'admin' ? (
+                        <Shield className="h-4 w-4 text-yellow-300" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-green-300" />
+                      )}
+                      <span className="text-sm text-white">
+                        {currentUser.username}
+                        <span className="text-xs text-blue-200 ml-1">
+                          ({currentUser.role === 'admin' ? '管理员' : '销售'})
+                        </span>
                       </span>
-                    </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="text-white hover:bg-blue-700"
+                      title="退出登录"
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                  </>
+                ) : (
+                  <div className="px-3 py-1.5 bg-white/10 rounded-lg">
+                    <span className="text-sm text-blue-200">加载中...</span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="text-white hover:bg-blue-700"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
@@ -229,6 +234,9 @@ export default function Home() {
                       <Eye className="h-3.5 w-3.5 text-green-300" />
                     )}
                     <span className="text-xs text-white">{currentUser.username}</span>
+                    <span className="text-xs text-blue-200">
+                      ({currentUser.role === 'admin' ? '管理员' : '销售'})
+                    </span>
                   </div>
                 )}
                 <Button
@@ -268,11 +276,11 @@ export default function Home() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handleLogout}
+                  onClick={() => { handleLogout(); setShowMobileMenu(false); }}
                   className="w-full justify-start text-white hover:bg-blue-700"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  登出
+                  退出登录
                 </Button>
               </div>
             )}
