@@ -7,8 +7,11 @@
 ### 核心功能
 - 📦 商品数据管理（5541条商品数据）
 - 🔍 快速搜索筛选（关键词、供应商、分类）
-- 📸 商品图片上传管理
+- 📸 商品图片上传管理（支持单张上传和批量导入）
 - 👥 多人协作共享访问
+- 🔐 简单权限管理（管理员密码保护）
+- 📊 数据导出（导出为Excel）
+- 📱 响应式设计（支持手机端）
 
 ### 版本技术栈
 
@@ -33,17 +36,29 @@
 ├── src/
 │   ├── app/                # 页面路由与布局
 │   │   ├── api/            # API 路由
-│   │   │   ├── filter-options/route.ts  # 筛选选项接口
-│   │   │   └── products/   # 商品相关接口
-│   │   │       ├── route.ts             # 商品列表接口
-│   │   │       └── [id]/images/route.ts # 图片上传接口
+│   │   │   ├── auth/route.ts           # 登录认证接口
+│   │   │   ├── filter-options/route.ts # 筛选选项接口
+│   │   │   ├── images/                 # 图片相关接口
+│   │   │   │   └── batch-import/route.ts # 批量导入图片
+│   │   │   └── products/               # 商品相关接口
+│   │   │       ├── route.ts            # 商品列表接口
+│   │   │       ├── export/route.ts     # 商品导出接口
+│   │   │       └── [id]/               # 商品详情相关
+│   │   │           ├── route.ts        # 商品详情接口
+│   │   │           └── images/         # 图片管理
+│   │   │               ├── route.ts    # 图片CRUD
+│   │   │               └── primary/route.ts # 设置主图
+│   │   ├── batch-import/   # 批量导入页面
+│   │   ├── login/          # 登录页面
+│   │   ├── products/[id]/  # 商品详情页面
 │   │   ├── page.tsx        # 主页面（商品列表）
 │   │   ├── layout.tsx      # 根布局
 │   │   └── globals.css     # 全局样式
 │   ├── components/ui/      # Shadcn UI 组件库
 │   ├── hooks/              # 自定义 Hooks
 │   ├── lib/                # 工具库
-│   │   └── utils.ts        # 通用工具函数 (cn)
+│   │   ├── utils.ts        # 通用工具函数 (cn)
+│   │   └── auth.ts         # 权限验证工具
 │   ├── storage/database/   # 数据库相关
 │   │   ├── supabase-client.ts  # Supabase 客户端
 │   │   └── shared/schema.ts    # 数据库表结构定义
@@ -76,6 +91,13 @@
 - is_primary: 是否主图
 - created_at: 创建时间
 
+## 权限管理
+
+系统使用简单的管理员密码保护机制：
+- 默认密码：`admin123`（可通过环境变量 `ADMIN_PASSWORD` 修改）
+- 管理员权限：上传图片、批量导入、设置主图、删除图片
+- 普通用户：浏览商品、搜索筛选、导出数据
+
 ## 包管理规范
 
 **仅允许使用 pnpm** 作为包管理器，**严禁使用 npm 或 yarn**。
@@ -103,19 +125,46 @@
 - 参数：keyword, supplier, level1Category, level2Category, page, pageSize
 - 返回：商品列表、总数、分页信息
 
+### GET /api/products/export
+导出商品数据为Excel
+- 参数：keyword, supplier, level1Category, level2Category
+- 返回：Excel文件下载
+
 ### GET /api/filter-options
 获取筛选选项
 - 返回：供应商列表、一级分类列表、二级分类列表
+
+### GET /api/products/[id]
+获取商品详情
 
 ### GET /api/products/[id]/images
 获取指定商品的所有图片
 
 ### POST /api/products/[id]/images
-上传商品图片
+上传商品图片（需要管理员权限）
 - 参数：file（图片文件）, isPrimary（是否主图）
 
+### PATCH /api/products/[id]/images/primary
+设置主图（需要管理员权限）
+- 参数：imageId
+
 ### DELETE /api/products/[id]/images?imageId=xxx
-删除商品图片
+删除商品图片（需要管理员权限）
+
+### POST /api/images/batch-import
+批量导入图片（需要管理员权限）
+- 参数：file（Excel/CSV文件）
+- 格式：商品编码, 图片URL
+
+### POST /api/auth
+管理员登录
+- 参数：password
+
+### GET /api/auth
+检查登录状态
+
+### DELETE /api/auth
+登出
 
 
 

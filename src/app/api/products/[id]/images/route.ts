@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { S3Storage } from 'coze-coding-dev-sdk';
 import { getSupabaseClient } from '@/storage/database/supabase-client';
+import { verifyAdmin, unauthorizedResponse } from '@/lib/auth';
 
 // 初始化对象存储
 const storage = new S3Storage({
@@ -55,6 +56,11 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // 验证权限
+  if (!verifyAdmin(request)) {
+    return unauthorizedResponse();
+  }
+
   try {
     const { id } = await params;
     const productId = parseInt(id);
@@ -126,6 +132,11 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // 验证权限
+  if (!verifyAdmin(request)) {
+    return unauthorizedResponse();
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const imageId = searchParams.get('imageId');

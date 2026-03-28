@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Search, Upload, X, Image as ImageIcon, Download } from 'lucide-react';
 import Image from 'next/image';
 
 interface Product {
@@ -34,6 +35,7 @@ interface FilterOptions {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -48,6 +50,21 @@ export default function Home() {
     level1Categories: [],
     level2Categories: [],
   });
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // 检查登录状态
+  useEffect(() => {
+    fetch('/api/auth')
+      .then((res) => res.json())
+      .then((data) => setIsAdmin(data.authenticated));
+  }, []);
+
+  // 登出
+  const handleLogout = async () => {
+    await fetch('/api/auth', { method: 'DELETE' });
+    setIsAdmin(false);
+    alert('已登出');
+  };
 
   // 获取筛选选项
   useEffect(() => {
@@ -117,8 +134,41 @@ export default function Home() {
       {/* 头部 */}
       <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold">星厨房商品库</h1>
-          <p className="text-blue-100 mt-1">快捷搜索选品系统 · 多人协作共享</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">星厨房商品库</h1>
+              <p className="text-blue-100 mt-1">快捷搜索选品系统 · 多人协作共享</p>
+            </div>
+            <div className="flex gap-2">
+              {isAdmin ? (
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => router.push('/batch-import')}
+                    className="bg-white text-blue-600 hover:bg-blue-50"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    批量导入图片
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogout}
+                    className="text-white hover:bg-blue-700"
+                  >
+                    登出
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="secondary"
+                  onClick={() => router.push('/login')}
+                  className="bg-white text-blue-600 hover:bg-blue-50"
+                >
+                  管理员登录
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
@@ -194,6 +244,20 @@ export default function Home() {
                 <X className="h-4 w-4 mr-2" />
                 重置
               </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const params = new URLSearchParams();
+                  if (keyword) params.append('keyword', keyword);
+                  if (supplier) params.append('supplier', supplier);
+                  if (level1Category) params.append('level1Category', level1Category);
+                  if (level2Category) params.append('level2Category', level2Category);
+                  window.open(`/api/products/export?${params}`, '_blank');
+                }}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                导出Excel
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -211,10 +275,7 @@ export default function Home() {
             <Card
               key={product.id}
               className="hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => {
-                // TODO: 跳转到商品详情页
-                alert(`商品详情页开发中...\n商品ID: ${product.id}\n商品名称: ${product.name}`);
-              }}
+              onClick={() => router.push(`/products/${product.id}`)}
             >
               <CardHeader className="pb-3">
                 <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center relative overflow-hidden">
