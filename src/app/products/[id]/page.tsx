@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Upload, Trash2, Star, ImageIcon, Shield, Eye } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Star, ImageIcon, Shield, Eye, MoreVertical } from 'lucide-react';
 import { compressImage, getImageInfo, shouldCompress } from '@/lib/image-compress';
 
 interface User {
@@ -50,6 +50,8 @@ export default function ProductDetailPage({
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [showImageActions, setShowImageActions] = useState<number | null>(null);
 
   // 检查登录状态
   useEffect(() => {
@@ -102,13 +104,11 @@ export default function ProductDetailPage({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // 验证文件类型
     if (!file.type.startsWith('image/')) {
       alert('请上传图片文件');
       return;
     }
 
-    // 验证文件大小（最大10MB）
     if (file.size > 10 * 1024 * 1024) {
       alert('图片大小不能超过10MB');
       return;
@@ -118,11 +118,7 @@ export default function ProductDetailPage({
     try {
       let fileToUpload: File | Blob = file;
       
-      // 如果图片大于500KB，自动压缩
       if (shouldCompress(file, 500)) {
-        const originalInfo = await getImageInfo(file);
-        console.log(`压缩前: ${originalInfo.sizeKB.toFixed(1)}KB, ${originalInfo.width}x${originalInfo.height}`);
-        
         try {
           fileToUpload = await compressImage(file, {
             maxWidth: 1920,
@@ -130,10 +126,6 @@ export default function ProductDetailPage({
             quality: 0.8,
             maxSizeKB: 500,
           });
-          
-          const compressedSize = fileToUpload.size / 1024;
-          console.log(`压缩后: ${compressedSize.toFixed(1)}KB`);
-          console.log(`压缩率: ${((1 - compressedSize / originalInfo.sizeKB) * 100).toFixed(1)}%`);
         } catch (compressError) {
           console.warn('图片压缩失败，使用原图上传:', compressError);
         }
@@ -174,6 +166,8 @@ export default function ProductDetailPage({
       const data = await res.json();
       if (data.success) {
         setImages(images.filter((img) => img.id !== imageId));
+        setActiveImageIndex(Math.max(0, activeImageIndex - 1));
+        setShowImageActions(null);
       } else {
         alert('删除失败：' + data.error);
       }
@@ -200,6 +194,7 @@ export default function ProductDetailPage({
             is_primary: img.id === imageId,
           }))
         );
+        setShowImageActions(null);
       } else {
         alert('设置失败：' + data.error);
       }
@@ -226,21 +221,35 @@ export default function ProductDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
       {/* 头部 */}
-      <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <Button
-              variant="ghost"
-              className="text-white hover:bg-blue-700"
-              onClick={() => router.push('/')}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              返回商品列表
-            </Button>
+      <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 md:py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 md:gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-white hover:bg-blue-700 p-2 md:p-3"
+                onClick={() => router.push('/')}
+              >
+                <ArrowLeft className="h-5 w-5 md:h-4 md:w-4 md:mr-2" />
+                <span className="hidden md:inline">返回商品列表</span>
+              </Button>
+              <div className="md:hidden w-px h-6 bg-white/20" />
+              {currentUser && (
+                <div className="md:hidden flex items-center gap-1 px-2 py-1 bg-white/10 rounded-full">
+                  {currentUser.role === 'admin' ? (
+                    <Shield className="h-3.5 w-3.5 text-yellow-300" />
+                  ) : (
+                    <Eye className="h-3.5 w-3.5 text-green-300" />
+                  )}
+                  <span className="text-xs text-white">{currentUser.username}</span>
+                </div>
+              )}
+            </div>
             {currentUser && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
                 {currentUser.role === 'admin' ? (
                   <Shield className="h-4 w-4 text-yellow-300" />
                 ) : (
@@ -255,18 +264,24 @@ export default function ProductDetailPage({
               </div>
             )}
           </div>
-          <h1 className="text-3xl font-bold">{product.name}</h1>
-          <p className="text-blue-100 mt-1">商品详情 · {isAdmin ? '图片管理' : '信息查看'}</p>
+          
+          {/* 商品名称 */}
+          <div className="mt-2 md:mt-4">
+            <h1 className="text-lg md:text-2xl font-bold line-clamp-2">{product.name}</h1>
+            <p className="text-blue-100 text-xs md:text-sm mt-1">
+              {product.product_code && <span>编码: {product.product_code}</span>}
+            </p>
+          </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <main className="container mx-auto px-4 py-4 md:py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* 图片管理 */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>商品图片</span>
+            <CardHeader className="pb-2 md:pb-4">
+              <CardTitle className="flex items-center justify-between text-base md:text-lg">
+                <span>商品图片 ({images.length})</span>
                 {isAdmin && (
                   <div>
                     <input
@@ -280,11 +295,13 @@ export default function ProductDetailPage({
                     <Button
                       asChild
                       disabled={uploading}
+                      size="sm"
                       className="cursor-pointer"
                     >
-                      <label htmlFor="image-upload">
-                        <Upload className="h-4 w-4 mr-2" />
-                        {uploading ? '上传中...' : '上传图片'}
+                      <label htmlFor="image-upload" className="cursor-pointer">
+                        <Upload className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="hidden sm:inline">{uploading ? '上传中...' : '上传图片'}</span>
+                        <span className="sm:hidden">上传</span>
                       </label>
                     </Button>
                   </div>
@@ -293,53 +310,120 @@ export default function ProductDetailPage({
             </CardHeader>
             <CardContent>
               {images.length === 0 ? (
-                <div className="aspect-video bg-gray-100 rounded-lg flex flex-col items-center justify-center">
-                  <ImageIcon className="h-16 w-16 text-gray-300 mb-4" />
-                  <p className="text-gray-500">
+                <div className="aspect-square md:aspect-video bg-gray-100 rounded-lg flex flex-col items-center justify-center">
+                  <ImageIcon className="h-16 w-16 md:h-20 md:w-20 text-gray-300 mb-3" />
+                  <p className="text-gray-500 text-sm md:text-base">
                     {isAdmin ? '暂无图片，点击上方按钮上传' : '暂无图片'}
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-4">
-                  {images.map((img) => (
-                    <div key={img.id} className="relative group">
-                      <img
-                        src={img.url}
-                        alt="商品图片"
-                        className="w-full aspect-video object-cover rounded-lg"
-                      />
-                      {img.is_primary && (
-                        <Badge className="absolute top-2 left-2">主图</Badge>
-                      )}
-                      {isAdmin && (
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                          {!img.is_primary && (
+                <>
+                  {/* 主图显示 - 移动端大图 */}
+                  <div className="relative mb-3 md:mb-4">
+                    <img
+                      src={images[activeImageIndex]?.url}
+                      alt="商品图片"
+                      className="w-full aspect-square md:aspect-video object-cover rounded-lg"
+                    />
+                    {images[activeImageIndex]?.is_primary && (
+                      <Badge className="absolute top-2 left-2">主图</Badge>
+                    )}
+                    {/* 移动端操作按钮 */}
+                    {isAdmin && (
+                      <div className="absolute top-2 right-2 md:hidden">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="p-2"
+                          onClick={() => setShowImageActions(showImageActions === activeImageIndex ? null : activeImageIndex)}
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                        {showImageActions === activeImageIndex && (
+                          <div className="absolute right-0 top-10 bg-white rounded-lg shadow-lg border p-2 flex flex-col gap-1 min-w-[100px]">
+                            {!images[activeImageIndex]?.is_primary && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleSetPrimary(images[activeImageIndex].id)}
+                                className="justify-start"
+                              >
+                                <Star className="h-4 w-4 mr-2" />
+                                设为主图
+                              </Button>
+                            )}
                             <Button
                               size="sm"
-                              variant="secondary"
-                              onClick={() => handleSetPrimary(img.id)}
+                              variant="ghost"
+                              onClick={() => handleDelete(images[activeImageIndex].id)}
+                              className="justify-start text-red-600 hover:text-red-700"
                             >
-                              <Star className="h-4 w-4 mr-1" />
-                              设为主图
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              删除
                             </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleDelete(img.id)}
-                          >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            删除
-                          </Button>
-                        </div>
-                      )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* 图片计数 */}
+                    <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                      {activeImageIndex + 1} / {images.length}
                     </div>
-                  ))}
-                </div>
+                  </div>
+
+                  {/* 缩略图列表 */}
+                  <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
+                    {images.map((img, index) => (
+                      <div
+                        key={img.id}
+                        className={`relative flex-shrink-0 cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                          index === activeImageIndex ? 'border-blue-500' : 'border-transparent'
+                        }`}
+                        onClick={() => setActiveImageIndex(index)}
+                      >
+                        <img
+                          src={img.url}
+                          alt="缩略图"
+                          className="w-16 h-16 md:w-20 md:h-20 object-cover"
+                        />
+                        {img.is_primary && (
+                          <div className="absolute top-0.5 left-0.5">
+                            <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* 桌面端图片操作 */}
+                  {isAdmin && (
+                    <div className="hidden md:flex gap-2 mt-4">
+                      {!images[activeImageIndex]?.is_primary && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleSetPrimary(images[activeImageIndex].id)}
+                        >
+                          <Star className="h-4 w-4 mr-1" />
+                          设为主图
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(images[activeImageIndex].id)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        删除
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
               {isAdmin && (
-                <p className="text-sm text-gray-500 mt-4">
-                  提示：第一张上传的图片自动设为主图，支持 JPG、PNG 格式，最大 5MB
+                <p className="text-xs md:text-sm text-gray-500 mt-3 md:mt-4">
+                  提示：第一张上传的图片自动设为主图，支持 JPG、PNG 格式，最大 10MB
                 </p>
               )}
             </CardContent>
@@ -347,76 +431,77 @@ export default function ProductDetailPage({
 
           {/* 商品信息 */}
           <Card>
-            <CardHeader>
-              <CardTitle>商品信息</CardTitle>
+            <CardHeader className="pb-2 md:pb-4">
+              <CardTitle className="text-base md:text-lg">商品信息</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">商品编码</p>
-                    <p className="font-medium">{product.product_code || '-'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">品牌</p>
-                    <p className="font-medium">{product.brand || '-'}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">一级分类</p>
-                    <p className="font-medium">{product.level1_category || '-'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">二级分类</p>
-                    <p className="font-medium">{product.level2_category || '-'}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-500">规格</p>
-                  <p className="font-medium">{product.spec || '-'}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-500">参数</p>
-                  <p className="font-medium">{product.params || '-'}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-500">价格</p>
-                  <p className="text-2xl font-bold text-red-600">
-                    {product.price ? `¥${product.price}` : '未定价'}
+              {/* 价格突出显示 */}
+              {product.price && (
+                <div className="mb-4 p-3 bg-red-50 rounded-lg">
+                  <p className="text-sm text-red-600">价格</p>
+                  <p className="text-3xl md:text-4xl font-bold text-red-600">
+                    ¥{product.price}
                   </p>
                 </div>
+              )}
 
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <p className="text-xs md:text-sm text-gray-500">商品编码</p>
+                  <p className="font-medium text-sm md:text-base">{product.product_code || '-'}</p>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <p className="text-xs md:text-sm text-gray-500">品牌</p>
+                  <p className="font-medium text-sm md:text-base">{product.brand || '-'}</p>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <p className="text-xs md:text-sm text-gray-500">一级分类</p>
+                  <p className="font-medium text-sm md:text-base">{product.level1_category || '-'}</p>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <p className="text-xs md:text-sm text-gray-500">二级分类</p>
+                  <p className="font-medium text-sm md:text-base">{product.level2_category || '-'}</p>
+                </div>
+              </div>
+
+              <div className="mt-3 md:mt-4 space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500">供应商</p>
-                  <p className="font-medium">{product.supplier || '-'}</p>
+                  <p className="text-xs md:text-sm text-gray-500">规格</p>
+                  <p className="font-medium text-sm md:text-base">{product.spec || '-'}</p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-500">产地</p>
-                  <p className="font-medium">{product.origin || '-'}</p>
+                  <p className="text-xs md:text-sm text-gray-500">参数</p>
+                  <p className="font-medium text-sm md:text-base whitespace-pre-wrap">{product.params || '-'}</p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-500">质保</p>
-                  <p className="font-medium">{product.warranty || '-'}</p>
+                  <p className="text-xs md:text-sm text-gray-500">供应商</p>
+                  <p className="font-medium text-sm md:text-base">{product.supplier || '-'}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div>
+                    <p className="text-xs md:text-sm text-gray-500">产地</p>
+                    <p className="font-medium text-sm md:text-base">{product.origin || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs md:text-sm text-gray-500">质保</p>
+                    <p className="font-medium text-sm md:text-base">{product.warranty || '-'}</p>
+                  </div>
                 </div>
 
                 {product.selling_points && (
                   <div>
-                    <p className="text-sm text-gray-500">产品优势/卖点</p>
-                    <p className="font-medium">{product.selling_points}</p>
+                    <p className="text-xs md:text-sm text-gray-500">产品优势/卖点</p>
+                    <p className="font-medium text-sm md:text-base">{product.selling_points}</p>
                   </div>
                 )}
 
                 {product.remarks && (
                   <div>
-                    <p className="text-sm text-gray-500">备注</p>
-                    <p className="font-medium">{product.remarks}</p>
+                    <p className="text-xs md:text-sm text-gray-500">备注</p>
+                    <p className="font-medium text-sm md:text-base">{product.remarks}</p>
                   </div>
                 )}
               </div>
@@ -424,6 +509,30 @@ export default function ProductDetailPage({
           </Card>
         </div>
       </main>
+
+      {/* 移动端底部固定上传按钮 */}
+      {isAdmin && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t p-3">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleUpload}
+            className="hidden"
+            id="image-upload-mobile"
+            disabled={uploading}
+          />
+          <Button
+            asChild
+            disabled={uploading}
+            className="w-full cursor-pointer"
+          >
+            <label htmlFor="image-upload-mobile" className="cursor-pointer">
+              <Upload className="h-4 w-4 mr-2" />
+              {uploading ? '上传中...' : '上传图片'}
+            </label>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
