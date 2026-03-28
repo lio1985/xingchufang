@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Lock, User, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, KeyRound, UserPlus, Phone, FileText } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,14 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
@@ -33,6 +41,20 @@ function LoginForm() {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState(false);
+
+  // 注册相关状态
+  const [showRegisterDialog, setShowRegisterDialog] = useState(false);
+  const [registerForm, setRegisterForm] = useState({
+    username: '',
+    password: '',
+    confirmPassword: '',
+    role: 'sales',
+    contact: '',
+    remarks: '',
+  });
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [registerError, setRegisterError] = useState('');
+  const [registerSuccess, setRegisterSuccess] = useState(false);
 
   // 检查是否已登录
   useEffect(() => {
@@ -174,6 +196,80 @@ function LoginForm() {
     }
   };
 
+  // 打开注册对话框
+  const openRegisterDialog = () => {
+    setRegisterForm({
+      username: '',
+      password: '',
+      confirmPassword: '',
+      role: 'sales',
+      contact: '',
+      remarks: '',
+    });
+    setRegisterError('');
+    setRegisterSuccess(false);
+    setShowRegisterDialog(true);
+  };
+
+  // 注册
+  const handleRegister = async () => {
+    setRegisterError('');
+    
+    if (!registerForm.username.trim()) {
+      setRegisterError('请输入用户名');
+      return;
+    }
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    if (!usernameRegex.test(registerForm.username)) {
+      setRegisterError('用户名只能包含字母、数字、下划线，长度3-20位');
+      return;
+    }
+    if (!registerForm.password) {
+      setRegisterError('请输入密码');
+      return;
+    }
+    if (registerForm.password.length < 6) {
+      setRegisterError('密码长度不能少于6位');
+      return;
+    }
+    if (registerForm.password !== registerForm.confirmPassword) {
+      setRegisterError('两次输入的密码不一致');
+      return;
+    }
+
+    setRegisterLoading(true);
+    
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: registerForm.username.trim(),
+          password: registerForm.password,
+          role: registerForm.role,
+          contact: registerForm.contact?.trim() || null,
+          remarks: registerForm.remarks?.trim() || null,
+        }),
+      });
+
+      const data = await res.json();
+      
+      if (data.success) {
+        setRegisterSuccess(true);
+        setTimeout(() => {
+          setShowRegisterDialog(false);
+          setRegisterSuccess(false);
+        }, 2000);
+      } else {
+        setRegisterError(data.error || '注册失败');
+      }
+    } catch (err) {
+      setRegisterError('网络错误，请重试');
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
+
   if (checking) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
@@ -256,15 +352,24 @@ function LoginForm() {
                 {loading ? '登录中...' : '登录'}
               </Button>
 
-              {/* 修改密码入口 */}
-              <div className="text-center">
+              {/* 功能链接 */}
+              <div className="flex justify-center items-center gap-4 text-sm">
                 <button
                   type="button"
                   onClick={openPasswordDialog}
-                  className="text-sm text-blue-600 hover:text-blue-700 hover:underline inline-flex items-center gap-1"
+                  className="text-blue-600 hover:text-blue-700 hover:underline inline-flex items-center gap-1"
                 >
                   <KeyRound className="h-3.5 w-3.5" />
                   修改密码
+                </button>
+                <span className="text-gray-300">|</span>
+                <button
+                  type="button"
+                  onClick={openRegisterDialog}
+                  className="text-blue-600 hover:text-blue-700 hover:underline inline-flex items-center gap-1"
+                >
+                  <UserPlus className="h-3.5 w-3.5" />
+                  注册账号
                 </button>
               </div>
             </form>
@@ -349,6 +454,126 @@ function LoginForm() {
               </Button>
               <Button onClick={handleChangePassword} disabled={passwordLoading}>
                 {passwordLoading ? '修改中...' : '确认修改'}
+              </Button>
+            </DialogFooter>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* 注册对话框 */}
+      <Dialog open={showRegisterDialog} onOpenChange={setShowRegisterDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>注册账号</DialogTitle>
+          </DialogHeader>
+          
+          {registerSuccess ? (
+            <div className="py-6 text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-3">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="text-green-600 font-medium">注册申请已提交！</p>
+              <p className="text-gray-500 text-sm mt-2">请等待管理员审核</p>
+            </div>
+          ) : (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reg-username">用户名 *</Label>
+                  <Input
+                    id="reg-username"
+                    type="text"
+                    placeholder="字母数字下划线"
+                    value={registerForm.username}
+                    onChange={(e) => setRegisterForm({ ...registerForm, username: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reg-role">角色</Label>
+                  <Select
+                    value={registerForm.role}
+                    onValueChange={(value) => setRegisterForm({ ...registerForm, role: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sales">销售</SelectItem>
+                      <SelectItem value="admin">管理员</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reg-password">密码 *</Label>
+                  <Input
+                    id="reg-password"
+                    type="password"
+                    placeholder="至少6位"
+                    value={registerForm.password}
+                    onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reg-confirm-password">确认密码 *</Label>
+                  <Input
+                    id="reg-confirm-password"
+                    type="password"
+                    placeholder="再次输入密码"
+                    value={registerForm.confirmPassword}
+                    onChange={(e) => setRegisterForm({ ...registerForm, confirmPassword: e.target.value })}
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="reg-contact">联系方式</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="reg-contact"
+                    type="text"
+                    placeholder="手机号或微信（选填）"
+                    value={registerForm.contact}
+                    onChange={(e) => setRegisterForm({ ...registerForm, contact: e.target.value })}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="reg-remarks">备注</Label>
+                <div className="relative">
+                  <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Textarea
+                    id="reg-remarks"
+                    placeholder="申请说明（选填）"
+                    value={registerForm.remarks}
+                    onChange={(e) => setRegisterForm({ ...registerForm, remarks: e.target.value })}
+                    className="pl-10 min-h-[60px]"
+                  />
+                </div>
+              </div>
+
+              {registerError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-600 text-center">{registerError}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {!registerSuccess && (
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowRegisterDialog(false)}>
+                取消
+              </Button>
+              <Button onClick={handleRegister} disabled={registerLoading}>
+                {registerLoading ? '提交中...' : '提交申请'}
               </Button>
             </DialogFooter>
           )}

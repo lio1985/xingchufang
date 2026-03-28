@@ -70,7 +70,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'images' | 'data'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'images' | 'data' | 'registrations'>('overview');
   
   // 数据状态
   const [stats, setStats] = useState<Stats | null>(null);
@@ -89,6 +89,11 @@ export default function AdminPage() {
   
   // 操作状态
   const [actionLoading, setActionLoading] = useState(false);
+  
+  // 注册审核
+  const [registrations, setRegistrations] = useState<any[]>([]);
+  const [registrationStatus, setRegistrationStatus] = useState<'pending' | 'all'>('pending');
+  const [registrationLoading, setRegistrationLoading] = useState(false);
   
   // 新建/编辑商品
   const [showProductDialog, setShowProductDialog] = useState(false);
@@ -194,6 +199,73 @@ export default function AdminPage() {
     }
   };
 
+  // 加载注册申请列表
+  const loadRegistrations = async () => {
+    setRegistrationLoading(true);
+    try {
+      const res = await fetch(`/api/admin/registrations?status=${registrationStatus}`, { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        setRegistrations(data.data);
+      }
+    } catch (error) {
+      console.error('加载注册申请失败:', error);
+    } finally {
+      setRegistrationLoading(false);
+    }
+  };
+
+  // 审核通过
+  const handleApprove = async (registrationId: number, username: string) => {
+    if (!confirm(`确定通过 ${username} 的注册申请吗？`)) return;
+    
+    setRegistrationLoading(true);
+    try {
+      const res = await fetch('/api/admin/registrations/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ registrationId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadRegistrations();
+      } else {
+        alert(data.error || '操作失败');
+      }
+    } catch (error) {
+      alert('操作失败');
+    } finally {
+      setRegistrationLoading(false);
+    }
+  };
+
+  // 审核拒绝
+  const handleReject = async (registrationId: number, username: string) => {
+    const reason = prompt(`请输入拒绝 ${username} 的原因（选填）：`);
+    if (reason === null) return; // 用户取消
+    
+    setRegistrationLoading(true);
+    try {
+      const res = await fetch('/api/admin/registrations/reject', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ registrationId, reason }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadRegistrations();
+      } else {
+        alert(data.error || '操作失败');
+      }
+    } catch (error) {
+      alert('操作失败');
+    } finally {
+      setRegistrationLoading(false);
+    }
+  };
+
   // 切换标签时加载数据
   useEffect(() => {
     if (loading || !currentUser) return;
@@ -202,6 +274,8 @@ export default function AdminPage() {
       loadProducts(1);
     } else if (activeTab === 'images') {
       loadImages(1);
+    } else if (activeTab === 'registrations') {
+      loadRegistrations();
     }
   }, [activeTab, loading, currentUser]);
 
@@ -462,6 +536,7 @@ export default function AdminPage() {
             { key: 'overview', label: '概览', icon: TrendingUp },
             { key: 'products', label: '商品管理', icon: Package },
             { key: 'images', label: '图片管理', icon: ImageIcon },
+            { key: 'registrations', label: '用户审核', icon: Users },
             { key: 'data', label: '数据操作', icon: Database },
           ].map((tab) => (
             <Button
@@ -797,6 +872,117 @@ export default function AdminPage() {
                   >
                     下一页
                   </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 用户审核 */}
+        {activeTab === 'registrations' && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <CardTitle>用户注册审核</CardTitle>
+                <div className="flex gap-2">
+                  <Select
+                    value={registrationStatus}
+                    onValueChange={(value) => { setRegistrationStatus(value as 'pending' | 'all'); setTimeout(loadRegistrations, 0); }}
+                  >
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">待审核</SelectItem>
+                      <SelectItem value="all">全部</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button variant="outline" size="sm" onClick={loadRegistrations}>
+                    <RefreshCw className="h-4 w-4 mr-1" />
+                    刷新
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {registrationLoading ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+                  加载中...
+                </div>
+              ) : registrations.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  暂无注册申请
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-3 px-2">用户名</th>
+                        <th className="text-left py-3 px-2">角色</th>
+                        <th className="text-left py-3 px-2">联系方式</th>
+                        <th className="text-left py-3 px-2">备注</th>
+                        <th className="text-left py-3 px-2">申请时间</th>
+                        <th className="text-left py-3 px-2">状态</th>
+                        <th className="text-left py-3 px-2">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {registrations.map((reg) => (
+                        <tr key={reg.id} className="border-b hover:bg-gray-50">
+                          <td className="py-3 px-2 font-medium">{reg.username}</td>
+                          <td className="py-3 px-2">
+                            <Badge variant={reg.role === 'admin' ? 'default' : 'secondary'}>
+                              {reg.role === 'admin' ? '管理员' : '销售'}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-2">{reg.contact || '-'}</td>
+                          <td className="py-3 px-2 max-w-[200px] truncate" title={reg.remarks}>{reg.remarks || '-'}</td>
+                          <td className="py-3 px-2 text-gray-500">
+                            {new Date(reg.created_at).toLocaleString('zh-CN')}
+                          </td>
+                          <td className="py-3 px-2">
+                            <Badge
+                              variant={
+                                reg.status === 'approved' ? 'default' :
+                                reg.status === 'rejected' ? 'destructive' : 'secondary'
+                              }
+                            >
+                              {reg.status === 'approved' ? '已通过' :
+                               reg.status === 'rejected' ? '已拒绝' : '待审核'}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-2">
+                            {reg.status === 'pending' ? (
+                              <div className="flex gap-1">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleApprove(reg.id, reg.username)}
+                                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                >
+                                  通过
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleReject(reg.id, reg.username)}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  拒绝
+                                </Button>
+                              </div>
+                            ) : (
+                              <span className="text-gray-400 text-xs">
+                                {reg.reviewed_by && `由 ${reg.reviewed_by} 处理`}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </CardContent>
