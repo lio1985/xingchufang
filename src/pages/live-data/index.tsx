@@ -190,8 +190,13 @@ export default function LiveDataPage() {
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
+          cursor: 'pointer',
         }}
-        onClick={() => Taro.navigateTo({ url: '/pages/live-data/import' })}
+        hoverClass="bg-slate-800"
+        onClick={() => {
+          console.log('Navigate to import page');
+          Taro.navigateTo({ url: '/pages/live-data/import' });
+        }}
       >
         <View
           style={{
@@ -222,8 +227,13 @@ export default function LiveDataPage() {
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
+          cursor: 'pointer',
         }}
-        onClick={() => Taro.navigateTo({ url: '/pages/live-data/import?method=excel' })}
+        hoverClass="bg-slate-800"
+        onClick={() => {
+          console.log('Navigate to import page (excel)');
+          Taro.navigateTo({ url: '/pages/live-data/import?method=excel' });
+        }}
       >
         <View
           style={{
@@ -254,8 +264,13 @@ export default function LiveDataPage() {
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
+          cursor: 'pointer',
         }}
-        onClick={() => Taro.navigateTo({ url: '/pages/live-data/import?method=screenshot' })}
+        hoverClass="bg-slate-800"
+        onClick={() => {
+          console.log('Navigate to import page (screenshot)');
+          Taro.navigateTo({ url: '/pages/live-data/import?method=screenshot' });
+        }}
       >
         <View
           style={{
@@ -676,8 +691,13 @@ export default function LiveDataPage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6px',
+                cursor: 'pointer',
               }}
-              onClick={() => setActiveTab(tab.key as typeof activeTab)}
+              hoverClass="bg-opacity-80"
+              onClick={() => {
+                console.log('Tab clicked:', tab.key);
+                setActiveTab(tab.key as typeof activeTab);
+              }}
             >
               <tab.icon size={16} color={activeTab === tab.key ? '#000' : '#71717a'} />
               <Text style={{ fontSize: '14px', fontWeight: '600', color: activeTab === tab.key ? '#000' : '#64748b' }}>{tab.label}</Text>
