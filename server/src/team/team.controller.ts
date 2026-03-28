@@ -56,6 +56,15 @@ export class TeamController {
   }
 
   /**
+   * 获取可添加到团队的用户列表
+   * 队长或管理员可调用
+   */
+  @Get('available-users')
+  async getAvailableUsers(@Request() req, @Query('search') search?: string) {
+    return this.teamService.getAvailableUsers(req.user.id, search);
+  }
+
+  /**
    * 获取团队详情
    */
   @Get(':id')

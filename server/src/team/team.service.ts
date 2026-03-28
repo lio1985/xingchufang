@@ -196,21 +196,23 @@ export class TeamService {
 
   /**
    * 添加成员到团队
+   * 权限：管理员或队长可以操作
    */
   async addMember(userId: string, teamId: string, memberId: string) {
-    // 检查权限
-    await this.permissionService.requirePermission(
-      userId,
-      PermissionResource.TEAM,
-      PermissionAction.ASSIGN_MEMBER,
-    );
-
     const supabase = getSupabaseClient();
+
+    // 检查权限：管理员或队长
+    const isAdmin = await this.permissionService.isAdmin(userId);
+    const isTeamLeader = await this.isTeamLeaderOfTeam(userId, teamId);
+
+    if (!isAdmin && !isTeamLeader) {
+      throw new ForbiddenException('无权添加团队成员');
+    }
 
     // 检查成员是否存在且不在其他团队
     const { data: member, error: memberError } = await supabase
       .from('users')
-      .select('id, team_id, status')
+      .select('id, team_id, status, nickname, avatar_url')
       .eq('id', memberId)
       .single();
 
@@ -232,7 +234,14 @@ export class TeamService {
       throw new BadRequestException('添加成员失败: ' + updateError.message);
     }
 
-    return { success: true };
+    return { 
+      success: true, 
+      member: {
+        id: member.id,
+        nickname: member.nickname,
+        avatarUrl: member.avatar_url,
+      }
+    };
   }
 
   /**
@@ -479,5 +488,59 @@ export class TeamService {
       totalDealValue,
       memberRanking,
     };
+  }
+
+  /**
+   * 获取可添加到团队的用户列表
+   * 返回未加入任何团队的激活用户
+   */
+  async getAvailableUsers(userId: string, search?: string): Promise<any[]> {
+    const supabase = getSupabaseClient();
+
+    // 获取用户所在团队，验证是否有权限
+    const { data: user } = await supabase
+      .from('users')
+      .select('team_id, is_team_leader, role')
+      .eq('id', userId)
+      .single();
+
+    if (!user?.team_id) {
+      throw new ForbiddenException('您不在任何团队中');
+    }
+
+    // 检查是否是队长或管理员
+    const isAdmin = await this.permissionService.isAdmin(userId);
+    const isTeamLeader = user.is_team_leader;
+
+    if (!isAdmin && !isTeamLeader) {
+      throw new ForbiddenException('无权添加团队成员');
+    }
+
+    // 查询未加入团队的用户
+    let query = supabase
+      .from('users')
+      .select('id, nickname, avatar_url, phone, status')
+      .is('team_id', null)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    // 搜索条件
+    if (search) {
+      query = query.or(`nickname.ilike.%${search}%,phone.ilike.%${search}%`);
+    }
+
+    const { data: users, error } = await query;
+
+    if (error) {
+      throw new BadRequestException('获取用户列表失败');
+    }
+
+    return (users || []).map(u => ({
+      id: u.id,
+      nickname: u.nickname,
+      avatarUrl: u.avatar_url,
+      phone: u.phone ? `${u.phone.slice(0, 3)}****${u.phone.slice(-4)}` : null,
+    }));
   }
 }
