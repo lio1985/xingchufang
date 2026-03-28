@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -9,27 +9,31 @@ import { Label } from '@/components/ui/label';
 import { Lock, User, Eye, EyeOff, Shield, Eye as EyeIcon } from 'lucide-react';
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const redirect = searchParams.get('redirect') || '/';
+  const [checking, setChecking] = useState(true);
 
   // 检查是否已登录
   useEffect(() => {
-    fetch('/api/auth')
-      .then((res) => res.json())
-      .then((data) => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth');
+        const data = await res.json();
         if (data.authenticated) {
-          window.location.href = redirect;
+          window.location.href = '/';
+          return;
         }
-      })
-      .catch(() => {});
-  }, [redirect]);
+      } catch (e) {
+        // 忽略
+      }
+      setChecking(false);
+    };
+    checkAuth();
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,14 +50,19 @@ function LoginForm() {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim(), password: password.trim() }),
+        body: JSON.stringify({ 
+          username: username.trim(), 
+          password: password.trim() 
+        }),
       });
 
       const data = await res.json();
       
       if (data.success) {
-        // 直接跳转到首页
-        window.location.href = '/';
+        // 延迟跳转，确保cookie已设置
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 100);
       } else {
         setError(data.error || '登录失败');
         setLoading(false);
@@ -64,6 +73,14 @@ function LoginForm() {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <p className="text-gray-500">加载中...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center px-4 py-8">
@@ -98,6 +115,7 @@ function LoginForm() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="pl-10 h-10"
+                    autoComplete="username"
                     required
                   />
                 </div>
@@ -114,6 +132,7 @@ function LoginForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 pr-10 h-10"
+                    autoComplete="current-password"
                     required
                   />
                   <button
@@ -146,12 +165,12 @@ function LoginForm() {
               <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
                 <div className="flex items-center gap-2 mb-1">
                   <Shield className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">管理员（采购负责人）</span>
+                  <span className="text-sm font-medium text-blue-800">管理员</span>
                 </div>
                 <p className="text-sm text-blue-700">
-                  账号：<code className="px-1 bg-blue-100 rounded text-blue-800">admin</code>
+                  账号：<code className="px-1 bg-blue-100 rounded">admin</code>
                   {' / '}
-                  密码：<code className="px-1 bg-blue-100 rounded text-blue-800">admin123</code>
+                  密码：<code className="px-1 bg-blue-100 rounded">admin123</code>
                 </p>
               </div>
 
@@ -161,34 +180,26 @@ function LoginForm() {
                   <span className="text-sm font-medium text-green-800">销售</span>
                 </div>
                 <p className="text-sm text-green-700">
-                  账号：<code className="px-1 bg-green-100 rounded text-green-800">sales</code>
+                  账号：<code className="px-1 bg-green-100 rounded">sales</code>
                   {' / '}
-                  密码：<code className="px-1 bg-green-100 rounded text-green-800">sales123</code>
+                  密码：<code className="px-1 bg-green-100 rounded">sales123</code>
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
-
-        <p className="text-center text-xs text-gray-400 mt-4">
-          © 2024 星厨房商品库
-        </p>
       </div>
-    </div>
-  );
-}
-
-function LoginLoading() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-      <p className="text-gray-500">加载中...</p>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<LoginLoading />}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <p className="text-gray-500">加载中...</p>
+      </div>
+    }>
       <LoginForm />
     </Suspense>
   );
