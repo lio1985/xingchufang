@@ -31,6 +31,7 @@ export default defineAppConfig({
     'pages/hot-topic-generation/index',
     'pages/hot-script-generation/index',
     'pages/favorite-list/index',
+    'pages/live-data/index',
     'pages/live-data/import/index',
     'pages/live-data/list/index',
     'pages/live-data/detail/index',
