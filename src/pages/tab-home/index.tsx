@@ -184,10 +184,11 @@ const TabHomePage = () => {
       id: 'live-data',
       icon: Radio,
       label: '直播数据',
-      desc: '上传与分析',
+      desc: '上传数据 · 统计分析',
       color: '#f43f5e',
       bgColor: 'rgba(244, 63, 94, 0.15)',
-      path: '/pages/live-data/dashboard',
+      path: '/pages/live-data/index',
+      isHighlight: true,
     },
   ];
 
@@ -446,9 +447,105 @@ const TabHomePage = () => {
           )}
         </View>
 
+        {/* 直播数据 - 与获客接单样式一致 */}
+        <View
+          style={{
+            background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(225, 29, 72, 0.1))',
+            border: '1px solid rgba(244, 63, 94, 0.3)',
+            borderRadius: '12px',
+            marginBottom: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <View
+            style={{
+              padding: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+            onClick={() => handleNav('/pages/live-data/index')}
+          >
+            <View
+              style={{
+                width: '52px',
+                height: '52px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #f43f5e, #e11d48)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Radio size={26} color="#ffffff" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: '17px', fontWeight: '600', color: '#f43f5e', display: 'block' }}>直播数据</Text>
+              <Text style={{ fontSize: '13px', color: 'rgba(244, 63, 94, 0.6)', display: 'block', marginTop: '2px' }}>上传数据 · 统计分析 · 数据洞察</Text>
+            </View>
+            <ChevronRight size={20} color="#f43f5e" />
+          </View>
+
+          {/* 快捷功能按钮 */}
+          <View style={{ borderTop: '1px solid rgba(244, 63, 94, 0.15)', padding: '12px 16px', display: 'flex', gap: '10px' }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                border: '1px solid rgba(244, 63, 94, 0.2)',
+                borderRadius: '10px',
+                padding: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+              }}
+              onClick={() => handleNav('/pages/live-data/import')}
+            >
+              <Text style={{ fontSize: '14px' }}>📤</Text>
+              <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>上传数据</Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                border: '1px solid rgba(244, 63, 94, 0.2)',
+                borderRadius: '10px',
+                padding: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+              }}
+              onClick={() => handleNav('/pages/live-data/dashboard')}
+            >
+              <Text style={{ fontSize: '14px' }}>📊</Text>
+              <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>数据统计</Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                border: '1px solid rgba(244, 63, 94, 0.2)',
+                borderRadius: '10px',
+                padding: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+              }}
+              onClick={() => handleNav('/pages/live-data/analysis')}
+            >
+              <Text style={{ fontSize: '14px' }}>🔍</Text>
+              <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>数据分析</Text>
+            </View>
+          </View>
+        </View>
+
         {/* 其他快捷入口 */}
         <View style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          {quickActions.filter(a => a.id !== 'orders').map((action) => {
+          {quickActions.filter(a => a.id !== 'orders' && a.id !== 'live-data').map((action) => {
             const IconComp = action.icon;
             if (action.isHighlight) {
               return (
