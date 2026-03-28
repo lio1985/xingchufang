@@ -14,6 +14,7 @@ import {
   Inbox,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { colors, fontSize, spacing, containerStyles } from '@/styles/common';
 import { formatRelativeTime, formatMoney } from '@/utils/format';
 import { debounce } from '@/utils/loading';
@@ -62,6 +63,9 @@ const priorityMap: Record<string, { text: string; color: string }> = {
 const PAGE_SIZE = 20;
 
 const EquipmentOrdersPage = () => {
+  // 登录状态检查
+  const { canAccess, loading: authLoading } = useAuthGuard({ requireLogin: true });
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -339,6 +343,29 @@ const EquipmentOrdersPage = () => {
       </View>
     );
   };
+
+  // 权限检查 UI
+  if (authLoading) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#71717a' }}>加载中...</Text>
+      </View>
+    );
+  }
+
+  if (!canAccess) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#71717a', marginBottom: '16px' }}>请先登录</Text>
+        <View
+          style={{ padding: '12px 24px', backgroundColor: '#38bdf8', borderRadius: '8px' }}
+          onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}
+        >
+          <Text style={{ color: '#000', fontWeight: '500' }}>去登录</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={containerStyles.page}>

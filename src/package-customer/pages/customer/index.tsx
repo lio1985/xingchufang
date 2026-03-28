@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 import {
   User,
   Phone,
@@ -46,6 +47,9 @@ const orderStatusConfig = {
 };
 
 export default function CustomerList() {
+  // 登录状态检查
+  const { canAccess, loading: authLoading } = useAuthGuard({ requireLogin: true });
+
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [loading, setLoading] = useState(false);
@@ -146,6 +150,29 @@ export default function CustomerList() {
   const goToCreate = () => {
     Taro.navigateTo({ url: '/package-customer/pages/customer/edit' });
   };
+
+  // 权限加载中或无权限时的 UI
+  if (authLoading) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#71717a' }}>加载中...</Text>
+      </View>
+    );
+  }
+
+  if (!canAccess) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#71717a', marginBottom: '16px' }}>请先登录</Text>
+        <View
+          style={{ padding: '12px 24px', backgroundColor: '#38bdf8', borderRadius: '8px' }}
+          onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}
+        >
+          <Text style={{ color: '#000', fontWeight: '500' }}>去登录</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
