@@ -3,11 +3,13 @@ export declare class CourseController {
     private readonly courseService;
     constructor(courseService: CourseService);
     getCategories(): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: any[];
     }>;
     getList(categoryId?: string, contentType?: ContentType, status?: CourseStatus, keyword?: string, page?: string, limit?: string, req?: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: {
             list: any[];
             pagination: {
@@ -18,33 +20,39 @@ export declare class CourseController {
         };
     }>;
     getDetail(id: string, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: any;
     }>;
     create(dto: CreateCourseDto, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: any;
     }>;
     update(id: string, dto: UpdateCourseDto, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: any;
     }>;
     delete(id: string): Promise<{
-        success: boolean;
-        message: string;
+        code: number;
+        msg: string;
+        data: null;
     }>;
     publish(id: string): Promise<{
-        success: boolean;
-        message: string;
+        code: number;
+        msg: string;
+        data: null;
     }>;
     archive(id: string): Promise<{
-        success: boolean;
-        message: string;
+        code: number;
+        msg: string;
+        data: null;
     }>;
     uploadFile(file: Express.Multer.File): Promise<{
         code: number;
         msg: string;
-        data?: undefined;
+        data: null;
     } | {
         code: number;
         msg: string;
@@ -57,17 +65,20 @@ export declare class CourseController {
         };
     }>;
     updateLearning(id: string, dto: UpdateLearningDto, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: any;
     }>;
     toggleFavorite(id: string, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: {
             isFavorite: boolean;
         };
     }>;
     getFavorites(page: string | undefined, limit: string | undefined, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: {
             list: {
                 favoriteAt: any;
@@ -162,7 +173,8 @@ export declare class CourseController {
         };
     }>;
     getLearnings(page: string | undefined, limit: string | undefined, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: {
             list: any[];
             pagination: {
@@ -173,7 +185,8 @@ export declare class CourseController {
         };
     }>;
     getStatistics(req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: {
             totalCourses: number;
             userStats: {
@@ -189,7 +202,8 @@ export declare class CourseController {
         };
     }>;
     getRecommended(limit: string | undefined, req: any): Promise<{
-        success: boolean;
+        code: number;
+        msg: string;
         data: any[];
     }>;
 }

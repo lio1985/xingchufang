@@ -349,7 +349,7 @@ export default function CourseManagePage() {
                 >
                   <View
                     style={{ padding: '16px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}
-                    onClick={() => Taro.navigateTo({ url: `/pages/admin/course-edit/index?id=${course.id}` })}
+                    onClick={() => Taro.navigateTo({ url: `/package-admin/pages/admin/course-edit/index?id=${course.id}` })}
                   >
                     {/* Cover */}
                     {course.cover_image ? (
@@ -429,7 +429,7 @@ export default function CourseManagePage() {
                     <View style={{ borderTop: '1px solid #1e3a5f', padding: '12px 16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                       <View
                         style={{ padding: '6px 12px', backgroundColor: '#1e293b', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}
-                        onClick={() => { Taro.navigateTo({ url: `/pages/admin/course-edit/index?id=${course.id}` }); setShowActions(null); }}
+                        onClick={() => { Taro.navigateTo({ url: `/package-admin/pages/admin/course-edit/index?id=${course.id}` }); setShowActions(null); }}
                       >
                         <Pencil size={14} color="#94a3b8" />
                         <Text style={{ fontSize: '12px', color: '#94a3b8' }}>编辑</Text>

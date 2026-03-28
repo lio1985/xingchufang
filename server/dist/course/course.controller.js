@@ -24,11 +24,12 @@ let CourseController = class CourseController {
         this.courseService = courseService;
     }
     async getCategories() {
-        return this.courseService.getCategories();
+        const result = await this.courseService.getCategories();
+        return { code: 200, msg: 'success', data: result.data };
     }
     async getList(categoryId, contentType, status, keyword, page = '1', limit = '20', req) {
         const isAdmin = req.user?.role === 'admin' || req.user?.role === 'super_admin';
-        return this.courseService.getCourses({
+        const result = await this.courseService.getCourses({
             categoryId,
             contentType,
             status,
@@ -38,31 +39,38 @@ let CourseController = class CourseController {
             userId: req.user?.id,
             isAdmin,
         });
+        return { code: 200, msg: 'success', data: result.data };
     }
     async getDetail(id, req) {
-        return this.courseService.getCourseDetail(id, req.user?.id);
+        const result = await this.courseService.getCourseDetail(id, req.user?.id);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async create(dto, req) {
-        return this.courseService.createCourse(dto, req.user.id);
+        const result = await this.courseService.createCourse(dto, req.user.id);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async update(id, dto, req) {
-        return this.courseService.updateCourse(id, dto, req.user.id);
+        const result = await this.courseService.updateCourse(id, dto, req.user.id);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async delete(id) {
-        return this.courseService.deleteCourse(id);
+        await this.courseService.deleteCourse(id);
+        return { code: 200, msg: '删除成功', data: null };
     }
     async publish(id) {
-        return this.courseService.publishCourse(id);
+        await this.courseService.publishCourse(id);
+        return { code: 200, msg: '发布成功', data: null };
     }
     async archive(id) {
-        return this.courseService.archiveCourse(id);
+        await this.courseService.archiveCourse(id);
+        return { code: 200, msg: '归档成功', data: null };
     }
     async uploadFile(file) {
         console.log('上传课程文件：', file?.originalname);
         console.log('文件类型：', file?.mimetype);
         console.log('文件大小：', file?.size);
         if (!file) {
-            return { code: 400, msg: '请上传文件' };
+            return { code: 400, msg: '请上传文件', data: null };
         }
         const allowedTypes = [
             'application/pdf',
@@ -76,7 +84,7 @@ let CourseController = class CourseController {
             'image/webp',
         ];
         if (!allowedTypes.includes(file.mimetype)) {
-            return { code: 400, msg: '不支持的文件类型，仅支持 PDF、PPT、Word、图片' };
+            return { code: 400, msg: '不支持的文件类型，仅支持 PDF、PPT、Word、图片', data: null };
         }
         let contentType = course_service_1.ContentType.OTHER;
         if (file.mimetype === 'application/pdf') {
@@ -102,22 +110,28 @@ let CourseController = class CourseController {
         };
     }
     async updateLearning(id, dto, req) {
-        return this.courseService.updateLearning(id, req.user.id, dto);
+        const result = await this.courseService.updateLearning(id, req.user.id, dto);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async toggleFavorite(id, req) {
-        return this.courseService.toggleFavorite(id, req.user.id);
+        const result = await this.courseService.toggleFavorite(id, req.user.id);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async getFavorites(page = '1', limit = '20', req) {
-        return this.courseService.getFavoriteCourses(req.user.id, parseInt(page) || 1, parseInt(limit) || 20);
+        const result = await this.courseService.getFavoriteCourses(req.user.id, parseInt(page) || 1, parseInt(limit) || 20);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async getLearnings(page = '1', limit = '20', req) {
-        return this.courseService.getLearningHistory(req.user.id, parseInt(page) || 1, parseInt(limit) || 20);
+        const result = await this.courseService.getLearningHistory(req.user.id, parseInt(page) || 1, parseInt(limit) || 20);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async getStatistics(req) {
-        return this.courseService.getStatistics(req.user?.id);
+        const result = await this.courseService.getStatistics(req.user?.id);
+        return { code: 200, msg: 'success', data: result.data };
     }
     async getRecommended(limit = '5', req) {
-        return this.courseService.getRecommendedCourses(req.user?.id, parseInt(limit) || 5);
+        const result = await this.courseService.getRecommendedCourses(req.user?.id, parseInt(limit) || 5);
+        return { code: 200, msg: 'success', data: result.data };
     }
 };
 exports.CourseController = CourseController;

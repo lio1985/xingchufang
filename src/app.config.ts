@@ -10,6 +10,7 @@ export default defineAppConfig({
     'pages/register/index',
     'pages/change-password/index',
     'pages/settings/index',
+    'pages/course-detail/index',
   ],
   // 分包配置
   subPackages: [

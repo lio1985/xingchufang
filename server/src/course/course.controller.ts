@@ -38,7 +38,8 @@ export class CourseController {
    */
   @Get('categories')
   async getCategories() {
-    return this.courseService.getCategories();
+    const result = await this.courseService.getCategories();
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -55,7 +56,7 @@ export class CourseController {
     @Req() req?: any,
   ) {
     const isAdmin = req.user?.role === 'admin' || req.user?.role === 'super_admin';
-    return this.courseService.getCourses({
+    const result = await this.courseService.getCourses({
       categoryId,
       contentType,
       status,
@@ -65,6 +66,7 @@ export class CourseController {
       userId: req.user?.id,
       isAdmin,
     });
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -72,7 +74,8 @@ export class CourseController {
    */
   @Get(':id')
   async getDetail(@Param('id') id: string, @Req() req: any) {
-    return this.courseService.getCourseDetail(id, req.user?.id);
+    const result = await this.courseService.getCourseDetail(id, req.user?.id);
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -81,7 +84,8 @@ export class CourseController {
   @Post()
   @UseGuards(AdminGuard)
   async create(@Body() dto: CreateCourseDto, @Req() req: any) {
-    return this.courseService.createCourse(dto, req.user.id);
+    const result = await this.courseService.createCourse(dto, req.user.id);
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -94,7 +98,8 @@ export class CourseController {
     @Body() dto: UpdateCourseDto,
     @Req() req: any,
   ) {
-    return this.courseService.updateCourse(id, dto, req.user.id);
+    const result = await this.courseService.updateCourse(id, dto, req.user.id);
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -103,7 +108,8 @@ export class CourseController {
   @Delete(':id')
   @UseGuards(AdminGuard)
   async delete(@Param('id') id: string) {
-    return this.courseService.deleteCourse(id);
+    await this.courseService.deleteCourse(id);
+    return { code: 200, msg: '删除成功', data: null };
   }
 
   /**
@@ -112,7 +118,8 @@ export class CourseController {
   @Post(':id/publish')
   @UseGuards(AdminGuard)
   async publish(@Param('id') id: string) {
-    return this.courseService.publishCourse(id);
+    await this.courseService.publishCourse(id);
+    return { code: 200, msg: '发布成功', data: null };
   }
 
   /**
@@ -121,7 +128,8 @@ export class CourseController {
   @Post(':id/archive')
   @UseGuards(AdminGuard)
   async archive(@Param('id') id: string) {
-    return this.courseService.archiveCourse(id);
+    await this.courseService.archiveCourse(id);
+    return { code: 200, msg: '归档成功', data: null };
   }
 
   /**
@@ -141,7 +149,7 @@ export class CourseController {
     console.log('文件大小：', file?.size);
 
     if (!file) {
-      return { code: 400, msg: '请上传文件' };
+      return { code: 400, msg: '请上传文件', data: null };
     }
 
     // 判断文件类型
@@ -158,7 +166,7 @@ export class CourseController {
     ];
 
     if (!allowedTypes.includes(file.mimetype)) {
-      return { code: 400, msg: '不支持的文件类型，仅支持 PDF、PPT、Word、图片' };
+      return { code: 400, msg: '不支持的文件类型，仅支持 PDF、PPT、Word、图片', data: null };
     }
 
     // 根据文件类型确定 content_type
@@ -197,7 +205,8 @@ export class CourseController {
     @Body() dto: UpdateLearningDto,
     @Req() req: any,
   ) {
-    return this.courseService.updateLearning(id, req.user.id, dto);
+    const result = await this.courseService.updateLearning(id, req.user.id, dto);
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -205,7 +214,8 @@ export class CourseController {
    */
   @Post(':id/favorite')
   async toggleFavorite(@Param('id') id: string, @Req() req: any) {
-    return this.courseService.toggleFavorite(id, req.user.id);
+    const result = await this.courseService.toggleFavorite(id, req.user.id);
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -217,11 +227,12 @@ export class CourseController {
     @Query('limit') limit = '20',
     @Req() req: any,
   ) {
-    return this.courseService.getFavoriteCourses(
+    const result = await this.courseService.getFavoriteCourses(
       req.user.id,
       parseInt(page) || 1,
       parseInt(limit) || 20,
     );
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -233,11 +244,12 @@ export class CourseController {
     @Query('limit') limit = '20',
     @Req() req: any,
   ) {
-    return this.courseService.getLearningHistory(
+    const result = await this.courseService.getLearningHistory(
       req.user.id,
       parseInt(page) || 1,
       parseInt(limit) || 20,
     );
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -245,7 +257,8 @@ export class CourseController {
    */
   @Get('stats/overview')
   async getStatistics(@Req() req: any) {
-    return this.courseService.getStatistics(req.user?.id);
+    const result = await this.courseService.getStatistics(req.user?.id);
+    return { code: 200, msg: 'success', data: result.data };
   }
 
   /**
@@ -256,6 +269,7 @@ export class CourseController {
     @Query('limit') limit = '5',
     @Req() req: any,
   ) {
-    return this.courseService.getRecommendedCourses(req.user?.id, parseInt(limit) || 5);
+    const result = await this.courseService.getRecommendedCourses(req.user?.id, parseInt(limit) || 5);
+    return { code: 200, msg: 'success', data: result.data };
   }
 }
