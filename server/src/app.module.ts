@@ -42,6 +42,7 @@ import { AiAdminModule } from './ai-admin/ai-admin.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 import { FileParserModule } from './file-parser/file-parser.module';
 import { CourseModule } from './course/course.module';
+import { TopicsModule } from './topics/topics.module';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { CourseModule } from './course/course.module';
     KnowledgeModule,
     FileParserModule,
     CourseModule,
+    TopicsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
