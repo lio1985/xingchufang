@@ -15,26 +15,15 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const [checking, setChecking] = useState(false);
 
   // 检查是否已登录
   useEffect(() => {
+    setChecking(true);
+    
     const checkAuth = async () => {
-      // 首先检查localStorage中的token
-      const token = localStorage.getItem('auth_token');
-      const storedUser = localStorage.getItem('admin_user');
-      
-      if (token && storedUser) {
-        try {
-          // 有token，直接跳转
-          window.location.href = '/';
-          return;
-        } catch {
-          // 解析失败，继续检查Cookie
-        }
-      }
-      
       try {
+        // 检查Cookie认证
         const res = await fetch('/api/auth', {
           credentials: 'include',
         });
@@ -44,7 +33,7 @@ function LoginForm() {
           return;
         }
       } catch (e) {
-        // 忽略
+        // 忽略错误
       }
       setChecking(false);
     };
@@ -77,10 +66,12 @@ function LoginForm() {
       const data = await res.json();
       console.log('[Login] Response:', data);
       
-      if (data.success && data.token) {
-        // 保存token到localStorage
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('admin_user', JSON.stringify(data.user));
+      if (data.success) {
+        // 保存token到localStorage（如果可用）
+        if (typeof window !== 'undefined' && data.token) {
+          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('admin_user', JSON.stringify(data.user));
+        }
         console.log('[Login] Success! Redirecting to home...');
         // 登录成功，直接跳转到首页
         window.location.href = '/';

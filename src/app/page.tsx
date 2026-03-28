@@ -60,35 +60,20 @@ export default function Home() {
 
   // 检查登录状态
   useEffect(() => {
-    // 首先检查localStorage中的token
-    const token = localStorage.getItem('auth_token');
-    const storedUser = localStorage.getItem('admin_user');
-    
-    if (token && storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        setCurrentUser(user);
-        return;
-      } catch {
-        // 解析失败，继续检查Cookie
-      }
-    }
-    
     // 检查Cookie认证
     fetch('/api/auth', { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {
         if (data.authenticated && data.user) {
           setCurrentUser(data.user);
-          // 同步到localStorage
-          localStorage.setItem('admin_user', JSON.stringify(data.user));
         } else {
-          // Cookie认证失败，检查是否有token
-          if (!token) {
-            // 没有token，重定向到登录页
-            router.push('/login');
-          }
+          // 未认证，重定向到登录页
+          router.push('/login');
         }
+      })
+      .catch(() => {
+        // 网络错误，重定向到登录页
+        router.push('/login');
       });
   }, [router]);
   
@@ -97,9 +82,6 @@ export default function Home() {
 
   // 登出
   const handleLogout = async () => {
-    // 清除localStorage
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('admin_user');
     await fetch('/api/auth', { method: 'DELETE', credentials: 'include' });
     router.push('/login');
   };

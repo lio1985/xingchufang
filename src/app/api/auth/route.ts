@@ -76,16 +76,7 @@ export async function POST(request: NextRequest) {
       response.cookies.set('admin_token', 'authenticated', cookieOptions);
       response.cookies.set('admin_user', JSON.stringify(userInfo), cookieOptions);
       
-      // 同时返回一个token，前端可以存储在localStorage中作为备用
-      const token = Buffer.from(JSON.stringify(userInfo)).toString('base64');
-      
-      console.log('[Auth] Cookie options:', cookieOptions);
-      
-      return NextResponse.json({ 
-        success: true,
-        user: userInfo,
-        token, // 返回token，前端可以存储在localStorage
-      });
+      return response;
     } else {
       return NextResponse.json(
         { success: false, error: '账号或密码错误' },
