@@ -116,6 +116,14 @@ export default defineConfig<'vite'>(async (merge, _env) => {
       ],
     },
     mini: {
+      // 分包优化：提取公共依赖
+      optimizeMainPackage: {
+        enable: true,
+      },
+      // 代码分割配置
+      miniCssExtractPluginOption: {
+        ignoreOrder: true,
+      },
       postcss: {
         pxtransform: {
           enable: true,

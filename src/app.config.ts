@@ -75,7 +75,6 @@ export default defineAppConfig({
     'pages/team/chat',
     'pages/notification/index',
     'pages/knowledge/product-manual/index',
-    'pages/knowledge/product-manual/detail',
     'pages/knowledge/design-knowledge/index',
     'pages/knowledge/design-knowledge/detail',
     'pages/equipment-orders/index',
