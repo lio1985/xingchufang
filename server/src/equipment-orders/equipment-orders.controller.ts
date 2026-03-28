@@ -14,7 +14,7 @@ import { EquipmentOrdersService, CreateOrderDto, FollowUpDto, OrderType, OrderSt
 import { ActiveUserGuard } from '../guards/active-user.guard';
 import { AdminGuard } from '../guards/admin.guard';
 
-@Controller('api/equipment-orders')
+@Controller('equipment-orders')
 @UseGuards(ActiveUserGuard)
 export class EquipmentOrdersController {
   constructor(private readonly ordersService: EquipmentOrdersService) {}

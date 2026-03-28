@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { StorageService } from '../storage/storage.service';
 import { KnowledgeShareService } from './knowledge-share.service';
 
-@Controller('api/knowledge-shares')
+@Controller('knowledge-shares')
 export class KnowledgeShareController {
   constructor(
     private readonly knowledgeShareService: KnowledgeShareService,

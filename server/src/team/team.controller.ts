@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, Requ
 import { TeamService, CreateTeamDto, UpdateTeamDto } from './team.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
-@Controller('api/teams')
+@Controller('teams')
 @UseGuards(JwtAuthGuard)
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
