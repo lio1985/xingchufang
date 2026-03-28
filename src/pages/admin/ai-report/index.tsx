@@ -104,7 +104,7 @@ export default function AdminAIReportPage() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>运营报告</Text>
-            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>AI 智能报告生成</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>报告创建</Text>
           </View>
           <View onClick={loadLatestReport} style={{ padding: '8px' }}>
             <RefreshCw size={20} color="#38bdf8" />

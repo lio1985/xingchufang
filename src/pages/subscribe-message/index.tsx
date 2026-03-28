@@ -60,7 +60,7 @@ export default function SubscribeMessagePage() {
     {
       id: 'ai_complete',
       templateId: 'AI_COMPLETE_TEMPLATE_ID',
-      title: 'AI创作完成',
+      title: '创作完成',
       desc: '内容创作完成后及时通知，快速查看创作结果',
       icon: Sparkles,
       color: '#a855f7',

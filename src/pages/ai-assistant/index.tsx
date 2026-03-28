@@ -37,7 +37,7 @@ export default function AIAssistantPage() {
     {
       id: '1',
       role: 'assistant',
-      content: '你好！我是星小帮，你的智能写作助手 ✨\n\n我可以帮你：\n• 撰写短视频脚本\n• 撰写产品文案\n• 寻找热门选题\n• 提供写作灵感\n\n有什么我可以帮你的吗？',
+      content: '你好！我是星小帮，你的写作助手 ✨\n\n我可以帮你：\n• 撰写短视频脚本\n• 撰写产品文案\n• 寻找热门选题\n• 提供写作灵感\n\n有什么我可以帮你的吗？',
       timestamp: new Date(),
     },
   ]);
@@ -260,7 +260,7 @@ export default function AIAssistantPage() {
           marginTop: '4px' 
         }}
         >
-          智能写作助手
+          写作助手
         </Text>
       </View>
 

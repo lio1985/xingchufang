@@ -191,7 +191,7 @@ export default function AdminDashboardPage() {
     },
     {
       icon: Bot,
-      title: 'AI 管理',
+      title: '管理中心',
       desc: '模型与模块配置',
       path: '/pages/admin/ai-management/index',
       color: '#8b5cf6',

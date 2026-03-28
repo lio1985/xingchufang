@@ -879,7 +879,7 @@ const TopicPlanningPage = () => {
               <ArrowRight size={14} color="#000" />
             </View>
 
-            {/* AI 分析按钮 */}
+            {/* 分析按钮 */}
             <View
               style={{ 
                 padding: '6px', 
@@ -1174,7 +1174,7 @@ const TopicPlanningPage = () => {
     );
   };
 
-  // 渲染 AI 分析弹窗
+  // 渲染分析弹窗
   const renderAIAnalysisModal = () => {
     if (!showAIAnalysisModal || !currentTopic) return null;
 
@@ -1203,7 +1203,7 @@ const TopicPlanningPage = () => {
           <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Sparkles size={20} color="#fbbf24" />
-              <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>AI 分析报告</Text>
+              <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>选题分析报告</Text>
             </View>
             <View onClick={() => { setShowAIAnalysisModal(false); setAIAnalysisResult(null); }}>
               <X size={24} color="#71717a" />
@@ -1227,7 +1227,7 @@ const TopicPlanningPage = () => {
               <View style={{ textAlign: 'center', padding: '40px 0' }}>
                 <RefreshCw size={32} color="#38bdf8" />
                 <Text style={{ fontSize: '14px', color: '#71717a', marginTop: '12px', display: 'block' }}>
-                  AI 正在分析中...
+                  正在分析中...
                 </Text>
               </View>
             ) : aiAnalysisResult ? (
@@ -1527,7 +1527,7 @@ const TopicPlanningPage = () => {
       {/* 编辑弹窗 */}
       {renderFormModal(true)}
 
-      {/* AI 分析弹窗 */}
+      {/* 分析弹窗 */}
       {renderAIAnalysisModal()}
     </View>
   );

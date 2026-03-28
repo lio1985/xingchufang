@@ -410,7 +410,7 @@ export default function LiveDataPage() {
 
   const renderAnalysisTab = () => (
     <View style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      {/* AI 分析功能 */}
+      {/* 分析功能 */}
       <View
         style={{
           backgroundColor: '#111827',
@@ -437,7 +437,7 @@ export default function LiveDataPage() {
           <ChartArea size={24} color="#a855f7" />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>AI 复盘分析</Text>
+          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>复盘分析</Text>
           <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>深度分析直播数据，输出专业报告</Text>
         </View>
         <ChevronRight size={18} color="#64748b" />

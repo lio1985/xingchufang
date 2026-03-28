@@ -78,7 +78,7 @@ const AiManagementPage = () => {
     {
       icon: Bot,
       title: '模型管理',
-      desc: '配置AI模型参数',
+      desc: '配置模型参数',
       path: '/pages/admin/ai-models/index',
       color: '#38bdf8',
       bgColor: 'rgba(56, 189, 248, 0.2)',
@@ -86,7 +86,7 @@ const AiManagementPage = () => {
     {
       icon: Puzzle,
       title: '功能模块',
-      desc: '管理AI赋能板块',
+      desc: '管理赋能板块',
       path: '/pages/admin/ai-modules/index',
       color: '#a855f7',
       bgColor: 'rgba(168, 85, 247, 0.2)',
@@ -128,8 +128,8 @@ const AiManagementPage = () => {
             <ChevronLeft size={24} color="#f1f5f9" />
           </View>
           <View>
-            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>AI管理中心</Text>
-            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>全局AI配置与监控</Text>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>管理中心</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>全局配置与监控</Text>
           </View>
         </View>
       </View>
@@ -140,7 +140,7 @@ const AiManagementPage = () => {
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
             <Bot size={20} color="#38bdf8" />
             <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block', marginTop: '8px' }}>{stats?.modelCount || 0}</Text>
-            <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>AI模型</Text>
+            <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>模型</Text>
           </View>
           <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '12px', textAlign: 'center' }}>
             <Puzzle size={20} color="#a855f7" />

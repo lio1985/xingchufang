@@ -44,7 +44,7 @@ interface KnowledgeItem {
   type: string;
 }
 
-// AI辅助功能类型
+// 辅助功能类型
 type AIAssistantMode = 'outline' | 'expand' | 'polish' | 'inspiration' | null;
 
 const ContentCreationPage = () => {
@@ -64,7 +64,7 @@ const ContentCreationPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingStep, setLoadingStep] = useState('');
 
-  // AI辅助状态
+  // 辅助状态
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [aiMode, setAiMode] = useState<AIAssistantMode>(null);
   const [aiLoading, setAiLoading] = useState(false);
@@ -323,7 +323,7 @@ const ContentCreationPage = () => {
     return content;
   };
 
-  // AI辅助功能
+  // 辅助功能
   const handleAIAssistant = async (mode: AIAssistantMode) => {
     if (!topicInfo && mode !== 'polish') {
       Taro.showToast({ title: '请先选择选题', icon: 'none' });
@@ -413,17 +413,17 @@ const ContentCreationPage = () => {
       if (res?.data?.code === 200 && res?.data?.data) {
         setAiResult(res.data.data);
       } else {
-        Taro.showToast({ title: res?.data?.msg || 'AI处理失败', icon: 'none' });
+        Taro.showToast({ title: res?.data?.msg || '处理失败', icon: 'none' });
       }
     } catch (error) {
       console.error(`[ContentCreation] AI ${mode} 失败:`, error);
-      Taro.showToast({ title: 'AI处理失败', icon: 'none' });
+      Taro.showToast({ title: '处理失败', icon: 'none' });
     } finally {
       setAiLoading(false);
     }
   };
 
-  // 应用AI结果
+  // 应用辅助结果
   const applyAIResult = () => {
     if (!aiResult) return;
 
@@ -581,7 +581,7 @@ const ContentCreationPage = () => {
       </View>
 
       <ScrollView scrollY style={{ paddingTop: '32px', paddingBottom: '100px' }}>
-        {/* AI 辅助工具栏 */}
+        {/* 辅助工具栏 */}
         <View style={{ padding: '0 32px', marginBottom: '24px' }}>
           <View
             style={{
@@ -616,7 +616,7 @@ const ContentCreationPage = () => {
                 </View>
                 <View>
                   <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>
-                    AI 辅助写作
+                    辅助写作
                   </Text>
                   <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '2px' }}>
                     大纲生成 · 内容扩写 · 润色优化 · 创意灵感
@@ -1103,7 +1103,7 @@ const ContentCreationPage = () => {
         ) : null}
       </ScrollView>
 
-      {/* AI辅助弹窗 */}
+      {/* 辅助弹窗 */}
       {showAIAssistant && aiMode && (
         <View
           style={{
@@ -1162,7 +1162,7 @@ const ContentCreationPage = () => {
                       display: 'block',
                     }}
                   >
-                    AI 正在处理中...
+                    正在处理中...
                   </Text>
                 </View>
               ) : aiResult ? (

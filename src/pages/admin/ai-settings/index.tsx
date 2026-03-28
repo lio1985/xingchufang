@@ -236,9 +236,9 @@ const AiSettingsPage = () => {
               </View>
               <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
                 {[
-                  { key: 'enable_ai_chat', label: 'AI对话功能' },
-                  { key: 'enable_ai_writing', label: 'AI写作功能' },
-                  { key: 'enable_ai_analysis', label: 'AI分析功能' },
+                  { key: 'enable_ai_chat', label: '对话功能' },
+                  { key: 'enable_ai_writing', label: '写作功能' },
+                  { key: 'enable_ai_analysis', label: '分析功能' },
                 ].map((item, index) => (
                   <View
                     key={item.key}

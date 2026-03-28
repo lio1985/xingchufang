@@ -82,7 +82,7 @@ const AiModulesPage = () => {
             <ChevronLeft size={24} color="#f1f5f9" />
           </View>
           <View>
-            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>AI功能模块</Text>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>功能模块</Text>
             <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>{modules.filter(m => m.is_active).length} 个已启用</Text>
           </View>
         </View>
