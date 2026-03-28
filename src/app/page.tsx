@@ -50,20 +50,23 @@ export default function Home() {
     level1Categories: [],
     level2Categories: [],
   });
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
 
   // 检查登录状态
   useEffect(() => {
     fetch('/api/auth')
       .then((res) => res.json())
-      .then((data) => setIsAdmin(data.authenticated));
+      .then((data) => {
+        if (data.authenticated) {
+          setCurrentUser(data.user || 'admin');
+        }
+      });
   }, []);
 
   // 登出
   const handleLogout = async () => {
     await fetch('/api/auth', { method: 'DELETE' });
-    setIsAdmin(false);
-    alert('已登出');
+    router.push('/login');
   };
 
   // 获取筛选选项
@@ -139,7 +142,7 @@ export default function Home() {
               <h1 className="text-3xl font-bold">星厨房商品库</h1>
               <p className="text-blue-100 mt-1">快捷搜索选品系统 · 多人协作共享</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 onClick={() => router.push('/statistics')}
@@ -148,32 +151,28 @@ export default function Home() {
                 <TrendingUp className="h-4 w-4 mr-2" />
                 数据统计
               </Button>
-              {isAdmin ? (
-                <>
+              <Button
+                variant="secondary"
+                onClick={() => router.push('/batch-import')}
+                className="bg-white text-blue-600 hover:bg-blue-50"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                批量导入图片
+              </Button>
+              {currentUser && (
+                <div className="flex items-center gap-3 ml-2">
+                  <span className="text-sm text-blue-100">
+                    当前用户: <span className="font-medium text-white">{currentUser}</span>
+                  </span>
                   <Button
-                    variant="secondary"
-                    onClick={() => router.push('/batch-import')}
-                    className="bg-white text-blue-600 hover:bg-blue-50"
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    批量导入图片
-                  </Button>
-                  <Button
-                    variant="ghost"
+                    variant="outline"
+                    size="sm"
                     onClick={handleLogout}
-                    className="text-white hover:bg-blue-700"
+                    className="border-blue-400 text-white hover:bg-blue-700"
                   >
                     登出
                   </Button>
-                </>
-              ) : (
-                <Button
-                  variant="secondary"
-                  onClick={() => router.push('/login')}
-                  className="bg-white text-blue-600 hover:bg-blue-50"
-                >
-                  管理员登录
-                </Button>
+                </div>
               )}
             </div>
           </div>
