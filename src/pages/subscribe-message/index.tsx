@@ -105,6 +105,15 @@ export default function SubscribeMessagePage() {
   };
 
   const handleSubscribe = async (template: SubscribeTemplate) => {
+    // 跨端兼容性检测：订阅消息仅支持微信小程序
+    if (Taro.getEnv() !== Taro.ENV_TYPE.WEAPP) {
+      Taro.showToast({
+        title: '订阅消息仅支持微信小程序',
+        icon: 'none',
+      });
+      return;
+    }
+
     try {
       // 1. 调用微信订阅消息API
       // @ts-ignore - Taro 类型定义问题

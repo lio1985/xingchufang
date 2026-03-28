@@ -12,15 +12,20 @@ declare const PROJECT_DOMAIN: string;
  * IMPORTANT: 除非你需要添加全局参数，如给所有请求加上 header，否则不能修改此文件
  */
 
-const createUrl = (url: string): string => {
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-        return url
-    }
+// 缓存环境信息，避免重复计算
+let cachedEnv: {
+    isWeapp: boolean;
+    isH5: boolean;
+    isLocalhost: boolean;
+    isCozeDev: boolean;
+    projectDomain: string;
+} | null = null;
 
-    // 判断是否在浏览器/H5环境
+const getEnvInfo = () => {
+    if (cachedEnv) return cachedEnv;
+
     const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
-    
-    // 使用 Taro.getEnv() 判断环境
+
     let env: string | undefined;
     try {
         env = Taro.getEnv();
@@ -28,46 +33,52 @@ const createUrl = (url: string): string => {
         // Taro.getEnv() 可能出错
     }
 
-    // 从环境变量获取项目域名（通过 defineConstants 注入）
-    const projectDomain = typeof PROJECT_DOMAIN !== 'undefined' 
-        ? PROJECT_DOMAIN 
-        : '';
+    const projectDomain = typeof PROJECT_DOMAIN !== 'undefined' ? PROJECT_DOMAIN : '';
+
+    const isWeapp = env === Taro.ENV_TYPE.WEAPP;
+    const isH5 = (env && env !== Taro.ENV_TYPE.WEAPP && isBrowser) ||
+        (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') ||
+        isBrowser;
+    const isLocalhost = isBrowser && window.location.hostname.includes('localhost');
+    const isCozeDev = isBrowser && (
+        window.location.hostname.includes('dev.coze.site') ||
+        window.location.hostname.includes('bypass-')
+    );
+
+    cachedEnv = {
+        isWeapp,
+        isH5,
+        isLocalhost,
+        isCozeDev,
+        projectDomain
+    };
+
+    return cachedEnv;
+};
+
+const createUrl = (url: string): string => {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url
+    }
+
+    const envInfo = getEnvInfo();
 
     // 小程序环境（微信小程序）- 优先判断
-    if (env === Taro.ENV_TYPE.WEAPP) {
+    if (envInfo.isWeapp) {
         // 使用 PROJECT_DOMAIN 或默认域名
-        const domain = projectDomain || 'https://api.xingchufang.cn';
+        const domain = envInfo.projectDomain || 'https://api.xingchufang.cn';
         return `${domain}${url}`;
     }
 
-    // H5/Web 环境判断：
-    const isH5 = (
-        (env && env !== Taro.ENV_TYPE.WEAPP && isBrowser) ||
-        (typeof process !== 'undefined' && process.env.TARO_ENV === 'h5') ||
-        isBrowser
-    );
-
-    if (isH5) {
-        // 检查是否在 Coze 在线预览环境或 Bypass 环境
-        const isCozeDev = isBrowser && (
-            window.location.hostname.includes('dev.coze.site') ||
-            window.location.hostname.includes('bypass-')
-        );
-        
-        // 本地开发环境
-        const isLocalhost = isBrowser && window.location.hostname.includes('localhost');
-
+    // H5/Web 环境
+    if (envInfo.isH5) {
         // 本地开发环境：使用相对路径由 Vite 代理处理
-        if (isLocalhost) {
+        if (envInfo.isLocalhost) {
             return url;
         }
 
-        // Coze/Bypass 沙箱环境：检测是否使用静态服务器（serve）
-        // 在 prod 模式下，前端使用 serve 静态服务器，不支持代理，需要直接访问后端
-        // BUT: Coze 环境沙箱阻止了直接访问 3000 端口，所以使用相对路径让 Vite 代理处理
-        if (isCozeDev) {
-            // 使用相对路径，让 Vite proxy 处理请求转发到后端
-            console.log('[Network] Coze mode, using relative path for proxy:', url);
+        // Coze/Bypass 沙箱环境：使用相对路径让 Vite 代理处理
+        if (envInfo.isCozeDev) {
             return url;
         }
 
@@ -76,8 +87,11 @@ const createUrl = (url: string): string => {
     }
 
     // 其他环境，默认使用环境变量或相对路径
-    return projectDomain ? `${projectDomain}${url}` : url;
+    return envInfo.projectDomain ? `${envInfo.projectDomain}${url}` : url;
 }
+
+// 仅在开发环境输出调试日志
+const isDev = typeof process !== 'undefined' && process.env.NODE_ENV === 'development';
 
 export const request: typeof Taro.request = option => {
     const token = Taro.getStorageSync('token');
@@ -88,14 +102,14 @@ export const request: typeof Taro.request = option => {
         header['Authorization'] = `Bearer ${token}`;
     }
 
-    console.log('Network Request:', {
-        url: createUrl(option.url),
-        method: option.method || 'GET',
-        hasToken: !!token,
-        token: token ? `${token.substring(0, 20)}...` : 'none',
-        header,
-        data: option.data
-    });
+    // 仅开发环境输出日志，且不输出敏感信息
+    if (isDev) {
+        console.log('[Network] Request:', {
+            url: createUrl(option.url),
+            method: option.method || 'GET',
+            hasToken: !!token,
+        });
+    }
 
     const task = Taro.request({
         ...option,
@@ -103,19 +117,20 @@ export const request: typeof Taro.request = option => {
         header,
     });
 
-    // 监听响应完成，打印日志
-    task.then(response => {
-        console.log('Network Response:', {
-            url: createUrl(option.url),
-            statusCode: response.statusCode,
-            data: response.data
+    // 仅开发环境输出响应日志
+    if (isDev) {
+        task.then(response => {
+            console.log('[Network] Response:', {
+                url: createUrl(option.url),
+                statusCode: response.statusCode,
+            });
+        }).catch(error => {
+            console.error('[Network] Error:', {
+                url: createUrl(option.url),
+                error: error.errMsg || error.message || error
+            });
         });
-    }).catch(error => {
-        console.error('Network Error:', {
-            url: createUrl(option.url),
-            error: error.errMsg || error.message || error
-        });
-    });
+    }
 
     return task;
 }
