@@ -8,12 +8,13 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm
 
-# 复制依赖文件
+# 创建 workspace 结构
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN mkdir -p server
 COPY server/package.json ./server/
 
 # 安装所有依赖
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # 复制后端源代码
 COPY server ./server
@@ -32,12 +33,13 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm
 
-# 复制依赖文件
+# 创建 workspace 结构
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN mkdir -p server
 COPY server/package.json ./server/
 
 # 安装生产依赖
-RUN pnpm install --prod --ignore-scripts
+RUN pnpm install --prod --frozen-lockfile
 
 # 从构建阶段复制后端产物
 COPY --from=builder /app/server/dist ./server/dist
