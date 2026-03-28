@@ -98,14 +98,14 @@ export default function AdminShareStatsPage() {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#38bdf8" />
+            <ChevronLeft size={22} color="#38bdf8" />
           </View>
           <Text className="admin-title">共享统计</Text>
           <View
             className="admin-action-btn"
             onClick={loadStats}
           >
-            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
+            <RefreshCw size={22} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
       </View>

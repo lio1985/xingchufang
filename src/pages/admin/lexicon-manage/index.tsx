@@ -218,12 +218,12 @@ const LexiconManagePage = () => {
       <View className="admin-header">
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#38bdf8" />
+            <ChevronLeft size={22} color="#38bdf8" />
           </View>
           <Text className="admin-title">语料库管理</Text>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View className="admin-action-btn" onClick={loadLexicons}>
-              <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
+              <RefreshCw size={22} color={loading ? '#64748b' : '#38bdf8'} />
             </View>
             <View
               style={{

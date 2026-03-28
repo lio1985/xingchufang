@@ -207,14 +207,14 @@ export default function AdminUsersPage() {
       <View className="admin-header" style={{ paddingBottom: '16px' }}>
         <View className="admin-header-content">
           <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={20} color="#38bdf8" />
+            <ChevronLeft size={22} color="#38bdf8" />
           </View>
           <Text className="admin-title">用户管理</Text>
           <View
             className="admin-action-btn"
             onClick={handleRefresh}
           >
-            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
+            <RefreshCw size={22} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
 
@@ -239,7 +239,7 @@ export default function AdminUsersPage() {
         {/* 筛选器 */}
         {showListFilters && (
           <View style={{ marginTop: '16px' }}>
-            <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
+            <Text style={{ fontSize: '12px', color: '#71717a', marginBottom: '8px', display: 'block' }}>
               角色
             </Text>
             <View className="filter-bar">
@@ -263,7 +263,7 @@ export default function AdminUsersPage() {
               </View>
             </View>
 
-            <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '8px', marginTop: '12px', display: 'block' }}>
+            <Text style={{ fontSize: '12px', color: '#71717a', marginBottom: '8px', marginTop: '12px', display: 'block' }}>
               状态
             </Text>
             <View className="filter-bar">
