@@ -1,5 +1,6 @@
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { useState, useEffect } from 'react';
 import {
   Heart,
   Building2,
@@ -10,6 +11,42 @@ import {
 } from 'lucide-react-taro';
 
 const TabKnowledgePage = () => {
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    try {
+      const user = Taro.getStorageSync('user');
+      const token = Taro.getStorageSync('token');
+      if (user && token) {
+        setIsLoggedIn(true);
+        setUserRole(user.role || 'guest');
+      }
+    } catch (e) {
+      console.log('获取用户信息失败');
+    }
+  }, []);
+
+  // 监听页面显示，刷新用户信息
+  Taro.useDidShow(() => {
+    try {
+      const user = Taro.getStorageSync('user');
+      const token = Taro.getStorageSync('token');
+      if (user && token) {
+        setIsLoggedIn(true);
+        setUserRole(user.role || 'guest');
+      } else {
+        setIsLoggedIn(false);
+        setUserRole(null);
+      }
+    } catch (e) {
+      console.log('刷新用户信息失败');
+    }
+  });
+
+  // 判断是否有权限查看公司资料（员工及以上权限）
+  const canViewCompanyData = isLoggedIn && userRole && ['employee', 'team_leader', 'admin'].includes(userRole);
+
   const handleNav = (path: string) => {
     Taro.navigateTo({ url: path });
   };
@@ -48,19 +85,23 @@ const TabKnowledgePage = () => {
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>我的收藏内容</Text>
           </View>
 
-          <View
-            style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => handleNav('/package-knowledge/pages/knowledge-share/index')}
-          >
-            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Building2 size={20} color="#a855f7" />
+          {/* 公司资料 - 仅员工及以上权限可见 */}
+          {canViewCompanyData && (
+            <View
+              style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              onClick={() => handleNav('/package-knowledge/pages/knowledge-share/index')}
+            >
+              <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Building2 size={20} color="#a855f7" />
+              </View>
+              <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>公司资料</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>企业知识库</Text>
             </View>
-            <Text style={{ fontSize: '16px', fontWeight: '500', color: '#ffffff', display: 'block', marginTop: '8px' }}>公司资料</Text>
-            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>企业知识库</Text>
-          </View>
+          )}
 
+          {/* 个人语料 - 根据公司资料是否显示调整位置 */}
           <View
-            style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+            style={{ width: canViewCompanyData ? 'calc(50% - 6px)' : 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={() => handleNav('/package-content/pages/lexicon-system/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

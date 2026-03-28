@@ -1,5 +1,6 @@
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { useState, useEffect } from 'react';
 import {
   Building2,
   Wrench,
@@ -10,6 +11,7 @@ import {
   BookOpen,
   Settings,
   Lightbulb,
+  Lock,
 } from 'lucide-react-taro';
 
 // 知识分类数据
@@ -57,6 +59,39 @@ const knowledgeCategories = [
 ];
 
 const KnowledgeSharePage = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  Taro.useDidShow(() => {
+    checkAuth();
+  });
+
+  const checkAuth = () => {
+    try {
+      const user = Taro.getStorageSync('user');
+      const token = Taro.getStorageSync('token');
+      if (user && token) {
+        setIsLoggedIn(true);
+        setUserRole(user.role || 'guest');
+      } else {
+        setIsLoggedIn(false);
+        setUserRole(null);
+      }
+    } catch (e) {
+      console.log('获取用户信息失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 判断是否有权限（员工及以上权限）
+  const canAccess = isLoggedIn && userRole && ['employee', 'team_leader', 'admin'].includes(userRole);
+
   const handleNavigate = (path: string) => {
     Taro.navigateTo({ url: path });
   };
@@ -79,6 +114,36 @@ const KnowledgeSharePage = () => {
       Taro.showToast({ title: '功能开发中', icon: 'none' });
     }
   };
+
+  // 加载中
+  if (loading) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#71717a' }}>加载中...</Text>
+      </View>
+    );
+  }
+
+  // 无权限提示
+  if (!canAccess) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+          <Lock size={40} color="#f87171" />
+        </View>
+        <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', marginBottom: '12px' }}>权限不足</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', textAlign: 'center', marginBottom: '24px' }}>
+          该功能仅限正式员工使用{'\n'}请联系管理员开通权限
+        </Text>
+        <View
+          style={{ padding: '12px 24px', backgroundColor: '#38bdf8', borderRadius: '8px' }}
+          onClick={() => Taro.switchTab({ url: '/pages/tab-home/index' })}
+        >
+          <Text style={{ color: '#000', fontWeight: '500' }}>返回首页</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>

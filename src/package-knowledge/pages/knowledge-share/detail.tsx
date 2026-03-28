@@ -2,6 +2,8 @@ import { View, Text, ScrollView, Audio } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import { Network } from '@/network';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { Lock } from 'lucide-react-taro';
 
 interface Attachment {
   fileKey: string;
@@ -30,6 +32,13 @@ interface KnowledgeDetail {
 }
 
 const KnowledgeShareDetailPage = () => {
+  // 权限检查：需要员工及以上权限
+  const { canAccess, loading: authLoading } = useAuthGuard({ 
+    requireLogin: true,
+    requiredRole: 'employee',
+    forbiddenMessage: '查看知识分享需要登录员工账号'
+  });
+
   const router = useRouter();
   const [detail, setDetail] = useState<KnowledgeDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -306,6 +315,35 @@ const KnowledgeShareDetailPage = () => {
       return date.toLocaleDateString('zh-CN');
     }
   };
+
+  // 权限检查 UI
+  if (authLoading) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: '#71717a' }}>加载中...</Text>
+      </View>
+    );
+  }
+
+  if (!canAccess) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+          <Lock size={40} color="#f87171" />
+        </View>
+        <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', marginBottom: '12px' }}>权限不足</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', textAlign: 'center', marginBottom: '24px' }}>
+          该功能仅限正式员工使用{'\n'}请联系管理员开通权限
+        </Text>
+        <View
+          style={{ padding: '12px 24px', backgroundColor: '#38bdf8', borderRadius: '8px' }}
+          onClick={() => Taro.navigateBack()}
+        >
+          <Text style={{ color: '#000', fontWeight: '500' }}>返回</Text>
+        </View>
+      </View>
+    );
+  }
 
   if (loading) {
     return (
