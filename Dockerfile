@@ -13,8 +13,8 @@ RUN npm install -g pnpm
 # 复制依赖文件
 COPY package.json pnpm-lock.yaml ./
 
-# 安装依赖（使用 frozen-lockfile 确保依赖一致性）
-RUN pnpm install --frozen-lockfile
+# 安装依赖
+RUN pnpm install
 
 # 复制源代码
 COPY . .
@@ -40,7 +40,7 @@ RUN npm install -g serve
 COPY package.json pnpm-lock.yaml server/package.json ./
 
 # 只安装生产依赖
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod
 
 # 复制构建产物
 COPY --from=builder /app/dist ./dist
