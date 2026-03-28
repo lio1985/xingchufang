@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Upload, Trash2, Star, ImageIcon } from 'lucide-react';
+import { compressImage, getImageInfo, shouldCompress } from '@/lib/image-compress';
 
 interface Product {
   id: number;
@@ -95,16 +96,39 @@ export default function ProductDetailPage({
       return;
     }
 
-    // 验证文件大小（最大5MB）
-    if (file.size > 5 * 1024 * 1024) {
-      alert('图片大小不能超过5MB');
+    // 验证文件大小（最大10MB）
+    if (file.size > 10 * 1024 * 1024) {
+      alert('图片大小不能超过10MB');
       return;
     }
 
     setUploading(true);
     try {
+      let fileToUpload: File | Blob = file;
+      
+      // 如果图片大于500KB，自动压缩
+      if (shouldCompress(file, 500)) {
+        const originalInfo = await getImageInfo(file);
+        console.log(`压缩前: ${originalInfo.sizeKB.toFixed(1)}KB, ${originalInfo.width}x${originalInfo.height}`);
+        
+        try {
+          fileToUpload = await compressImage(file, {
+            maxWidth: 1920,
+            maxHeight: 1080,
+            quality: 0.8,
+            maxSizeKB: 500,
+          });
+          
+          const compressedSize = fileToUpload.size / 1024;
+          console.log(`压缩后: ${compressedSize.toFixed(1)}KB`);
+          console.log(`压缩率: ${((1 - compressedSize / originalInfo.sizeKB) * 100).toFixed(1)}%`);
+        } catch (compressError) {
+          console.warn('图片压缩失败，使用原图上传:', compressError);
+        }
+      }
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', fileToUpload, file.name);
       formData.append('isPrimary', images.length === 0 ? 'true' : 'false');
 
       const res = await fetch(`/api/products/${id}/images`, {

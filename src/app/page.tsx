@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, X, Image as ImageIcon, Download } from 'lucide-react';
+import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 
 interface Product {
@@ -89,7 +89,7 @@ export default function Home() {
       params.append('page', String(pageNum));
       params.append('pageSize', '20');
 
-      const res = await fetch(`/api/products?${params}`);
+      const res = await fetch(`/api/search?${params}`);
       const data = await res.json();
 
       if (data.success) {
@@ -140,6 +140,14 @@ export default function Home() {
               <p className="text-blue-100 mt-1">快捷搜索选品系统 · 多人协作共享</p>
             </div>
             <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => router.push('/statistics')}
+                className="text-white hover:bg-blue-700"
+              >
+                <TrendingUp className="h-4 w-4 mr-2" />
+                数据统计
+              </Button>
               {isAdmin ? (
                 <>
                   <Button
