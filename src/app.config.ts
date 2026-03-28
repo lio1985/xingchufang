@@ -149,6 +149,8 @@ export default defineAppConfig({
       desc: '您的位置信息将用于展示同城热点'
     }
   },
+  // 启用组件按需注入，提升启动性能
+  lazyCodeLoading: 'requiredComponents',
   tabBar: {
     color: '#71717a',
     selectedColor: '#f59e0b',
