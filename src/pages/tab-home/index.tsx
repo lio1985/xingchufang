@@ -49,10 +49,10 @@ const TabHomePage = () => {
     avatar?: string;
     role?: string;
   } | null>(null);
-  const [stats] = useState({
+  const [stats, setStats] = useState({
     todayNew: 12,
     pendingFollow: 8,
-    unreadMessage: 5,
+    unreadMessage: 0,
     weekContent: 15,
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
@@ -67,12 +67,32 @@ const TabHomePage = () => {
   useEffect(() => {
     checkLoginStatus();
     fetchRecentOrders();
+    fetchUnreadNotificationCount();
   }, []);
 
   Taro.useDidShow(() => {
     checkLoginStatus();
     fetchRecentOrders();
+    fetchUnreadNotificationCount();
   });
+
+  // 获取未读通知数
+  const fetchUnreadNotificationCount = async () => {
+    try {
+      const res = await Network.request({
+        url: '/api/notifications/unread-count',
+        method: 'GET',
+      });
+      if (res.data?.success) {
+        setStats(prev => ({
+          ...prev,
+          unreadMessage: res.data.data?.count || 0,
+        }));
+      }
+    } catch (error) {
+      console.error('获取未读通知数失败:', error);
+    }
+  };
 
   const fetchRecentOrders = async () => {
     try {
