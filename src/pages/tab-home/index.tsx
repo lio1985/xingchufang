@@ -13,6 +13,7 @@ import {
   Package,
   Phone,
   Clock,
+  Radio,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import { useOnlineStatus, getUserOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -178,6 +179,15 @@ const TabHomePage = () => {
       color: '#a78bfa',
       bgColor: 'rgba(167, 139, 250, 0.15)',
       path: '/pages/team/index',
+    },
+    {
+      id: 'live-data',
+      icon: Radio,
+      label: '直播数据',
+      desc: '上传与分析',
+      color: '#f43f5e',
+      bgColor: 'rgba(244, 63, 94, 0.15)',
+      path: '/pages/live-data/dashboard',
     },
   ];
 
