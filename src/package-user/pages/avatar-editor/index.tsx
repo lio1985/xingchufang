@@ -1,10 +1,14 @@
 import { View, Text, Image } from '@tarojs/components';
 import Taro, { useLoad } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Camera, User, Check } from 'lucide-react-taro';
+import { ArrowLeft, Camera, User, Check, LogIn } from 'lucide-react-taro';
 import { Network } from '@/network';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 
 export default function AvatarEditorPage() {
+  // 登录状态检查
+  const { isLoggedIn, loading: authLoading } = useAuthGuard({ requireLogin: false });
+  
   const [userInfo, setUserInfo] = useState<{
     id?: string;
     nickname?: string;
@@ -114,14 +118,39 @@ export default function AvatarEditorPage() {
           throw new Error(data.msg || '上传失败');
         }
       } else {
-        throw new Error('上传失败');
+        // 检查 HTTP 状态码
+        if (res.statusCode === 401) {
+          throw new Error('登录已过期，请重新登录');
+        } else if (res.statusCode === 400) {
+          throw new Error('文件格式不支持或文件过大');
+        } else if (res.statusCode === 500) {
+          throw new Error('服务器错误，请稍后重试');
+        } else {
+          throw new Error(`上传失败 (${res.statusCode})`);
+        }
       }
     } catch (error: any) {
       console.error('上传头像失败:', error);
-      Taro.showToast({
-        title: error.message || '上传失败',
-        icon: 'none',
-      });
+      
+      // 检查是否是认证错误
+      if (error.message?.includes('401') || error.message?.includes('登录')) {
+        Taro.showModal({
+          title: '登录已过期',
+          content: '请重新登录后再试',
+          confirmText: '去登录',
+          cancelText: '取消',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              Taro.navigateTo({ url: '/pages/login/index' });
+            }
+          },
+        });
+      } else {
+        Taro.showToast({
+          title: error.message || '上传失败',
+          icon: 'none',
+        });
+      }
     } finally {
       setIsUploading(false);
     }
@@ -130,6 +159,96 @@ export default function AvatarEditorPage() {
   const handleGoBack = () => {
     Taro.navigateBack();
   };
+
+  // 未登录状态显示
+  if (!authLoading && !isLoggedIn) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', padding: '20px' }}>
+        {/* 导航栏 */}
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '48px 20px 16px',
+            backgroundColor: '#111827',
+            borderBottom: '1px solid #1e3a5f',
+            marginBottom: '20px',
+          }}
+        >
+          <View onClick={handleGoBack} style={{ display: 'flex', alignItems: 'center' }}>
+            <ArrowLeft size={20} color="#38bdf8" />
+          </View>
+          <Text
+            style={{ flex: 1, textAlign: 'center', fontSize: '18px', fontWeight: '600', color: '#ffffff' }}
+          >
+            修改头像
+          </Text>
+          <View style={{ width: '20px' }} />
+        </View>
+        
+        <View style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '60px 20px',
+          backgroundColor: '#111827',
+          borderRadius: '16px',
+          border: '1px solid #1e3a5f',
+        }}
+        >
+          <LogIn size={48} color="#38bdf8" />
+          <Text style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginTop: '20px', display: 'block' }}>
+            需要登录
+          </Text>
+          <Text style={{ fontSize: '14px', color: '#71717a', marginTop: '8px', display: 'block', textAlign: 'center' }}>
+            修改头像功能需要登录后才能使用
+          </Text>
+          <View
+            style={{
+              marginTop: '24px',
+              padding: '12px 32px',
+              backgroundColor: '#38bdf8',
+              borderRadius: '12px',
+            }}
+            onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}
+          >
+            <Text style={{ fontSize: '15px', fontWeight: '600', color: '#000' }}>去登录</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // 加载中状态
+  if (authLoading) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', padding: '20px' }}>
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '48px 20px 16px',
+            backgroundColor: '#111827',
+            borderBottom: '1px solid #1e3a5f',
+          }}
+        >
+          <View onClick={handleGoBack} style={{ display: 'flex', alignItems: 'center' }}>
+            <ArrowLeft size={20} color="#38bdf8" />
+          </View>
+          <Text
+            style={{ flex: 1, textAlign: 'center', fontSize: '18px', fontWeight: '600', color: '#ffffff' }}
+          >
+            修改头像
+          </Text>
+          <View style={{ width: '20px' }} />
+        </View>
+        <View style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+          <Text style={{ color: '#71717a' }}>加载中...</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
