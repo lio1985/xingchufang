@@ -480,12 +480,47 @@ const ContentCreationPage = () => {
     <View className="content-creation-page">
       {/* Header */}
       <View className="page-header">
-        <View className="header-top" style={{ marginBottom: '24px' }}>
+        <View className="header-top" style={{ marginBottom: '16px' }}>
           <View className="header-left">
             <View className="back-button" onClick={() => Taro.navigateBack()}>
               <ChevronLeft size={32} color="#f1f5f9" />
             </View>
             <Text className="header-title">内容创作</Text>
+          </View>
+        </View>
+
+        {/* 流程进度条 */}
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '10px 16px',
+            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            borderRadius: '10px',
+            marginBottom: '16px',
+          }}
+        >
+          <View
+            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+            onClick={() => Taro.navigateTo({ url: '/pages/quick-note/index' })}
+          >
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#71717a' }} />
+            <Text style={{ fontSize: '12px', color: '#71717a' }}>灵感速记</Text>
+          </View>
+          <ArrowRight size={14} color="#71717a" />
+          <View
+            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+            onClick={() => Taro.navigateTo({ url: '/pages/topic-planning/index' })}
+          >
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#4ade80' }} />
+            <Text style={{ fontSize: '12px', color: '#4ade80' }}>选题策划</Text>
+          </View>
+          <ArrowRight size={14} color="#71717a" />
+          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
+            <Text style={{ fontSize: '12px', color: '#38bdf8', fontWeight: '600' }}>内容创作</Text>
           </View>
         </View>
 

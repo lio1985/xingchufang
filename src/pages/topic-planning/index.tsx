@@ -18,6 +18,8 @@ import {
   RefreshCw,
   TrendingUp,
   ArrowRight,
+  Lightbulb,
+  PenLine,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import '@/styles/pages.css';
@@ -743,6 +745,50 @@ const TopicPlanningPage = () => {
 
         {/* 标签行 */}
         <View style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+          {/* 来源标识 */}
+          {topic.inspiration_data?.type === 'quick_note' ? (
+            <View
+              style={{
+                padding: '4px 10px',
+                backgroundColor: 'rgba(251, 191, 36, 0.2)',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <Lightbulb size={12} color="#fbbf24" />
+              <Text style={{ fontSize: '12px', color: '#fbbf24' }}>灵感来源</Text>
+            </View>
+          ) : topic.inspiration_data?.type === 'hot_topic' ? (
+            <View
+              style={{
+                padding: '4px 10px',
+                backgroundColor: 'rgba(248, 113, 113, 0.2)',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <Flame size={12} color="#f87171" />
+              <Text style={{ fontSize: '12px', color: '#f87171' }}>热点来源</Text>
+            </View>
+          ) : (
+            <View
+              style={{
+                padding: '4px 10px',
+                backgroundColor: 'rgba(113, 113, 122, 0.2)',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <PenLine size={12} color="#71717a" />
+              <Text style={{ fontSize: '12px', color: '#71717a' }}>手动创建</Text>
+            </View>
+          )}
           <View style={{ 
             padding: '4px 10px', 
             backgroundColor: 'rgba(56, 189, 248, 0.2)', 
@@ -1376,7 +1422,7 @@ const TopicPlanningPage = () => {
     <View className="topic-planning-page">
       {/* Header */}
       <View className="page-header">
-        <View className="header-top" style={{ marginBottom: '24px' }}>
+        <View className="header-top" style={{ marginBottom: '16px' }}>
           <View className="header-left">
             <View className="back-button" onClick={() => Taro.navigateBack()}>
               <ChevronLeft size={32} color="#f1f5f9" />
@@ -1396,6 +1442,37 @@ const TopicPlanningPage = () => {
           >
             <Plus size={18} color="#000" />
             <Text style={{ fontSize: '14px', fontWeight: '600', color: '#000' }}>新建选题</Text>
+          </View>
+        </View>
+
+        {/* 流程进度条 */}
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '10px 16px',
+            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            borderRadius: '10px',
+          }}
+        >
+          <View
+            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+            onClick={() => Taro.navigateTo({ url: '/pages/quick-note/index' })}
+          >
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#71717a' }} />
+            <Text style={{ fontSize: '12px', color: '#71717a' }}>灵感速记</Text>
+          </View>
+          <ArrowRight size={14} color="#71717a" />
+          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
+            <Text style={{ fontSize: '12px', color: '#38bdf8', fontWeight: '600' }}>选题策划</Text>
+          </View>
+          <ArrowRight size={14} color="#71717a" />
+          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#71717a' }} />
+            <Text style={{ fontSize: '12px', color: '#71717a' }}>内容创作</Text>
           </View>
         </View>
       </View>

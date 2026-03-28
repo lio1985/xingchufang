@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components';
+import { View, Text, ScrollView, Input, Textarea, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
   ChevronLeft,
@@ -11,7 +11,10 @@ import {
   X,
   Inbox,
   Pin,
+  ArrowRight,
+  Sparkles,
 } from 'lucide-react-taro';
+import { Network } from '@/network';
 
 interface Note {
   id: string;
@@ -24,6 +27,24 @@ interface Note {
   updatedAt: string;
 }
 
+// 平台选项
+const PLATFORM_OPTIONS = [
+  { value: '公众号', label: '公众号' },
+  { value: '小红书', label: '小红书' },
+  { value: '抖音', label: '抖音' },
+  { value: '视频号', label: '视频号' },
+  { value: '微博', label: '微博' },
+  { value: 'B站', label: 'B站' },
+];
+
+// 内容类型选项
+const CONTENT_TYPE_OPTIONS = [
+  { value: '图文', label: '图文' },
+  { value: '视频', label: '视频' },
+  { value: '直播', label: '直播' },
+  { value: '短图文', label: '短图文' },
+];
+
 const QuickNotePage = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
@@ -32,6 +53,13 @@ const QuickNotePage = () => {
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
   const [newTags, setNewTags] = useState('');
+
+  // 转化为选题的弹窗状态
+  const [showConvertDialog, setShowConvertDialog] = useState(false);
+  const [convertingNote, setConvertingNote] = useState<Note | null>(null);
+  const [convertPlatform, setConvertPlatform] = useState('公众号');
+  const [convertContentType, setConvertContentType] = useState('图文');
+  const [isConverting, setIsConverting] = useState(false);
 
   useEffect(() => {
     loadNotes();
@@ -113,6 +141,69 @@ const QuickNotePage = () => {
     });
   };
 
+  // 打开转化为选题弹窗
+  const openConvertDialog = (note: Note) => {
+    setConvertingNote(note);
+    setConvertPlatform('公众号');
+    setConvertContentType('图文');
+    setShowConvertDialog(true);
+  };
+
+  // 执行转化为选题
+  const handleConvertToTopic = async () => {
+    if (!convertingNote) return;
+    
+    setIsConverting(true);
+    try {
+      // 调用后端创建选题
+      const res = await Network.request({
+        url: '/api/topics',
+        method: 'POST',
+        data: {
+          title: convertingNote.title,
+          description: convertingNote.content,
+          platform: convertPlatform,
+          content_type: convertContentType,
+          tags: convertingNote.tags,
+          inspiration_data: {
+            type: 'quick_note',
+            note_id: convertingNote.id,
+            source: '灵感速记',
+          },
+        },
+      });
+
+      console.log('[QuickNote] 创建选题结果:', res);
+
+      if (res.data?.code === 200) {
+        const topicId = res.data.data?.id;
+        
+        // 标记笔记已转化为选题
+        const updatedNotes = notes.map((note) =>
+          note.id === convertingNote.id
+            ? { ...note, convertedToTopic: true, topicId }
+            : note
+        );
+        saveNotes(updatedNotes);
+
+        setShowConvertDialog(false);
+        Taro.showToast({ title: '已转化为选题', icon: 'success' });
+
+        // 延迟跳转到选题策划页面
+        setTimeout(() => {
+          Taro.navigateTo({ url: '/pages/topic-planning/index' });
+        }, 500);
+      } else {
+        Taro.showToast({ title: res.data?.msg || '创建失败', icon: 'none' });
+      }
+    } catch (error) {
+      console.error('[QuickNote] 转化失败:', error);
+      Taro.showToast({ title: '转化失败', icon: 'none' });
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
   const formatTime = (dateStr: string) => {
     const date = new Date(dateStr);
     const now = new Date();
@@ -153,6 +244,35 @@ const QuickNotePage = () => {
           </View>
         </View>
 
+        {/* 流程提示 */}
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '10px 16px',
+            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            borderRadius: '10px',
+            marginBottom: '16px',
+          }}
+        >
+          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
+            <Text style={{ fontSize: '12px', color: '#38bdf8' }}>灵感速记</Text>
+          </View>
+          <ArrowRight size={14} color="#71717a" />
+          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#71717a' }} />
+            <Text style={{ fontSize: '12px', color: '#71717a' }}>选题策划</Text>
+          </View>
+          <ArrowRight size={14} color="#71717a" />
+          <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <View style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#71717a' }} />
+            <Text style={{ fontSize: '12px', color: '#71717a' }}>内容创作</Text>
+          </View>
+        </View>
+
         {/* 搜索框 */}
         <View style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#111827', borderRadius: '12px', padding: '12px 16px', border: '1px solid #1e3a5f' }}>
           <Search size={18} color="#71717a" />
@@ -186,7 +306,7 @@ const QuickNotePage = () => {
       </View>
 
       {/* 笔记列表 */}
-      <ScrollView scrollY style={{ height: 'calc(100vh - 200px)' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 280px)' }}>
         <View style={{ padding: '16px 20px' }}>
           {filteredNotes.length === 0 ? (
             <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 0' }}>
@@ -212,6 +332,11 @@ const QuickNotePage = () => {
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <View style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
                       {note.isPinned && <Pin size={14} color="#38bdf8" />}
+                      {(note as any).convertedToTopic && (
+                        <View style={{ padding: '2px 6px', backgroundColor: 'rgba(74, 222, 128, 0.2)', borderRadius: '4px' }}>
+                          <Text style={{ fontSize: '10px', color: '#4ade80' }}>已转选题</Text>
+                        </View>
+                      )}
                       <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', display: 'block' }}>{note.title}</Text>
                     </View>
                     <Text style={{ fontSize: '13px', color: '#94a3b8', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{note.content || '暂无内容'}</Text>
@@ -247,7 +372,43 @@ const QuickNotePage = () => {
                   </View>
                 )}
 
-                <Text style={{ fontSize: '12px', color: '#64748b' }}>{formatTime(note.updatedAt)}</Text>
+                {/* 底部操作区 */}
+                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #1e293b' }}>
+                  <Text style={{ fontSize: '12px', color: '#64748b' }}>{formatTime(note.updatedAt)}</Text>
+                  
+                  {/* 转化为选题按钮 */}
+                  {(note as any).convertedToTopic ? (
+                    <View
+                      style={{
+                        padding: '6px 12px',
+                        backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                      onClick={() => Taro.navigateTo({ url: '/pages/topic-planning/index' })}
+                    >
+                      <Text style={{ fontSize: '13px', color: '#4ade80' }}>查看选题</Text>
+                      <ArrowRight size={14} color="#4ade80" />
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        padding: '6px 12px',
+                        backgroundColor: '#38bdf8',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                      onClick={() => openConvertDialog(note)}
+                    >
+                      <Sparkles size={14} color="#000" />
+                      <Text style={{ fontSize: '13px', fontWeight: '500', color: '#000' }}>转化为选题</Text>
+                    </View>
+                  )}
+                </View>
               </View>
             ))
           )}
@@ -281,7 +442,7 @@ const QuickNotePage = () => {
             <ScrollView scrollY style={{ padding: '20px', maxHeight: '50vh' }}>
               <View style={{ marginBottom: '16px' }}>
                 <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>标题 *</Text>
-                <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
                   <Input
                     style={{ width: '100%', fontSize: '15px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="请输入标题"
@@ -294,7 +455,7 @@ const QuickNotePage = () => {
 
               <View style={{ marginBottom: '16px' }}>
                 <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>内容</Text>
-                <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
                   <Textarea
                     style={{ width: '100%', minHeight: '120px', fontSize: '15px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="请输入内容..."
@@ -307,7 +468,7 @@ const QuickNotePage = () => {
 
               <View style={{ marginBottom: '16px' }}>
                 <Text style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>标签（逗号分隔）</Text>
-                <View style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
                   <Input
                     style={{ width: '100%', fontSize: '15px', color: '#ffffff', backgroundColor: 'transparent' }}
                     placeholder="如：灵感, 工作, 生活"
@@ -326,6 +487,116 @@ const QuickNotePage = () => {
                 onClick={handleAddNote}
               >
                 <Text style={{ fontSize: '16px', fontWeight: '600', color: '#0a0f1a' }}>保存笔记</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
+
+      {/* 转化为选题弹窗 */}
+      {showConvertDialog && convertingNote && (
+        <View
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 1000, display: 'flex', alignItems: 'flex-end' }}
+          onClick={() => setShowConvertDialog(false)}
+        >
+          <View
+            style={{ width: '100%', backgroundColor: '#111827', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', maxHeight: '80vh' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 弹窗头部 */}
+            <View style={{ padding: '20px', borderBottom: '1px solid #1e3a5f' }}>
+              <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Sparkles size={20} color="#fbbf24" />
+                  <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>转化为选题</Text>
+                </View>
+                <View
+                  style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  onClick={() => setShowConvertDialog(false)}
+                >
+                  <X size={18} color="#71717a" />
+                </View>
+              </View>
+            </View>
+
+            {/* 灵感预览 */}
+            <View style={{ padding: '16px 20px', borderBottom: '1px solid #1e3a5f' }}>
+              <View style={{ padding: '12px', backgroundColor: 'rgba(251, 191, 36, 0.1)', borderRadius: '12px', border: '1px solid rgba(251, 191, 36, 0.3)' }}>
+                <Text style={{ fontSize: '12px', color: '#fbbf24', marginBottom: '4px', display: 'block' }}>灵感来源</Text>
+                <Text style={{ fontSize: '15px', fontWeight: '500', color: '#ffffff', display: 'block' }}>{convertingNote.title}</Text>
+                {convertingNote.content && (
+                  <Text style={{ fontSize: '13px', color: '#94a3b8', marginTop: '4px', display: 'block' }}>{convertingNote.content.substring(0, 100)}{convertingNote.content.length > 100 ? '...' : ''}</Text>
+                )}
+              </View>
+            </View>
+
+            {/* 选择平台和内容类型 */}
+            <ScrollView scrollY style={{ padding: '20px', maxHeight: '40vh' }}>
+              <View style={{ marginBottom: '16px' }}>
+                <Text style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>发布平台</Text>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
+                  <Picker
+                    mode="selector"
+                    range={PLATFORM_OPTIONS}
+                    rangeKey="label"
+                    value={PLATFORM_OPTIONS.findIndex(p => p.value === convertPlatform)}
+                    onChange={(e) => {
+                      const idx = e.detail.value;
+                      setConvertPlatform(PLATFORM_OPTIONS[idx].value);
+                    }}
+                  >
+                    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Text style={{ fontSize: '15px', color: '#ffffff' }}>
+                        {PLATFORM_OPTIONS.find(p => p.value === convertPlatform)?.label}
+                      </Text>
+                      <View style={{ transform: 'rotate(90deg)' }}>
+                        <ChevronLeft size={16} color="#71717a" />
+                      </View>
+                    </View>
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={{ marginBottom: '16px' }}>
+                <Text style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px', display: 'block' }}>内容类型</Text>
+                <View style={{ backgroundColor: '#0a0f1a', borderRadius: '12px', padding: '14px', border: '1px solid #1e3a5f' }}>
+                  <Picker
+                    mode="selector"
+                    range={CONTENT_TYPE_OPTIONS}
+                    rangeKey="label"
+                    value={CONTENT_TYPE_OPTIONS.findIndex(c => c.value === convertContentType)}
+                    onChange={(e) => {
+                      const idx = e.detail.value;
+                      setConvertContentType(CONTENT_TYPE_OPTIONS[idx].value);
+                    }}
+                  >
+                    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Text style={{ fontSize: '15px', color: '#ffffff' }}>
+                        {CONTENT_TYPE_OPTIONS.find(c => c.value === convertContentType)?.label}
+                      </Text>
+                      <View style={{ transform: 'rotate(90deg)' }}>
+                        <ChevronLeft size={16} color="#71717a" />
+                      </View>
+                    </View>
+                  </Picker>
+                </View>
+              </View>
+            </ScrollView>
+
+            {/* 确认按钮 */}
+            <View style={{ padding: '20px', borderTop: '1px solid #1e3a5f' }}>
+              <View
+                style={{ padding: '16px', borderRadius: '12px', backgroundColor: '#38bdf8', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                onClick={isConverting ? undefined : handleConvertToTopic}
+              >
+                {isConverting ? (
+                  <Text style={{ fontSize: '16px', fontWeight: '600', color: '#0a0f1a' }}>转化中...</Text>
+                ) : (
+                  <>
+                    <Text style={{ fontSize: '16px', fontWeight: '600', color: '#0a0f1a' }}>创建选题并跳转</Text>
+                    <ArrowRight size={18} color="#0a0f1a" />
+                  </>
+                )}
               </View>
             </View>
           </View>
