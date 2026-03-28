@@ -10,6 +10,7 @@ import {
   Download,
   UserPlus,
   Crown,
+  Bell,
 } from 'lucide-react-taro';
 import { useOnlineStatus, getUserOnlineStatus } from '@/hooks/useOnlineStatus';
 
@@ -280,6 +281,21 @@ const TabProfilePage = () => {
         <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>系统</Text>
         
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
+          {/* 消息订阅 */}
+          <View
+            style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
+            onClick={() => handleNav('/pages/subscribe-message/index')}
+          >
+            <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(249, 115, 22, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Bell size={20} color="#f97316" />
+            </View>
+            <View style={{ flex: 1, marginLeft: '12px' }}>
+              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>消息订阅</Text>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>管理通知订阅</Text>
+            </View>
+            <ChevronRight size={18} color="#64748b" />
+          </View>
+
           {/* 设置 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '16px' }}

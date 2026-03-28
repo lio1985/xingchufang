@@ -93,6 +93,7 @@ export default defineAppConfig({
     'pages/admin/course-manage/index',
     'pages/admin/course-create/index',
     'pages/admin/course-edit/index',
+    'pages/subscribe-message/index',
   ],
   window: {
     backgroundTextStyle: 'light',

@@ -44,6 +44,7 @@ import { FileParserModule } from './file-parser/file-parser.module';
 import { CourseModule } from './course/course.module';
 import { TopicsModule } from './topics/topics.module';
 import { ContentWritingModule } from './content-writing/content-writing.module';
+import { SubscribeMessageModule } from './subscribe-message/subscribe-message.module';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { ContentWritingModule } from './content-writing/content-writing.module';
     CourseModule,
     TopicsModule,
     ContentWritingModule,
+    SubscribeMessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
