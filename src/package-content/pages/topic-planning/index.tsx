@@ -20,8 +20,10 @@ import {
   ArrowRight,
   Lightbulb,
   PenLine,
+  LogIn,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 import '@/styles/pages.css';
 import './index.css';
 
@@ -94,6 +96,9 @@ const CONTENT_TYPE_OPTIONS = [
 ];
 
 const TopicPlanningPage = () => {
+  // 登录状态检查
+  const { isLoggedIn, loading: authLoading } = useAuthGuard({ requireLogin: false });
+
   // 选题列表状态
   const [topics, setTopics] = useState<Topic[]>([]);
   const [statistics, setStatistics] = useState<Statistics | null>(null);
@@ -210,10 +215,13 @@ const TopicPlanningPage = () => {
 
   // 初始化加载
   useEffect(() => {
-    loadTopics(1);
-    loadStatistics();
-    loadHotTopics();
-  }, [loadTopics, loadStatistics, loadHotTopics]);
+    // 只在已登录状态下加载数据
+    if (isLoggedIn) {
+      loadTopics(1);
+      loadStatistics();
+      loadHotTopics();
+    }
+  }, [loadTopics, loadStatistics, loadHotTopics, isLoggedIn]);
 
   // 创建选题
   const handleCreate = async () => {
@@ -1417,6 +1425,76 @@ const TopicPlanningPage = () => {
       </View>
     );
   };
+
+  // 未登录状态显示
+  if (!authLoading && !isLoggedIn) {
+    return (
+      <View className="topic-planning-page" style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', padding: '20px' }}>
+        <View className="page-header" style={{ marginBottom: '20px' }}>
+          <View className="header-top">
+            <View className="header-left">
+              <View className="back-button" onClick={() => Taro.navigateBack()}>
+                <ChevronLeft size={32} color="#f1f5f9" />
+              </View>
+              <Text className="header-title">选题策划</Text>
+            </View>
+          </View>
+        </View>
+        
+        <View style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '60px 20px',
+          backgroundColor: '#111827',
+          borderRadius: '16px',
+          border: '1px solid #1e3a5f',
+        }}
+        >
+          <LogIn size={48} color="#38bdf8" />
+          <Text style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginTop: '20px', display: 'block' }}>
+            需要登录
+          </Text>
+          <Text style={{ fontSize: '14px', color: '#71717a', marginTop: '8px', display: 'block', textAlign: 'center' }}>
+            选题策划功能需要登录后才能使用
+          </Text>
+          <View
+            style={{
+              marginTop: '24px',
+              padding: '12px 32px',
+              backgroundColor: '#38bdf8',
+              borderRadius: '12px',
+            }}
+            onClick={() => Taro.navigateTo({ url: '/pages/login/index' })}
+          >
+            <Text style={{ fontSize: '15px', fontWeight: '600', color: '#000' }}>去登录</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // 加载中状态
+  if (authLoading) {
+    return (
+      <View className="topic-planning-page" style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', padding: '20px' }}>
+        <View className="page-header" style={{ marginBottom: '20px' }}>
+          <View className="header-top">
+            <View className="header-left">
+              <View className="back-button" onClick={() => Taro.navigateBack()}>
+                <ChevronLeft size={32} color="#f1f5f9" />
+              </View>
+              <Text className="header-title">选题策划</Text>
+            </View>
+          </View>
+        </View>
+        <View style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+          <Text style={{ color: '#71717a' }}>加载中...</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className="topic-planning-page">
