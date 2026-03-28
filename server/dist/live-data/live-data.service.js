@@ -1,0 +1,530 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var LiveDataService_1;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LiveDataService = void 0;
+const common_1 = require("@nestjs/common");
+const supabase_client_1 = require("../storage/database/supabase-client");
+let LiveDataService = LiveDataService_1 = class LiveDataService {
+    constructor() {
+        this.logger = new common_1.Logger(LiveDataService_1.name);
+    }
+    get supabase() {
+        return (0, supabase_client_1.getSupabaseClient)();
+    }
+    async importLiveData(userId, data) {
+        this.logger.log(`导入直播数据: userId=${userId}, title=${data.title}`);
+        const { data: liveStream, error } = await this.supabase
+            .from('live_streams')
+            .insert({
+            user_id: userId,
+            title: data.title,
+            start_time: data.startTime,
+            end_time: data.endTime,
+            duration_seconds: data.durationSeconds,
+            total_views: data.totalViews,
+            peak_online: data.peakOnline,
+            avg_online: data.avgOnline,
+            new_followers: data.newFollowers,
+            share_count: data.shareCount,
+            total_comments: data.totalComments,
+            total_likes: data.totalLikes,
+            total_gifts: data.totalGifts,
+            product_clicks: data.productClicks,
+            product_exposures: data.productExposures,
+            orders_count: data.ordersCount,
+            gmv: data.gmv,
+        })
+            .select()
+            .single();
+        if (error) {
+            this.logger.error('导入直播数据失败:', error);
+            throw new Error('导入直播数据失败');
+        }
+        if (data.products && data.products.length > 0) {
+            const productsData = data.products.map(p => ({
+                live_stream_id: liveStream.id,
+                user_id: userId,
+                product_name: p.productName,
+                product_id: p.productId,
+                product_price: p.productPrice,
+                exposures: p.exposures,
+                clicks: p.clicks,
+                orders: p.orders,
+                gmv: p.gmv,
+            }));
+            const { error: productError } = await this.supabase
+                .from('live_products')
+                .insert(productsData);
+            if (productError) {
+                this.logger.error('导入商品数据失败:', productError);
+            }
+        }
+        await this.updateDailyStats(userId, data.startTime);
+        return {
+            success: true,
+            data: liveStream,
+            message: '导入成功',
+        };
+    }
+    async getLiveStreams(userId, page = 1, limit = 20, startDate, endDate) {
+        let query = this.supabase
+            .from('live_streams')
+            .select('*', { count: 'exact' })
+            .eq('user_id', userId)
+            .eq('status', 'active')
+            .order('start_time', { ascending: false })
+            .range((page - 1) * limit, page * limit - 1);
+        if (startDate) {
+            query = query.gte('start_time', startDate);
+        }
+        if (endDate) {
+            query = query.lte('start_time', endDate);
+        }
+        const { data, error, count } = await query;
+        if (error) {
+            this.logger.error('查询直播列表失败:', error);
+            throw new Error('查询直播列表失败');
+        }
+        return {
+            success: true,
+            data: {
+                list: data || [],
+                pagination: {
+                    page,
+                    limit,
+                    total: count || 0,
+                },
+            },
+        };
+    }
+    async getLiveStreamDetail(userId, liveId) {
+        const { data: liveStream, error } = await this.supabase
+            .from('live_streams')
+            .select('*')
+            .eq('id', liveId)
+            .eq('user_id', userId)
+            .single();
+        if (error || !liveStream) {
+            throw new Error('直播记录不存在');
+        }
+        const { data: products } = await this.supabase
+            .from('live_products')
+            .select('*')
+            .eq('live_stream_id', liveId)
+            .order('gmv', { ascending: false });
+        const { data: analysis } = await this.supabase
+            .from('live_analysis')
+            .select('*')
+            .eq('live_stream_id', liveId)
+            .single();
+        return {
+            success: true,
+            data: {
+                ...liveStream,
+                products: products || [],
+                analysis: analysis || null,
+            },
+        };
+    }
+    async deleteLiveStream(userId, liveId) {
+        const { error } = await this.supabase
+            .from('live_streams')
+            .update({ status: 'deleted' })
+            .eq('id', liveId)
+            .eq('user_id', userId);
+        if (error) {
+            throw new Error('删除失败');
+        }
+        return { success: true, message: '删除成功' };
+    }
+    async getDailyStats(userId, startDate, endDate) {
+        const { data, error } = await this.supabase
+            .from('live_daily_stats')
+            .select('*')
+            .eq('user_id', userId)
+            .gte('stats_date', startDate)
+            .lte('stats_date', endDate)
+            .order('stats_date', { ascending: false });
+        if (error) {
+            throw new Error('查询统计数据失败');
+        }
+        return {
+            success: true,
+            data: data || [],
+        };
+    }
+    async getDashboardStats(userId, period) {
+        let startDate;
+        let prevStartDate;
+        const now = new Date();
+        switch (period) {
+            case 'day':
+                startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+                prevStartDate = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
+                break;
+            case 'week':
+                startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+                prevStartDate = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
+                break;
+            case 'month':
+                startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+                prevStartDate = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
+                break;
+            case 'year':
+                startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString();
+                prevStartDate = new Date(now.getTime() - 730 * 24 * 60 * 60 * 1000).toISOString();
+                break;
+        }
+        this.logger.log(`Querying live_streams for userId=${userId}, startDate=${startDate}`);
+        try {
+            const { data, error } = await this.supabase
+                .from('live_streams')
+                .select('*')
+                .eq('user_id', userId)
+                .eq('status', 'active')
+                .gte('start_time', startDate);
+            if (error) {
+                this.logger.error('Supabase查询错误:', error);
+                throw new Error(`查询统计数据失败: ${error.message}`);
+            }
+            const { data: prevData } = await this.supabase
+                .from('live_streams')
+                .select('*')
+                .eq('user_id', userId)
+                .eq('status', 'active')
+                .gte('start_time', prevStartDate)
+                .lt('start_time', startDate);
+            const stats = data || [];
+            const prevStats = prevData || [];
+            const totalDurationMinutes = stats.reduce((sum, s) => sum + (s.duration_seconds || 0), 0) / 60;
+            const totalViews = stats.reduce((sum, s) => sum + (s.total_views || 0), 0);
+            const avgWatchDuration = totalViews > 0 ? Math.round((totalDurationMinutes / totalViews) * 60) : 0;
+            const totalProductClicks = stats.reduce((sum, s) => sum + (s.product_clicks || 0), 0);
+            const totalProductExposures = stats.reduce((sum, s) => sum + (s.product_exposures || 0), 0);
+            const conversionRate = totalProductExposures > 0 ? (totalProductClicks / totalProductExposures) * 100 : 0;
+            const totalLikes = stats.reduce((sum, s) => sum + (s.total_likes || 0), 0);
+            const totalComments = stats.reduce((sum, s) => sum + (s.total_comments || 0), 0);
+            const interactionRate = totalViews > 0 ? ((totalLikes + totalComments) / totalViews) * 100 : 0;
+            const newFollowers = stats.reduce((sum, s) => sum + (s.new_followers || 0), 0);
+            const followerConversionRate = totalViews > 0 ? (newFollowers / totalViews) * 100 : 0;
+            const exposureCount = stats.reduce((sum, s) => sum + (s.product_exposures || 0), 0);
+            const enterRoomCount = totalViews;
+            const avgOnline = stats.length > 0
+                ? Math.round(stats.reduce((sum, s) => sum + (s.avg_online || 0), 0) / stats.length)
+                : 0;
+            const peakOnline = stats.length > 0 ? Math.max(...stats.map(s => s.peak_online || 0)) : 0;
+            const interactionCount = totalComments + totalLikes;
+            const privateMessageCount = stats.reduce((sum, s) => sum + (s.share_count || 0), 0);
+            const enterRoomRate = exposureCount > 0 ? (enterRoomCount / exposureCount) * 100 : 0;
+            const gmv = stats.reduce((sum, s) => sum + parseFloat(s.gmv || 0), 0);
+            const ordersCount = stats.reduce((sum, s) => sum + (s.orders_count || 0), 0);
+            const prevGMV = prevStats.reduce((sum, s) => sum + parseFloat(s.gmv || 0), 0);
+            const prevOrdersCount = prevStats.reduce((sum, s) => sum + (s.orders_count || 0), 0);
+            const prevTotalViews = prevStats.reduce((sum, s) => sum + (s.total_views || 0), 0);
+            const prevNewFollowers = prevStats.reduce((sum, s) => sum + (s.new_followers || 0), 0);
+            const prevExposureCount = prevStats.reduce((sum, s) => sum + (s.product_exposures || 0), 0);
+            return {
+                success: true,
+                data: {
+                    totalViews,
+                    peakOnline,
+                    avgOnline,
+                    newFollowers,
+                    totalComments,
+                    totalLikes,
+                    ordersCount,
+                    gmv,
+                    avgWatchDuration,
+                    conversionRate,
+                    interactionRate,
+                    followerConversionRate,
+                    streamCount: stats.length,
+                    exposureCount,
+                    enterRoomCount,
+                    onlinePeak: peakOnline,
+                    interactionCount,
+                    privateMessageCount,
+                    enterRoomRate,
+                    prevPeriod: {
+                        gmv: prevGMV,
+                        ordersCount: prevOrdersCount,
+                        totalViews: prevTotalViews,
+                        newFollowers: prevNewFollowers,
+                        exposureCount: prevExposureCount,
+                    },
+                    trend: stats.map(s => ({
+                        date: s.start_time,
+                        views: s.total_views,
+                        gmv: s.gmv,
+                        orders: s.orders_count,
+                    })),
+                },
+            };
+        }
+        catch (err) {
+            this.logger.error('getDashboardStats error:', err);
+            return {
+                success: true,
+                data: {
+                    totalViews: 0,
+                    peakOnline: 0,
+                    avgOnline: 0,
+                    newFollowers: 0,
+                    totalComments: 0,
+                    totalLikes: 0,
+                    ordersCount: 0,
+                    gmv: 0,
+                    avgWatchDuration: 0,
+                    conversionRate: 0,
+                    interactionRate: 0,
+                    followerConversionRate: 0,
+                    streamCount: 0,
+                    exposureCount: 0,
+                    enterRoomCount: 0,
+                    onlinePeak: 0,
+                    interactionCount: 0,
+                    privateMessageCount: 0,
+                    enterRoomRate: 0,
+                    prevPeriod: { gmv: 0, ordersCount: 0, totalViews: 0, newFollowers: 0, exposureCount: 0 },
+                    trend: [],
+                },
+            };
+        }
+    }
+    async getHistoricalAverage(userId) {
+        const { data, error } = await this.supabase
+            .from('live_streams')
+            .select('total_views, avg_online, total_comments, orders_count, gmv')
+            .eq('user_id', userId)
+            .eq('status', 'active')
+            .order('start_time', { ascending: false })
+            .limit(10);
+        if (error || !data || data.length === 0) {
+            return null;
+        }
+        const count = data.length;
+        return {
+            avgViews: Math.round(data.reduce((sum, d) => sum + (d.total_views || 0), 0) / count),
+            avgOnline: Math.round(data.reduce((sum, d) => sum + (d.avg_online || 0), 0) / count),
+            avgComments: Math.round(data.reduce((sum, d) => sum + (d.total_comments || 0), 0) / count),
+            avgOrders: Math.round(data.reduce((sum, d) => sum + (d.orders_count || 0), 0) / count),
+            avgGMV: data.reduce((sum, d) => sum + parseFloat(d.gmv || 0), 0) / count,
+        };
+    }
+    async getAllLiveStreamsForAdmin(page = 1, limit = 20, userId, startDate, endDate) {
+        let query = this.supabase
+            .from('live_streams')
+            .select('*, users!inner(nickname, role)', { count: 'exact' })
+            .eq('status', 'active')
+            .order('start_time', { ascending: false })
+            .range((page - 1) * limit, page * limit - 1);
+        if (userId) {
+            query = query.eq('user_id', userId);
+        }
+        if (startDate) {
+            query = query.gte('start_time', startDate);
+        }
+        if (endDate) {
+            query = query.lte('start_time', endDate);
+        }
+        const { data, error, count } = await query;
+        if (error) {
+            this.logger.error('管理员查询直播列表失败:', error);
+            throw new Error('查询失败');
+        }
+        return {
+            success: true,
+            data: {
+                list: data || [],
+                pagination: {
+                    page,
+                    limit,
+                    total: count || 0,
+                },
+            },
+        };
+    }
+    async getAdminStats(userId, startDate, endDate) {
+        let query = this.supabase
+            .from('live_streams')
+            .select('*, users!inner(nickname, email)', { count: 'exact' })
+            .eq('status', 'active');
+        if (userId) {
+            query = query.eq('user_id', userId);
+        }
+        if (startDate) {
+            query = query.gte('start_time', startDate);
+        }
+        if (endDate) {
+            query = query.lte('start_time', endDate);
+        }
+        const { data, error, count } = await query;
+        if (error) {
+            this.logger.error('获取统计数据失败:', error);
+            throw new Error('获取统计失败');
+        }
+        const stats = data || [];
+        const uniqueUsers = new Set(stats.map((item) => item.user_id));
+        const totalGMV = stats.reduce((sum, item) => sum + (item.gmv || 0), 0);
+        const totalViews = stats.reduce((sum, item) => sum + (item.total_views || 0), 0);
+        const totalOrders = stats.reduce((sum, item) => sum + (item.orders_count || 0), 0);
+        const totalDuration = stats.reduce((sum, item) => sum + (item.duration_seconds || 0), 0);
+        const totalComments = stats.reduce((sum, item) => sum + (item.total_comments || 0), 0);
+        const totalLikes = stats.reduce((sum, item) => sum + (item.total_likes || 0), 0);
+        const totalProductClicks = stats.reduce((sum, item) => sum + (item.product_clicks || 0), 0);
+        const totalProductExposures = stats.reduce((sum, item) => sum + (item.product_exposures || 0), 0);
+        const exposureCount = totalProductExposures;
+        const enterRoomCount = totalViews;
+        const avgOnline = stats.length > 0
+            ? Math.round(stats.reduce((sum, item) => sum + (item.avg_online || 0), 0) / stats.length)
+            : 0;
+        const onlinePeak = stats.length > 0
+            ? Math.max(...stats.map((s) => s.peak_online || 0))
+            : 0;
+        const newFollowers = stats.reduce((sum, item) => sum + (item.new_followers || 0), 0);
+        const interactionCount = totalComments + totalLikes;
+        const privateMessageCount = stats.reduce((sum, item) => sum + (item.share_count || 0), 0);
+        const enterRoomRate = exposureCount > 0 ? (enterRoomCount / exposureCount) * 100 : 0;
+        return {
+            success: true,
+            data: {
+                totalStreams: stats.length,
+                totalUsers: uniqueUsers.size,
+                totalGMV,
+                totalOrders,
+                totalViews,
+                avgGMVPerStream: stats.length > 0 ? totalGMV / stats.length : 0,
+                avgWatchDuration: totalViews > 0 ? Math.round((totalDuration / totalViews) * 60) : 0,
+                conversionRate: totalProductExposures > 0 ? (totalProductClicks / totalProductExposures) * 100 : 0,
+                interactionRate: totalViews > 0 ? ((totalComments + totalLikes) / totalViews) * 100 : 0,
+                exposureCount,
+                enterRoomCount,
+                onlinePeak,
+                avgOnline,
+                newFollowers,
+                interactionCount,
+                privateMessageCount,
+                enterRoomRate,
+            },
+        };
+    }
+    async exportLiveDataForAdmin(format, userId, startDate, endDate) {
+        let query = this.supabase
+            .from('live_streams')
+            .select('*, users!inner(nickname, email, role)')
+            .eq('status', 'active')
+            .order('start_time', { ascending: false });
+        if (userId) {
+            query = query.eq('user_id', userId);
+        }
+        if (startDate) {
+            query = query.gte('start_time', startDate);
+        }
+        if (endDate) {
+            query = query.lte('start_time', endDate);
+        }
+        const { data, error } = await query;
+        if (error) {
+            this.logger.error('导出直播数据失败:', error);
+            throw new Error('导出失败');
+        }
+        const exportData = (data || []).map((item) => ({
+            id: item.id,
+            直播标题: item.title,
+            主播昵称: item.users?.nickname || '',
+            主播邮箱: item.users?.email || '',
+            开始时间: item.start_time,
+            结束时间: item.end_time,
+            直播时长_秒: item.duration_seconds,
+            总观看人数: item.total_views,
+            最高在线: item.peak_online,
+            平均在线: item.avg_online,
+            新增粉丝: item.new_followers,
+            分享次数: item.share_count,
+            评论数: item.total_comments,
+            点赞数: item.total_likes,
+            礼物数: item.total_gifts,
+            商品点击: item.product_clicks,
+            商品曝光: item.product_exposures,
+            订单数: item.orders_count,
+            GMV: item.gmv,
+            创建时间: item.created_at,
+        }));
+        const timestamp = new Date().toISOString().split('T')[0];
+        const filename = `live-data-${timestamp}.${format}`;
+        if (format === 'csv') {
+            const headers = [
+                'id', '直播标题', '主播昵称', '主播邮箱', '开始时间', '结束时间',
+                '直播时长_秒', '总观看人数', '最高在线', '平均在线', '新增粉丝',
+                '分享次数', '评论数', '点赞数', '礼物数', '商品点击', '商品曝光',
+                '订单数', 'GMV', '创建时间'
+            ];
+            const csvRows = [
+                '\uFEFF' + headers.join(','),
+                ...exportData.map(row => headers.map(header => {
+                    const value = row[header];
+                    if (typeof value === 'string' && (value.includes(',') || value.includes('\n') || value.includes('"'))) {
+                        return `"${value.replace(/"/g, '""')}"`;
+                    }
+                    return value ?? '';
+                }).join(',')),
+            ];
+            return {
+                data: csvRows.join('\n'),
+                filename,
+                contentType: 'text/csv; charset=utf-8',
+            };
+        }
+        return {
+            data: JSON.stringify({
+                exportTime: new Date().toISOString(),
+                recordCount: exportData.length,
+                data: exportData,
+            }, null, 2),
+            filename,
+            contentType: 'application/json',
+        };
+    }
+    async updateDailyStats(userId, dateStr) {
+        const date = new Date(dateStr);
+        const dateKey = date.toISOString().split('T')[0];
+        const { data: dayStreams } = await this.supabase
+            .from('live_streams')
+            .select('*')
+            .eq('user_id', userId)
+            .gte('start_time', `${dateKey}T00:00:00`)
+            .lt('start_time', `${dateKey}T23:59:59`)
+            .eq('status', 'active');
+        const stats = dayStreams || [];
+        const summary = {
+            live_count: stats.length,
+            total_duration_seconds: stats.reduce((sum, s) => sum + (s.duration_seconds || 0), 0),
+            total_views: stats.reduce((sum, s) => sum + (s.total_views || 0), 0),
+            peak_online: stats.length > 0 ? Math.max(...stats.map(s => s.peak_online || 0)) : 0,
+            new_followers: stats.reduce((sum, s) => sum + (s.new_followers || 0), 0),
+            total_comments: stats.reduce((sum, s) => sum + (s.total_comments || 0), 0),
+            total_likes: stats.reduce((sum, s) => sum + (s.total_likes || 0), 0),
+            total_gmv: stats.reduce((sum, s) => sum + parseFloat(s.gmv || 0), 0),
+            total_orders: stats.reduce((sum, s) => sum + (s.orders_count || 0), 0),
+        };
+        await this.supabase
+            .from('live_daily_stats')
+            .upsert({
+            user_id: userId,
+            stats_date: dateKey,
+            ...summary,
+            updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,stats_date' });
+    }
+};
+exports.LiveDataService = LiveDataService;
+exports.LiveDataService = LiveDataService = LiveDataService_1 = __decorate([
+    (0, common_1.Injectable)()
+], LiveDataService);
+//# sourceMappingURL=live-data.service.js.map

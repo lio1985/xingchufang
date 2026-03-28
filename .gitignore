@@ -6,6 +6,8 @@ node_modules/
 dist/
 build/
 dist-*/
+# 但保留 server/dist 用于部署
+!server/dist/
 
 # Misc
 .DS_Store
