@@ -8,7 +8,8 @@ export default {
     },
   },
   h5: {
-    // 确保产物为 es5
-    legacy: true,
+    // 禁用 legacy 构建，避免 Taro 初始化错误
+    // 现代浏览器已广泛支持 ES6+，无需 legacy 兼容
+    legacy: false,
   }
 } satisfies UserConfigExport<'vite'>

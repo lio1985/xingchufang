@@ -27,22 +27,37 @@ const TabKnowledgePage = () => {
     }
   }, []);
 
-  // 监听页面显示，刷新用户信息
-  Taro.useDidShow(() => {
-    try {
-      const user = Taro.getStorageSync('user');
-      const token = Taro.getStorageSync('token');
-      if (user && token) {
-        setIsLoggedIn(true);
-        setUserRole(user.role || 'guest');
-      } else {
-        setIsLoggedIn(false);
-        setUserRole(null);
+  // 监听页面显示，刷新用户信息 - 使用 useEffect 替代 useDidShow 以支持 H5
+  useEffect(() => {
+    const refreshUserInfo = () => {
+      try {
+        const user = Taro.getStorageSync('user');
+        const token = Taro.getStorageSync('token');
+        if (user && token) {
+          setIsLoggedIn(true);
+          setUserRole(user.role || 'guest');
+        } else {
+          setIsLoggedIn(false);
+          setUserRole(null);
+        }
+      } catch (e) {
+        console.log('刷新用户信息失败');
       }
-    } catch (e) {
-      console.log('刷新用户信息失败');
+    };
+
+    // H5 环境使用 visibilitychange 事件
+    if (typeof document !== 'undefined') {
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          refreshUserInfo();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
     }
-  });
+  }, []);
 
   // 判断是否有权限查看公司资料（员工及以上权限）
   const canViewCompanyData = isLoggedIn && userRole && ['employee', 'team_leader', 'admin'].includes(userRole);

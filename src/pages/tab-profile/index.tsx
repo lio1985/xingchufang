@@ -52,32 +52,47 @@ const TabProfilePage = () => {
     }
   }, []);
 
-  // 监听页面显示，刷新用户信息
-  Taro.useDidShow(() => {
-    try {
-      const user = Taro.getStorageSync('user');
-      const token = Taro.getStorageSync('token');
-      console.log('useDidShow - user:', user, 'token:', token);
-      if (user && token) {
-        setIsLoggedIn(true);
-        setUserInfo(user);
-        setIsAdmin(user.role === 'admin');
-        // 刷新在线状态
-        if (user.id) {
-          getUserOnlineStatus(user.id).then(status => {
-            setOnlineStatus(status);
-          });
+  // 监听页面显示，刷新用户信息 - 使用 useEffect 替代 useDidShow 以支持 H5
+  useEffect(() => {
+    const refreshUserInfo = () => {
+      try {
+        const user = Taro.getStorageSync('user');
+        const token = Taro.getStorageSync('token');
+        console.log('refreshUserInfo - user:', user, 'token:', token);
+        if (user && token) {
+          setIsLoggedIn(true);
+          setUserInfo(user);
+          setIsAdmin(user.role === 'admin');
+          // 刷新在线状态
+          if (user.id) {
+            getUserOnlineStatus(user.id).then(status => {
+              setOnlineStatus(status);
+            });
+          }
+        } else {
+          // 如果没有用户信息或 token，重置状态
+          setIsLoggedIn(false);
+          setUserInfo(null);
+          setIsAdmin(false);
         }
-      } else {
-        // 如果没有用户信息或 token，重置状态
-        setIsLoggedIn(false);
-        setUserInfo(null);
-        setIsAdmin(false);
+      } catch (e) {
+        console.log('刷新用户信息失败');
       }
-    } catch (e) {
-      console.log('刷新用户信息失败');
+    };
+
+    // H5 环境使用 visibilitychange 事件
+    if (typeof document !== 'undefined') {
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          refreshUserInfo();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
     }
-  });
+  }, []);
 
   const handleLogin = () => {
     Taro.navigateTo({ url: '/pages/login/index' });

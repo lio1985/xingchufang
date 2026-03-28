@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/postcss';
 import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite';
 import { defineConfig, type UserConfigExport } from '@tarojs/cli';
 import type { PluginItem } from '@tarojs/taro/types/compile/config/project';
+import react from '@vitejs/plugin-react-swc';
 
 // 加载环境变量
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
@@ -72,6 +73,8 @@ export default defineConfig<'vite'>(async (merge, _env) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
+        // 使用 SWC 替代 esbuild 进行 React/TypeScript 转换（解决 Node.js v24 兼容性问题）
+        react(),
         {
           name: 'postcss-config-loader-plugin',
           config(config) {
@@ -79,7 +82,7 @@ export default defineConfig<'vite'>(async (merge, _env) => {
             if (typeof config.css?.postcss === 'object') {
               config.css?.postcss.plugins?.unshift(tailwindcss());
             }
-            // 禁用 esbuild 压缩，使用 terser 代替
+            // 使用 terser 压缩
             if (!config.build) {
               config.build = {};
             }

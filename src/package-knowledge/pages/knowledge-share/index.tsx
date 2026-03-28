@@ -67,9 +67,21 @@ const KnowledgeSharePage = () => {
     checkAuth();
   }, []);
 
-  Taro.useDidShow(() => {
-    checkAuth();
-  });
+  // 使用 useEffect 替代 useDidShow 以支持 H5
+  useEffect(() => {
+    // H5 环境使用 visibilitychange 事件
+    if (typeof document !== 'undefined') {
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          checkAuth();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+  }, []);
 
   const checkAuth = () => {
     try {

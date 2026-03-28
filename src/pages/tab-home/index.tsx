@@ -84,11 +84,24 @@ const TabHomePage = () => {
     fetchUnreadNotificationCount();
   }, []);
 
-  Taro.useDidShow(() => {
-    checkLoginStatus();
-    fetchRecentOrders();
-    fetchUnreadNotificationCount();
-  });
+  // 页面显示时刷新数据 - 使用 useEffect 替代 useDidShow 以支持 H5
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        checkLoginStatus();
+        fetchRecentOrders();
+        fetchUnreadNotificationCount();
+      }
+    };
+
+    // H5 环境使用 visibilitychange 事件
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+  }, []);
 
   // 获取未读通知数
   const fetchUnreadNotificationCount = async () => {

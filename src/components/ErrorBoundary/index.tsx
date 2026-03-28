@@ -1,6 +1,5 @@
 import { Component, PropsWithChildren, ErrorInfo } from 'react';
-import { View, Text, Button } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import { View, Text } from '@tarojs/components';
 
 interface Props extends PropsWithChildren {
   fallback?: React.ReactNode;
@@ -27,12 +26,14 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    // 可以在这里上报错误到监控系统
   }
 
   handleReset = () => {
     this.setState({ hasError: false, error: undefined });
-    Taro.switchTab({ url: '/pages/index/index' });
+    // 使用 location.reload 代替 Taro.switchTab，避免 H5 兼容性问题
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
   };
 
   render() {
@@ -51,12 +52,12 @@ export class ErrorBoundary extends Component<Props, State> {
             <Text className="block text-sm text-slate-400 mb-6">
               {this.state.error?.message || '发生未知错误'}
             </Text>
-            <Button
+            <View 
               className="bg-blue-500 text-white px-6 py-3 rounded-xl"
               onClick={this.handleReset}
             >
-              返回首页
-            </Button>
+              <Text className="text-white">返回首页</Text>
+            </View>
           </View>
         </View>
       );
