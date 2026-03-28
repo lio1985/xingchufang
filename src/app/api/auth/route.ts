@@ -22,8 +22,6 @@ export async function POST(request: NextRequest) {
     }
     
     // 从环境变量获取用户配置
-    // 格式: username1:password1:role1,username2:password2:role2
-    // 例如: admin:admin123:admin,sales:sales123:sales
     const userCredentials = process.env.USER_CREDENTIALS || 'admin:admin123:admin,sales:sales123:sales';
     
     // 解析用户列表
@@ -36,7 +34,7 @@ export async function POST(request: NextRequest) {
         if (user && pass) {
           users.set(user, {
             password: pass,
-            role: (role as UserRole) || 'sales', // 默认为销售角色
+            role: (role as UserRole) || 'sales',
           });
         }
       }
@@ -51,27 +49,23 @@ export async function POST(request: NextRequest) {
         role: userConfig.role,
       };
       
-      // 创建响应并设置 cookie
+      // 创建响应
       const response = NextResponse.json({ 
         success: true,
         user: userInfo,
       });
       
-      response.cookies.set('admin_token', 'authenticated', {
+      // 设置 cookie
+      const cookieOptions = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: true, // 始终使用 secure，因为用户访问的是 HTTPS
+        sameSite: 'lax' as const,
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7天
-      });
+      };
       
-      response.cookies.set('admin_user', JSON.stringify(userInfo), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 7天
-      });
+      response.cookies.set('admin_token', 'authenticated', cookieOptions);
+      response.cookies.set('admin_user', JSON.stringify(userInfo), cookieOptions);
       
       return response;
     } else {
@@ -118,15 +112,15 @@ export async function GET(request: NextRequest) {
 // 登出
 export async function DELETE() {
   const response = NextResponse.json({ success: true });
-  response.cookies.set('admin_token', '', {
+  
+  const cookieOptions = {
     httpOnly: true,
     path: '/',
     maxAge: 0,
-  });
-  response.cookies.set('admin_user', '', {
-    httpOnly: true,
-    path: '/',
-    maxAge: 0,
-  });
+  };
+  
+  response.cookies.set('admin_token', '', cookieOptions);
+  response.cookies.set('admin_user', '', cookieOptions);
+  
   return response;
 }
