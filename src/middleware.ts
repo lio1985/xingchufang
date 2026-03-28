@@ -27,10 +27,11 @@ export function middleware(request: NextRequest) {
 
   // 检查登录状态
   const token = request.cookies.get('admin_token');
+  const userCookie = request.cookies.get('admin_user');
   const allCookies = request.cookies.getAll();
   
-  // 调试日志
-  console.log(`[Middleware] ${pathname} - token: ${token?.value || 'none'}, cookies: [${allCookies.map(c => c.name).join(', ')}]`);
+  // 调试日志 - 显示所有cookie
+  console.log(`[Middleware] ${pathname} - token: ${token?.value || 'none'}, userCookie: ${userCookie?.value?.substring(0, 20) || 'none'}, all cookies: [${allCookies.map(c => c.name).join(', ')}]`);
 
   if (!token || token.value !== 'authenticated') {
     // 未登录，重定向到登录页

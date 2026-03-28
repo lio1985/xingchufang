@@ -76,10 +76,9 @@ export async function POST(request: NextRequest) {
       // 设置Cookie
       const cookieOptions = getCookieOptions(request);
       response.cookies.set('admin_token', 'authenticated', cookieOptions);
-      response.cookies.set('admin_user', JSON.stringify(userInfo), cookieOptions);
-      
-      // 调试：检查设置后的cookie
-      console.log('[Auth POST] Cookies set:', response.cookies.getAll().map(c => ({ name: c.name, value: c.value?.substring(0, 30) })));
+      // 使用简单的格式存储用户信息，避免JSON编码问题
+      // 格式: username|role
+      response.cookies.set('admin_user', `${userInfo.username}|${userInfo.role}`, cookieOptions);
       
       return response;
     } else {
@@ -102,30 +101,23 @@ export async function GET(request: NextRequest) {
   const token = request.cookies.get('admin_token');
   const userCookie = request.cookies.get('admin_user');
   
-  // 调试日志
-  console.log('[Auth GET] token:', token?.value, 'userCookie exists:', !!userCookie);
-  console.log('[Auth GET] all cookies:', request.cookies.getAll().map(c => c.name));
-  
-  // 只要token认证通过即可
-  if (token?.value === 'authenticated') {
-    // 如果有用户信息cookie，使用它
-    if (userCookie?.value) {
-      try {
-        const user = JSON.parse(userCookie.value) as UserInfo;
+  // 必须同时有token和userCookie才认证通过
+  if (token?.value === 'authenticated' && userCookie?.value) {
+    try {
+      // 解析简单格式: username|role (可能是URL编码的)
+      const decodedValue = decodeURIComponent(userCookie.value);
+      const [username, role] = decodedValue.split('|');
+      if (username && role) {
+        const user = { username, role } as UserInfo;
+        console.log('[Auth GET] Authenticated user:', username, 'role:', role);
         return NextResponse.json({
           authenticated: true,
           user,
         });
-      } catch {
-        // 解析失败，使用默认用户
       }
+    } catch (e) {
+      console.error('[Auth GET] Failed to parse user cookie:', e);
     }
-    
-    // 没有用户信息，返回默认管理员用户
-    return NextResponse.json({
-      authenticated: true,
-      user: { username: 'admin', role: 'admin' } as UserInfo,
-    });
   }
   
   return NextResponse.json({
