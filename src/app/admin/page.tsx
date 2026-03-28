@@ -897,14 +897,14 @@ export default function AdminPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">供应商</label>
                 <Select
-                  value={productForm.supplier || ''}
-                  onValueChange={(value) => setProductForm({ ...productForm, supplier: value })}
+                  value={productForm.supplier || '__none__'}
+                  onValueChange={(value) => setProductForm({ ...productForm, supplier: value === '__none__' ? '' : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="选择供应商" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">无</SelectItem>
+                    <SelectItem value="__none__">无</SelectItem>
                     {filterOptions.suppliers.map((s) => (
                       <SelectItem key={s} value={s}>{s}</SelectItem>
                     ))}
@@ -916,14 +916,14 @@ export default function AdminPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">一级分类</label>
                 <Select
-                  value={productForm.level1_category || ''}
-                  onValueChange={(value) => setProductForm({ ...productForm, level1_category: value })}
+                  value={productForm.level1_category || '__none__'}
+                  onValueChange={(value) => setProductForm({ ...productForm, level1_category: value === '__none__' ? '' : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="选择一级分类" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">无</SelectItem>
+                    <SelectItem value="__none__">无</SelectItem>
                     {filterOptions.level1Categories.map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
@@ -933,14 +933,14 @@ export default function AdminPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">二级分类</label>
                 <Select
-                  value={productForm.level2_category || ''}
-                  onValueChange={(value) => setProductForm({ ...productForm, level2_category: value })}
+                  value={productForm.level2_category || '__none__'}
+                  onValueChange={(value) => setProductForm({ ...productForm, level2_category: value === '__none__' ? '' : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="选择二级分类" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">无</SelectItem>
+                    <SelectItem value="__none__">无</SelectItem>
                     {filterOptions.level2Categories.map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
