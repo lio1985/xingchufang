@@ -1,6 +1,7 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { LLMClient, Config } from 'coze-coding-dev-sdk';
 import { getSupabaseClient } from '../storage/database/supabase-client';
+import { getPool } from '../storage/database/pg-pool';
 
 export interface Topic {
   id: string;
@@ -36,6 +37,7 @@ export interface CreateTopicDto {
   target_audience?: string;
   key_points?: string;
   reference_urls?: string[];
+  ai_analysis?: Record<string, any>;
   inspiration_data?: Record<string, any>;
   scheduled_date?: string;
 }
@@ -80,42 +82,57 @@ export class TopicsService {
    * 获取选题列表
    */
   async getAll(userId: string, query: TopicQueryDto) {
+    const pool = getPool();
     const { status, category, platform, search, page = 1, pageSize = 20 } = query;
 
-    let queryBuilder = this.client
-      .from('topics')
-      .select('*', { count: 'exact' })
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
+    // 构建查询条件
+    const conditions: string[] = ['user_id = $1'];
+    const values: any[] = [userId];
+    let paramIndex = 2;
 
-    // 筛选条件
     if (status && status !== 'all') {
-      queryBuilder = queryBuilder.eq('status', status);
+      conditions.push(`status = $${paramIndex}`);
+      values.push(status);
+      paramIndex++;
     }
     if (category) {
-      queryBuilder = queryBuilder.eq('category', category);
+      conditions.push(`category = $${paramIndex}`);
+      values.push(category);
+      paramIndex++;
     }
     if (platform && platform !== 'all') {
-      queryBuilder = queryBuilder.eq('platform', platform);
+      conditions.push(`platform = $${paramIndex}`);
+      values.push(platform);
+      paramIndex++;
     }
     if (search) {
-      queryBuilder = queryBuilder.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
+      conditions.push(`(title ILIKE $${paramIndex} OR description ILIKE $${paramIndex})`);
+      values.push(`%${search}%`);
+      paramIndex++;
     }
 
-    // 分页
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
-    queryBuilder = queryBuilder.range(from, to);
+    const whereClause = conditions.join(' AND ');
+    const offset = (page - 1) * pageSize;
 
-    const { data, error, count } = await queryBuilder;
+    // 获取总数
+    const countQuery = `SELECT COUNT(*) as total FROM topics WHERE ${whereClause}`;
+    const countResult = await pool.query(countQuery, values);
+    const total = parseInt(countResult.rows[0].total, 10);
 
-    if (error) {
-      throw new Error(`获取选题列表失败: ${error.message}`);
-    }
+    // 获取列表
+    const listQuery = `
+      SELECT * FROM topics 
+      WHERE ${whereClause}
+      ORDER BY created_at DESC
+      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+    `;
+    values.push(pageSize, offset);
+    
+    const listResult = await pool.query(listQuery, values);
 
     return {
-      items: data || [],
-      total: count || 0,
+      items: listResult.rows,
+      total,
       page,
       pageSize,
     };
@@ -125,110 +142,168 @@ export class TopicsService {
    * 获取单个选题
    */
   async getById(userId: string, id: string): Promise<Topic> {
-    const { data, error } = await this.client
-      .from('topics')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const pool = getPool();
+    
+    const query = 'SELECT * FROM topics WHERE id = $1';
+    const result = await pool.query(query, [id]);
 
-    if (error || !data) {
+    if (result.rows.length === 0) {
       throw new NotFoundException('选题不存在');
     }
 
-    if (data.user_id !== userId) {
+    const topic = result.rows[0];
+    if (topic.user_id !== userId) {
       throw new ForbiddenException('无权访问此选题');
     }
 
-    return data;
+    return topic as Topic;
   }
 
   /**
    * 创建选题
    */
   async create(userId: string, dto: CreateTopicDto): Promise<Topic> {
-    const { data, error } = await this.client
-      .from('topics')
-      .insert({
-        user_id: userId,
-        title: dto.title,
-        description: dto.description || null,
-        category: dto.category || null,
-        platform: dto.platform || '公众号',
-        content_type: dto.content_type || '图文',
-        status: dto.status || 'draft',
-        priority: dto.priority || 0,
-        tags: dto.tags || null,
-        target_audience: dto.target_audience || null,
-        key_points: dto.key_points || null,
-        reference_urls: dto.reference_urls || null,
-        inspiration_data: dto.inspiration_data || null,
-        scheduled_date: dto.scheduled_date || null,
-      })
-      .select()
-      .single();
-
-    if (error) {
+    const pool = getPool();
+    
+    const query = `
+      INSERT INTO topics (
+        user_id, title, description, category, platform, content_type,
+        status, priority, tags, target_audience, key_points,
+        reference_urls, ai_analysis, inspiration_data, scheduled_date
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      RETURNING *
+    `;
+    
+    const values = [
+      userId,
+      dto.title,
+      dto.description || null,
+      dto.category || null,
+      dto.platform || '公众号',
+      dto.content_type || '图文',
+      dto.status || 'draft',
+      dto.priority || 0,
+      dto.tags || null,
+      dto.target_audience || null,
+      dto.key_points || null,
+      dto.reference_urls || null,
+      dto.ai_analysis || null,
+      dto.inspiration_data || null,
+      dto.scheduled_date || null,
+    ];
+    
+    try {
+      const result = await pool.query(query, values);
+      return result.rows[0] as Topic;
+    } catch (error: any) {
+      console.error('[TopicsService] 创建选题失败:', error);
       throw new Error(`创建选题失败: ${error.message}`);
     }
-
-    return data;
   }
 
   /**
    * 更新选题
    */
   async update(userId: string, id: string, dto: UpdateTopicDto): Promise<Topic> {
+    const pool = getPool();
+    
     // 验证所有权
     await this.getById(userId, id);
 
-    const updateData: Record<string, any> = {
-      updated_at: new Date().toISOString(),
-    };
+    const updateFields: string[] = ['updated_at = NOW()'];
+    const values: any[] = [];
+    let paramIndex = 1;
 
-    if (dto.title !== undefined) updateData.title = dto.title;
-    if (dto.description !== undefined) updateData.description = dto.description;
-    if (dto.category !== undefined) updateData.category = dto.category;
-    if (dto.platform !== undefined) updateData.platform = dto.platform;
-    if (dto.content_type !== undefined) updateData.content_type = dto.content_type;
-    if (dto.status !== undefined) updateData.status = dto.status;
-    if (dto.priority !== undefined) updateData.priority = dto.priority;
-    if (dto.tags !== undefined) updateData.tags = dto.tags;
-    if (dto.target_audience !== undefined) updateData.target_audience = dto.target_audience;
-    if (dto.key_points !== undefined) updateData.key_points = dto.key_points;
-    if (dto.reference_urls !== undefined) updateData.reference_urls = dto.reference_urls;
-    if (dto.inspiration_data !== undefined) updateData.inspiration_data = dto.inspiration_data;
-    if (dto.scheduled_date !== undefined) updateData.scheduled_date = dto.scheduled_date;
-    if (dto.published_at !== undefined) updateData.published_at = dto.published_at;
-
-    const { data, error } = await this.client
-      .from('topics')
-      .update(updateData)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      throw new Error(`更新选题失败: ${error.message}`);
+    if (dto.title !== undefined) {
+      updateFields.push(`title = $${paramIndex}`);
+      values.push(dto.title);
+      paramIndex++;
+    }
+    if (dto.description !== undefined) {
+      updateFields.push(`description = $${paramIndex}`);
+      values.push(dto.description);
+      paramIndex++;
+    }
+    if (dto.category !== undefined) {
+      updateFields.push(`category = $${paramIndex}`);
+      values.push(dto.category);
+      paramIndex++;
+    }
+    if (dto.platform !== undefined) {
+      updateFields.push(`platform = $${paramIndex}`);
+      values.push(dto.platform);
+      paramIndex++;
+    }
+    if (dto.content_type !== undefined) {
+      updateFields.push(`content_type = $${paramIndex}`);
+      values.push(dto.content_type);
+      paramIndex++;
+    }
+    if (dto.status !== undefined) {
+      updateFields.push(`status = $${paramIndex}`);
+      values.push(dto.status);
+      paramIndex++;
+    }
+    if (dto.priority !== undefined) {
+      updateFields.push(`priority = $${paramIndex}`);
+      values.push(dto.priority);
+      paramIndex++;
+    }
+    if (dto.tags !== undefined) {
+      updateFields.push(`tags = $${paramIndex}`);
+      values.push(dto.tags);
+      paramIndex++;
+    }
+    if (dto.target_audience !== undefined) {
+      updateFields.push(`target_audience = $${paramIndex}`);
+      values.push(dto.target_audience);
+      paramIndex++;
+    }
+    if (dto.key_points !== undefined) {
+      updateFields.push(`key_points = $${paramIndex}`);
+      values.push(dto.key_points);
+      paramIndex++;
+    }
+    if (dto.reference_urls !== undefined) {
+      updateFields.push(`reference_urls = $${paramIndex}`);
+      values.push(dto.reference_urls);
+      paramIndex++;
+    }
+    if (dto.inspiration_data !== undefined) {
+      updateFields.push(`inspiration_data = $${paramIndex}`);
+      values.push(dto.inspiration_data);
+      paramIndex++;
+    }
+    if (dto.scheduled_date !== undefined) {
+      updateFields.push(`scheduled_date = $${paramIndex}`);
+      values.push(dto.scheduled_date);
+      paramIndex++;
+    }
+    if (dto.published_at !== undefined) {
+      updateFields.push(`published_at = $${paramIndex}`);
+      values.push(dto.published_at);
+      paramIndex++;
     }
 
-    return data;
+    values.push(id);
+    const query = `UPDATE topics SET ${updateFields.join(', ')} WHERE id = $${paramIndex} RETURNING *`;
+    
+    const result = await pool.query(query, values);
+    return result.rows[0] as Topic;
   }
 
   /**
    * 删除选题
    */
   async delete(userId: string, id: string): Promise<void> {
+    const pool = getPool();
+    
     // 验证所有权
     await this.getById(userId, id);
 
-    const { error } = await this.client
-      .from('topics')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      throw new Error(`删除选题失败: ${error.message}`);
-    }
+    const query = 'DELETE FROM topics WHERE id = $1';
+    await pool.query(query, [id]);
   }
 
   /**
@@ -314,13 +389,9 @@ ${topic.inspiration_data ? `灵感数据：${JSON.stringify(topic.inspiration_da
     }
 
     // 保存分析结果到数据库
-    await this.client
-      .from('topics')
-      .update({
-        ai_analysis: analysisResult,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id);
+    const pool = getPool();
+    const updateQuery = 'UPDATE topics SET ai_analysis = $1, updated_at = NOW() WHERE id = $2';
+    await pool.query(updateQuery, [JSON.stringify(analysisResult), id]);
 
     return analysisResult;
   }
@@ -333,74 +404,64 @@ ${topic.inspiration_data ? `灵感数据：${JSON.stringify(topic.inspiration_da
     ids: string[],
     status: 'draft' | 'in_progress' | 'published' | 'archived'
   ): Promise<void> {
-    const { error } = await this.client
-      .from('topics')
-      .update({
-        status,
-        updated_at: new Date().toISOString(),
-      })
-      .in('id', ids)
-      .eq('user_id', userId);
-
-    if (error) {
-      throw new Error(`批量更新状态失败: ${error.message}`);
-    }
+    const pool = getPool();
+    
+    const query = `
+      UPDATE topics 
+      SET status = $1, updated_at = NOW()
+      WHERE id = ANY($2) AND user_id = $3
+    `;
+    
+    await pool.query(query, [status, ids, userId]);
   }
 
   /**
    * 获取统计数据
    */
   async getStatistics(userId: string): Promise<Record<string, any>> {
+    const pool = getPool();
+
     // 获取各状态数量
-    const { data: statusData, error: statusError } = await this.client
-      .from('topics')
-      .select('status')
-      .eq('user_id', userId);
-
-    if (statusError) {
-      throw new Error(`获取统计数据失败: ${statusError.message}`);
-    }
-
-    const statusCounts = {
+    const statusQuery = 'SELECT status, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY status';
+    const statusResult = await pool.query(statusQuery, [userId]);
+    
+    const statusCounts: Record<string, number> = {
       draft: 0,
       in_progress: 0,
       published: 0,
       archived: 0,
     };
-
-    (statusData || []).forEach((item: any) => {
-      if (statusCounts.hasOwnProperty(item.status)) {
-        statusCounts[item.status as keyof typeof statusCounts]++;
+    
+    statusResult.rows.forEach(row => {
+      if (statusCounts.hasOwnProperty(row.status)) {
+        statusCounts[row.status] = parseInt(row.count, 10);
       }
     });
 
     // 获取分类分布
-    const { data: categoryData } = await this.client
-      .from('topics')
-      .select('category')
-      .eq('user_id', userId)
-      .not('category', 'is', null);
-
+    const categoryQuery = 'SELECT category, COUNT(*) as count FROM topics WHERE user_id = $1 AND category IS NOT NULL GROUP BY category';
+    const categoryResult = await pool.query(categoryQuery, [userId]);
+    
     const categoryCounts: Record<string, number> = {};
-    (categoryData || []).forEach((item: any) => {
-      if (item.category) {
-        categoryCounts[item.category] = (categoryCounts[item.category] || 0) + 1;
-      }
+    categoryResult.rows.forEach(row => {
+      categoryCounts[row.category] = parseInt(row.count, 10);
     });
 
     // 获取平台分布
-    const { data: platformData } = await this.client
-      .from('topics')
-      .select('platform')
-      .eq('user_id', userId);
-
+    const platformQuery = 'SELECT platform, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY platform';
+    const platformResult = await pool.query(platformQuery, [userId]);
+    
     const platformCounts: Record<string, number> = {};
-    (platformData || []).forEach((item: any) => {
-      platformCounts[item.platform] = (platformCounts[item.platform] || 0) + 1;
+    platformResult.rows.forEach(row => {
+      platformCounts[row.platform] = parseInt(row.count, 10);
     });
 
+    // 获取总数
+    const totalQuery = 'SELECT COUNT(*) as total FROM topics WHERE user_id = $1';
+    const totalResult = await pool.query(totalQuery, [userId]);
+
     return {
-      total: (statusData || []).length,
+      total: parseInt(totalResult.rows[0].total, 10),
       byStatus: statusCounts,
       byCategory: categoryCounts,
       byPlatform: platformCounts,
