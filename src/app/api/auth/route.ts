@@ -14,6 +14,7 @@ const getCookieOptions = (request: NextRequest) => {
   // 检查原始请求是否通过HTTPS
   const forwardedProto = request.headers.get('x-forwarded-proto');
   const host = request.headers.get('host') || '';
+  // 判断是否HTTPS：检查x-forwarded-proto或域名
   const isHttps = forwardedProto === 'https' || host.includes('.coze.site');
   
   console.log('[Auth] Cookie settings - forwardedProto:', forwardedProto, 'host:', host, 'isHttps:', isHttps);
@@ -24,6 +25,7 @@ const getCookieOptions = (request: NextRequest) => {
     httpOnly: true,
     secure: isHttps, // 仅当原始请求是HTTPS时才设置Secure
     sameSite: 'lax' as const,
+    // 不设置domain，让浏览器自动使用当前域名
   };
 };
 
@@ -75,10 +77,18 @@ export async function POST(request: NextRequest) {
       
       // 设置Cookie
       const cookieOptions = getCookieOptions(request);
+      
+      // 用户信息使用Base64编码，确保特殊字符不会导致问题
+      const userValue = Buffer.from(`${userInfo.username}|${userInfo.role}`).toString('base64');
+      
+      console.log('[Auth] Setting cookies - token: authenticated, user:', userValue, 'options:', JSON.stringify(cookieOptions));
+      
       response.cookies.set('admin_token', 'authenticated', cookieOptions);
-      // 使用简单的格式存储用户信息，避免JSON编码问题
-      // 格式: username|role
-      response.cookies.set('admin_user', `${userInfo.username}|${userInfo.role}`, cookieOptions);
+      response.cookies.set('admin_user', userValue, cookieOptions);
+      
+      // 验证Cookie是否设置成功
+      const setCookies = response.headers.getSetCookie();
+      console.log('[Auth] Set-Cookie headers:', setCookies);
       
       return response;
     } else {
@@ -101,11 +111,15 @@ export async function GET(request: NextRequest) {
   const token = request.cookies.get('admin_token');
   const userCookie = request.cookies.get('admin_user');
   
+  console.log('[Auth GET] Cookies - token:', token?.value, 'userCookie:', userCookie?.value ? 'exists' : 'none');
+  
   // 必须同时有token和userCookie才认证通过
   if (token?.value === 'authenticated' && userCookie?.value) {
     try {
-      // 解析简单格式: username|role (可能是URL编码的)
-      const decodedValue = decodeURIComponent(userCookie.value);
+      // 解析Base64编码的用户信息
+      const decodedValue = Buffer.from(userCookie.value, 'base64').toString('utf-8');
+      console.log('[Auth GET] Decoded user value:', decodedValue);
+      
       const [username, role] = decodedValue.split('|');
       if (username && role) {
         const user = { username, role } as UserInfo;
