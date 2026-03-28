@@ -29,15 +29,18 @@ const getCookieOptions = (request: NextRequest) => {
   const forwardedHost = request.headers.get('x-forwarded-host');
   const host = request.headers.get('host') || '';
   
-  // 判断是否HTTPS：
+  // 判断是否HTTPS/生产环境：
   // 1. x-forwarded-proto 为 https
   // 2. 域名包含 .coze.site（生产环境）
   // 3. forwarded-host 包含 .coze.site
+  // 4. 环境变量 COZE_PROJECT_ENV 为 PROD
+  const isProduction = process.env.COZE_PROJECT_ENV === 'PROD';
   const isHttps = forwardedProto === 'https' 
     || host.includes('.coze.site') 
-    || (forwardedHost?.includes('.coze.site') ?? false);
+    || (forwardedHost?.includes('.coze.site') ?? false)
+    || isProduction;
   
-  console.log('[Auth] Cookie settings - forwardedProto:', forwardedProto, 'forwardedHost:', forwardedHost, 'host:', host, 'isHttps:', isHttps);
+  console.log('[Auth] Cookie settings - forwardedProto:', forwardedProto, 'forwardedHost:', forwardedHost, 'host:', host, 'isProduction:', isProduction, 'isHttps:', isHttps);
   
   return {
     path: '/',
@@ -89,29 +92,33 @@ export async function POST(request: NextRequest) {
         role: userConfig.role,
       };
       
+      // 用户信息使用URL安全的Base64编码（去掉=填充）
+      const userValue = safeBase64Encode(`${userInfo.username}|${userInfo.role}`);
+      
+      // 获取Cookie选项
+      const cookieOptions = getCookieOptions(request);
+      
+      console.log('[Auth] Cookie settings:', JSON.stringify(cookieOptions));
+      console.log('[Auth] User value:', userValue);
+      
       // 创建响应
       const response = NextResponse.json({ 
         success: true,
         user: userInfo,
       });
       
-      // 设置Cookie
-      const cookieOptions = getCookieOptions(request);
+      // 设置Cookie - 将用户信息也编码到token中，确保不会丢失
+      // 格式: authenticated|username|role (Base64编码)
+      const tokenValue = safeBase64Encode(`authenticated|${userInfo.username}|${userInfo.role}`);
       
-      // 用户信息使用URL安全的Base64编码（去掉=填充）
-      const userValue = safeBase64Encode(`${userInfo.username}|${userInfo.role}`);
-      
-      console.log('[Auth] Setting cookies - token: authenticated, user:', userValue, 'options:', JSON.stringify(cookieOptions));
-      
+      response.cookies.set('admin_session', tokenValue, cookieOptions);
+      // 同时设置兼容的旧Cookie
       response.cookies.set('admin_token', 'authenticated', cookieOptions);
       response.cookies.set('admin_user', userValue, cookieOptions);
       
       // 验证Cookie是否设置成功
       const setCookies = response.headers.getSetCookie();
-      console.log('[Auth] Set-Cookie count:', setCookies.length);
-      setCookies.forEach((cookie, index) => {
-        console.log(`[Auth] Cookie ${index + 1}:`, cookie.substring(0, 200));
-      });
+      console.log('[Auth] Set-Cookie headers:', setCookies);
       
       return response;
     } else {
@@ -131,12 +138,31 @@ export async function POST(request: NextRequest) {
 
 // 检查登录状态
 export async function GET(request: NextRequest) {
+  const sessionCookie = request.cookies.get('admin_session');
   const token = request.cookies.get('admin_token');
   const userCookie = request.cookies.get('admin_user');
   
-  console.log('[Auth GET] Cookies - token:', token?.value, 'userCookie:', userCookie?.value ? 'exists:' + userCookie.value : 'none');
+  console.log('[Auth GET] Cookies - session:', sessionCookie?.value ? 'exists' : 'none', 'token:', token?.value, 'userCookie:', userCookie?.value ? 'exists' : 'none');
   
-  // 必须同时有token和userCookie才认证通过
+  // 优先使用新的session cookie
+  if (sessionCookie?.value) {
+    try {
+      const decodedValue = safeBase64Decode(sessionCookie.value);
+      const parts = decodedValue.split('|');
+      if (parts.length >= 3 && parts[0] === 'authenticated') {
+        const user = { username: parts[1], role: parts[2] } as UserInfo;
+        console.log('[Auth GET] Session cookie authenticated:', user.username, 'role:', user.role);
+        return NextResponse.json({
+          authenticated: true,
+          user,
+        });
+      }
+    } catch (e) {
+      console.error('[Auth GET] Failed to parse session cookie:', e);
+    }
+  }
+  
+  // 回退到旧的cookie格式
   if (token?.value === 'authenticated' && userCookie?.value) {
     try {
       // 解析URL安全的Base64编码的用户信息
@@ -173,6 +199,8 @@ export async function DELETE() {
     maxAge: 0,
   };
   
+  // 清除所有Cookie
+  response.cookies.set('admin_session', '', cookieOptions);
   response.cookies.set('admin_token', '', cookieOptions);
   response.cookies.set('admin_user', '', cookieOptions);
   

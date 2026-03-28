@@ -21,6 +21,33 @@ const safeBase64Decode = (str: string): string => {
   }
 };
 
+// 从Cookie中解析用户信息
+const parseAuthFromCookies = (request: NextRequest): { authenticated: boolean; role: string } => {
+  // 优先使用session cookie
+  const sessionCookie = request.cookies.get('admin_session');
+  if (sessionCookie?.value) {
+    const decoded = safeBase64Decode(sessionCookie.value);
+    const parts = decoded.split('|');
+    if (parts.length >= 3 && parts[0] === 'authenticated') {
+      return { authenticated: true, role: parts[2] };
+    }
+  }
+  
+  // 回退到旧的cookie格式
+  const token = request.cookies.get('admin_token');
+  const userCookie = request.cookies.get('admin_user');
+  
+  if (token?.value === 'authenticated' && userCookie?.value) {
+    const decodedValue = safeBase64Decode(userCookie.value);
+    const parts = decodedValue.split('|');
+    if (parts.length >= 2) {
+      return { authenticated: true, role: parts[1] };
+    }
+  }
+  
+  return { authenticated: false, role: 'unknown' };
+};
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -39,25 +66,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 检查登录状态
-  const token = request.cookies.get('admin_token');
-  const userCookie = request.cookies.get('admin_user');
+  // 解析认证信息
+  const auth = parseAuthFromCookies(request);
   const allCookies = request.cookies.getAll();
   
-  // 尝试解析用户角色
-  let userRole = 'unknown';
-  if (userCookie?.value) {
-    const decodedValue = safeBase64Decode(userCookie.value);
-    const parts = decodedValue.split('|');
-    if (parts.length >= 2) {
-      userRole = parts[1];
-    }
-  }
-  
   // 调试日志
-  console.log(`[Middleware] ${pathname} - token: ${token?.value || 'none'}, userCookie: ${userCookie?.value ? 'exists' : 'none'}, role: ${userRole}, all cookies: [${allCookies.map(c => c.name).join(', ')}]`);
+  console.log(`[Middleware] ${pathname} - authenticated: ${auth.authenticated}, role: ${auth.role}, cookies: [${allCookies.map(c => c.name).join(', ')}]`);
 
-  if (!token || token.value !== 'authenticated') {
+  if (!auth.authenticated) {
     // 未登录，重定向到登录页
     console.log(`[Middleware] Redirecting to login - no valid token`);
     const loginUrl = new URL('/login', request.url);
@@ -67,7 +83,7 @@ export function middleware(request: NextRequest) {
 
   // 检查管理员权限
   const isAdminPath = adminOnlyPaths.some(path => pathname === path || pathname.startsWith(path + '/'));
-  if (isAdminPath && userRole !== 'admin') {
+  if (isAdminPath && auth.role !== 'admin') {
     console.log(`[Middleware] Access denied to ${pathname} - requires admin role`);
     // 非管理员访问管理页面，重定向到首页
     return NextResponse.redirect(new URL('/', request.url));

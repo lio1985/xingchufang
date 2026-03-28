@@ -31,6 +31,22 @@ const safeBase64Decode = (str: string): string => {
  * 从请求中获取当前用户信息和权限状态
  */
 export function getAuthFromRequest(request: NextRequest): AuthResult {
+  // 优先使用session cookie
+  const sessionCookie = request.cookies.get('admin_session');
+  if (sessionCookie?.value) {
+    const decoded = safeBase64Decode(sessionCookie.value);
+    const parts = decoded.split('|');
+    if (parts.length >= 3 && parts[0] === 'authenticated') {
+      const user: UserInfo = { username: parts[1], role: parts[2] as UserRole };
+      return {
+        authenticated: true,
+        user,
+        isAdmin: user.role === 'admin',
+      };
+    }
+  }
+  
+  // 回退到旧的cookie格式
   const token = request.cookies.get('admin_token');
   const userCookie = request.cookies.get('admin_user');
   
