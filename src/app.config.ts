@@ -28,8 +28,6 @@ export default defineAppConfig({
     'pages/viral-favorites/index',
     'pages/viral-remix/index',
     'pages/input-sources/index',
-    'pages/hot-topic-generation/index',
-    'pages/hot-script-generation/index',
     'pages/favorite-list/index',
     'pages/live-data/index',
     'pages/live-data/import/index',

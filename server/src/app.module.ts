@@ -7,9 +7,6 @@ import { ImageFetchModule } from './image-fetch/image-fetch.module';
 import { ImageAnalysisModule } from './image-analysis/image-analysis.module';
 import { TopicQuestionsModule } from './topic-questions/topic-questions.module';
 import { InputSourcesModule } from './input-sources/input-sources.module';
-import { HotTopicsModule } from './hot-topics/hot-topics.module';
-import { HotModule } from './hot/hot.module';
-import { HotTopicFavoritesModule } from './hot-topic-favorites/hot-topic-favorites.module';
 import { AiAnalysisModule } from './ai-analysis/ai-analysis.module';
 import { InspirationModule } from './inspiration/inspiration.module';
 import { UploadModule } from './upload/upload.module';
@@ -59,9 +56,6 @@ import { SubscribeMessageModule } from './subscribe-message/subscribe-message.mo
     ImageAnalysisModule,
     TopicQuestionsModule,
     InputSourcesModule,
-    HotTopicsModule,
-    HotModule,
-    HotTopicFavoritesModule,
     AiAnalysisModule,
     InspirationModule,
     UploadModule,
