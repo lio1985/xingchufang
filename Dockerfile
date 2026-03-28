@@ -2,7 +2,7 @@
 # ===================================
 # 阶段 1: 构建应用
 # ===================================
-FROM node:18-alpine AS builder
+FROM node:18 AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -25,7 +25,7 @@ RUN pnpm build
 # ===================================
 # 阶段 2: 生产环境
 # ===================================
-FROM node:18-alpine
+FROM node:18
 
 # 设置工作目录
 WORKDIR /app
@@ -33,13 +33,11 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm
 
-# 安装 serve（用于服务静态文件）
-RUN npm install -g serve
-
 # 复制依赖文件
-COPY package.json pnpm-lock.yaml server/package.json ./
+COPY package.json pnpm-lock.yaml ./
+COPY server/package.json ./server/
 
-# 只安装生产依赖
+# 安装生产依赖
 RUN pnpm install --prod
 
 # 复制构建产物
