@@ -16,6 +16,7 @@ exports.EquipmentOrdersController = void 0;
 const common_1 = require("@nestjs/common");
 const equipment_orders_service_1 = require("./equipment-orders.service");
 const active_user_guard_1 = require("../guards/active-user.guard");
+const optional_auth_guard_1 = require("../guards/optional-auth.guard");
 const admin_guard_1 = require("../guards/admin.guard");
 let EquipmentOrdersController = class EquipmentOrdersController {
     constructor(ordersService) {
@@ -25,6 +26,15 @@ let EquipmentOrdersController = class EquipmentOrdersController {
         return this.ordersService.createOrder(dto, req.user.id);
     }
     async getList(orderType, status, page = '1', limit = '20', req) {
+        if (!req.user?.id) {
+            return {
+                success: true,
+                data: {
+                    list: [],
+                    pagination: { page: 1, limit: 20, total: 0 },
+                },
+            };
+        }
         return this.ordersService.getOrders({
             userId: req.user.id,
             userRole: req.user.role,
@@ -71,6 +81,7 @@ let EquipmentOrdersController = class EquipmentOrdersController {
 exports.EquipmentOrdersController = EquipmentOrdersController;
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseGuards)(active_user_guard_1.ActiveUserGuard),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -187,7 +198,7 @@ __decorate([
 ], EquipmentOrdersController.prototype, "getAvailableUsers", null);
 exports.EquipmentOrdersController = EquipmentOrdersController = __decorate([
     (0, common_1.Controller)('equipment-orders'),
-    (0, common_1.UseGuards)(active_user_guard_1.ActiveUserGuard),
+    (0, common_1.UseGuards)(optional_auth_guard_1.OptionalAuthGuard),
     __metadata("design:paramtypes", [equipment_orders_service_1.EquipmentOrdersService])
 ], EquipmentOrdersController);
 //# sourceMappingURL=equipment-orders.controller.js.map

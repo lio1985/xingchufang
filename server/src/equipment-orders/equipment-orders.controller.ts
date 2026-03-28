@@ -12,10 +12,11 @@ import {
 } from '@nestjs/common';
 import { EquipmentOrdersService, CreateOrderDto, FollowUpDto, OrderType, OrderStatus } from './equipment-orders.service';
 import { ActiveUserGuard } from '../guards/active-user.guard';
+import { OptionalAuthGuard } from '../guards/optional-auth.guard';
 import { AdminGuard } from '../guards/admin.guard';
 
 @Controller('equipment-orders')
-@UseGuards(ActiveUserGuard)
+@UseGuards(OptionalAuthGuard)
 export class EquipmentOrdersController {
   constructor(private readonly ordersService: EquipmentOrdersService) {}
 
@@ -23,6 +24,7 @@ export class EquipmentOrdersController {
    * 创建订单（管理员）
    */
   @Post()
+  @UseGuards(ActiveUserGuard)
   async create(@Body() dto: CreateOrderDto, @Req() req: any) {
     return this.ordersService.createOrder(dto, req.user.id);
   }
@@ -38,6 +40,17 @@ export class EquipmentOrdersController {
     @Query('limit') limit = '20',
     @Req() req?: any,
   ) {
+    // 游客模式返回空数据
+    if (!req.user?.id) {
+      return {
+        success: true,
+        data: {
+          list: [],
+          pagination: { page: 1, limit: 20, total: 0 },
+        },
+      };
+    }
+    
     return this.ordersService.getOrders({
       userId: req.user.id,
       userRole: req.user.role,

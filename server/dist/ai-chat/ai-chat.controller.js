@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AiChatController = void 0;
 const common_1 = require("@nestjs/common");
 const ai_chat_service_1 = require("./ai-chat.service");
+const optional_auth_guard_1 = require("../guards/optional-auth.guard");
+const uuid_1 = require("uuid");
 let AiChatController = class AiChatController {
     constructor(aiChatService) {
         this.aiChatService = aiChatService;
@@ -125,16 +127,18 @@ let AiChatController = class AiChatController {
             throw new common_1.HttpException(error.message || '取消对话失败', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    async chat(body) {
+    async chat(body, req) {
         try {
             console.log('=== Controller: 旧版对话接口 ===');
             const { message, model = 'doubao-seed-1-8-251228', history = [] } = body;
             if (!message) {
                 throw new common_1.HttpException('消息不能为空', common_1.HttpStatus.BAD_REQUEST);
             }
+            const userId = req.user?.id || (0, uuid_1.v4)();
+            console.log('使用用户ID:', userId);
             const response = await this.aiChatService.handleMessage({
                 message,
-                userId: 'default-user',
+                userId,
                 model,
             });
             return {
@@ -190,12 +194,14 @@ __decorate([
 __decorate([
     (0, common_1.Post)('chat'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AiChatController.prototype, "chat", null);
 exports.AiChatController = AiChatController = __decorate([
     (0, common_1.Controller)('ai-chat'),
+    (0, common_1.UseGuards)(optional_auth_guard_1.OptionalAuthGuard),
     __metadata("design:paramtypes", [ai_chat_service_1.AiChatService])
 ], AiChatController);
 //# sourceMappingURL=ai-chat.controller.js.map

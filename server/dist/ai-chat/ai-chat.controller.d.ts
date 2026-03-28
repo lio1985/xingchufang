@@ -48,7 +48,7 @@ export declare class AiChatController {
             role: string;
             content: string;
         }>;
-    }): Promise<{
+    }, req: any): Promise<{
         code: number;
         msg: string;
         data: {

@@ -1,7 +1,10 @@
-import { Controller, Post, Body, HttpException, HttpStatus, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, HttpException, HttpStatus, Get, Param, UseGuards, Req } from '@nestjs/common';
 import { AiChatService } from './ai-chat.service';
+import { OptionalAuthGuard } from '../guards/optional-auth.guard';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('ai-chat')
+@UseGuards(OptionalAuthGuard)
 export class AiChatController {
   constructor(private readonly aiChatService: AiChatService) {}
 
@@ -182,11 +185,14 @@ export class AiChatController {
    * 旧版接口（向后兼容）
    */
   @Post('chat')
-  async chat(@Body() body: {
-    message: string;
-    model?: string;
-    history?: Array<{ role: string; content: string }>;
-  }) {
+  async chat(
+    @Body() body: {
+      message: string;
+      model?: string;
+      history?: Array<{ role: string; content: string }>;
+    },
+    @Req() req: any,
+  ) {
     try {
       console.log('=== Controller: 旧版对话接口 ===');
 
@@ -196,10 +202,14 @@ export class AiChatController {
         throw new HttpException('消息不能为空', HttpStatus.BAD_REQUEST);
       }
 
-      // 使用默认用户ID
+      // 从请求中获取用户ID，如果没有则生成临时UUID（游客模式）
+      // 使用纯UUID格式以兼容数据库约束
+      const userId = req.user?.id || uuidv4();
+      console.log('使用用户ID:', userId);
+
       const response = await this.aiChatService.handleMessage({
         message,
-        userId: 'default-user',
+        userId,
         model,
       });
 
