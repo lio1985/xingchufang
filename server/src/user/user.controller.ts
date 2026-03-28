@@ -972,4 +972,57 @@ export class UserController {
       };
     }
   }
+
+  /**
+   * 获取所有用户列表（管理员功能）
+   * GET /api/user/list?role=&status=&page=1&limit=50
+   */
+  @Get('list')
+  async getUserList(
+    @Request() req,
+    @Query('role') role?: string,
+    @Query('status') status?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        code: 401,
+        msg: '未授权',
+        data: null
+      };
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await this.userService.validateToken(token);
+
+    if (!payload || payload.role !== 'admin') {
+      return {
+        code: 403,
+        msg: '权限不足',
+        data: null
+      };
+    }
+
+    try {
+      const pageNum = parseInt(page || '1', 10);
+      const limitNum = parseInt(limit || '50', 10);
+      const result = await this.userService.getUserList(role, status, pageNum, limitNum);
+
+      return {
+        code: 200,
+        msg: 'success',
+        data: result
+      };
+    } catch (error) {
+      console.error('获取用户列表失败:', error);
+      return {
+        code: 500,
+        msg: '获取用户列表失败',
+        data: null
+      };
+    }
+  }
 }

@@ -562,7 +562,7 @@ export class UserService {
   /**
    * 获取用户列表（管理员功能）
    */
-  async getUserList(options: {
+  async getUserListSimple(options: {
     page?: number;
     limit?: number;
     role?: 'user' | 'admin' | 'all';
@@ -1591,5 +1591,43 @@ export class UserService {
     }
 
     return result;
+  }
+
+  /**
+   * 获取用户列表（管理员功能）
+   * @param role 角色筛选
+   * @param status 状态筛选
+   * @param page 页码
+   * @param limit 每页数量
+   */
+  async getUserList(role?: string, status?: string, page = 1, limit = 50) {
+    let query = this.client
+      .from('users')
+      .select('id, nickname, avatar_url, role, status, employee_id, last_login_at, created_at', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range((page - 1) * limit, page * limit - 1);
+
+    if (role) {
+      query = query.eq('role', role);
+    }
+    if (status) {
+      query = query.eq('status', status);
+    }
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      this.logger.error('获取用户列表失败:', error);
+      throw new HttpException('获取用户列表失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return {
+      list: data || [],
+      pagination: {
+        page,
+        limit,
+        total: count || 0,
+      },
+    };
   }
 }

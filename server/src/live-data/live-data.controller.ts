@@ -180,31 +180,35 @@ export class LiveDataController {
 
   /**
    * 获取所有用户的直播数据（管理员）
-   * GET /api/live-data/admin/all
+   * GET /api/live-data/admin/all?userId=&page=1&limit=20
    */
   @Get('admin/all')
   @UseGuards(ActiveUserGuard, AdminGuard)
   async getAllLiveStreams(
     @Request() req,
+    @Query('userId') userId?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ) {
     const pageNum = parseInt(page || '1', 10);
     const limitNum = parseInt(limit || '20', 10);
-    return this.liveDataService.getAllLiveStreamsForAdmin(pageNum, limitNum);
+    return this.liveDataService.getAllLiveStreamsForAdmin(pageNum, limitNum, userId, startDate, endDate);
   }
 
   /**
    * 获取管理员统计数据
-   * GET /api/live-data/admin/stats
+   * GET /api/live-data/admin/stats?userId=&startDate=&endDate=
    */
   @Get('admin/stats')
   @UseGuards(ActiveUserGuard, AdminGuard)
   async getAdminStats(
     @Request() req,
+    @Query('userId') userId?: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    return this.liveDataService.getAdminStats(undefined, startDate, endDate);
+    return this.liveDataService.getAdminStats(userId, startDate, endDate);
   }
 }

@@ -18,6 +18,7 @@ import {
   FileUp,
   ImagePlus,
   ClipboardList,
+  Users,
 } from 'lucide-react-taro';
 
 interface LiveStats {
@@ -41,22 +42,83 @@ interface RecentStream {
   durationSeconds: number;
 }
 
+interface UserInfo {
+  id: string;
+  nickname: string;
+  avatar_url?: string;
+  role: string;
+  status: string;
+}
+
 export default function LiveDataPage() {
   const [activeTab, setActiveTab] = useState<'upload' | 'stats' | 'analysis'>('stats');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<LiveStats | null>(null);
   const [recentStreams, setRecentStreams] = useState<RecentStream[]>([]);
+  const [users, setUsers] = useState<UserInfo[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<string>('');
+  const [showUserPicker, setShowUserPicker] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // 检查是否为管理员
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const token = Taro.getStorageSync('token');
+        if (!token) return;
+
+        const res = await Network.request({
+          url: '/api/user/profile',
+          method: 'GET',
+        });
+
+        if (res.data?.data?.role === 'admin') {
+          setIsAdmin(true);
+          loadUsers();
+        }
+      } catch (error) {
+        console.error('检查管理员权限失败:', error);
+      }
+    };
+    checkAdmin();
+  }, []);
+
+  // 加载用户列表
+  const loadUsers = async () => {
+    try {
+      const res = await Network.request({
+        url: '/api/user/list',
+        method: 'GET',
+        data: { limit: 100 },
+      });
+
+      if (res.data?.data?.list) {
+        setUsers(res.data.data.list);
+      }
+    } catch (error) {
+      console.error('加载用户列表失败:', error);
+    }
+  };
 
   const loadStats = async () => {
     setLoading(true);
     try {
+      const url = isAdmin
+        ? '/api/live-data/admin/stats'
+        : '/api/live-data/dashboard';
+      const params: any = {};
+      if (selectedUserId) {
+        params.userId = selectedUserId;
+      }
+
       const res = await Network.request({
-        url: '/api/live-data/dashboard',
+        url,
         method: 'GET',
+        data: params,
       });
 
       if (res.data?.success && res.data.data) {
-        setStats(res.data.data.stats);
+        setStats(res.data.data);
       }
     } catch (error) {
       console.error('加载统计数据失败:', error);
@@ -67,10 +129,18 @@ export default function LiveDataPage() {
 
   const loadRecentStreams = async () => {
     try {
+      const url = isAdmin
+        ? '/api/live-data/admin/all'
+        : '/api/live-data/list';
+      const params: any = { page: 1, limit: 5 };
+      if (selectedUserId) {
+        params.userId = selectedUserId;
+      }
+
       const res = await Network.request({
-        url: '/api/live-data/list',
+        url,
         method: 'GET',
-        data: { page: 1, limit: 5 },
+        data: params,
       });
 
       if (res.data?.success && res.data.data) {
@@ -84,7 +154,8 @@ export default function LiveDataPage() {
   useEffect(() => {
     loadStats();
     loadRecentStreams();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedUserId, isAdmin]);
 
   const handleRefresh = async () => {
     await Promise.all([loadStats(), loadRecentStreams()]);
@@ -99,6 +170,12 @@ export default function LiveDataPage() {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return hours > 0 ? `${hours}小时${minutes}分` : `${minutes}分钟`;
+  };
+
+  const getSelectedUserName = () => {
+    if (!selectedUserId) return '全部用户';
+    const user = users.find(u => u.id === selectedUserId);
+    return user?.nickname || '未知用户';
   };
 
   const renderUploadTab = () => (
@@ -474,8 +551,115 @@ export default function LiveDataPage() {
           </View>
         </View>
 
+        {/* 用户筛选（仅管理员可见） */}
+        {isAdmin && (
+          <View
+            style={{
+              backgroundColor: '#1e293b',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+            onClick={() => setShowUserPicker(!showUserPicker)}
+          >
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Users size={16} color="#38bdf8" />
+              <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>{getSelectedUserName()}</Text>
+            </View>
+            <ChevronRight size={16} color="#64748b" />
+          </View>
+        )}
+
+        {/* 用户选择器弹窗 */}
+        {showUserPicker && (
+          <View
+            style={{
+              position: 'absolute',
+              top: '130px',
+              left: '20px',
+              right: '20px',
+              backgroundColor: '#1e293b',
+              borderRadius: '12px',
+              maxHeight: '300px',
+              overflow: 'auto',
+              zIndex: 1000,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            }}
+          >
+            <ScrollView scrollY style={{ maxHeight: '280px' }}>
+              <View
+                style={{
+                  padding: '14px 16px',
+                  borderBottom: '1px solid #1e3a5f',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  backgroundColor: !selectedUserId ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+                }}
+                onClick={() => {
+                  setSelectedUserId('');
+                  setShowUserPicker(false);
+                }}
+              >
+                <Users size={18} color={!selectedUserId ? '#38bdf8' : '#71717a'} />
+                <Text style={{ fontSize: '14px', color: !selectedUserId ? '#38bdf8' : '#f1f5f9', fontWeight: !selectedUserId ? '600' : '400' }}>
+                  全部用户
+                </Text>
+              </View>
+              {users.map((user) => (
+                <View
+                  key={user.id}
+                  style={{
+                    padding: '14px 16px',
+                    borderBottom: '1px solid #1e3a5f',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    backgroundColor: selectedUserId === user.id ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+                  }}
+                  onClick={() => {
+                    setSelectedUserId(user.id);
+                    setShowUserPicker(false);
+                  }}
+                >
+                  <View style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    backgroundColor: '#1e3a5f',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                  }}
+                  >
+                    {user.avatar_url ? (
+                      <View style={{ width: '100%', height: '100%', backgroundColor: '#38bdf8' }} />
+                    ) : (
+                      <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>{(user.nickname || 'U')[0]}</Text>
+                    )}
+                  </View>
+                  <Text style={{
+                    fontSize: '14px',
+                    color: selectedUserId === user.id ? '#38bdf8' : '#f1f5f9',
+                    fontWeight: selectedUserId === user.id ? '600' : '400',
+                  }}
+                  >
+                    {user.nickname || '未命名用户'}
+                  </Text>
+                  <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: 'auto' }}>
+                    {user.role === 'admin' ? '管理员' : '用户'}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         {/* Tab 切换 */}
-        <View style={{ display: 'flex', gap: '8px' }}>
+        <View style={{ display: 'flex', gap: '8px', marginTop: isAdmin ? '12px' : '0' }}>
           {[
             { key: 'upload', label: '上传数据', icon: Upload },
             { key: 'stats', label: '数据统计', icon: ChartBar },
@@ -502,7 +686,7 @@ export default function LiveDataPage() {
         </View>
       </View>
 
-      <ScrollView scrollY style={{ height: 'calc(100vh - 180px)' }}>
+      <ScrollView scrollY style={{ height: isAdmin ? 'calc(100vh - 220px)' : 'calc(100vh - 180px)' }}>
         {activeTab === 'upload' && renderUploadTab()}
         {activeTab === 'stats' && renderStatsTab()}
         {activeTab === 'analysis' && renderAnalysisTab()}
