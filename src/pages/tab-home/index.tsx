@@ -140,7 +140,7 @@ const TabHomePage = () => {
       desc: '获取客资信息，快速接单赚钱',
       color: '#f97316',
       bgColor: 'rgba(249, 115, 22, 0.15)',
-      path: '/pages/equipment-orders/index',
+      path: '/package-customer/pages/equipment-orders/index',
       isHighlight: true,
     },
     {
@@ -150,7 +150,7 @@ const TabHomePage = () => {
       desc: '写作助手',
       color: '#38bdf8',
       bgColor: 'rgba(56, 189, 248, 0.15)',
-      path: '/pages/ai-assistant/index',
+      path: '/package-content/pages/ai-assistant/index',
       isHighlight: true,
     },
     {
@@ -160,7 +160,7 @@ const TabHomePage = () => {
       desc: '客户信息录入',
       color: '#4ade80',
       bgColor: 'rgba(74, 222, 128, 0.15)',
-      path: '/pages/customer/index',
+      path: '/package-customer/pages/customer/index',
     },
     {
       id: 'idea',
@@ -169,7 +169,7 @@ const TabHomePage = () => {
       desc: '捕捉灵感',
       color: '#fbbf24',
       bgColor: 'rgba(251, 191, 36, 0.15)',
-      path: '/pages/quick-note/index',
+      path: '/package-content/pages/quick-note/index',
     },
     {
       id: 'team',
@@ -178,7 +178,7 @@ const TabHomePage = () => {
       desc: '团队协作管理',
       color: '#a78bfa',
       bgColor: 'rgba(167, 139, 250, 0.15)',
-      path: '/pages/team/index',
+      path: '/package-team/pages/team/index',
     },
     {
       id: 'live-data',
@@ -187,7 +187,7 @@ const TabHomePage = () => {
       desc: '上传数据 · 统计分析',
       color: '#f43f5e',
       bgColor: 'rgba(244, 63, 94, 0.15)',
-      path: '/pages/live-data/index',
+      path: '/package-live/pages/live-data/index',
       isHighlight: true,
     },
   ];
@@ -296,7 +296,7 @@ const TabHomePage = () => {
               position: 'relative',
               flexShrink: 0,
             }}
-            onClick={() => Taro.navigateTo({ url: '/pages/notification/index' })}
+            onClick={() => Taro.navigateTo({ url: '/package-team/pages/notification/index' })}
           >
             <Bell size={24} color="#f97316" />
             {stats.unreadMessage > 0 && (
@@ -369,7 +369,7 @@ const TabHomePage = () => {
               alignItems: 'center',
               gap: '12px',
             }}
-            onClick={() => handleNav('/pages/equipment-orders/index')}
+            onClick={() => handleNav('/package-customer/pages/equipment-orders/index')}
           >
             <View
               style={{
@@ -464,7 +464,7 @@ const TabHomePage = () => {
               alignItems: 'center',
               gap: '12px',
             }}
-            onClick={() => handleNav('/pages/live-data/index')}
+            onClick={() => handleNav('/package-live/pages/live-data/index')}
           >
             <View
               style={{
@@ -501,7 +501,7 @@ const TabHomePage = () => {
                 justifyContent: 'center',
                 gap: '6px',
               }}
-              onClick={() => handleNav('/pages/live-data/import')}
+              onClick={() => handleNav('/package-live/pages/live-data/import')}
             >
               <Text style={{ fontSize: '14px' }}>📤</Text>
               <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>上传数据</Text>
@@ -518,7 +518,7 @@ const TabHomePage = () => {
                 justifyContent: 'center',
                 gap: '6px',
               }}
-              onClick={() => handleNav('/pages/live-data/dashboard')}
+              onClick={() => handleNav('/package-live/pages/live-data/dashboard')}
             >
               <Text style={{ fontSize: '14px' }}>📊</Text>
               <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>数据统计</Text>
@@ -535,7 +535,7 @@ const TabHomePage = () => {
                 justifyContent: 'center',
                 gap: '6px',
               }}
-              onClick={() => handleNav('/pages/live-data/analysis')}
+              onClick={() => handleNav('/package-live/pages/live-data/analysis')}
             >
               <Text style={{ fontSize: '14px' }}>🔍</Text>
               <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>数据分析</Text>

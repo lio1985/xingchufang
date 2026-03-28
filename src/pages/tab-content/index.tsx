@@ -25,7 +25,7 @@ const TabContentPage = () => {
       <View style={{ padding: '0 20px', marginTop: '-16px' }}>
         <View
           style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center' }}
-          onClick={() => handleNav('/pages/ai-assistant/index')}
+          onClick={() => handleNav('/package-content/pages/ai-assistant/index')}
         >
           <View style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #38bdf8, #f97316)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Sparkles size={24} color="#ffffff" />
@@ -60,7 +60,7 @@ const TabContentPage = () => {
           {/* 灵感速记 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/pages/quick-note/index')}
+            onClick={() => handleNav('/package-content/pages/quick-note/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Lightbulb size={20} color="#38bdf8" />
@@ -75,7 +75,7 @@ const TabContentPage = () => {
           {/* 选题策划 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/pages/topic-planning/index')}
+            onClick={() => handleNav('/package-content/pages/topic-planning/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(6, 182, 212, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Target size={20} color="#06b6d4" />
@@ -90,7 +90,7 @@ const TabContentPage = () => {
           {/* 内容写作 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '16px' }}
-            onClick={() => handleNav('/pages/content-creation/index')}
+            onClick={() => handleNav('/package-content/pages/content-creation/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(139, 92, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <PenTool size={20} color="#8b5cf6" />

@@ -109,7 +109,7 @@ const TabProfilePage = () => {
   };
 
   const handleEditAvatar = () => {
-    Taro.navigateTo({ url: '/pages/avatar-editor/index' });
+    Taro.navigateTo({ url: '/package-user/pages/avatar-editor/index' });
   };
 
   const handleExportData = () => {
@@ -204,7 +204,7 @@ const TabProfilePage = () => {
             {/* 管理后台 */}
             <View
               style={{ display: 'flex', alignItems: 'center', padding: '16px' }}
-              onClick={() => handleNav('/pages/admin/dashboard/index')}
+              onClick={() => handleNav('/package-admin/pages/admin/dashboard/index')}
             >
               <View style={{
                 width: '40px',
@@ -247,7 +247,7 @@ const TabProfilePage = () => {
           {/* 数据看板 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/pages/data-stats/index')}
+            onClick={() => handleNav('/package-user/pages/data-stats/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <ChartBarBig size={20} color="#60a5fa" />
@@ -284,7 +284,7 @@ const TabProfilePage = () => {
           {/* 消息订阅 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/pages/subscribe-message/index')}
+            onClick={() => handleNav('/package-user/pages/subscribe-message/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(249, 115, 22, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Bell size={20} color="#f97316" />

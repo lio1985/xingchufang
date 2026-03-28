@@ -40,7 +40,7 @@ const TabCustomerPage = () => {
         <View style={{ display: 'flex', gap: '12px' }}>
           <View
             style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => handleNav('/pages/customer/index')}
+            onClick={() => handleNav('/package-customer/pages/customer/index')}
           >
             <View style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(34, 197, 94, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <UserPlus size={24} color="#4ade80" />
@@ -51,7 +51,7 @@ const TabCustomerPage = () => {
 
           <View
             style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => handleNav('/pages/recycle/index')}
+            onClick={() => handleNav('/package-customer/pages/recycle/index')}
           >
             <View style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Store size={24} color="#60a5fa" />
@@ -68,7 +68,7 @@ const TabCustomerPage = () => {
           <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>最近客户</Text>
           <Text
             style={{ fontSize: '12px', color: '#38bdf8' }}
-            onClick={() => handleNav('/pages/customer/index')}
+            onClick={() => handleNav('/package-customer/pages/customer/index')}
           >
             查看全部
           </Text>
@@ -78,7 +78,7 @@ const TabCustomerPage = () => {
           {/* 客户项1 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/pages/customer/detail?id=1')}
+            onClick={() => handleNav('/package-customer/pages/customer/detail?id=1')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
@@ -98,7 +98,7 @@ const TabCustomerPage = () => {
           {/* 客户项2 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/pages/customer/detail?id=2')}
+            onClick={() => handleNav('/package-customer/pages/customer/detail?id=2')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />
@@ -118,7 +118,7 @@ const TabCustomerPage = () => {
           {/* 客户项3 */}
           <View
             style={{ display: 'flex', alignItems: 'center', padding: '12px 16px' }}
-            onClick={() => handleNav('/pages/customer/detail?id=3')}
+            onClick={() => handleNav('/package-customer/pages/customer/detail?id=3')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <User size={18} color="#71717a" />

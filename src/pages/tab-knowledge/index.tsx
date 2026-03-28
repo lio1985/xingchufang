@@ -39,7 +39,7 @@ const TabKnowledgePage = () => {
         <View style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           <View
             style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => handleNav('/pages/favorite-list/index')}
+            onClick={() => handleNav('/package-content/pages/favorite-list/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Heart size={20} color="#f87171" />
@@ -50,7 +50,7 @@ const TabKnowledgePage = () => {
 
           <View
             style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => handleNav('/pages/knowledge-share/index')}
+            onClick={() => handleNav('/package-knowledge/pages/knowledge-share/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(168, 85, 247, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Building2 size={20} color="#a855f7" />
@@ -61,7 +61,7 @@ const TabKnowledgePage = () => {
 
           <View
             style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => handleNav('/pages/lexicon-system/index')}
+            onClick={() => handleNav('/package-content/pages/lexicon-system/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <MessageSquareText size={20} color="#38bdf8" />
@@ -72,7 +72,7 @@ const TabKnowledgePage = () => {
 
           <View
             style={{ width: 'calc(50% - 6px)', backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-            onClick={() => handleNav('/pages/news/index')}
+            onClick={() => handleNav('/package-content/pages/news/index')}
           >
             <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(6, 182, 212, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <GraduationCap size={20} color="#06b6d4" />
@@ -89,7 +89,7 @@ const TabKnowledgePage = () => {
           <Text style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>最近学习</Text>
           <Text 
             style={{ fontSize: '12px', color: '#38bdf8' }}
-            onClick={() => handleNav('/pages/news/index')}
+            onClick={() => handleNav('/package-content/pages/news/index')}
           >
             查看全部
           </Text>
@@ -99,7 +99,7 @@ const TabKnowledgePage = () => {
           {/* 课程项1 */}
           <View
             style={{ padding: '16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/pages/news/index')}
+            onClick={() => handleNav('/package-content/pages/news/index')}
           >
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>内容创作入门指南</Text>
@@ -117,7 +117,7 @@ const TabKnowledgePage = () => {
           {/* 课程项2 */}
           <View
             style={{ padding: '16px' }}
-            onClick={() => handleNav('/pages/news/index')}
+            onClick={() => handleNav('/package-content/pages/news/index')}
           >
             <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>客户沟通技巧</Text>
