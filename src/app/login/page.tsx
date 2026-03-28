@@ -21,7 +21,9 @@ function LoginForm() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('/api/auth');
+        const res = await fetch('/api/auth', {
+          credentials: 'include',
+        });
         const data = await res.json();
         if (data.authenticated) {
           window.location.href = '/';
@@ -50,6 +52,7 @@ function LoginForm() {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ 
           username: username.trim(), 
           password: password.trim() 

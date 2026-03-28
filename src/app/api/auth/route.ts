@@ -56,9 +56,15 @@ export async function POST(request: NextRequest) {
       });
       
       // 设置 cookie
+      // 检查原始请求是否通过HTTPS（代理环境）
+      const forwardedProto = request.headers.get('x-forwarded-proto');
+      const isSecureRequest = forwardedProto === 'https' || 
+                              request.nextUrl.protocol === 'https:' ||
+                              process.env.COZE_PROJECT_ENV === 'PROD';
+      
       const cookieOptions = {
         httpOnly: true,
-        secure: true, // 始终使用 secure，因为用户访问的是 HTTPS
+        secure: isSecureRequest, // HTTPS请求使用secure
         sameSite: 'lax' as const,
         path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7天

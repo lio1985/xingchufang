@@ -60,7 +60,7 @@ export default function Home() {
 
   // 检查登录状态
   useEffect(() => {
-    fetch('/api/auth')
+    fetch('/api/auth', { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {
         if (data.authenticated && data.user) {
@@ -74,7 +74,7 @@ export default function Home() {
 
   // 登出
   const handleLogout = async () => {
-    await fetch('/api/auth', { method: 'DELETE' });
+    await fetch('/api/auth', { method: 'DELETE', credentials: 'include' });
     router.push('/login');
   };
 
