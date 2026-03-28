@@ -183,32 +183,6 @@ export default defineConfig<'vite'>(async (merge, _env) => {
         filename: 'css/[name].[hash].css',
         chunkFilename: 'css/[name].[chunkhash].css',
       },
-      // H5 端 chunk 拆分配置
-      chunk: {
-        optimize: {
-          splitChunks: {
-            chunks: 'all',
-            maxSize: 500000, // 500KB
-            cacheGroups: {
-              lucide: {
-                name: 'lucide-icons',
-                test: /[\\/]node_modules[\\/]lucide-react-taro[\\/]/,
-                priority: 100,
-              },
-              taro: {
-                name: 'taro-core',
-                test: /[\\/]node_modules[\\/]@tarojs[\\/]/,
-                priority: 90,
-              },
-              react: {
-                name: 'react-vendor',
-                test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-                priority: 80,
-              },
-            },
-          },
-        },
-      },
       postcss: {
         autoprefixer: {
           enable: true,
