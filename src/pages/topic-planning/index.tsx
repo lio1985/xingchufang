@@ -17,6 +17,7 @@ import {
   X,
   RefreshCw,
   TrendingUp,
+  ArrowRight,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import '@/styles/pages.css';
@@ -801,22 +802,47 @@ const TopicPlanningPage = () => {
           </View>
 
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {/* AI 分析按钮 */}
+            {/* 下一步：开始创作 */}
             <View
               style={{ 
                 padding: '6px 12px', 
-                backgroundColor: '#1e293b', 
+                backgroundColor: '#38bdf8', 
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px'
               }}
+              onClick={() => {
+                // 将选题信息存储到 Storage
+                Taro.setStorageSync('selectedTopicForCreation', {
+                  id: topic.id,
+                  title: topic.title,
+                  description: topic.description,
+                  category: topic.category,
+                  platform: topic.platform,
+                  content_type: topic.content_type,
+                  target_audience: topic.target_audience,
+                  key_points: topic.key_points,
+                  ai_analysis: topic.ai_analysis,
+                });
+                // 跳转到内容创作页面
+                Taro.navigateTo({ url: '/pages/content-creation/index' });
+              }}
+            >
+              <Text style={{ fontSize: '13px', fontWeight: '500', color: '#000' }}>下一步</Text>
+              <ArrowRight size={14} color="#000" />
+            </View>
+
+            {/* AI 分析按钮 */}
+            <View
+              style={{ 
+                padding: '6px', 
+                backgroundColor: '#1e293b', 
+                borderRadius: '8px'
+              }}
               onClick={() => handleAIAnalysis(topic)}
             >
-              <Sparkles size={14} color={topic.ai_analysis ? '#fbbf24' : '#38bdf8'} />
-              <Text style={{ fontSize: '13px', color: topic.ai_analysis ? '#fbbf24' : '#38bdf8' }}>
-                {topic.ai_analysis ? '查看分析' : 'AI分析'}
-              </Text>
+              <Sparkles size={16} color={topic.ai_analysis ? '#fbbf24' : '#38bdf8'} />
             </View>
 
             {/* 编辑按钮 */}

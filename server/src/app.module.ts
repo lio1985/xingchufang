@@ -43,6 +43,7 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
 import { FileParserModule } from './file-parser/file-parser.module';
 import { CourseModule } from './course/course.module';
 import { TopicsModule } from './topics/topics.module';
+import { ContentWritingModule } from './content-writing/content-writing.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { TopicsModule } from './topics/topics.module';
     FileParserModule,
     CourseModule,
     TopicsModule,
+    ContentWritingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
