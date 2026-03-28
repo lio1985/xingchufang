@@ -1,288 +1,375 @@
-import { useState, useEffect } from 'react'
-import { View, Text, ScrollView } from '@tarojs/components'
-import Taro, { useRouter } from '@tarojs/taro'
-import { Network } from '@/network'
+import { useState, useEffect } from 'react';
+import { View, Text, ScrollView } from '@tarojs/components';
+import Taro from '@tarojs/taro';
+import { Network } from '@/network';
 import {
-  ArrowLeft,
-  MessageSquare,
-  FileText,
-  FolderOpen,
-  Check,
-  ClipboardList,
-  Database
+  ChevronLeft,
+  Users,
+  TrendingUp,
+  Activity,
+  Shield,
+  Award,
+  RefreshCw,
 } from 'lucide-react-taro';
 
-export default function UserDataPage() {
-  const router = useRouter()
-  const type = router.params.type || 'conversations'
-  const userId = router.params.userId || ''
-  const [loading, setLoading] = useState(false)
-  const [data, setData] = useState<any[]>([])
+interface UserStatistics {
+  totalUsers: number;
+  activeUsers: number;
+  newUsersToday: number;
+  newUsersThisWeek: number;
+  newUsersThisMonth: number;
+}
 
-  const getTypeConfig = () => {
-    switch (type) {
-      case 'conversations':
-        return {
-          title: '对话记录',
-          icon: MessageSquare,
-          iconColor: '#60a5fa',
-          api: `/api/conversation/list?userId=${userId}`,
-          emptyText: '暂无对话记录'
-        }
-      case 'lexicons':
-        return {
-          title: '语料库',
-          icon: FileText,
-          iconColor: '#10b981',
-          api: `/api/lexicon?userId=${userId}`,
-          emptyText: '暂无语料库'
-        }
-      case 'files':
-        return {
-          title: '文件上传',
-          icon: FolderOpen,
-          iconColor: '#38bdf8',
-          api: `/api/multimedia/list?userId=${userId}`,
-          emptyText: '暂无文件'
-        }
-      case 'tasks':
-        return {
-          title: '任务计划',
-          icon: Check,
-          iconColor: '#8b5cf6',
-          api: `/api/work-plans?userId=${userId}`,
-          emptyText: '暂无任务'
-        }
-      case 'audit':
-        return {
-          title: '操作日志',
-          icon: ClipboardList,
-          iconColor: '#06b6d4',
-          api: `/api/user/operation-logs?userId=${userId}`,
-          emptyText: '暂无操作日志'
-        }
-      default:
-        return {
-          title: '数据',
-          icon: Database,
-          iconColor: '#71717a',
-          api: '',
-          emptyText: '暂无数据'
-        }
-    }
-  }
+interface RoleDistribution {
+  role: string;
+  count: number;
+  percentage: number;
+}
+
+interface UserGrowth {
+  date: string;
+  count: number;
+}
+
+export default function AdminUserDataPage() {
+  const [loading, setLoading] = useState(false);
+  const [statistics, setStatistics] = useState<UserStatistics | null>(null);
+  const [roleDistribution, setRoleDistribution] = useState<RoleDistribution[]>([]);
+  const [userGrowth, setUserGrowth] = useState<UserGrowth[]>([]);
 
   const loadData = async () => {
-    if (!userId) {
-      Taro.showToast({
-        title: '用户ID不存在',
-        icon: 'none'
-      })
-      return
-    }
-
-    const config = getTypeConfig()
-    setLoading(true)
-
+    setLoading(true);
     try {
-      const res = await Network.request({
-        url: config.api,
-        method: 'GET'
-      })
+      const [statsRes, rolesRes, growthRes] = await Promise.all([
+        Network.request({ url: '/api/admin/user-statistics' }),
+        Network.request({ url: '/api/admin/role-distribution' }),
+        Network.request({ url: '/api/admin/user-growth' }),
+      ]);
 
-      console.log(`${config.title}响应:`, res.data)
+      console.log('用户统计响应:', statsRes.data);
+      console.log('角色分布响应:', rolesRes.data);
+      console.log('用户增长响应:', growthRes.data);
 
-      if (res.data && res.data.code === 200) {
-        setData(res.data.data || [])
-      } else {
-        setData([])
+      if (statsRes.statusCode === 200 && statsRes.data?.data) {
+        setStatistics(statsRes.data.data);
       }
-    } catch (error: any) {
-      console.error(`加载${config.title}失败:`, error)
-      Taro.showToast({
-        title: error.message || '加载失败',
-        icon: 'none'
-      })
-      setData([])
+      if (rolesRes.statusCode === 200 && rolesRes.data?.data) {
+        setRoleDistribution(rolesRes.data.data);
+      }
+      if (growthRes.statusCode === 200 && growthRes.data?.data) {
+        setUserGrowth(growthRes.data.data);
+      }
+    } catch (error) {
+      console.error('加载数据失败:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, userId])
+    loadData();
+  }, []);
 
-  const renderConversationItem = (item: any) => (
-    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
-      <View className="flex justify-between items-start mb-2">
-        <Text className="text-white font-semibold block">{item.title || '未命名对话'}</Text>
-        <Text className="text-zinc-500 text-xs">
-          {new Date(item.created_at || item.createdAt).toLocaleDateString('zh-CN')}
-        </Text>
-      </View>
-      <Text className="text-zinc-500 text-sm block mb-2">
-        模型: {item.model || '未知'}
-      </Text>
-      <Text className="text-zinc-500 text-xs block">
-        消息数: {item.message_count || item.messageCount || 0}
-      </Text>
-    </View>
-  )
+  const statCards = [
+    {
+      icon: Users,
+      label: '总用户数',
+      value: statistics?.totalUsers || 0,
+      color: '#38bdf8',
+      bg: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)',
+    },
+    {
+      icon: Activity,
+      label: '活跃用户',
+      value: statistics?.activeUsers || 0,
+      color: '#4ade80',
+      bg: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)',
+    },
+    {
+      icon: TrendingUp,
+      label: '今日新增',
+      value: statistics?.newUsersToday || 0,
+      color: '#a855f7',
+      bg: 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)',
+    },
+    {
+      icon: Award,
+      label: '本周新增',
+      value: statistics?.newUsersThisWeek || 0,
+      color: '#f59e0b',
+      bg: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    },
+  ];
 
-  const renderLexiconItem = (item: any) => (
-    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
-      <View className="flex justify-between items-start mb-2">
-        <Text className="text-white font-semibold block">{item.title || '未命名语料'}</Text>
-        <Text className="text-zinc-500 text-xs">
-          {new Date(item.created_at || item.createdAt).toLocaleDateString('zh-CN')}
-        </Text>
-      </View>
-      <View className="mb-2">
-        <Text className="text-blue-400 text-xs block mb-1">{item.category || '未分类'}</Text>
-      </View>
-      <Text className="text-zinc-500 text-sm block line-clamp-2">
-        {item.content || '无内容'}
-      </Text>
-    </View>
-  )
+  const getRoleLabel = (role: string) => {
+    const roleMap: Record<string, string> = {
+      admin: '管理员',
+      team_leader: '团队队长',
+      staff: '员工',
+      guest: '游客',
+    };
+    return roleMap[role] || role;
+  };
 
-  const renderFileItem = (item: any) => (
-    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
-      <View className="flex items-start gap-3 mb-2">
-        <FolderOpen size={18} color="#38bdf8" />
-        <View className="flex-1 min-w-0">
-          <Text className="text-white font-semibold block truncate">{item.name || item.title || '未命名文件'}</Text>
-          <Text className="text-zinc-500 text-xs block">
-            {item.file_type || item.type || '未知类型'}
-          </Text>
-        </View>
-      </View>
-      <Text className="text-zinc-500 text-xs block">
-        大小: {item.file_size ? (item.file_size / 1024).toFixed(2) + ' KB' : '未知'}
-      </Text>
-      <Text className="text-zinc-500 text-xs block">
-        上传时间: {new Date(item.created_at || item.createdAt).toLocaleString('zh-CN')}
-      </Text>
-    </View>
-  )
-
-  const renderTaskItem = (item: any) => (
-    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
-      <View className="flex justify-between items-start mb-2">
-        <Text className="text-white font-semibold block">{item.title || '未命名任务'}</Text>
-        <Text className="text-zinc-500 text-xs">
-          {item.status || '未知状态'}
-        </Text>
-      </View>
-      {item.description && (
-        <Text className="text-zinc-500 text-sm block mb-2 line-clamp-2">
-          {item.description}
-        </Text>
-      )}
-      <Text className="text-zinc-500 text-xs block">
-        创建时间: {new Date(item.created_at || item.createdAt).toLocaleString('zh-CN')}
-      </Text>
-    </View>
-  )
-
-  const renderAuditLogItem = (item: any) => (
-    <View className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700/50">
-      <View className="flex justify-between items-start mb-2">
-        <Text className="text-white font-semibold block">{item.operation || '未知操作'}</Text>
-        <Text className="text-zinc-500 text-xs">
-          {new Date(item.created_at || item.createdAt).toLocaleString('zh-CN')}
-        </Text>
-      </View>
-      {item.resource_type && (
-        <Text className="text-blue-400 text-xs block mb-1">
-          资源类型: {item.resource_type}
-        </Text>
-      )}
-      {item.ip_address && (
-        <Text className="text-zinc-500 text-xs block mb-1">
-          IP地址: {item.ip_address}
-        </Text>
-      )}
-      <Text className={`text-xs block ${item.status === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>
-        状态: {item.status || '未知'}
-      </Text>
-    </View>
-  )
-
-  const renderItem = (item: any) => {
-    switch (type) {
-      case 'conversations':
-        return renderConversationItem(item)
-      case 'lexicons':
-        return renderLexiconItem(item)
-      case 'files':
-        return renderFileItem(item)
-      case 'tasks':
-        return renderTaskItem(item)
-      case 'audit':
-        return renderAuditLogItem(item)
-      default:
-        return null
-    }
-  }
-
-  const config = getTypeConfig()
-  const IconComponent = config.icon
+  const getRoleColor = (role: string) => {
+    const colorMap: Record<string, string> = {
+      admin: '#f87171',
+      team_leader: '#f59e0b',
+      staff: '#60a5fa',
+      guest: '#94a3b8',
+    };
+    return colorMap[role] || '#71717a';
+  };
 
   return (
-    <View className="min-h-screen bg-[#0a0f1a]">
-      {/* 顶部导航栏 */}
-      <View className="bg-zinc-900 px-4 py-3 border-b border-zinc-800">
-        <View className="flex items-center gap-3">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
+      {/* 页面头部 */}
+      <View style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '80px',
+        background: 'linear-gradient(180deg, #0f1a2e 0%, #0a1628 100%)',
+        borderBottom: '1px solid #1e3a5f',
+        display: 'flex',
+        alignItems: 'flex-end',
+        paddingBottom: '12px',
+        zIndex: 100,
+      }}
+      >
+        <View style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+          padding: '0 16px',
+        }}
+        >
           <View
-            className="p-2 bg-zinc-800/60 rounded-lg border border-zinc-700/50 active:bg-zinc-700"
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             onClick={() => Taro.navigateBack()}
           >
-            <ArrowLeft size={20} color="#38bdf8" />
+            <ChevronLeft size={22} color="#38bdf8" />
           </View>
-          <View className="flex items-center gap-2">
-            <View className="w-8 h-8 rounded-lg flex items-center justify-center bg-zinc-800/60 border border-zinc-700/50">
-              <IconComponent size={16} color={config.iconColor} />
+          
+          <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <View
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Users size={18} color="#a855f7" />
             </View>
-            <Text className="text-white font-semibold">{config.title}</Text>
+            <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9' }}>用户数据</Text>
+          </View>
+          
+          <View
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={loadData}
+          >
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
       </View>
 
-      {/* 内容列表 */}
-      <ScrollView
-        className="flex-1"
-        scrollY
-      >
-        <View className="px-4 py-3 space-y-3">
-          {loading && (
-            <View className="text-center py-12">
-              <View className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-              <Text className="text-zinc-500">加载中...</Text>
-            </View>
-          )}
-
-          {!loading && data.length > 0 && data.map((item, index) => (
-            <View key={index}>
-              {renderItem(item)}
-            </View>
-          ))}
-
-          {!loading && data.length === 0 && (
-            <View className="text-center py-12">
-              <View className="w-16 h-16 bg-zinc-800/60 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-700/50">
-                <IconComponent size={32} color="#71717a" />
+      <ScrollView scrollY style={{ height: 'calc(100vh - 80px)', marginTop: '80px' }}>
+        <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* 核心统计卡片 */}
+          <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+            {statCards.map((card, index) => (
+              <View
+                key={index}
+                style={{
+                  borderRadius: '16px',
+                  padding: '16px',
+                  background: card.bg,
+                  border: 'none',
+                }}
+              >
+                <View
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(0,0,0,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '12px',
+                  }}
+                >
+                  <card.icon size={24} color="#fff" />
+                </View>
+                <Text style={{ fontSize: '40px', fontWeight: '700', color: '#fff', display: 'block' }}>
+                  {card.value}
+                </Text>
+                <Text style={{ fontSize: '22px', color: 'rgba(255,255,255,0.7)', marginTop: '4px' }}>
+                  {card.label}
+                </Text>
               </View>
-              <Text className="text-zinc-500">{config.emptyText}</Text>
+            ))}
+          </View>
+
+          {/* 角色分布 */}
+          <View style={{
+            backgroundColor: 'rgba(30, 58, 95, 0.3)',
+            borderRadius: '16px',
+            padding: '16px',
+            border: '1px solid #1e3a5f',
+          }}
+          >
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <Shield size={24} color="#38bdf8" />
+              <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>角色分布</Text>
+            </View>
+
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {roleDistribution.map((item, index) => (
+                <View key={index}>
+                  <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <View
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '4px',
+                          backgroundColor: getRoleColor(item.role),
+                        }}
+                      />
+                      <Text style={{ fontSize: '22px', color: '#94a3b8' }}>{getRoleLabel(item.role)}</Text>
+                    </View>
+                    <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{item.count}</Text>
+                  </View>
+                  <View
+                    style={{
+                      width: '100%',
+                      height: '6px',
+                      borderRadius: '3px',
+                      backgroundColor: '#1e3a5f',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: `${item.percentage}%`,
+                        height: '100%',
+                        backgroundColor: getRoleColor(item.role),
+                        borderRadius: '3px',
+                      }}
+                    />
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* 用户增长趋势 */}
+          <View style={{
+            backgroundColor: 'rgba(30, 58, 95, 0.3)',
+            borderRadius: '16px',
+            padding: '16px',
+            border: '1px solid #1e3a5f',
+          }}
+          >
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <TrendingUp size={24} color="#38bdf8" />
+              <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>用户增长趋势</Text>
+            </View>
+
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {userGrowth.slice(-7).map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px',
+                    backgroundColor: '#1e293b',
+                    borderRadius: '10px',
+                  }}
+                >
+                  <Text style={{ fontSize: '22px', color: '#64748b', width: '100px' }}>
+                    {item.date}
+                  </Text>
+                  <View style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <View
+                      style={{
+                        flex: 1,
+                        height: '4px',
+                        backgroundColor: '#1e3a5f',
+                        borderRadius: '2px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: `${Math.min((item.count / 20) * 100, 100)}%`,
+                          height: '100%',
+                          backgroundColor: '#38bdf8',
+                          borderRadius: '2px',
+                        }}
+                      />
+                    </View>
+                    <Text style={{ fontSize: '22px', color: '#38bdf8', fontWeight: '600', width: '40px', textAlign: 'right' }}>
+                      +{item.count}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* 月度统计 */}
+          {statistics && (
+            <View style={{
+              backgroundColor: 'rgba(30, 58, 95, 0.3)',
+              borderRadius: '16px',
+              padding: '16px',
+              border: '1px solid #1e3a5f',
+            }}
+            >
+              <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px' }}>月度统计</Text>
+              <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Text style={{ fontSize: '22px', color: '#94a3b8' }}>本月新增用户</Text>
+                <Text style={{ fontSize: '40px', fontWeight: '700', color: '#f59e0b' }}>
+                  {statistics.newUsersThisMonth}
+                </Text>
+              </View>
             </View>
           )}
 
-          {/* 底部空间 */}
-          <View className="h-20"></View>
+          {/* 更新时间 */}
+          <View style={{ textAlign: 'center', padding: '20px 0' }}>
+            <Text style={{ fontSize: '22px', color: '#64748b' }}>
+              最后更新: {new Date().toLocaleString('zh-CN')}
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>
-  )
+  );
 }

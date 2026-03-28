@@ -3,24 +3,20 @@ import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
 import {
-  ArrowLeft,
-  User,
+  ChevronLeft,
   DollarSign,
   Target,
   TrendingUp,
-  ShieldAlert,
-  ShieldX,
-  Trophy,
   FileText,
   Search,
-  Download,
   Phone,
   MapPin,
   Calendar,
-  ChartBar,
   Users,
   Award,
-  Activity
+  Activity,
+  RefreshCw,
+  Trophy,
 } from 'lucide-react-taro';
 
 interface Customer {
@@ -73,132 +69,34 @@ interface GlobalStatistics {
   };
 }
 
-interface ChurnRiskAssessment {
-  customerId: string;
-  customerName: string;
-  riskLevel: 'low' | 'yellow' | 'orange' | 'red';
-  riskScore: number;
-  daysSinceLastFollowUp: number;
-  riskFactors: string[];
-  suggestedActions: string[];
-  lastFollowUpDate?: string;
-  salesName?: string;
-  estimatedAmount?: number;
-}
-
-interface ChurnRiskStatistics {
-  total: number;
-  red: number;
-  orange: number;
-  yellow: number;
-  totalAtRisk: number;
-}
-
-const statusMap = {
-  normal: { label: '正常', color: 'text-emerald-400', bg: 'bg-emerald-500/20', border: 'border-emerald-500/30' },
-  at_risk: { label: '有风险', color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30' },
-  lost: { label: '已流失', color: 'text-red-400', bg: 'bg-red-500/20', border: 'border-red-500/30' }
-};
-
-const orderStatusMap = {
-  in_progress: { label: '跟进中', color: 'text-blue-400' },
-  completed: { label: '已成交', color: 'text-emerald-400' }
-};
-
 export default function AdminCustomerManagement() {
-  // Tab 切换
   const [activeTab, setActiveTab] = useState<'dashboard' | 'customers' | 'sales' | 'churn'>('dashboard');
-
-  // 客户列表数据
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('');
-  const [orderStatusFilter, setOrderStatusFilter] = useState<string>('');
-  const [salesFilter, setSalesFilter] = useState<string>('');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
-  // 统计数据
   const [globalStats, setGlobalStats] = useState<GlobalStatistics | null>(null);
   const [salesStats, setSalesStats] = useState<SalesStats[]>([]);
-  const [salesList, setSalesList] = useState<{user_id: string; name: string}[]>([]);
 
-  // 流失预警数据
-  const [churnRisks, setChurnRisks] = useState<ChurnRiskAssessment[]>([]);
-  const [churnStats, setChurnStats] = useState<ChurnRiskStatistics | null>(null);
-  const [churnRiskLevel, setChurnRiskLevel] = useState<string>('all');
-  const [churnLoading, setChurnLoading] = useState(false);
-
-  // 加载全局统计
   const loadGlobalStats = async () => {
     try {
       const res = await Network.request({ url: '/api/admin/customers/statistics' });
-      console.log('[AdminCustomer] Global stats:', res.data);
-      if (res.data.code === 200) {
-        setGlobalStats(res.data.data);
-      }
+      if (res.data.code === 200) setGlobalStats(res.data.data);
     } catch (err) {
       console.error('[AdminCustomer] Load global stats error:', err);
     }
   };
 
-  // 加载销售排行
   const loadSalesStats = async () => {
     try {
       const res = await Network.request({ url: '/api/admin/customers/sales-ranking' });
-      console.log('[AdminCustomer] Sales stats:', res.data);
-      if (res.data.code === 200) {
-        setSalesStats(res.data.data || []);
-        const list = res.data.data?.map((s: SalesStats) => ({
-          user_id: s.user_id,
-          name: s.sales_name
-        })) || [];
-        setSalesList(list);
-      }
+      if (res.data.code === 200) setSalesStats(res.data.data || []);
     } catch (err) {
       console.error('[AdminCustomer] Load sales stats error:', err);
     }
   };
 
-  // 加载流失预警统计
-  const loadChurnStats = async () => {
-    try {
-      const res = await Network.request({ url: '/api/customers/churn-warning/statistics' });
-      console.log('[AdminCustomer] Churn stats:', res.data);
-      if (res.data.code === 200) {
-        setChurnStats(res.data.data);
-      }
-    } catch (err) {
-      console.error('[AdminCustomer] Load churn stats error:', err);
-    }
-  };
-
-  // 加载流失预警列表
-  const loadChurnRisks = async () => {
-    if (churnLoading) return;
-    setChurnLoading(true);
-
-    try {
-      const res = await Network.request({
-        url: '/api/customers/churn-warning/risk-list',
-        data: {
-          riskLevel: churnRiskLevel === 'all' ? undefined : churnRiskLevel,
-          salesId: salesFilter || undefined
-        }
-      });
-      console.log('[AdminCustomer] Churn risks:', res.data);
-
-      if (res.data.code === 200) {
-        setChurnRisks(res.data.data || []);
-      }
-    } catch (err) {
-      console.error('[AdminCustomer] Load churn risks error:', err);
-      Taro.showToast({ title: '加载预警失败', icon: 'none' });
-    } finally {
-      setChurnLoading(false);
-    }
-  };
   const loadCustomers = async (isRefresh = false) => {
     if (loading) return;
     setLoading(true);
@@ -207,27 +105,14 @@ export default function AdminCustomerManagement() {
       const currentPage = isRefresh ? 1 : page;
       const res = await Network.request({
         url: '/api/admin/customers',
-        data: {
-          page: currentPage,
-          pageSize: 20,
-          keyword: keyword || undefined,
-          status: statusFilter || undefined,
-          orderStatus: orderStatusFilter || undefined,
-          salesId: salesFilter || undefined
-        }
+        data: { page: currentPage, pageSize: 20, keyword: keyword || undefined },
       });
-      console.log('[AdminCustomer] Customers:', res.data);
 
       if (res.data.code === 200) {
         const newData = res.data.data.data || [];
-        if (isRefresh) {
-          setCustomers(newData);
-          setPage(2);
-        } else {
-          setCustomers(prev => [...prev, ...newData]);
-          setPage(currentPage + 1);
-        }
+        setCustomers(isRefresh ? newData : [...customers, ...newData]);
         setHasMore(newData.length === 20);
+        if (!isRefresh) setPage(currentPage + 1);
       }
     } catch (err) {
       console.error('[AdminCustomer] Load customers error:', err);
@@ -237,738 +122,342 @@ export default function AdminCustomerManagement() {
     }
   };
 
-  // 导出数据
-  const handleExport = async () => {
-    try {
-      Taro.showLoading({ title: '创建报表中...' });
-      const res = await Network.request({
-        url: '/api/admin/customers/export',
-        method: 'POST',
-        data: {
-          keyword: keyword || undefined,
-          status: statusFilter || undefined,
-          salesId: salesFilter || undefined
-        }
-      });
-      Taro.hideLoading();
-
-      if (res.data.code === 200 && res.data.data?.downloadUrl) {
-        Taro.showModal({
-          title: '导出成功',
-          content: '报表已创建，是否立即下载？',
-          success: (m) => {
-            if (m.confirm && res.data.data?.downloadUrl) {
-              Taro.showToast({ title: '开始下载...', icon: 'none' });
-            }
-          }
-        });
-      } else {
-        Taro.showToast({ title: '导出失败', icon: 'none' });
-      }
-    } catch (err) {
-      Taro.hideLoading();
-      console.error('[AdminCustomer] Export error:', err);
-      Taro.showToast({ title: '导出失败', icon: 'none' });
-    }
-  };
-
-  // 初始加载
   useEffect(() => {
     loadGlobalStats();
     loadSalesStats();
     loadCustomers(true);
-    loadChurnStats();
-    loadChurnRisks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 筛选变化时刷新
-  useEffect(() => {
-    loadCustomers(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusFilter, salesFilter]);
-
-  // 流失预警筛选变化时刷新
-  useEffect(() => {
-    loadChurnRisks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [churnRiskLevel]);
-
-  // 下钻到客户列表
-  const drillDownToCustomers = (filters: { status?: string; orderStatus?: string; salesId?: string }) => {
-    setStatusFilter(filters.status || '');
-    setOrderStatusFilter(filters.orderStatus || '');
-    setSalesFilter(filters.salesId || '');
-    setActiveTab('customers');
-    
-    setTimeout(() => {
-      loadCustomers(true);
-    }, 100);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'normal': return '#4ade80';
+      case 'at_risk': return '#fbbf24';
+      case 'lost': return '#f87171';
+      default: return '#94a3b8';
+    }
   };
 
-  // 渲染统计卡片
-  const renderStatCards = () => {
-    if (!globalStats) return null;
-    const { overview } = globalStats;
+  const getStatusLabel = (status: string) => {
+    const map: Record<string, string> = { normal: '正常', at_risk: '有风险', lost: '已流失' };
+    return map[status] || status;
+  };
 
-    return (
-      <View className="grid grid-cols-2 gap-3 mb-4">
-        <View 
-          className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 rounded-xl p-4 border border-blue-500/30 active:scale-95"
-          onClick={() => drillDownToCustomers({})}
-        >
-          <View className="flex items-center gap-2 mb-2">
-            <User size={14} color="#60a5fa" />
-            <Text className="text-zinc-400 text-xs">总客户数</Text>
-          </View>
-          <Text className="text-white text-2xl font-bold">{overview.totalCustomers}</Text>
-          <Text className="text-blue-400 text-xs mt-1">
-            本周新增 +{globalStats.recentGrowth.thisWeek}
-          </Text>
-        </View>
+  const handleRefresh = async () => {
+    setLoading(true);
+    await Promise.all([loadGlobalStats(), loadSalesStats(), loadCustomers(true)]);
+    setLoading(false);
+  };
 
-        <View 
-          className="bg-gradient-to-br from-emerald-600/20 to-emerald-800/20 rounded-xl p-4 border border-emerald-500/30 active:scale-95"
-          onClick={() => drillDownToCustomers({})}
-        >
-          <View className="flex items-center gap-2 mb-2">
-            <DollarSign size={14} color="#10b981" />
-            <Text className="text-zinc-400 text-xs">预估总额</Text>
+  const renderDashboard = () => (
+    <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* 统计卡片 */}
+      <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+        {[
+          { icon: Users, label: '总客户数', value: globalStats?.overview.totalCustomers || 0, color: '#60a5fa' },
+          { icon: DollarSign, label: '预估总额', value: `¥${((globalStats?.overview.totalEstimatedAmount || 0) / 10000).toFixed(1)}万`, color: '#4ade80' },
+          { icon: Target, label: '成交客户', value: globalStats?.overview.completedOrders || 0, color: '#a855f7' },
+          { icon: TrendingUp, label: '增长率', value: `${globalStats?.recentGrowth.growthRate || 0}%`, color: '#fbbf24' },
+        ].map((card, index) => (
+          <View
+            key={index}
+            style={{
+              backgroundColor: 'rgba(30, 58, 95, 0.3)',
+              borderRadius: '16px',
+              padding: '16px',
+              border: '1px solid #1e3a5f',
+            }}
+          >
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <card.icon size={16} color={card.color} />
+              <Text style={{ fontSize: '22px', color: '#94a3b8' }}>{card.label}</Text>
+            </View>
+            <Text style={{ fontSize: '36px', fontWeight: '700', color: '#f1f5f9' }}>{card.value}</Text>
           </View>
-          <Text className="text-white text-2xl font-bold">
-            ¥{(overview.totalEstimatedAmount / 10000).toFixed(1)}万
-          </Text>
-          <Text className="text-emerald-400 text-xs mt-1">
-            已成交 ¥{(overview.completedOrders * 10000 / 10000).toFixed(0)}万
-          </Text>
-        </View>
-
-        <View 
-          className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 rounded-xl p-4 border border-purple-500/30 active:scale-95"
-          onClick={() => drillDownToCustomers({ orderStatus: 'completed' })}
-        >
-          <View className="flex items-center gap-2 mb-2">
-            <Target size={14} color="#8b5cf6" />
-            <Text className="text-zinc-400 text-xs">成交客户</Text>
-          </View>
-          <Text className="text-white text-2xl font-bold">{overview.completedOrders}</Text>
-          <Text className="text-purple-400 text-xs mt-1">
-            转化率 {overview.totalCustomers > 0
-              ? ((overview.completedOrders / overview.totalCustomers) * 100).toFixed(1)
-              : 0}%
-          </Text>
-        </View>
-
-        <View 
-          className="bg-gradient-to-br from-amber-600/20 to-amber-800/20 rounded-xl p-4 border border-amber-500/30"
-        >
-          <View className="flex items-center gap-2 mb-2">
-            <ChartBar size={14} color="#38bdf8" />
-            <Text className="text-zinc-400 text-xs">增长率</Text>
-          </View>
-          <Text className={`text-2xl font-bold ${globalStats.recentGrowth.growthRate >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-            {globalStats.recentGrowth.growthRate >= 0 ? '+' : ''}{globalStats.recentGrowth.growthRate.toFixed(1)}%
-          </Text>
-          <Text className="text-amber-400 text-xs mt-1">
-            环比上周
-          </Text>
-        </View>
+        ))}
       </View>
-    );
-  };
 
-  // 渲染流失预警统计卡片
-  const renderChurnStatCards = () => {
-    if (!churnStats) return null;
-
-    return (
-      <View className="grid grid-cols-2 gap-3 mb-4">
-        <View className="bg-gradient-to-br from-red-600/20 to-red-800/20 rounded-xl p-4 border border-red-500/30">
-          <View className="flex items-center gap-2 mb-2">
-            <ShieldX size={14} color="#f87171" />
-            <Text className="text-zinc-400 text-xs">高危客户</Text>
+      {/* 状态分布 */}
+      {globalStats && (
+        <View style={{
+          backgroundColor: 'rgba(30, 58, 95, 0.3)',
+          borderRadius: '16px',
+          padding: '16px',
+          border: '1px solid #1e3a5f',
+        }}
+        >
+          <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <FileText size={20} color="#38bdf8" />
+            <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>客户状态分布</Text>
           </View>
-          <Text className="text-white text-2xl font-bold">{churnStats.red}</Text>
-          <Text className="text-red-400 text-xs mt-1">
-            超过30天未跟进
-          </Text>
-        </View>
 
-        <View className="bg-gradient-to-br from-orange-600/20 to-orange-800/20 rounded-xl p-4 border border-orange-500/30">
-          <View className="flex items-center gap-2 mb-2">
-            <ShieldAlert size={14} color="#f97316" />
-            <Text className="text-zinc-400 text-xs">中危客户</Text>
+          {['normal', 'atRisk', 'lost'].map((key) => {
+            const value = globalStats.statusDistribution[key as keyof typeof globalStats.statusDistribution];
+            const total = globalStats.overview.totalCustomers || 1;
+            const percentage = Math.round((value / total) * 100);
+
+            return (
+              <View key={key} style={{ marginBottom: '12px' }}>
+                <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <Text style={{ fontSize: '22px', color: getStatusColor(key === 'atRisk' ? 'at_risk' : key) }}>
+                    {getStatusLabel(key === 'atRisk' ? 'at_risk' : key)}
+                  </Text>
+                  <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{value}</Text>
+                </View>
+                <View style={{ width: '100%', height: '6px', borderRadius: '3px', backgroundColor: '#1e3a5f', overflow: 'hidden' }}>
+                  <View style={{ width: `${percentage}%`, height: '100%', backgroundColor: getStatusColor(key === 'atRisk' ? 'at_risk' : key), borderRadius: '3px' }} />
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
+      {/* 销售排行 */}
+      {salesStats.length > 0 && (
+        <View style={{
+          backgroundColor: 'rgba(30, 58, 95, 0.3)',
+          borderRadius: '16px',
+          padding: '16px',
+          border: '1px solid #1e3a5f',
+        }}
+        >
+          <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <Trophy size={20} color="#fbbf24" />
+            <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>销售业绩 TOP5</Text>
           </View>
-          <Text className="text-white text-2xl font-bold">{churnStats.orange}</Text>
-          <Text className="text-orange-400 text-xs mt-1">
-            超过14天未跟进
-          </Text>
-        </View>
 
-        <View className="bg-gradient-to-br from-yellow-600/20 to-yellow-800/20 rounded-xl p-4 border border-yellow-500/30">
-          <View className="flex items-center gap-2 mb-2">
-            <ShieldAlert size={14} color="#eab308" />
-            <Text className="text-zinc-400 text-xs">低危客户</Text>
-          </View>
-          <Text className="text-white text-2xl font-bold">{churnStats.yellow}</Text>
-          <Text className="text-yellow-400 text-xs mt-1">
-            超过7天未跟进
-          </Text>
-        </View>
-
-        <View className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 rounded-xl p-4 border border-purple-500/30">
-          <View className="flex items-center gap-2 mb-2">
-            <DollarSign size={14} color="#8b5cf6" />
-            <Text className="text-zinc-400 text-xs">风险金额</Text>
-          </View>
-          <Text className="text-white text-2xl font-bold">
-            ¥{(churnStats.totalAtRisk / 10000).toFixed(1)}万
-          </Text>
-          <Text className="text-purple-400 text-xs mt-1">
-            预估总额
-          </Text>
-        </View>
-      </View>
-    );
-  };
-
-  // 渲染流失预警列表
-  const renderChurnRiskList = () => {
-    const riskLevelMap = {
-      red: { label: '高危', color: '#f87171', bg: 'bg-red-500/20', border: 'border-red-500/30' },
-      orange: { label: '中危', color: '#f97316', bg: 'bg-orange-500/20', border: 'border-orange-500/30' },
-      yellow: { label: '低危', color: '#eab308', bg: 'bg-yellow-500/20', border: 'border-yellow-500/30' }
-    };
-
-    return (
-      <View className="space-y-3">
-        {/* 筛选栏 */}
-        <View className="bg-zinc-800/40 rounded-xl p-3 border border-zinc-700/50">
-          <View className="flex gap-2">
-            {[
-              { key: 'all', label: '全部预警', color: 'blue' },
-              { key: 'red', label: '高危', color: 'red' },
-              { key: 'orange', label: '中危', color: 'orange' },
-              { key: 'yellow', label: '低危', color: 'yellow' }
-            ].map((level) => (
-              <View
-                key={level.key}
-                onClick={() => setChurnRiskLevel(level.key)}
-                className={`flex-1 flex items-center justify-center py-2 rounded-lg border transition-all ${
-                  churnRiskLevel === level.key
-                    ? `bg-${level.color}-500/20 border-${level.color}-500/50`
-                    : 'bg-zinc-700/50 border-zinc-600/50'
-                }`}
+          {salesStats.slice(0, 5).map((sales, index) => (
+            <View
+              key={sales.user_id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px',
+                backgroundColor: '#1e293b',
+                borderRadius: '12px',
+                marginBottom: '8px',
+              }}
+            >
+              <View style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                backgroundColor: index === 0 ? '#fbbf24' : index === 1 ? '#94a3b8' : index === 2 ? '#f97316' : '#1e3a5f',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               >
-                <Text className={`text-xs font-medium ${
-                  churnRiskLevel === level.key ? `text-${level.color}-400` : 'text-zinc-500'
-                }`}
+                <Text style={{ fontSize: '18px', fontWeight: '700', color: index < 3 ? '#000' : '#f1f5f9' }}>{index + 1}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9' }}>{sales.sales_name}</Text>
+                <Text style={{ fontSize: '20px', color: '#64748b' }}>{sales.total}客户 · {sales.completed}成交</Text>
+              </View>
+              <Text style={{ fontSize: '24px', fontWeight: '700', color: '#4ade80' }}>¥{(sales.totalAmount / 10000).toFixed(1)}万</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+
+  const renderCustomerList = () => (
+    <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {/* 搜索栏 */}
+      <View style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '12px 16px',
+        backgroundColor: 'rgba(30, 58, 95, 0.3)',
+        borderRadius: '12px',
+        border: '1px solid #1e3a5f',
+      }}
+      >
+        <Search size={20} color="#71717a" />
+        <Input
+          style={{ flex: 1, fontSize: '26px', color: '#f1f5f9' }}
+          placeholder="搜索客户名称、电话..."
+          placeholderStyle="color: #64748b"
+          value={keyword}
+          onInput={(e) => setKeyword(e.detail.value)}
+          onConfirm={() => loadCustomers(true)}
+        />
+      </View>
+
+      {/* 客户列表 */}
+      {customers.length === 0 && !loading ? (
+        <View style={{ padding: '40px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Users size={80} color="#71717a" />
+          <Text style={{ fontSize: '28px', color: '#64748b', marginTop: '16px' }}>暂无客户</Text>
+        </View>
+      ) : (
+        customers.map((customer) => (
+          <View
+            key={customer.id}
+            style={{
+              backgroundColor: 'rgba(30, 58, 95, 0.3)',
+              borderRadius: '16px',
+              padding: '16px',
+              border: '1px solid #1e3a5f',
+            }}
+            onClick={() => Taro.navigateTo({ url: `/pages/customer/detail?id=${customer.id}` })}
+          >
+            <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <View>
+                <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>{customer.name}</Text>
+                <Text style={{ fontSize: '20px', color: '#64748b', marginTop: '4px' }}>销售: {customer.sales_name || '未知'}</Text>
+              </View>
+              <View style={{
+                padding: '4px 10px',
+                borderRadius: '8px',
+                backgroundColor: `rgba(${customer.status === 'normal' ? '74, 222, 128' : customer.status === 'at_risk' ? '251, 191, 36' : '248, 113, 113'}, 0.15)`,
+              }}
+              >
+                <Text style={{ fontSize: '20px', color: getStatusColor(customer.status) }}>{getStatusLabel(customer.status)}</Text>
+              </View>
+            </View>
+
+            <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
+              {customer.phone && (
+                <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Phone size={14} color="#71717a" />
+                  <Text style={{ fontSize: '20px', color: '#64748b' }}>{customer.phone}</Text>
+                </View>
+              )}
+              {customer.city && (
+                <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <MapPin size={14} color="#71717a" />
+                  <Text style={{ fontSize: '20px', color: '#64748b' }}>{customer.city}</Text>
+                </View>
+              )}
+              <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Calendar size={14} color="#71717a" />
+                <Text style={{ fontSize: '20px', color: '#64748b' }}>{new Date(customer.created_at).toLocaleDateString()}</Text>
+              </View>
+            </View>
+
+            <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', borderTop: '1px solid #1e3a5f' }}>
+              <Text style={{ fontSize: '22px', color: customer.order_status === 'completed' ? '#4ade80' : '#60a5fa' }}>
+                {customer.order_status === 'completed' ? '已成交' : '跟进中'}
+              </Text>
+              {customer.estimated_amount && (
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>¥{(customer.estimated_amount / 10000).toFixed(1)}万</Text>
+              )}
+            </View>
+          </View>
+        ))
+      )}
+
+      {loading && (
+        <View style={{ padding: '20px 0', display: 'flex', justifyContent: 'center' }}>
+          <RefreshCw size={40} color="#38bdf8" />
+        </View>
+      )}
+
+      {hasMore && !loading && (
+        <View style={{ padding: '16px 0', textAlign: 'center' }} onClick={() => loadCustomers()}>
+          <Text style={{ fontSize: '22px', color: '#64748b' }}>加载更多</Text>
+        </View>
+      )}
+    </View>
+  );
+
+  return (
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
+      {/* 页面头部 */}
+      <View style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '130px',
+        background: 'linear-gradient(180deg, #0f1a2e 0%, #0a1628 100%)',
+        borderBottom: '1px solid #1e3a5f',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        paddingBottom: '12px',
+        zIndex: 100,
+      }}
+      >
+        <View style={{ padding: '0 16px 12px' }}>
+          <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <View
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onClick={() => Taro.navigateBack()}
+              >
+                <ChevronLeft size={22} color="#38bdf8" />
+              </View>
+              <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <View
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '10px',
+                    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
                 >
-                  {level.label}
-                </Text>
+                  <Users size={18} color="#f59e0b" />
+                </View>
+                <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9' }}>客户管理</Text>
+              </View>
+            </View>
+            <View onClick={handleRefresh}>
+              <RefreshCw size={22} color={loading ? '#64748b' : '#38bdf8'} />
+            </View>
+          </View>
+
+          {/* Tab 切换 */}
+          <View style={{ display: 'flex', gap: '8px' }}>
+            {[
+              { key: 'dashboard', label: '数据看板', icon: Activity },
+              { key: 'customers', label: '客户列表', icon: Users },
+              { key: 'sales', label: '业绩排行', icon: Award },
+            ].map((tab) => (
+              <View
+                key={tab.key}
+                style={{
+                  flex: 1,
+                  padding: '10px',
+                  borderRadius: '10px',
+                  backgroundColor: activeTab === tab.key ? '#f59e0b' : '#1e293b',
+                  border: activeTab === tab.key ? 'none' : '1px solid #1e3a5f',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                }}
+                onClick={() => setActiveTab(tab.key as any)}
+              >
+                <tab.icon size={16} color={activeTab === tab.key ? '#000' : '#71717a'} />
+                <Text style={{ fontSize: '22px', fontWeight: '600', color: activeTab === tab.key ? '#000' : '#64748b' }}>{tab.label}</Text>
               </View>
             ))}
           </View>
         </View>
-
-        {/* 预警列表 */}
-        {churnRisks.length === 0 ? (
-          <View className="py-12 text-center">
-            <View className="w-16 h-16 bg-zinc-800/60 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-700/50">
-              <ChartBar size={32} color="#71717a" />
-            </View>
-            <Text className="text-zinc-500 text-sm">暂无流失预警客户</Text>
-            <Text className="text-zinc-600 text-xs mt-2">客户跟进情况良好</Text>
-          </View>
-        ) : (
-          churnRisks.map((risk) => {
-            const levelInfo = riskLevelMap[risk.riskLevel];
-
-            return (
-              <View
-                key={risk.customerId}
-                onClick={() => Taro.navigateTo({ url: `/pages/customer/detail?id=${risk.customerId}` })}
-                className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 active:scale-[0.98] transition-transform"
-              >
-                {/* 头部：客户名称和风险等级 */}
-                <View className="flex items-start justify-between mb-3">
-                  <View className="flex-1">
-                    <Text className="text-white text-base font-semibold">{risk.customerName}</Text>
-                    <Text className="text-zinc-500 text-xs mt-1">
-                      销售：{risk.salesName || '未知'}
-                    </Text>
-                  </View>
-                  <View className={`flex items-center gap-1 px-2 py-1 rounded-full ${levelInfo.bg} ${levelInfo.border} border`}>
-                    <ShieldAlert size={12} color={levelInfo.color} />
-                    <Text className="text-xs font-medium" style={{ color: levelInfo.color }}>
-                      {levelInfo.label}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* 风险信息 */}
-                <View className="flex items-center gap-4 mb-3">
-                  <View className="flex items-center gap-1">
-                    <TrendingUp size={12} color="#71717a" />
-                    <Text className="text-zinc-500 text-xs">
-                      {risk.daysSinceLastFollowUp}天未跟进
-                    </Text>
-                  </View>
-                  {risk.estimatedAmount && (
-                    <View className="flex items-center gap-1">
-                      <DollarSign size={12} color="#10b981" />
-                      <Text className="text-emerald-400 text-xs">
-                        ¥{(risk.estimatedAmount / 10000).toFixed(1)}万
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                {/* 风险因素 */}
-                {risk.riskFactors.length > 0 && (
-                  <View className="mb-3">
-                    <Text className="text-zinc-500 text-xs mb-2">风险信号：</Text>
-                    <View className="flex flex-wrap gap-2">
-                      {risk.riskFactors.map((factor, idx) => (
-                        <View key={idx} className="px-2 py-1 bg-red-500/10 border border-red-500/20 rounded">
-                          <Text className="text-red-400 text-xs">{factor}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                )}
-
-                {/* 建议措施 */}
-                {risk.suggestedActions.length > 0 && (
-                  <View className="pt-3 border-t border-zinc-700/50">
-                    <Text className="text-zinc-500 text-xs mb-2">建议措施：</Text>
-                    {risk.suggestedActions.slice(0, 2).map((action, idx) => (
-                      <View key={idx} className="flex items-start gap-2 mb-1">
-                        <View className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5" />
-                        <Text className="text-blue-400 text-xs flex-1">{action}</Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </View>
-            );
-          })
-        )}
-      </View>
-    );
-  };
-
-  // 渲染状态分布
-  const renderStatusDistribution = () => {
-    if (!globalStats) return null;
-    const { statusDistribution, overview } = globalStats;
-    const total = overview.totalCustomers || 1;
-
-    return (
-      <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
-        <View className="flex items-center gap-2 mb-4">
-          <FileText size={16} color="#38bdf8" />
-          <Text className="text-white font-semibold">客户状态分布</Text>
-        </View>
-
-        <View className="space-y-3">
-          <View 
-            className="active:opacity-70"
-            onClick={() => drillDownToCustomers({ status: 'normal' })}
-          >
-            <View className="flex justify-between items-center mb-1">
-              <Text className="text-emerald-400 text-sm">正常客户</Text>
-              <Text className="text-white text-sm font-semibold">{statusDistribution.normal}</Text>
-            </View>
-            <View className="h-2 bg-zinc-700 rounded-full overflow-hidden">
-              <View
-                className="h-full bg-emerald-500 rounded-full"
-                style={{ width: `${(statusDistribution.normal / total) * 100}%` }}
-              />
-            </View>
-          </View>
-
-          <View 
-            className="active:opacity-70"
-            onClick={() => drillDownToCustomers({ status: 'at_risk' })}
-          >
-            <View className="flex justify-between items-center mb-1">
-              <Text className="text-amber-400 text-sm">有风险</Text>
-              <Text className="text-white text-sm font-semibold">{statusDistribution.atRisk}</Text>
-            </View>
-            <View className="h-2 bg-zinc-700 rounded-full overflow-hidden">
-              <View
-                className="h-full bg-amber-500 rounded-full"
-                style={{ width: `${(statusDistribution.atRisk / total) * 100}%` }}
-              />
-            </View>
-          </View>
-
-          <View 
-            className="active:opacity-70"
-            onClick={() => drillDownToCustomers({ status: 'lost' })}
-          >
-            <View className="flex justify-between items-center mb-1">
-              <Text className="text-red-400 text-sm">已流失</Text>
-              <Text className="text-white text-sm font-semibold">{statusDistribution.lost}</Text>
-            </View>
-            <View className="h-2 bg-zinc-700 rounded-full overflow-hidden">
-              <View
-                className="h-full bg-red-500 rounded-full"
-                style={{ width: `${(statusDistribution.lost / total) * 100}%` }}
-              />
-            </View>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
-  // 渲染销售排行
-  const renderSalesRanking = () => {
-    if (salesStats.length === 0) return null;
-
-    const sorted = [...salesStats].sort((a, b) => b.totalAmount - a.totalAmount).slice(0, 5);
-
-    return (
-      <View className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 mb-4">
-        <View className="flex items-center justify-between mb-4">
-          <View className="flex items-center gap-2">
-            <Trophy size={16} color="#38bdf8" />
-            <Text className="text-white font-semibold">销售业绩排行 TOP5</Text>
-          </View>
-          <Text className="text-amber-500 text-xs" onClick={() => setActiveTab('sales')}>
-            查看全部
-          </Text>
-        </View>
-
-        <View className="space-y-3">
-          {sorted.map((sales, index) => (
-            <View 
-              key={sales.user_id} 
-              className="flex items-center gap-3 active:opacity-70"
-              onClick={() => drillDownToCustomers({ salesId: sales.user_id })}
-            >
-              <View className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                index === 0 ? 'bg-amber-500' :
-                index === 1 ? 'bg-zinc-400' :
-                index === 2 ? 'bg-orange-600' :
-                'bg-zinc-700'
-              }`}
-              >
-                <Text className={`text-xs font-bold ${index < 3 ? 'text-white' : 'text-zinc-500'}`}>
-                  {index + 1}
-                </Text>
-              </View>
-              <View className="flex-1">
-                <Text className="text-white text-sm font-medium">{sales.sales_name}</Text>
-                <Text className="text-zinc-500 text-xs">
-                  {sales.total}客户 · {sales.completed}成交
-                </Text>
-              </View>
-              <Text className="text-emerald-400 text-sm font-semibold">
-                ¥{(sales.totalAmount / 10000).toFixed(1)}万
-              </Text>
-            </View>
-          ))}
-        </View>
-      </View>
-    );
-  };
-
-  // 渲染客户列表
-  const renderCustomerList = () => {
-    return (
-      <View className="space-y-3">
-        {/* 筛选栏 */}
-        <View className="bg-zinc-800/40 rounded-xl p-3 border border-zinc-700/50">
-          <View className="flex items-center gap-2 mb-3">
-            <Search size={16} color="#71717a" />
-            <Input
-              className="flex-1 text-white text-sm bg-transparent"
-              placeholder="搜索客户名称、电话..."
-              placeholderClass="text-zinc-500"
-              value={keyword}
-              onInput={(e) => setKeyword(e.detail.value)}
-              onConfirm={() => loadCustomers(true)}
-            />
-          </View>
-
-          <View className="flex gap-2">
-            {/* 状态筛选 */}
-            <View
-              onClick={() => {
-                const statuses = ['', 'normal', 'at_risk', 'lost'];
-                const currentIndex = statuses.indexOf(statusFilter);
-                setStatusFilter(statuses[(currentIndex + 1) % statuses.length]);
-              }}
-              className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border ${
-                statusFilter
-                  ? 'bg-blue-500/20 border-blue-500/50'
-                  : 'bg-zinc-700/50 border-zinc-600/50'
-              }`}
-            >
-              <TrendingUp size={12} color={statusFilter ? '#60a5fa' : '#71717a'} />
-              <Text className={`text-xs ${statusFilter ? 'text-blue-400' : 'text-zinc-500'}`}>
-                {statusFilter ? statusMap[statusFilter as keyof typeof statusMap]?.label : '全部状态'}
-              </Text>
-            </View>
-
-            {/* 销售筛选 */}
-            {salesList.length > 0 && (
-              <View
-                onClick={() => {
-                  const ids = ['', ...salesList.map(s => s.user_id)];
-                  const currentIndex = ids.indexOf(salesFilter);
-                  setSalesFilter(ids[(currentIndex + 1) % ids.length]);
-                }}
-                className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg border ${
-                  salesFilter
-                    ? 'bg-purple-500/20 border-purple-500/50'
-                    : 'bg-zinc-700/50 border-zinc-600/50'
-                }`}
-              >
-                <User size={12} color={salesFilter ? '#8b5cf6' : '#71717a'} />
-                <Text className={`text-xs ${salesFilter ? 'text-purple-400' : 'text-zinc-500'}`}>
-                  {salesFilter
-                    ? salesList.find(s => s.user_id === salesFilter)?.name || '销售'
-                    : '全部销售'}
-                </Text>
-              </View>
-            )}
-
-            {/* 导出按钮 */}
-            <View
-              onClick={handleExport}
-              className="flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30"
-            >
-              <Download size={12} color="#10b981" />
-              <Text className="text-xs text-emerald-400">导出</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* 客户列表 */}
-        {customers.map((customer) => (
-          <View
-            key={customer.id}
-            onClick={() => Taro.navigateTo({ url: `/pages/customer/detail?id=${customer.id}` })}
-            className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50 active:scale-[0.98] transition-transform"
-          >
-            <View className="flex items-start justify-between mb-3">
-              <View>
-                <Text className="text-white text-base font-semibold">{customer.name}</Text>
-                <Text className="text-zinc-500 text-xs mt-1">
-                  销售: {customer.sales_name || '未知'}
-                </Text>
-              </View>
-              <View className={`px-2 py-1 rounded-full ${statusMap[customer.status].bg} ${statusMap[customer.status].border} border`}>
-                <Text className={`text-xs ${statusMap[customer.status].color}`}>
-                  {statusMap[customer.status].label}
-                </Text>
-              </View>
-            </View>
-
-            <View className="flex items-center gap-4 mb-3">
-              {customer.phone && (
-                <View className="flex items-center gap-1">
-                  <Phone size={12} color="#71717a" />
-                  <Text className="text-zinc-500 text-xs">{customer.phone}</Text>
-                </View>
-              )}
-              {customer.city && (
-                <View className="flex items-center gap-1">
-                  <MapPin size={12} color="#71717a" />
-                  <Text className="text-zinc-500 text-xs">{customer.city}</Text>
-                </View>
-              )}
-              <View className="flex items-center gap-1">
-                <Calendar size={12} color="#71717a" />
-                <Text className="text-zinc-500 text-xs">
-                  {new Date(customer.created_at).toLocaleDateString()}
-                </Text>
-              </View>
-            </View>
-
-            <View className="flex items-center justify-between pt-3 border-t border-zinc-700/50">
-              <View>
-                <Text className={`text-sm ${orderStatusMap[customer.order_status].color}`}>
-                  {orderStatusMap[customer.order_status].label}
-                </Text>
-                <Text className="text-zinc-500 text-xs">{customer.customer_type}</Text>
-              </View>
-              {customer.estimated_amount && (
-                <Text className="text-emerald-400 text-lg font-bold">
-                  ¥{(customer.estimated_amount / 10000).toFixed(1)}万
-                </Text>
-              )}
-            </View>
-          </View>
-        ))}
-
-        {/* 加载更多 */}
-        {hasMore && (
-          <View
-            onClick={() => loadCustomers()}
-            className="py-4 text-center"
-          >
-            <Text className="text-zinc-500 text-sm">
-              {loading ? '加载中...' : '点击加载更多'}
-            </Text>
-          </View>
-        )}
-      </View>
-    );
-  };
-
-  // 渲染销售完整排行
-  const renderFullSalesRanking = () => {
-    const sorted = [...salesStats].sort((a, b) => b.totalAmount - a.totalAmount);
-
-    return (
-      <View className="space-y-3">
-        {sorted.map((sales, index) => (
-          <View
-            key={sales.user_id}
-            className="bg-zinc-800/40 rounded-xl p-4 border border-zinc-700/50"
-          >
-            <View 
-              className="flex items-center gap-3 mb-3 active:opacity-70"
-              onClick={() => drillDownToCustomers({ salesId: sales.user_id })}
-            >
-              <View className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                index === 0 ? 'bg-amber-500' :
-                index === 1 ? 'bg-zinc-400' :
-                index === 2 ? 'bg-orange-600' :
-                'bg-zinc-700'
-              }`}
-              >
-                <Text className={`text-sm font-bold ${index < 3 ? 'text-white' : 'text-zinc-500'}`}>
-                  {index + 1}
-                </Text>
-              </View>
-              <View className="flex-1">
-                <Text className="text-white text-base font-semibold">{sales.sales_name}</Text>
-              </View>
-              <Text className="text-emerald-400 text-lg font-bold">
-                ¥{(sales.totalAmount / 10000).toFixed(1)}万
-              </Text>
-            </View>
-
-            <View className="grid grid-cols-4 gap-2 pt-3 border-t border-zinc-700/50">
-              <View 
-                className="text-center active:opacity-70"
-                onClick={() => drillDownToCustomers({ salesId: sales.user_id })}
-              >
-                <Text className="text-white text-lg font-semibold">{sales.total}</Text>
-                <Text className="text-zinc-500 text-xs">总客户</Text>
-              </View>
-              <View 
-                className="text-center active:opacity-70"
-                onClick={(e) => { e.stopPropagation(); drillDownToCustomers({ salesId: sales.user_id, status: 'normal' }); }}
-              >
-                <Text className="text-emerald-400 text-lg font-semibold">{sales.normal}</Text>
-                <Text className="text-zinc-500 text-xs">正常</Text>
-              </View>
-              <View 
-                className="text-center active:opacity-70"
-                onClick={(e) => { e.stopPropagation(); drillDownToCustomers({ salesId: sales.user_id, status: 'at_risk' }); }}
-              >
-                <Text className="text-amber-400 text-lg font-semibold">{sales.atRisk}</Text>
-                <Text className="text-zinc-500 text-xs">有风险</Text>
-              </View>
-              <View 
-                className="text-center active:opacity-70"
-                onClick={(e) => { e.stopPropagation(); drillDownToCustomers({ salesId: sales.user_id, orderStatus: 'completed' }); }}
-              >
-                <Text className="text-blue-400 text-lg font-semibold">{sales.completed}</Text>
-                <Text className="text-zinc-500 text-xs">已成交</Text>
-              </View>
-            </View>
-          </View>
-        ))}
-      </View>
-    );
-  };
-
-  return (
-    <View className="min-h-screen bg-[#0a0f1a]">
-      {/* Header */}
-      <View className="pt-12 pb-4 px-4 bg-zinc-900/95 sticky top-0 z-20 border-b border-zinc-800">
-        <View className="flex items-center justify-between mb-4">
-          <View className="flex items-center gap-3">
-            <View
-              onClick={() => Taro.navigateBack()}
-              className="w-8 h-8 rounded-full bg-zinc-800/60 flex items-center justify-center border border-zinc-700/50 active:scale-95"
-            >
-              <ArrowLeft size={18} color="#38bdf8" />
-            </View>
-            <View className="flex items-center gap-2">
-              <View className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center border border-amber-500/30">
-                <Users size={16} color="#38bdf8" />
-              </View>
-              <Text className="text-white text-xl font-bold">客户管理看板</Text>
-            </View>
-          </View>
-          <View className="flex items-center gap-2">
-            <View className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <Text className="text-emerald-400 text-xs">管理员</Text>
-          </View>
-        </View>
-
-        {/* Tab 切换 */}
-        <View className="flex gap-2">
-          {[
-            { key: 'dashboard', label: '数据看板', icon: Activity },
-            { key: 'customers', label: '客户列表', icon: Users },
-            { key: 'sales', label: '业绩排行', icon: Award },
-            { key: 'churn', label: '流失预警', icon: ShieldAlert }
-          ].map((tab) => (
-            <View
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key as any)}
-              className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl transition-all ${
-                activeTab === tab.key
-                  ? 'bg-amber-500'
-                  : 'bg-zinc-800/60 border border-zinc-700/50'
-              }`}
-            >
-              <tab.icon size={14} color={activeTab === tab.key ? '#000' : '#71717a'} />
-              <Text className={`text-sm font-medium ${activeTab === tab.key ? 'text-black' : 'text-zinc-500'}`}>
-                {tab.label}
-              </Text>
-            </View>
-          ))}
-        </View>
       </View>
 
-      {/* 内容区域 */}
-      <ScrollView
-        scrollY
-        className="flex-1 px-4 py-4"
-        style={{ height: 'calc(100vh - 140px)' }}
-        onScrollToLower={() => activeTab === 'customers' && loadCustomers()}
-      >
-        {activeTab === 'dashboard' && (
-          <>
-            {renderStatCards()}
-            {renderStatusDistribution()}
-            {renderSalesRanking()}
-          </>
-        )}
-
+      <ScrollView scrollY style={{ height: 'calc(100vh - 130px)', marginTop: '130px' }}>
+        {activeTab === 'dashboard' && renderDashboard()}
         {activeTab === 'customers' && renderCustomerList()}
-
-        {activeTab === 'sales' && renderFullSalesRanking()}
-
-        {activeTab === 'churn' && (
-          <>
-            {renderChurnStatCards()}
-            {renderChurnRiskList()}
-          </>
-        )}
-
-        <View className="h-8" />
+        {activeTab === 'sales' && renderDashboard()}
+        <View style={{ height: '20px' }} />
       </ScrollView>
     </View>
   );
