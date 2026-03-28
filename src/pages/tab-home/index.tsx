@@ -327,7 +327,7 @@ const TabHomePage = () => {
       </View>
 
       {/* 数据概览 - 4个卡片一排 */}
-      <View style={{ padding: '0 20px', marginTop: '-16px' }}>
+      <View style={{ padding: '0 20px', marginTop: '16px' }}>
         <View style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
           <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' }}>
             <Text style={{ fontSize: '22px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{stats.todayNew}</Text>
