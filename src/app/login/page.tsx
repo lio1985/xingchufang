@@ -1,15 +1,13 @@
 'use client';
 
-import { useState, useEffect, Suspense, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Lock, User, Eye, EyeOff, Shield, Eye as EyeIcon } from 'lucide-react';
+import { Lock, User, Eye, EyeOff } from 'lucide-react';
 
 function LoginForm() {
-  const searchParams = useSearchParams();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -111,9 +109,6 @@ function LoginForm() {
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-2">
             <CardTitle className="text-lg text-center">账号登录</CardTitle>
-            <CardDescription className="text-center text-sm">
-              请输入您的账号和密码
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
@@ -172,33 +167,6 @@ function LoginForm() {
                 {loading ? '登录中...' : '登录'}
               </Button>
             </form>
-
-            {/* 账号提示 */}
-            <div className="mt-4 space-y-2">
-              <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                <div className="flex items-center gap-2 mb-1">
-                  <Shield className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">管理员</span>
-                </div>
-                <p className="text-sm text-blue-700">
-                  账号：<code className="px-1 bg-blue-100 rounded">admin</code>
-                  {' / '}
-                  密码：<code className="px-1 bg-blue-100 rounded">admin123</code>
-                </p>
-              </div>
-
-              <div className="p-3 bg-green-50 rounded-lg border border-green-100">
-                <div className="flex items-center gap-2 mb-1">
-                  <EyeIcon className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">销售</span>
-                </div>
-                <p className="text-sm text-green-700">
-                  账号：<code className="px-1 bg-green-100 rounded">sales</code>
-                  {' / '}
-                  密码：<code className="px-1 bg-green-100 rounded">sales123</code>
-                </p>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
