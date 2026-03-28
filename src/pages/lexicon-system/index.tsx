@@ -140,28 +140,34 @@ export default function LexiconSystemPage() {
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 页面头部 */}
-      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', position: 'relative' }}>
-        {/* 返回按钮 */}
-        <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
-          <View
-            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => {
-              const pages = Taro.getCurrentPages();
-              if (pages.length > 1) {
-                Taro.navigateBack();
-              } else {
-                Taro.redirectTo({ url: '/pages/tab-knowledge/index' });
-              }
-            }}
-          >
-            <ChevronLeft size={24} color="#38bdf8" />
-            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
-          </View>
-        </View>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <View>
-            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人语料</Text>
-            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>语料优化系统</Text>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <View
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: '#1e3a5f',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onClick={() => {
+                const pages = Taro.getCurrentPages();
+                if (pages.length > 1) {
+                  Taro.navigateBack();
+                } else {
+                  Taro.switchTab({ url: '/pages/tab-knowledge/index' });
+                }
+              }}
+            >
+              <ChevronLeft size={24} color="#f1f5f9" />
+            </View>
+            <View>
+              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>个人语料</Text>
+              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>语料优化系统</Text>
+            </View>
           </View>
           <View
             style={{

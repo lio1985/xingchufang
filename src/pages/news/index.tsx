@@ -285,7 +285,14 @@ const NewsPage = () => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onClick={() => Taro.navigateBack()}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.switchTab({ url: '/pages/tab-knowledge/index' });
+              }
+            }}
           >
             <ChevronLeft size={20} color="#ef4444" />
           </View>

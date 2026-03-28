@@ -6,6 +6,7 @@ import {
   FileText,
   PenTool,
   ChevronRight,
+  ChevronLeft,
   BookOpen,
   Settings,
   Lightbulb,
@@ -82,11 +83,32 @@ const KnowledgeSharePage = () => {
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '80px' }}>
       {/* 页面头部 */}
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
-        <View style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+          <View
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: '#1e3a5f',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.switchTab({ url: '/pages/tab-knowledge/index' });
+              }
+            }}
+          >
+            <ChevronLeft size={24} color="#f1f5f9" />
+          </View>
           <Building2 size={24} color="#a855f7" />
-          <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginLeft: '8px' }}>公司资料</Text>
+          <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>公司资料</Text>
         </View>
-        <Text style={{ fontSize: '14px', color: '#71717a' }}>企业知识沉淀与复用</Text>
+        <Text style={{ fontSize: '14px', color: '#71717a', marginLeft: '48px' }}>企业知识沉淀与复用</Text>
       </View>
 
       <ScrollView scrollY style={{ height: 'calc(100vh - 140px)' }}>
