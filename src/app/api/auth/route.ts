@@ -10,11 +10,13 @@ export interface UserInfo {
 }
 
 // Cookie设置选项
-// 根据请求的实际协议决定是否使用Secure
 const getCookieOptions = (request: NextRequest) => {
   // 检查原始请求是否通过HTTPS
   const forwardedProto = request.headers.get('x-forwarded-proto');
-  const isHttps = forwardedProto === 'https';
+  const host = request.headers.get('host') || '';
+  const isHttps = forwardedProto === 'https' || host.includes('.coze.site');
+  
+  console.log('[Auth] Cookie settings - forwardedProto:', forwardedProto, 'host:', host, 'isHttps:', isHttps);
   
   return {
     path: '/',
@@ -76,6 +78,9 @@ export async function POST(request: NextRequest) {
       response.cookies.set('admin_token', 'authenticated', cookieOptions);
       response.cookies.set('admin_user', JSON.stringify(userInfo), cookieOptions);
       
+      // 调试：检查设置后的cookie
+      console.log('[Auth POST] Cookies set:', response.cookies.getAll().map(c => ({ name: c.name, value: c.value?.substring(0, 30) })));
+      
       return response;
     } else {
       return NextResponse.json(
@@ -97,19 +102,30 @@ export async function GET(request: NextRequest) {
   const token = request.cookies.get('admin_token');
   const userCookie = request.cookies.get('admin_user');
   
-  if (token?.value === 'authenticated' && userCookie?.value) {
-    try {
-      const user = JSON.parse(userCookie.value) as UserInfo;
-      return NextResponse.json({
-        authenticated: true,
-        user,
-      });
-    } catch {
-      return NextResponse.json({
-        authenticated: false,
-        user: null,
-      });
+  // 调试日志
+  console.log('[Auth GET] token:', token?.value, 'userCookie exists:', !!userCookie);
+  console.log('[Auth GET] all cookies:', request.cookies.getAll().map(c => c.name));
+  
+  // 只要token认证通过即可
+  if (token?.value === 'authenticated') {
+    // 如果有用户信息cookie，使用它
+    if (userCookie?.value) {
+      try {
+        const user = JSON.parse(userCookie.value) as UserInfo;
+        return NextResponse.json({
+          authenticated: true,
+          user,
+        });
+      } catch {
+        // 解析失败，使用默认用户
+      }
     }
+    
+    // 没有用户信息，返回默认管理员用户
+    return NextResponse.json({
+      authenticated: true,
+      user: { username: 'admin', role: 'admin' } as UserInfo,
+    });
   }
   
   return NextResponse.json({

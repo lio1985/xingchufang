@@ -61,19 +61,24 @@ export default function Home() {
   // 检查登录状态
   useEffect(() => {
     // 检查Cookie认证
-    fetch('/api/auth', { credentials: 'include' })
+    fetch('/api/auth', { 
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
+        console.log('[Home] Auth check result:', data);
         if (data.authenticated && data.user) {
           setCurrentUser(data.user);
         } else {
-          // 未认证，重定向到登录页
-          router.push('/login');
+          // 未认证，由middleware处理重定向，这里不做处理
+          console.log('[Home] Not authenticated, middleware will handle redirect');
         }
       })
-      .catch(() => {
-        // 网络错误，重定向到登录页
-        router.push('/login');
+      .catch((err) => {
+        console.error('[Home] Auth check error:', err);
       });
   }, [router]);
   
