@@ -11,9 +11,10 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # 复制依赖文件
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY server/package.json ./server/
 
-# 安装依赖
+# 安装所有依赖
 RUN pnpm install
 
 # 复制源代码
@@ -34,11 +35,11 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # 复制依赖文件
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY server/package.json ./server/
 
-# 安装生产依赖
-RUN pnpm install --prod
+# 安装生产依赖（忽略 postinstall 脚本）
+RUN pnpm install --prod --ignore-scripts
 
 # 复制构建产物
 COPY --from=builder /app/dist ./dist
