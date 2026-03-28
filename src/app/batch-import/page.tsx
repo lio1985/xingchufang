@@ -1,16 +1,72 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Upload, Download, FileSpreadsheet, ImagePlus } from 'lucide-react';
+import { ArrowLeft, Upload, Download, FileSpreadsheet, ImagePlus, Shield, AlertTriangle } from 'lucide-react';
+
+interface User {
+  username: string;
+  role: 'admin' | 'sales';
+}
 
 export default function BatchImportPage() {
   const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [checking, setChecking] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [uploadMode, setUploadMode] = useState<'excel' | 'files'>('excel');
+
+  // 检查登录状态和权限
+  useEffect(() => {
+    fetch('/api/auth')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setCurrentUser(data.user);
+        }
+        setChecking(false);
+      });
+  }, []);
+  
+  // 是否为管理员
+  const isAdmin = currentUser?.role === 'admin';
+
+  // 检查中
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-500">加载中...</p>
+      </div>
+    );
+  }
+
+  // 非管理员，显示无权限提示
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <AlertTriangle className="h-8 w-8 text-red-600" />
+            </div>
+            <CardTitle className="text-xl">权限不足</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-gray-600 mb-4">
+              批量导入功能仅限管理员（采购负责人）使用
+            </p>
+            <p className="text-sm text-gray-500 mb-4">
+              当前角色：{currentUser?.role === 'sales' ? '销售' : '未知'}
+            </p>
+            <Button onClick={() => router.push('/')}>返回首页</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // 下载模板
   const downloadTemplate = () => {
@@ -85,14 +141,25 @@ export default function BatchImportPage() {
       {/* 头部 */}
       <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
-          <Button
-            variant="ghost"
-            className="text-white hover:bg-blue-700 mb-4"
-            onClick={() => router.push('/')}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            返回商品列表
-          </Button>
+          <div className="flex items-center justify-between mb-4">
+            <Button
+              variant="ghost"
+              className="text-white hover:bg-blue-700"
+              onClick={() => router.push('/')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              返回商品列表
+            </Button>
+            {currentUser && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                <Shield className="h-4 w-4 text-yellow-300" />
+                <span className="text-sm text-white">
+                  {currentUser.username}
+                  <span className="text-xs text-blue-200 ml-1">(管理员)</span>
+                </span>
+              </div>
+            )}
+          </div>
           <h1 className="text-3xl font-bold">批量导入图片</h1>
           <p className="text-blue-100 mt-1">支持Excel导入或直接上传图片文件</p>
         </div>

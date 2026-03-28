@@ -13,7 +13,12 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp } from 'lucide-react';
+import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp, Shield, Eye } from 'lucide-react';
+
+interface User {
+  username: string;
+  role: 'admin' | 'sales';
+}
 import Image from 'next/image';
 
 interface Product {
@@ -50,18 +55,21 @@ export default function Home() {
     level1Categories: [],
     level2Categories: [],
   });
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // 检查登录状态
   useEffect(() => {
     fetch('/api/auth')
       .then((res) => res.json())
       .then((data) => {
-        if (data.authenticated) {
-          setCurrentUser(data.user || 'admin');
+        if (data.authenticated && data.user) {
+          setCurrentUser(data.user);
         }
       });
   }, []);
+  
+  // 是否为管理员
+  const isAdmin = currentUser?.role === 'admin';
 
   // 登出
   const handleLogout = async () => {
@@ -151,19 +159,31 @@ export default function Home() {
                 <TrendingUp className="h-4 w-4 mr-2" />
                 数据统计
               </Button>
-              <Button
-                variant="secondary"
-                onClick={() => router.push('/batch-import')}
-                className="bg-white text-blue-600 hover:bg-blue-50"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                批量导入图片
-              </Button>
+              {isAdmin && (
+                <Button
+                  variant="secondary"
+                  onClick={() => router.push('/batch-import')}
+                  className="bg-white text-blue-600 hover:bg-blue-50"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  批量导入图片
+                </Button>
+              )}
               {currentUser && (
                 <div className="flex items-center gap-3 ml-2">
-                  <span className="text-sm text-blue-100">
-                    当前用户: <span className="font-medium text-white">{currentUser}</span>
-                  </span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                    {currentUser.role === 'admin' ? (
+                      <Shield className="h-4 w-4 text-yellow-300" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-green-300" />
+                    )}
+                    <span className="text-sm text-white">
+                      {currentUser.username}
+                      <span className="text-xs text-blue-200 ml-1">
+                        ({currentUser.role === 'admin' ? '管理员' : '销售'})
+                      </span>
+                    </span>
+                  </div>
                   <Button
                     variant="outline"
                     size="sm"
@@ -289,7 +309,7 @@ export default function Home() {
                   <ImageIcon className="h-12 w-12 text-gray-300" />
                   <div className="absolute bottom-2 right-2">
                     <Badge variant="secondary" className="text-xs">
-                      点击上传图片
+                      {isAdmin ? '点击上传图片' : '点击查看详情'}
                     </Badge>
                   </div>
                 </div>

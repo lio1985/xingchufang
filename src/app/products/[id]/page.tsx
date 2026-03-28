@@ -5,8 +5,13 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Upload, Trash2, Star, ImageIcon } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Star, ImageIcon, Shield, Eye } from 'lucide-react';
 import { compressImage, getImageInfo, shouldCompress } from '@/lib/image-compress';
+
+interface User {
+  username: string;
+  role: 'admin' | 'sales';
+}
 
 interface Product {
   id: number;
@@ -44,14 +49,21 @@ export default function ProductDetailPage({
   const [images, setImages] = useState<ProductImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // 检查登录状态
   useEffect(() => {
     fetch('/api/auth')
       .then((res) => res.json())
-      .then((data) => setIsAdmin(data.authenticated));
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setCurrentUser(data.user);
+        }
+      });
   }, []);
+  
+  // 是否为管理员
+  const isAdmin = currentUser?.role === 'admin';
 
   // 获取商品详情
   useEffect(() => {
@@ -218,16 +230,33 @@ export default function ProductDetailPage({
       {/* 头部 */}
       <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
         <div className="container mx-auto px-4 py-6">
-          <Button
-            variant="ghost"
-            className="text-white hover:bg-blue-700 mb-4"
-            onClick={() => router.push('/')}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            返回商品列表
-          </Button>
+          <div className="flex items-center justify-between mb-4">
+            <Button
+              variant="ghost"
+              className="text-white hover:bg-blue-700"
+              onClick={() => router.push('/')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              返回商品列表
+            </Button>
+            {currentUser && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                {currentUser.role === 'admin' ? (
+                  <Shield className="h-4 w-4 text-yellow-300" />
+                ) : (
+                  <Eye className="h-4 w-4 text-green-300" />
+                )}
+                <span className="text-sm text-white">
+                  {currentUser.username}
+                  <span className="text-xs text-blue-200 ml-1">
+                    ({currentUser.role === 'admin' ? '管理员' : '销售'})
+                  </span>
+                </span>
+              </div>
+            )}
+          </div>
           <h1 className="text-3xl font-bold">{product.name}</h1>
-          <p className="text-blue-100 mt-1">商品详情 · 图片管理</p>
+          <p className="text-blue-100 mt-1">商品详情 · {isAdmin ? '图片管理' : '信息查看'}</p>
         </div>
       </header>
 

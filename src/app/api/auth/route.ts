@@ -1,57 +1,76 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// 角色类型
+export type UserRole = 'admin' | 'sales';
+
+// 用户信息接口
+export interface UserInfo {
+  username: string;
+  role: UserRole;
+}
+
 // 登录验证
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
     
-    // 从环境变量获取管理员账号密码
-    // 支持多个账号，格式: username1:password1,username2:password2
-    const adminCredentials = process.env.ADMIN_CREDENTIALS || 'admin:admin123';
-    const adminPassword = process.env.ADMIN_PASSWORD; // 兼容旧配置
+    if (!username || !password) {
+      return NextResponse.json(
+        { success: false, error: '请输入账号和密码' },
+        { status: 400 }
+      );
+    }
     
-    // 解析账号密码列表
-    const credentials = new Map<string, string>();
+    // 从环境变量获取用户配置
+    // 格式: username1:password1:role1,username2:password2:role2
+    // 例如: admin:admin123:admin,sales:sales123:sales
+    const userCredentials = process.env.USER_CREDENTIALS || 'admin:admin123:admin,sales:sales123:sales';
     
-    // 解析新格式 ADMIN_CREDENTIALS
-    adminCredentials.split(',').forEach(cred => {
-      const [user, pass] = cred.trim().split(':');
-      if (user && pass) {
-        credentials.set(user, pass);
+    // 解析用户列表
+    const users = new Map<string, { password: string; role: UserRole }>();
+    
+    userCredentials.split(',').forEach(cred => {
+      const parts = cred.trim().split(':');
+      if (parts.length >= 2) {
+        const [user, pass, role] = parts;
+        if (user && pass) {
+          users.set(user, {
+            password: pass,
+            role: (role as UserRole) || 'sales', // 默认为销售角色
+          });
+        }
       }
     });
     
     // 验证账号密码
-    let isValid = false;
+    const userConfig = users.get(username);
     
-    if (username && password) {
-      // 账号密码模式
-      const expectedPassword = credentials.get(username);
-      isValid = expectedPassword === password;
-    } else if (password && !username) {
-      // 兼容旧模式：仅密码验证（使用第一个账号的密码或ADMIN_PASSWORD）
-      const firstPassword = credentials.values().next().value;
-      isValid = password === firstPassword || password === adminPassword;
-    }
-    
-    if (isValid) {
+    if (userConfig && userConfig.password === password) {
+      const userInfo: UserInfo = {
+        username,
+        role: userConfig.role,
+      };
+      
       // 创建响应并设置 cookie
       const response = NextResponse.json({ 
         success: true,
-        user: username || 'admin'
+        user: userInfo,
       });
+      
       response.cookies.set('admin_token', 'authenticated', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 60 * 60 * 24 * 7, // 7天
       });
-      response.cookies.set('admin_user', username || 'admin', {
+      
+      response.cookies.set('admin_user', JSON.stringify(userInfo), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 60 * 60 * 24 * 7, // 7天
       });
+      
       return response;
     } else {
       return NextResponse.json(
@@ -62,7 +81,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('登录失败:', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: '登录失败，请重试' },
       { status: 500 }
     );
   }
@@ -71,10 +90,26 @@ export async function POST(request: NextRequest) {
 // 检查登录状态
 export async function GET(request: NextRequest) {
   const token = request.cookies.get('admin_token');
-  const user = request.cookies.get('admin_user');
+  const userCookie = request.cookies.get('admin_user');
+  
+  if (token?.value === 'authenticated' && userCookie?.value) {
+    try {
+      const user = JSON.parse(userCookie.value) as UserInfo;
+      return NextResponse.json({
+        authenticated: true,
+        user,
+      });
+    } catch {
+      return NextResponse.json({
+        authenticated: false,
+        user: null,
+      });
+    }
+  }
+  
   return NextResponse.json({
-    authenticated: token?.value === 'authenticated',
-    user: user?.value || null,
+    authenticated: false,
+    user: null,
   });
 }
 

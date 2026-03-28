@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, Shield, Eye as EyeIcon } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -148,18 +148,35 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            {/* 默认账号提示 */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
-              <p className="text-sm text-gray-600 text-center">
-                <span className="font-medium">默认账号：</span>
-                <code className="mx-1 px-2 py-0.5 bg-gray-200 rounded text-gray-800">admin</code>
-                <span className="mx-1">/</span>
-                <span className="font-medium">密码：</span>
-                <code className="mx-1 px-2 py-0.5 bg-gray-200 rounded text-gray-800">admin123</code>
-              </p>
-              <p className="text-xs text-gray-400 text-center mt-2">
-                可通过环境变量 ADMIN_CREDENTIALS 修改账号密码
-              </p>
+            {/* 账号提示 */}
+            <div className="mt-6 space-y-3">
+              {/* 管理员账号 */}
+              <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-800">管理员（采购负责人）</span>
+                </div>
+                <p className="text-sm text-blue-700">
+                  账号：<code className="px-1.5 py-0.5 bg-blue-100 rounded text-blue-800">admin</code>
+                  {' / '}
+                  密码：<code className="px-1.5 py-0.5 bg-blue-100 rounded text-blue-800">admin123</code>
+                </p>
+                <p className="text-xs text-blue-500 mt-1">可编辑、删除、更新、添加商品</p>
+              </div>
+
+              {/* 销售账号 */}
+              <div className="p-3 bg-green-50 rounded-lg border border-green-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <EyeIcon className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-800">销售</span>
+                </div>
+                <p className="text-sm text-green-700">
+                  账号：<code className="px-1.5 py-0.5 bg-green-100 rounded text-green-800">sales</code>
+                  {' / '}
+                  密码：<code className="px-1.5 py-0.5 bg-green-100 rounded text-green-800">sales123</code>
+                </p>
+                <p className="text-xs text-green-500 mt-1">仅可浏览商品，无法修改</p>
+              </div>
             </div>
           </CardContent>
         </Card>
