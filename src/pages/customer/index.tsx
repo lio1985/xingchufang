@@ -159,8 +159,8 @@ export default function CustomerList() {
             <ChevronLeft size={24} color="#f1f5f9" />
           </View>
           <View>
-            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>获客登记</Text>
-            <Text style={{ fontSize: '14px', color: '#71717a' }}>客户信息管理</Text>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>获客登记</Text>
+            <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '4px' }}>客户信息管理</Text>
           </View>
         </View>
       </View>
