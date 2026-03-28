@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp, Shield, Eye, Menu, LogOut, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp, Shield, Eye, Menu, LogOut, ChevronLeft, ChevronRight, Filter, Settings } from 'lucide-react';
 
 interface User {
   username: string;
@@ -165,6 +165,17 @@ export default function Home() {
               <p className="text-blue-100 text-sm mt-1">快捷搜索选品系统 · 多人协作共享</p>
             </div>
             <div className="flex items-center gap-3">
+              {isAdmin && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/admin')}
+                  className="text-white hover:bg-blue-700"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  管理后台
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="sm"
@@ -253,6 +264,17 @@ export default function Home() {
             {/* 移动端菜单 */}
             {showMobileMenu && (
               <div className="mt-3 pt-3 border-t border-white/20 space-y-2">
+                {isAdmin && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { router.push('/admin'); setShowMobileMenu(false); }}
+                    className="w-full justify-start text-white hover:bg-blue-700"
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    管理后台
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"

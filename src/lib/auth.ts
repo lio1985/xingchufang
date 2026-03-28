@@ -16,6 +16,17 @@ export interface AuthResult {
   isAdmin: boolean;
 }
 
+// URL安全的Base64解码
+const safeBase64Decode = (str: string): string => {
+  try {
+    const padding = str.length % 4;
+    const paddedStr = padding ? str + '='.repeat(4 - padding) : str;
+    return Buffer.from(paddedStr, 'base64').toString('utf-8');
+  } catch {
+    return '';
+  }
+};
+
 /**
  * 从请求中获取当前用户信息和权限状态
  */
@@ -25,12 +36,18 @@ export function getAuthFromRequest(request: NextRequest): AuthResult {
   
   if (token?.value === 'authenticated' && userCookie?.value) {
     try {
-      const user = JSON.parse(userCookie.value) as UserInfo;
-      return {
-        authenticated: true,
-        user,
-        isAdmin: user.role === 'admin',
-      };
+      // 解析URL安全的Base64编码的用户信息
+      const decodedValue = safeBase64Decode(userCookie.value);
+      const [username, role] = decodedValue.split('|');
+      
+      if (username && role) {
+        const user: UserInfo = { username, role: role as UserRole };
+        return {
+          authenticated: true,
+          user,
+          isAdmin: user.role === 'admin',
+        };
+      }
     } catch {
       // 解析失败
     }

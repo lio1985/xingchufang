@@ -4,6 +4,9 @@ import type { NextRequest } from 'next/server';
 // 不需要登录验证的路径
 const publicPaths = ['/login', '/api/auth'];
 
+// 仅管理员可访问的路径
+const adminOnlyPaths = ['/admin'];
+
 // 静态资源路径前缀
 const staticPrefixes = ['/_next', '/favicon.ico', '/images', '/icons'];
 
@@ -60,6 +63,14 @@ export function middleware(request: NextRequest) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // 检查管理员权限
+  const isAdminPath = adminOnlyPaths.some(path => pathname === path || pathname.startsWith(path + '/'));
+  if (isAdminPath && userRole !== 'admin') {
+    console.log(`[Middleware] Access denied to ${pathname} - requires admin role`);
+    // 非管理员访问管理页面，重定向到首页
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   console.log(`[Middleware] Access granted to ${pathname}`);
