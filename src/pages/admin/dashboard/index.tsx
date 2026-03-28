@@ -20,6 +20,8 @@ import {
   Building2,
   UsersRound,
   ShoppingCart,
+  Bot,
+  Radio,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -319,6 +321,7 @@ export default function AdminDashboardPage() {
           <View style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             {[
               { icon: Users, label: '用户管理', desc: '查看/审核用户', color: '#60a5fa', path: '/pages/admin/users/index' },
+              { icon: Bot, label: 'AI 管理', desc: '模型与模块配置', color: '#8b5cf6', path: '/pages/admin/ai-management/index' },
               { icon: BookOpen, label: '语料库', desc: '管理语料库', color: '#4ade80', path: '/pages/admin/lexicon-manage/index' },
               { icon: Database, label: '用户数据', desc: '查看详细数据', color: '#a855f7', path: '/pages/admin/user-data/index' },
               { icon: StickyNote, label: '快速笔记', desc: '管理用户笔记', color: '#38bdf8', path: '/pages/admin/quick-note-manage/index' },
@@ -330,6 +333,7 @@ export default function AdminDashboardPage() {
               { icon: UsersRound, label: '团队管理', desc: '管理团队和成员', color: '#4ade80', path: '/pages/admin/team-management/index' },
               { icon: ShoppingCart, label: '设备订单', desc: '求购转让管理', color: '#38bdf8', path: '/pages/equipment-orders/index' },
               { icon: BookOpen, label: '课程管理', desc: '上传培训课程', color: '#ef4444', path: '/pages/admin/course-manage/index' },
+              { icon: Radio, label: '直播数据', desc: '数据上传分析', color: '#f43f5e', path: '/pages/live-data/admin/index' },
             ].map((item) => {
               const IconComp = item.icon;
               return (
