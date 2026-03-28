@@ -1,14 +1,7 @@
-import { useLaunch } from '@tarojs/taro';
 import { PropsWithChildren } from 'react';
-import { enableWxDebugIfNeeded } from './wx-debug';
 
+// 空的 Preset 组件，避免 useLaunch 在 H5 环境的问题
+// useLaunch 是微信小程序特有的生命周期，H5 环境不需要
 export const Preset = ({ children }: PropsWithChildren) => {
-  useLaunch(() => {
-    enableWxDebugIfNeeded();
-  });
-
-  // H5 相关预设已移除
-  // 小程序项目不再需要 H5 导航栏和样式
-
   return <>{children}</>;
 };
