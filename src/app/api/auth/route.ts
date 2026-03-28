@@ -9,6 +9,19 @@ export interface UserInfo {
   role: UserRole;
 }
 
+// URL安全的Base64编码（去掉=填充，避免Cookie解析问题）
+const safeBase64Encode = (str: string): string => {
+  return Buffer.from(str).toString('base64').replace(/=/g, '');
+};
+
+// URL安全的Base64解码（自动补充=填充）
+const safeBase64Decode = (str: string): string => {
+  // 补充=填充
+  const padding = str.length % 4;
+  const paddedStr = padding ? str + '='.repeat(4 - padding) : str;
+  return Buffer.from(paddedStr, 'base64').toString('utf-8');
+};
+
 // Cookie设置选项
 const getCookieOptions = (request: NextRequest) => {
   // 检查原始请求是否通过HTTPS
@@ -78,8 +91,8 @@ export async function POST(request: NextRequest) {
       // 设置Cookie
       const cookieOptions = getCookieOptions(request);
       
-      // 用户信息使用Base64编码，确保特殊字符不会导致问题
-      const userValue = Buffer.from(`${userInfo.username}|${userInfo.role}`).toString('base64');
+      // 用户信息使用URL安全的Base64编码（去掉=填充）
+      const userValue = safeBase64Encode(`${userInfo.username}|${userInfo.role}`);
       
       console.log('[Auth] Setting cookies - token: authenticated, user:', userValue, 'options:', JSON.stringify(cookieOptions));
       
@@ -111,13 +124,13 @@ export async function GET(request: NextRequest) {
   const token = request.cookies.get('admin_token');
   const userCookie = request.cookies.get('admin_user');
   
-  console.log('[Auth GET] Cookies - token:', token?.value, 'userCookie:', userCookie?.value ? 'exists' : 'none');
+  console.log('[Auth GET] Cookies - token:', token?.value, 'userCookie:', userCookie?.value ? 'exists:' + userCookie.value : 'none');
   
   // 必须同时有token和userCookie才认证通过
   if (token?.value === 'authenticated' && userCookie?.value) {
     try {
-      // 解析Base64编码的用户信息
-      const decodedValue = Buffer.from(userCookie.value, 'base64').toString('utf-8');
+      // 解析URL安全的Base64编码的用户信息
+      const decodedValue = safeBase64Decode(userCookie.value);
       console.log('[Auth GET] Decoded user value:', decodedValue);
       
       const [username, role] = decodedValue.split('|');

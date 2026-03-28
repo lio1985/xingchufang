@@ -7,6 +7,17 @@ const publicPaths = ['/login', '/api/auth'];
 // 静态资源路径前缀
 const staticPrefixes = ['/_next', '/favicon.ico', '/images', '/icons'];
 
+// URL安全的Base64解码
+const safeBase64Decode = (str: string): string => {
+  try {
+    const padding = str.length % 4;
+    const paddedStr = padding ? str + '='.repeat(4 - padding) : str;
+    return Buffer.from(paddedStr, 'base64').toString('utf-8');
+  } catch {
+    return '';
+  }
+};
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -33,14 +44,10 @@ export function middleware(request: NextRequest) {
   // 尝试解析用户角色
   let userRole = 'unknown';
   if (userCookie?.value) {
-    try {
-      const decodedValue = Buffer.from(userCookie.value, 'base64').toString('utf-8');
-      const parts = decodedValue.split('|');
-      if (parts.length >= 2) {
-        userRole = parts[1];
-      }
-    } catch (e) {
-      // 解析失败
+    const decodedValue = safeBase64Decode(userCookie.value);
+    const parts = decodedValue.split('|');
+    if (parts.length >= 2) {
+      userRole = parts[1];
     }
   }
   
