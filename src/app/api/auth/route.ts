@@ -64,7 +64,30 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // 从环境变量获取用户配置
+    // 尝试从数据库验证
+    try {
+      const { getSupabaseClient } = await import('@/storage/database/supabase-client');
+      const client = getSupabaseClient();
+      
+      const { data: dbUser, error: dbError } = await client
+        .from('admin_users')
+        .select('username, password_hash, role')
+        .eq('username', username)
+        .single();
+      
+      if (!dbError && dbUser && dbUser.password_hash === password) {
+        const userInfo: UserInfo = {
+          username: dbUser.username,
+          role: dbUser.role as UserRole,
+        };
+        
+        return createAuthResponse(request, userInfo);
+      }
+    } catch (dbErr) {
+      console.log('[Auth] Database auth failed, falling back to env vars:', dbErr);
+    }
+    
+    // 回退到环境变量验证
     const userCredentials = process.env.USER_CREDENTIALS || 'admin:admin123:admin,sales:sales123:sales';
     
     // 解析用户列表
@@ -92,35 +115,7 @@ export async function POST(request: NextRequest) {
         role: userConfig.role,
       };
       
-      // 用户信息使用URL安全的Base64编码（去掉=填充）
-      const userValue = safeBase64Encode(`${userInfo.username}|${userInfo.role}`);
-      
-      // 获取Cookie选项
-      const cookieOptions = getCookieOptions(request);
-      
-      console.log('[Auth] Cookie settings:', JSON.stringify(cookieOptions));
-      console.log('[Auth] User value:', userValue);
-      
-      // 创建响应
-      const response = NextResponse.json({ 
-        success: true,
-        user: userInfo,
-      });
-      
-      // 设置Cookie - 将用户信息也编码到token中，确保不会丢失
-      // 格式: authenticated|username|role (Base64编码)
-      const tokenValue = safeBase64Encode(`authenticated|${userInfo.username}|${userInfo.role}`);
-      
-      response.cookies.set('admin_session', tokenValue, cookieOptions);
-      // 同时设置兼容的旧Cookie
-      response.cookies.set('admin_token', 'authenticated', cookieOptions);
-      response.cookies.set('admin_user', userValue, cookieOptions);
-      
-      // 验证Cookie是否设置成功
-      const setCookies = response.headers.getSetCookie();
-      console.log('[Auth] Set-Cookie headers:', setCookies);
-      
-      return response;
+      return createAuthResponse(request, userInfo);
     } else {
       return NextResponse.json(
         { success: false, error: '账号或密码错误' },
@@ -134,6 +129,39 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// 创建认证响应
+function createAuthResponse(request: NextRequest, userInfo: UserInfo) {
+  // 用户信息使用URL安全的Base64编码（去掉=填充）
+  const userValue = safeBase64Encode(`${userInfo.username}|${userInfo.role}`);
+  
+  // 获取Cookie选项
+  const cookieOptions = getCookieOptions(request);
+  
+  console.log('[Auth] Cookie settings:', JSON.stringify(cookieOptions));
+  console.log('[Auth] User value:', userValue);
+  
+  // 创建响应
+  const response = NextResponse.json({ 
+    success: true,
+    user: userInfo,
+  });
+  
+  // 设置Cookie - 将用户信息也编码到token中，确保不会丢失
+  // 格式: authenticated|username|role (Base64编码)
+  const tokenValue = safeBase64Encode(`authenticated|${userInfo.username}|${userInfo.role}`);
+  
+  response.cookies.set('admin_session', tokenValue, cookieOptions);
+  // 同时设置兼容的旧Cookie
+  response.cookies.set('admin_token', 'authenticated', cookieOptions);
+  response.cookies.set('admin_user', userValue, cookieOptions);
+  
+  // 验证Cookie是否设置成功
+  const setCookies = response.headers.getSetCookie();
+  console.log('[Auth] Set-Cookie headers:', setCookies);
+  
+  return response;
 }
 
 // 检查登录状态
