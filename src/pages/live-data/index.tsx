@@ -4,6 +4,7 @@ import Taro from '@tarojs/taro';
 import { Network } from '@/network';
 import {
   ChevronLeft,
+  ChevronRight,
   Radio,
   Upload,
   ChartBar,
@@ -101,16 +102,14 @@ export default function LiveDataPage() {
   };
 
   const renderUploadTab = () => (
-    <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>上传数据</Text>
-
+    <View style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {/* 上传方式卡片 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '20px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
@@ -119,30 +118,30 @@ export default function LiveDataPage() {
       >
         <View
           style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #f43f5e, #e11d48)',
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            backgroundColor: 'rgba(244, 63, 94, 0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <FileUp size={28} color="#fff" />
+          <FileUp size={24} color="#f43f5e" />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>手动填写</Text>
-          <Text style={{ fontSize: '22px', color: '#64748b', marginTop: '4px' }}>逐条输入直播数据</Text>
+          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>手动填写</Text>
+          <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>逐条输入直播数据</Text>
         </View>
-        <Text style={{ fontSize: '24px' }}>→</Text>
+        <ChevronRight size={18} color="#64748b" />
       </View>
 
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '20px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
@@ -151,30 +150,30 @@ export default function LiveDataPage() {
       >
         <View
           style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #4ade80, #22c55e)',
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            backgroundColor: 'rgba(74, 222, 128, 0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <Upload size={28} color="#fff" />
+          <Upload size={24} color="#4ade80" />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>Excel导入</Text>
-          <Text style={{ fontSize: '22px', color: '#64748b', marginTop: '4px' }}>批量上传数据表格</Text>
+          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>Excel导入</Text>
+          <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>批量上传数据表格</Text>
         </View>
-        <Text style={{ fontSize: '24px' }}>→</Text>
+        <ChevronRight size={18} color="#64748b" />
       </View>
 
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '20px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
@@ -183,46 +182,44 @@ export default function LiveDataPage() {
       >
         <View
           style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #60a5fa, #3b82f6)',
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            backgroundColor: 'rgba(96, 165, 250, 0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <ImagePlus size={28} color="#fff" />
+          <ImagePlus size={24} color="#60a5fa" />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>截图识别</Text>
-          <Text style={{ fontSize: '22px', color: '#64748b', marginTop: '4px' }}>识别复盘截图信息</Text>
+          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>截图识别</Text>
+          <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>识别复盘截图信息</Text>
         </View>
-        <Text style={{ fontSize: '24px' }}>→</Text>
+        <ChevronRight size={18} color="#64748b" />
       </View>
 
       {/* 数据模板下载 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '16px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
         }}
       >
-        <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-          <ClipboardList size={20} color="#38bdf8" />
-          <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>数据模板</Text>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <ClipboardList size={18} color="#38bdf8" />
+          <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9' }}>数据模板</Text>
         </View>
-        <Text style={{ fontSize: '22px', color: '#64748b' }}>
-          下载Excel模板，按格式填写后上传
-        </Text>
+        <Text style={{ fontSize: '13px', color: '#71717a' }}>下载Excel模板，按格式填写后上传</Text>
       </View>
     </View>
   );
 
   const renderStatsTab = () => (
-    <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <View style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {/* 核心指标 */}
       <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
         {[
@@ -234,17 +231,17 @@ export default function LiveDataPage() {
           <View
             key={index}
             style={{
-              backgroundColor: 'rgba(30, 58, 95, 0.3)',
-              borderRadius: '16px',
-              padding: '16px',
+              backgroundColor: '#111827',
               border: '1px solid #1e3a5f',
+              borderRadius: '12px',
+              padding: '16px',
             }}
           >
             <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <item.icon size={16} color={item.color} />
-              <Text style={{ fontSize: '22px', color: '#94a3b8' }}>{item.label}</Text>
+              <Text style={{ fontSize: '13px', color: '#71717a' }}>{item.label}</Text>
             </View>
-            <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9' }}>{item.value}</Text>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>{item.value}</Text>
           </View>
         ))}
       </View>
@@ -252,19 +249,19 @@ export default function LiveDataPage() {
       {/* 转化指标 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '16px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
         }}
       >
-        <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px' }}>转化指标</Text>
+        <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>转化指标</Text>
 
         <View style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <View>
             <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <Text style={{ fontSize: '22px', color: '#94a3b8' }}>互动率</Text>
-              <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{(stats?.interactionRate || 0).toFixed(1)}%</Text>
+              <Text style={{ fontSize: '13px', color: '#71717a' }}>互动率</Text>
+              <Text style={{ fontSize: '13px', color: '#f1f5f9' }}>{(stats?.interactionRate || 0).toFixed(1)}%</Text>
             </View>
             <View style={{ width: '100%', height: '6px', borderRadius: '3px', backgroundColor: '#1e3a5f', overflow: 'hidden' }}>
               <View style={{ width: `${Math.min(stats?.interactionRate || 0, 100)}%`, height: '100%', backgroundColor: '#f43f5e', borderRadius: '3px' }} />
@@ -273,8 +270,8 @@ export default function LiveDataPage() {
 
           <View>
             <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <Text style={{ fontSize: '22px', color: '#94a3b8' }}>转化率</Text>
-              <Text style={{ fontSize: '22px', color: '#f1f5f9' }}>{(stats?.conversionRate || 0).toFixed(1)}%</Text>
+              <Text style={{ fontSize: '13px', color: '#71717a' }}>转化率</Text>
+              <Text style={{ fontSize: '13px', color: '#f1f5f9' }}>{(stats?.conversionRate || 0).toFixed(1)}%</Text>
             </View>
             <View style={{ width: '100%', height: '6px', borderRadius: '3px', backgroundColor: '#1e3a5f', overflow: 'hidden' }}>
               <View style={{ width: `${Math.min(stats?.conversionRate || 0, 100)}%`, height: '100%', backgroundColor: '#4ade80', borderRadius: '3px' }} />
@@ -286,16 +283,16 @@ export default function LiveDataPage() {
       {/* 最近直播 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '16px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
         }}
       >
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>最近直播</Text>
+          <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9' }}>最近直播</Text>
           <Text
-            style={{ fontSize: '22px', color: '#f43f5e' }}
+            style={{ fontSize: '13px', color: '#38bdf8' }}
             onClick={() => Taro.navigateTo({ url: '/pages/live-data/list' })}
           >
             查看全部
@@ -307,7 +304,7 @@ export default function LiveDataPage() {
             <View
               key={stream.id}
               style={{
-                backgroundColor: '#1e293b',
+                backgroundColor: '#0f172a',
                 borderRadius: '12px',
                 padding: '12px',
                 marginBottom: '8px',
@@ -315,19 +312,19 @@ export default function LiveDataPage() {
               onClick={() => Taro.navigateTo({ url: `/pages/live-data/detail?id=${stream.id}` })}
             >
               <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <Text style={{ fontSize: '24px', fontWeight: '600', color: '#f1f5f9' }}>{stream.title}</Text>
-                <Text style={{ fontSize: '20px', color: '#64748b' }}>{formatDate(stream.startTime)}</Text>
+                <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff' }}>{stream.title}</Text>
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>{formatDate(stream.startTime)}</Text>
               </View>
               <View style={{ display: 'flex', gap: '16px' }}>
-                <Text style={{ fontSize: '20px', color: '#94a3b8' }}>观看: {stream.totalViews}</Text>
-                <Text style={{ fontSize: '20px', color: '#4ade80' }}>GMV: ¥{(stream.gmv / 100).toFixed(0)}</Text>
-                <Text style={{ fontSize: '20px', color: '#64748b' }}>{formatDuration(stream.durationSeconds)}</Text>
+                <Text style={{ fontSize: '12px', color: '#94a3b8' }}>观看: {stream.totalViews}</Text>
+                <Text style={{ fontSize: '12px', color: '#4ade80' }}>GMV: ¥{(stream.gmv / 100).toFixed(0)}</Text>
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>{formatDuration(stream.durationSeconds)}</Text>
               </View>
             </View>
           ))
         ) : (
           <View style={{ padding: '20px 0', textAlign: 'center' }}>
-            <Text style={{ fontSize: '22px', color: '#64748b' }}>暂无直播数据</Text>
+            <Text style={{ fontSize: '13px', color: '#64748b' }}>暂无直播数据</Text>
           </View>
         )}
       </View>
@@ -335,58 +332,58 @@ export default function LiveDataPage() {
   );
 
   const renderAnalysisTab = () => (
-    <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>数据分析</Text>
-
+    <View style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {/* AI 分析功能 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '20px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
         }}
         onClick={() => Taro.navigateTo({ url: '/pages/live-data/analysis' })}
       >
-        <View style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <View
-            style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <ChartArea size={28} color="#fff" />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>AI 复盘分析</Text>
-            <Text style={{ fontSize: '22px', color: '#64748b', marginTop: '4px' }}>深度分析直播数据，输出专业报告</Text>
-          </View>
+        <View
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            backgroundColor: 'rgba(168, 85, 247, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <ChartArea size={24} color="#a855f7" />
         </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: '15px', fontWeight: '600', color: '#ffffff', display: 'block' }}>AI 复盘分析</Text>
+          <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>深度分析直播数据，输出专业报告</Text>
+        </View>
+        <ChevronRight size={18} color="#64748b" />
       </View>
 
       {/* 数据对比 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '16px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
         }}
       >
         <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <ChartBar size={20} color="#38bdf8" />
-          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>数据对比</Text>
+          <ChartBar size={18} color="#38bdf8" />
+          <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9' }}>数据对比</Text>
         </View>
 
         <View style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <View
             style={{
-              backgroundColor: '#1e293b',
+              backgroundColor: '#0f172a',
               borderRadius: '12px',
               padding: '12px',
               display: 'flex',
@@ -394,13 +391,13 @@ export default function LiveDataPage() {
               alignItems: 'center',
             }}
           >
-            <Text style={{ fontSize: '24px', color: '#f1f5f9' }}>本场 vs 上场</Text>
-            <Text style={{ fontSize: '20px', color: '#f43f5e' }}>进入对比</Text>
+            <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>本场 vs 上场</Text>
+            <Text style={{ fontSize: '13px', color: '#38bdf8' }}>进入对比</Text>
           </View>
 
           <View
             style={{
-              backgroundColor: '#1e293b',
+              backgroundColor: '#0f172a',
               borderRadius: '12px',
               padding: '12px',
               display: 'flex',
@@ -408,8 +405,8 @@ export default function LiveDataPage() {
               alignItems: 'center',
             }}
           >
-            <Text style={{ fontSize: '24px', color: '#f1f5f9' }}>本周 vs 上周</Text>
-            <Text style={{ fontSize: '20px', color: '#f43f5e' }}>进入对比</Text>
+            <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>本周 vs 上周</Text>
+            <Text style={{ fontSize: '13px', color: '#38bdf8' }}>进入对比</Text>
           </View>
         </View>
       </View>
@@ -417,132 +414,95 @@ export default function LiveDataPage() {
       {/* 趋势分析 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '16px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
         }}
       >
-        <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <TrendingUp size={20} color="#38bdf8" />
-          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>趋势分析</Text>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+          <TrendingUp size={18} color="#38bdf8" />
+          <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9' }}>趋势分析</Text>
         </View>
 
-        <Text style={{ fontSize: '22px', color: '#64748b' }}>
-          查看GMV、观看人数、转化率等关键指标的历史趋势
-        </Text>
+        <Text style={{ fontSize: '13px', color: '#71717a' }}>查看GMV、观看人数、转化率等关键指标的历史趋势</Text>
       </View>
 
       {/* 时段分析 */}
       <View
         style={{
-          backgroundColor: 'rgba(30, 58, 95, 0.3)',
-          borderRadius: '16px',
-          padding: '16px',
+          backgroundColor: '#111827',
           border: '1px solid #1e3a5f',
+          borderRadius: '12px',
+          padding: '16px',
         }}
       >
-        <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <Clock size={20} color="#38bdf8" />
-          <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>时段分析</Text>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+          <Clock size={18} color="#38bdf8" />
+          <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9' }}>时段分析</Text>
         </View>
 
-        <Text style={{ fontSize: '22px', color: '#64748b' }}>
-          分析不同时段的直播表现，找到最佳开播时间
-        </Text>
+        <Text style={{ fontSize: '13px', color: '#71717a' }}>分析不同时段的直播表现，找到最佳开播时间</Text>
       </View>
     </View>
   );
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
-      {/* 页面头部 */}
-      <View
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '130px',
-          background: 'linear-gradient(180deg, #0f1a2e 0%, #0a1628 100%)',
-          borderBottom: '1px solid #1e3a5f',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          paddingBottom: '12px',
-          zIndex: 100,
-        }}
-      >
-        <View style={{ padding: '0 16px 12px' }}>
-          <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <View
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={() => Taro.navigateBack()}
-              >
-                <ChevronLeft size={22} color="#38bdf8" />
-              </View>
-              <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <View
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(244, 63, 94, 0.15)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Radio size={18} color="#f43f5e" />
-                </View>
-                <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9' }}>直播数据</Text>
-              </View>
-            </View>
-            <View onClick={handleRefresh}>
-              <RefreshCw size={22} color={loading ? '#64748b' : '#38bdf8'} />
-            </View>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
+      {/* Header */}
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+          <View
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.redirectTo({ url: '/pages/tab-profile/index' });
+              }
+            }}
+          >
+            <ChevronLeft size={24} color="#f1f5f9" />
           </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>直播数据</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>直播数据分析与管理</Text>
+          </View>
+          <View onClick={handleRefresh} style={{ padding: '8px' }}>
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
+          </View>
+        </View>
 
-          {/* Tab 切换 */}
-          <View style={{ display: 'flex', gap: '8px' }}>
-            {[
-              { key: 'upload', label: '上传数据', icon: Upload },
-              { key: 'stats', label: '数据统计', icon: ChartBar },
-              { key: 'analysis', label: '数据分析', icon: ChartArea },
-            ].map((tab) => (
-              <View
-                key={tab.key}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  borderRadius: '10px',
-                  backgroundColor: activeTab === tab.key ? '#f43f5e' : '#1e293b',
-                  border: activeTab === tab.key ? 'none' : '1px solid #1e3a5f',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                }}
-                onClick={() => setActiveTab(tab.key as typeof activeTab)}
-              >
-                <tab.icon size={16} color={activeTab === tab.key ? '#fff' : '#71717a'} />
-                <Text style={{ fontSize: '22px', fontWeight: '600', color: activeTab === tab.key ? '#fff' : '#64748b' }}>{tab.label}</Text>
-              </View>
-            ))}
-          </View>
+        {/* Tab 切换 */}
+        <View style={{ display: 'flex', gap: '8px' }}>
+          {[
+            { key: 'upload', label: '上传数据', icon: Upload },
+            { key: 'stats', label: '数据统计', icon: ChartBar },
+            { key: 'analysis', label: '数据分析', icon: ChartArea },
+          ].map((tab) => (
+            <View
+              key={tab.key}
+              style={{
+                flex: 1,
+                padding: '12px',
+                borderRadius: '12px',
+                backgroundColor: activeTab === tab.key ? '#38bdf8' : '#1e293b',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+              }}
+              onClick={() => setActiveTab(tab.key as typeof activeTab)}
+            >
+              <tab.icon size={16} color={activeTab === tab.key ? '#000' : '#71717a'} />
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: activeTab === tab.key ? '#000' : '#64748b' }}>{tab.label}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
-      <ScrollView scrollY style={{ height: 'calc(100vh - 130px)', marginTop: '130px' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 180px)' }}>
         {activeTab === 'upload' && renderUploadTab()}
         {activeTab === 'stats' && renderStatsTab()}
         {activeTab === 'analysis' && renderAnalysisTab()}

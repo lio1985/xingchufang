@@ -150,119 +150,69 @@ export default function AdminAuditLogsPage() {
   ];
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
-      {/* 页面头部 */}
-      <View style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '80px',
-        background: 'linear-gradient(180deg, #0f1a2e 0%, #0a1628 100%)',
-        borderBottom: '1px solid #1e3a5f',
-        display: 'flex',
-        alignItems: 'flex-end',
-        paddingBottom: '12px',
-        zIndex: 100,
-      }}
-      >
-        <View style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          padding: '0 16px',
-        }}
-        >
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
+      {/* Header */}
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
           <View
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
-              backgroundColor: 'rgba(56, 189, 248, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.redirectTo({ url: '/pages/admin/dashboard/index' });
+              }
             }}
-            onClick={() => Taro.navigateBack()}
           >
-            <ChevronLeft size={22} color="#38bdf8" />
+            <ChevronLeft size={24} color="#f1f5f9" />
           </View>
-          
-          <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <View
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                backgroundColor: 'rgba(74, 222, 128, 0.15)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <FileText size={18} color="#4ade80" />
-            </View>
-            <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9' }}>审计日志</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>审计日志</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>系统操作记录</Text>
           </View>
-          
-          <View
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
-              backgroundColor: 'rgba(56, 189, 248, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onClick={() => { loadStatistics(); loadLogs(true); }}
-          >
+          <View onClick={() => { loadStatistics(); loadLogs(true); }} style={{ padding: '8px' }}>
             <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
           </View>
         </View>
       </View>
 
-      <ScrollView scrollY style={{ height: 'calc(100vh - 80px)', marginTop: '80px' }}>
-        <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 120px)' }}>
+        <View style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* 统计卡片 */}
           <View style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
             {statCards.map((card, index) => (
               <View
                 key={index}
                 style={{
-                  backgroundColor: 'rgba(30, 58, 95, 0.3)',
+                  backgroundColor: '#111827',
+                  border: '1px solid #1e3a5f',
                   borderRadius: '12px',
                   padding: '12px',
-                  border: '1px solid #1e3a5f',
                   textAlign: 'center',
                 }}
               >
                 <View style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
-                  <card.icon size={20} color={card.color} />
+                  <card.icon size={18} color={card.color} />
                 </View>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#f1f5f9', display: 'block' }}>
-                  {card.value}
-                </Text>
-                <Text style={{ fontSize: '18px', color: '#94a3b8', marginTop: '4px' }}>
-                  {card.label}
-                </Text>
+                <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{card.value}</Text>
+                <Text style={{ fontSize: '11px', color: '#71717a', display: 'block', marginTop: '2px' }}>{card.label}</Text>
               </View>
             ))}
           </View>
 
           {/* 筛选器 */}
           <View style={{
-            backgroundColor: 'rgba(30, 58, 95, 0.3)',
+            backgroundColor: '#111827',
+            border: '1px solid #1e3a5f',
             borderRadius: '12px',
             padding: '12px',
-            border: '1px solid #1e3a5f',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
           }}
           >
-            <FileText size={20} color="#38bdf8" />
+            <FileText size={18} color="#38bdf8" />
             <View style={{ display: 'flex', gap: '12px', flex: 1 }}>
               <Picker
                 mode="selector"
@@ -276,7 +226,7 @@ export default function AdminAuditLogsPage() {
                   border: filterModule ? '1px solid #38bdf8' : '1px solid #1e3a5f',
                 }}
                 >
-                  <Text style={{ fontSize: '22px', color: filterModule ? '#38bdf8' : '#94a3b8' }}>
+                  <Text style={{ fontSize: '13px', color: filterModule ? '#38bdf8' : '#94a3b8' }}>
                     {filterModule || '全部模块'}
                   </Text>
                 </View>
@@ -294,7 +244,7 @@ export default function AdminAuditLogsPage() {
                   border: filterLevel ? '1px solid #38bdf8' : '1px solid #1e3a5f',
                 }}
                 >
-                  <Text style={{ fontSize: '22px', color: filterLevel ? '#38bdf8' : '#94a3b8' }}>
+                  <Text style={{ fontSize: '13px', color: filterLevel ? '#38bdf8' : '#94a3b8' }}>
                     {filterLevel || '全部级别'}
                   </Text>
                 </View>
@@ -305,14 +255,14 @@ export default function AdminAuditLogsPage() {
           {/* 日志列表 */}
           {logs.length === 0 && !loading ? (
             <View style={{
-              padding: '40px 0',
+              padding: '60px 20px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
             }}
             >
-              <FileText size={80} color="#71717a" />
-              <Text style={{ fontSize: '28px', color: '#64748b', marginTop: '16px' }}>暂无日志</Text>
+              <FileText size={64} color="#71717a" />
+              <Text style={{ fontSize: '15px', color: '#64748b', display: 'block', marginTop: '16px' }}>暂无日志</Text>
             </View>
           ) : (
             logs.map((log) => {
@@ -321,10 +271,10 @@ export default function AdminAuditLogsPage() {
                 <View
                   key={log.id}
                   style={{
-                    backgroundColor: 'rgba(30, 58, 95, 0.3)',
+                    backgroundColor: '#111827',
+                    border: '1px solid #1e3a5f',
                     borderRadius: '12px',
                     padding: '16px',
-                    border: '1px solid #1e3a5f',
                   }}
                 >
                   <View style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
@@ -332,21 +282,20 @@ export default function AdminAuditLogsPage() {
                       width: '36px',
                       height: '36px',
                       borderRadius: '10px',
-                      backgroundColor: `rgba(${log.level === 'error' ? '248, 113, 113' : log.level === 'warning' ? '251, 191, 36' : '56, 189, 248'}, 0.15)`,
+                      backgroundColor: `${getLevelColor(log.level)}20`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      flexShrink: 0,
                     }}
                     >
                       <LevelIcon size={18} color={getLevelColor(log.level)} />
                     </View>
 
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1, minWidth: 0 }}>
                       <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <Text style={{ fontSize: '26px', fontWeight: '600', color: '#f1f5f9' }}>
-                          {log.action}
-                        </Text>
-                        <Text style={{ fontSize: '20px', color: '#64748b' }}>
+                        <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff', display: 'block' }}>{log.action}</Text>
+                        <Text style={{ fontSize: '12px', color: '#64748b' }}>
                           {formatDate(log.createdAt)}
                         </Text>
                       </View>
@@ -354,22 +303,22 @@ export default function AdminAuditLogsPage() {
                       <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
                         <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <User size={14} color="#71717a" />
-                          <Text style={{ fontSize: '22px', color: '#94a3b8' }}>{log.userName || '系统'}</Text>
+                          <Text style={{ fontSize: '12px', color: '#94a3b8' }}>{log.userName || '系统'}</Text>
                         </View>
                         <View style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <Activity size={14} color="#71717a" />
-                          <Text style={{ fontSize: '22px', color: '#94a3b8' }}>{log.module}</Text>
+                          <Text style={{ fontSize: '12px', color: '#94a3b8' }}>{log.module}</Text>
                         </View>
                       </View>
 
                       {log.details && (
-                        <Text style={{ fontSize: '22px', color: '#64748b', lineHeight: '1.5' }}>
+                        <Text style={{ fontSize: '13px', color: '#64748b', lineHeight: '1.5' }}>
                           {log.details}
                         </Text>
                       )}
 
                       {log.ip && (
-                        <Text style={{ fontSize: '20px', color: '#64748b', marginTop: '8px' }}>
+                        <Text style={{ fontSize: '12px', color: '#64748b', marginTop: '8px' }}>
                           IP: {log.ip}
                         </Text>
                       )}
@@ -382,7 +331,7 @@ export default function AdminAuditLogsPage() {
 
           {loading && (
             <View style={{ padding: '40px 0', display: 'flex', justifyContent: 'center' }}>
-              <RefreshCw size={48} color="#38bdf8" />
+              <RefreshCw size={32} color="#38bdf8" />
             </View>
           )}
 
@@ -391,13 +340,13 @@ export default function AdminAuditLogsPage() {
               style={{ padding: '16px 0', textAlign: 'center' }}
               onClick={() => loadLogs()}
             >
-              <Text style={{ fontSize: '22px', color: '#64748b' }}>加载更多</Text>
+              <Text style={{ fontSize: '13px', color: '#64748b' }}>加载更多</Text>
             </View>
           )}
 
           {!loading && !hasMore && logs.length > 0 && (
             <View style={{ padding: '16px 0', textAlign: 'center' }}>
-              <Text style={{ fontSize: '22px', color: '#64748b' }}>没有更多日志了</Text>
+              <Text style={{ fontSize: '13px', color: '#64748b' }}>没有更多日志了</Text>
             </View>
           )}
         </View>

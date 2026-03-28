@@ -338,91 +338,59 @@ export default function AdminRecycleManagementPage() {
   };
 
   return (
-    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a' }}>
-      {/* 页面头部 */}
-      <View style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '130px',
-        background: 'linear-gradient(180deg, #0f1a2e 0%, #0a1628 100%)',
-        borderBottom: '1px solid #1e3a5f',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        paddingBottom: '12px',
-        zIndex: 100,
-      }}
-      >
-        <View style={{ padding: '0 16px 12px' }}>
-          <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <View
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={() => Taro.navigateBack()}
-              >
-                <ChevronLeft size={22} color="#38bdf8" />
-              </View>
-              <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <View
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(245, 158, 11, 0.15)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Store size={18} color="#f59e0b" />
-                </View>
-                <Text style={{ fontSize: '32px', fontWeight: '700', color: '#f1f5f9' }}>回收门店</Text>
-              </View>
-            </View>
-            <View onClick={handleRefresh}>
-              <RefreshCw size={22} color={loading ? '#64748b' : '#38bdf8'} />
-            </View>
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
+      {/* Header */}
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+          <View
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.redirectTo({ url: '/pages/admin/dashboard/index' });
+              }
+            }}
+          >
+            <ChevronLeft size={24} color="#f1f5f9" />
           </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>回收门店</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>门店回收管理</Text>
+          </View>
+          <View onClick={handleRefresh} style={{ padding: '8px' }}>
+            <RefreshCw size={20} color={loading ? '#64748b' : '#38bdf8'} />
+          </View>
+        </View>
 
-          {/* Tab 切换 */}
-          <View style={{ display: 'flex', gap: '8px' }}>
-            {[
-              { key: 'overview', label: '总览' },
-              { key: 'ranking', label: '回收排行' },
-              { key: 'risk', label: '风险预警' },
-            ].map((tab) => (
-              <View
-                key={tab.key}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  borderRadius: '10px',
-                  backgroundColor: activeTab === tab.key ? '#f59e0b' : '#1e293b',
-                  border: activeTab === tab.key ? 'none' : '1px solid #1e3a5f',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={() => setActiveTab(tab.key as any)}
-              >
-                <Text style={{ fontSize: '22px', fontWeight: '600', color: activeTab === tab.key ? '#000' : '#64748b' }}>{tab.label}</Text>
-              </View>
-            ))}
-          </View>
+        {/* Tab 切换 */}
+        <View style={{ display: 'flex', gap: '8px' }}>
+          {[
+            { key: 'overview', label: '总览' },
+            { key: 'ranking', label: '回收排行' },
+            { key: 'risk', label: '风险预警' },
+          ].map((tab) => (
+            <View
+              key={tab.key}
+              style={{
+                flex: 1,
+                padding: '12px',
+                borderRadius: '12px',
+                backgroundColor: activeTab === tab.key ? '#38bdf8' : '#1e293b',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onClick={() => setActiveTab(tab.key as any)}
+            >
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: activeTab === tab.key ? '#000' : '#64748b' }}>{tab.label}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
-      <ScrollView scrollY style={{ height: 'calc(100vh - 130px)', marginTop: '130px' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 180px)' }}>
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'ranking' && renderRanking()}
         {activeTab === 'risk' && renderRisk()}

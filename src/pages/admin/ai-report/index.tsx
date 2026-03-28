@@ -85,58 +85,108 @@ export default function AdminAIReportPage() {
   };
 
   return (
-    <View className="admin-page">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* Header */}
-      <View className="admin-header">
-        <View className="admin-header-content">
-          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={22} color="#38bdf8" />
-          </View>
-          <Text className="admin-title">运营报告</Text>
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
           <View
-            className="admin-action-btn"
-            onClick={loadLatestReport}
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => {
+              const pages = Taro.getCurrentPages();
+              if (pages.length > 1) {
+                Taro.navigateBack();
+              } else {
+                Taro.redirectTo({ url: '/pages/admin/dashboard/index' });
+              }
+            }}
           >
-            <RefreshCw size={22} color="#38bdf8" />
+            <ChevronLeft size={24} color="#f1f5f9" />
           </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>运营报告</Text>
+            <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>AI 智能报告生成</Text>
+          </View>
+          <View onClick={loadLatestReport} style={{ padding: '8px' }}>
+            <RefreshCw size={20} color="#38bdf8" />
+          </View>
+        </View>
+
+        {/* 时间范围选择 */}
+        <View style={{ display: 'flex', gap: '8px' }}>
+          {timeRangeOptions.map((option) => (
+            <View
+              key={option.value}
+              style={{
+                flex: 1,
+                padding: '10px',
+                borderRadius: '10px',
+                backgroundColor: timeRange === option.value ? '#38bdf8' : '#1e293b',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onClick={() => setTimeRange(option.value as any)}
+            >
+              <Text style={{ fontSize: '13px', fontWeight: '500', color: timeRange === option.value ? '#000' : '#64748b' }}>{option.label}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
-      <ScrollView
-        scrollY
-        style={{ height: 'calc(100vh - 80px)', marginTop: '80px' }}
-      >
-        <View className="admin-content" style={{ paddingTop: '16px' }}>
+      <ScrollView scrollY style={{ height: 'calc(100vh - 180px)' }}>
+        <View style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* 创建设置卡片 */}
-          <View className="admin-card">
-            <View className="admin-card-header">
-              <Settings size={24} color="#38bdf8" />
-              <Text className="admin-card-title">创建设置</Text>
+          <View style={{
+            backgroundColor: '#111827',
+            border: '1px solid #1e3a5f',
+            borderRadius: '12px',
+            padding: '16px',
+          }}
+          >
+            <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <Settings size={18} color="#38bdf8" />
+              <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9' }}>创建设置</Text>
             </View>
 
-            <Text style={{ fontSize: '22px', color: '#71717a', marginBottom: '12px', display: 'block' }}>
+            <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '12px', display: 'block' }}>
               时间范围
             </Text>
 
-            <View className="time-range-selector">
+            <View style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
               {timeRangeOptions.map((option) => (
                 <View
                   key={option.value}
-                  className={`time-range-item ${timeRange === option.value ? 'time-range-item-active' : ''}`}
+                  style={{
+                    flex: 1,
+                    padding: '10px',
+                    borderRadius: '10px',
+                    backgroundColor: timeRange === option.value ? '#38bdf8' : '#1e293b',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
                   onClick={() => setTimeRange(option.value as any)}
                 >
-                  {option.label}
+                  <Text style={{ fontSize: '13px', fontWeight: '500', color: timeRange === option.value ? '#000' : '#64748b' }}>{option.label}</Text>
                 </View>
               ))}
             </View>
 
             <View
-              className="action-btn-primary"
-              style={{ marginTop: '20px', opacity: generating ? 0.6 : 1 }}
+              style={{
+                marginTop: '20px',
+                padding: '14px',
+                borderRadius: '12px',
+                backgroundColor: '#38bdf8',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: generating ? 0.6 : 1,
+              }}
               onClick={generateReport}
             >
-              <Sparkles size={24} color="#000" />
-              <Text className="action-btn-primary-text" style={{ marginLeft: '8px' }}>
+              <Sparkles size={20} color="#000" />
+              <Text style={{ marginLeft: '8px', fontSize: '15px', fontWeight: '600', color: '#000' }}>
                 {generating ? '创建中...' : '一键创建报告'}
               </Text>
             </View>
@@ -146,30 +196,36 @@ export default function AdminAIReportPage() {
           {reportData && reportData.length > 0 ? (
             <>
               {/* 报告头部 */}
-              <View className="admin-card">
-                <View className="admin-card-header">
+              <View style={{
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
+                borderRadius: '12px',
+                padding: '16px',
+              }}
+              >
+                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                   <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <FileChartColumn size={24} color="#60a5fa" />
-                    <Text className="admin-card-title">运营分析报告</Text>
+                    <FileChartColumn size={20} color="#60a5fa" />
+                    <Text style={{ fontSize: '15px', fontWeight: '600', color: '#f1f5f9' }}>运营分析报告</Text>
                   </View>
                   <View
                     style={{
-                      padding: '8px 16px',
-                      backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                      padding: '8px 12px',
+                      backgroundColor: 'rgba(56, 189, 248, 0.1)',
                       borderRadius: '10px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
+                      gap: '6px',
                     }}
                     onClick={exportReport}
                   >
-                    <Download size={20} color="#38bdf8" />
-                    <Text style={{ fontSize: '22px', color: '#38bdf8' }}>导出</Text>
+                    <Download size={16} color="#38bdf8" />
+                    <Text style={{ fontSize: '13px', color: '#38bdf8' }}>导出</Text>
                   </View>
                 </View>
-                <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
-                  <Clock size={18} color="#71717a" />
-                  <Text style={{ fontSize: '22px', color: '#71717a' }}>
+                <View style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Clock size={14} color="#71717a" />
+                  <Text style={{ fontSize: '13px', color: '#71717a' }}>
                     创建时间: {new Date().toLocaleString('zh-CN')}
                   </Text>
                 </View>
@@ -177,57 +233,100 @@ export default function AdminAIReportPage() {
 
               {/* 报告内容 */}
               {reportData.map((section, index) => (
-                <View key={index} className="report-section">
-                  <View className="report-section-header">
-                    <FileText size={24} color="#38bdf8" />
-                    <Text className="report-section-title">{section.title}</Text>
+                <View key={index} style={{
+                  backgroundColor: '#111827',
+                  border: '1px solid #1e3a5f',
+                  borderRadius: '12px',
+                  padding: '16px',
+                }}
+                >
+                  <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                    <FileText size={18} color="#38bdf8" />
+                    <Text style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9' }}>{section.title}</Text>
                   </View>
-                  <Text className="report-section-content">{section.content}</Text>
+                  <Text style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '1.6' }}>{section.content}</Text>
                 </View>
               ))}
 
               {/* 数据统计卡片 */}
-              <View className="admin-card">
-                <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
+              <View style={{
+                backgroundColor: '#111827',
+                border: '1px solid #1e3a5f',
+                borderRadius: '12px',
+                padding: '16px',
+              }}
+              >
+                <Text style={{ fontSize: '15px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px', display: 'block' }}>
                   数据概览
                 </Text>
-                <View className="stats-grid">
-                  <View className="stat-card">
-                    <View className="stat-icon-wrapper stat-icon-success">
-                      <Users size={24} color="#4ade80" />
+                <View style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+                  <View style={{
+                    backgroundColor: '#0f172a',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    textAlign: 'center',
+                  }}
+                  >
+                    <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(74, 222, 128, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                      <Users size={18} color="#4ade80" />
                     </View>
-                    <Text className="stat-value">128</Text>
-                    <Text className="stat-label">活跃用户</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>128</Text>
+                    <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>活跃用户</Text>
                   </View>
 
-                  <View className="stat-card">
-                    <View className="stat-icon-wrapper stat-icon-primary">
-                      <ChartBar size={24} color="#38bdf8" />
+                  <View style={{
+                    backgroundColor: '#0f172a',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    textAlign: 'center',
+                  }}
+                  >
+                    <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                      <ChartBar size={18} color="#38bdf8" />
                     </View>
-                    <Text className="stat-value">1,234</Text>
-                    <Text className="stat-label">使用频次</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>1,234</Text>
+                    <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>使用频次</Text>
                   </View>
 
-                  <View className="stat-card">
-                    <View className="stat-icon-wrapper stat-icon-info">
-                      <MessageSquare size={24} color="#60a5fa" />
+                  <View style={{
+                    backgroundColor: '#0f172a',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    textAlign: 'center',
+                  }}
+                  >
+                    <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(96, 165, 250, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                      <MessageSquare size={18} color="#60a5fa" />
                     </View>
-                    <Text className="stat-value">567</Text>
-                    <Text className="stat-label">对话数量</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>567</Text>
+                    <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>对话数量</Text>
                   </View>
 
-                  <View className="stat-card">
-                    <View className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(168, 85, 247, 0.1)' }}>
-                      <TrendingUp size={24} color="#a855f7" />
+                  <View style={{
+                    backgroundColor: '#0f172a',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    textAlign: 'center',
+                  }}
+                  >
+                    <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                      <TrendingUp size={18} color="#a855f7" />
                     </View>
-                    <Text className="stat-value">42.3%</Text>
-                    <Text className="stat-label">转化率</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>42.3%</Text>
+                    <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>转化率</Text>
                   </View>
                 </View>
               </View>
             </>
           ) : (
-            <View className="admin-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+            <View style={{
+              backgroundColor: '#111827',
+              border: '1px solid #1e3a5f',
+              borderRadius: '12px',
+              padding: '48px 24px',
+              textAlign: 'center',
+            }}
+            >
               <View
                 style={{
                   width: '80px',
@@ -242,10 +341,10 @@ export default function AdminAIReportPage() {
               >
                 <Info size={40} color="#60a5fa" />
               </View>
-              <Text style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px', display: 'block' }}>
+              <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px', display: 'block' }}>
                 暂无报告数据
               </Text>
-              <Text style={{ fontSize: '22px', color: '#71717a', lineHeight: '1.6' }}>
+              <Text style={{ fontSize: '13px', color: '#71717a', lineHeight: '1.6' }}>
                 点击上方「一键创建报告」按钮{'\n'}系统将为您创建运营分析报告
               </Text>
             </View>

@@ -154,30 +154,43 @@ const CustomerManagementPage = () => {
   };
 
   return (
-    <View className="customer-management-page">
+    <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* Header */}
-      <View className="page-header">
-        <View className="header-top">
-          <View className="header-left">
-            <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#f1f5f9" />
+      <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
+        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <View
+              style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onClick={() => {
+                const pages = Taro.getCurrentPages();
+                if (pages.length > 1) {
+                  Taro.navigateBack();
+                } else {
+                  Taro.redirectTo({ url: '/pages/tab-customer/index' });
+                }
+              }}
+            >
+              <ChevronLeft size={24} color="#f1f5f9" />
             </View>
-            <View className="header-title-group">
-              <Text className="header-title">客资管理</Text>
-              <Text className="header-subtitle">{customers.length} 位客户</Text>
+            <View>
+              <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>客资管理</Text>
+              <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>{customers.length} 位客户</Text>
             </View>
           </View>
 
-          <View className="primary-action-btn" onClick={() => setShowAddDialog(true)}>
-            <Plus size={40} color="#000" />
+          <View
+            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#38bdf8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => setShowAddDialog(true)}
+          >
+            <Plus size={20} color="#000" />
           </View>
         </View>
 
         {/* 搜索框 */}
-        <View className="search-box">
-          <Search size={28} color="#71717a" />
+        <View style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#1e293b', borderRadius: '12px', padding: '12px 16px' }}>
+          <Search size={20} color="#71717a" />
           <Input
-            className="search-input"
+            style={{ flex: 1, fontSize: '14px', color: '#ffffff' }}
             placeholder="搜索客户..."
             placeholderStyle="color: #64748b"
             value={searchKeyword}
@@ -186,15 +199,20 @@ const CustomerManagementPage = () => {
         </View>
 
         {/* 来源筛选 */}
-        <ScrollView scrollX className="source-filter-scroll">
-          <View className="source-filter-container">
+        <ScrollView scrollX style={{ marginTop: '16px', whiteSpace: 'nowrap' }}>
+          <View style={{ display: 'inline-flex', gap: '12px', paddingRight: '20px' }}>
             {sources.map((source) => (
               <View
                 key={source}
-                className={`source-filter-item ${selectedSource === source ? 'source-filter-active' : ''}`}
+                style={{
+                  flexShrink: 0,
+                  padding: '10px 16px',
+                  borderRadius: '12px',
+                  backgroundColor: selectedSource === source ? '#38bdf8' : '#1e293b',
+                }}
                 onClick={() => setSelectedSource(source)}
               >
-                {source}
+                <Text style={{ fontSize: '14px', color: selectedSource === source ? '#000' : '#94a3b8' }}>{source}</Text>
               </View>
             ))}
           </View>
@@ -202,158 +220,199 @@ const CustomerManagementPage = () => {
       </View>
 
       {/* 客户列表 */}
-      <View className="content-area">
-        {loading ? (
-          <View className="loading-state">
-            <Users size={64} color="#38bdf8" />
-            <Text className="loading-text">加载中...</Text>
-          </View>
-        ) : filteredCustomers.length === 0 ? (
-          <View className="empty-state">
-            <Inbox size={80} color="#71717a" />
-            <Text className="empty-title">
-              {searchKeyword ? '没有找到相关客户' : '还没有客户'}
-            </Text>
-            {!searchKeyword && (
-              <Text className="empty-action" onClick={() => setShowAddDialog(true)}>
-                点击添加第一位客户
+      <ScrollView scrollY style={{ height: 'calc(100vh - 200px)' }}>
+        <View style={{ padding: '20px' }}>
+          {loading ? (
+            <View style={{ padding: '60px 20px', textAlign: 'center' }}>
+              <Users size={48} color="#38bdf8" />
+              <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '16px' }}>加载中...</Text>
+            </View>
+          ) : filteredCustomers.length === 0 ? (
+            <View style={{ padding: '60px 20px', textAlign: 'center' }}>
+              <Inbox size={64} color="#71717a" />
+              <Text style={{ fontSize: '15px', color: '#71717a', display: 'block', marginTop: '16px' }}>
+                {searchKeyword ? '没有找到相关客户' : '还没有客户'}
               </Text>
-            )}
-          </View>
-        ) : (
-          filteredCustomers.map((customer) => (
-            <View key={customer.id} className="customer-card">
-              <View className="customer-header">
-                <View style={{ flex: 1 }}>
-                  <Text className="customer-name">{customer.name}</Text>
-                  <View className="customer-contact">
-                    <Text>{customer.phone}</Text>
-                    {customer.wechat && <Text>| {customer.wechat}</Text>}
-                  </View>
-                </View>
-
-                <View className="customer-actions">
-                  <View className="action-icon-btn action-phone" onClick={() => handleCall(customer.phone)}>
-                    <Phone size={24} color="#4ade80" />
-                  </View>
-                  {customer.wechat && (
-                    <View className="action-icon-btn action-wechat" onClick={() => handleCopy(customer.wechat!)}>
-                      <MessageCircle size={24} color="#60a5fa" />
+              {!searchKeyword && (
+                <Text style={{ fontSize: '14px', color: '#38bdf8', display: 'block', marginTop: '8px' }} onClick={() => setShowAddDialog(true)}>
+                  点击添加第一位客户
+                </Text>
+              )}
+            </View>
+          ) : (
+            filteredCustomers.map((customer) => (
+              <View
+                key={customer.id}
+                style={{
+                  backgroundColor: '#111827',
+                  border: '1px solid #1e3a5f',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  marginBottom: '12px',
+                }}
+              >
+                <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', display: 'block' }}>{customer.name}</Text>
+                    <View style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                      <Text style={{ fontSize: '13px', color: '#94a3b8' }}>{customer.phone}</Text>
+                      {customer.wechat && <Text style={{ fontSize: '13px', color: '#64748b' }}>| {customer.wechat}</Text>}
                     </View>
-                  )}
-                  <View className="action-icon-btn action-copy" onClick={() => handleCopy(customer.phone)}>
-                    <Copy size={24} color="#38bdf8" />
+                  </View>
+
+                  <View style={{ display: 'flex', gap: '8px' }}>
+                    <View
+                      style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(74, 222, 128, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      onClick={() => handleCall(customer.phone)}
+                    >
+                      <Phone size={18} color="#4ade80" />
+                    </View>
+                    {customer.wechat && (
+                      <View
+                        style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(96, 165, 250, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        onClick={() => handleCopy(customer.wechat!)}
+                      >
+                        <MessageCircle size={18} color="#60a5fa" />
+                      </View>
+                    )}
+                    <View
+                      style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      onClick={() => handleCopy(customer.phone)}
+                    >
+                      <Copy size={18} color="#38bdf8" />
+                    </View>
                   </View>
                 </View>
-              </View>
 
-              <View className="customer-info">
-                <View className="customer-tag customer-tag-source">{customer.source}</View>
-                {customer.tags.map((tag, index) => (
-                  <View key={index} className="customer-tag">
-                    {tag}
+                <View style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                  <View style={{ padding: '4px 10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', borderRadius: '6px' }}>
+                    <Text style={{ fontSize: '12px', color: '#38bdf8' }}>{customer.source}</Text>
                   </View>
-                ))}
-              </View>
-
-              <Text className="customer-time">添加于 {formatDate(customer.createdAt)}</Text>
-            </View>
-          ))
-        )}
-      </View>
-
-      {/* 新增客户弹窗 */}
-      {showAddDialog && (
-        <View className="modal-overlay" onClick={() => setShowAddDialog(false)}>
-          <View className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <View className="modal-header">
-              <Text className="modal-title">新建客户</Text>
-              <View onClick={() => setShowAddDialog(false)}>
-                <X size={28} color="#71717a" />
-              </View>
-            </View>
-
-            <View className="form-group">
-              <Text className="form-label">姓名</Text>
-              <Input
-                className="form-input"
-                placeholder="请输入姓名"
-                placeholderStyle="color: #64748b"
-                value={newCustomer.name}
-                onInput={(e) => setNewCustomer({ ...newCustomer, name: e.detail.value })}
-              />
-            </View>
-
-            <View className="form-group">
-              <Text className="form-label">手机号</Text>
-              <Input
-                className="form-input"
-                placeholder="请输入手机号"
-                placeholderStyle="color: #64748b"
-                value={newCustomer.phone}
-                onInput={(e) => setNewCustomer({ ...newCustomer, phone: e.detail.value })}
-              />
-            </View>
-
-            <View className="form-group">
-              <Text className="form-label">微信号</Text>
-              <Input
-                className="form-input"
-                placeholder="请输入微信号（选填）"
-                placeholderStyle="color: #64748b"
-                value={newCustomer.wechat}
-                onInput={(e) => setNewCustomer({ ...newCustomer, wechat: e.detail.value })}
-              />
-            </View>
-
-            <View className="form-group">
-              <Text className="form-label">来源</Text>
-              <ScrollView scrollX>
-                <View style={{ display: 'flex', gap: '12px' }}>
-                  {sources.slice(1).map((source) => (
-                    <View
-                      key={source}
-                      style={{
-                        flexShrink: 0,
-                        padding: '12px 20px',
-                        backgroundColor: newCustomer.source === source ? '#38bdf8' : '#1e293b',
-                        borderRadius: '12px',
-                        fontSize: '24px',
-                        color: newCustomer.source === source ? '#000' : '#94a3b8',
-                      }}
-                      onClick={() => setNewCustomer({ ...newCustomer, source })}
-                    >
-                      {source}
+                  {customer.tags.map((tag, index) => (
+                    <View key={index} style={{ padding: '4px 10px', backgroundColor: '#1e293b', borderRadius: '6px' }}>
+                      <Text style={{ fontSize: '12px', color: '#94a3b8' }}>{tag}</Text>
                     </View>
                   ))}
                 </View>
-              </ScrollView>
+
+                <Text style={{ fontSize: '12px', color: '#64748b' }}>添加于 {formatDate(customer.createdAt)}</Text>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
+
+      {/* 新增客户弹窗 */}
+      {showAddDialog && (
+        <View
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', display: 'flex', alignItems: 'flex-end', zIndex: 1000 }}
+          onClick={() => setShowAddDialog(false)}
+        >
+          <View
+            style={{ width: '100%', backgroundColor: '#111827', borderRadius: '20px 20px 0 0', padding: '20px', maxHeight: '80vh', overflow: 'auto' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+              <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>新建客户</Text>
+              <View style={{ padding: '8px' }} onClick={() => setShowAddDialog(false)}>
+                <X size={20} color="#71717a" />
+              </View>
             </View>
 
-            <View className="form-group">
-              <Text className="form-label">标签（逗号分隔）</Text>
-              <Input
-                className="form-input"
-                placeholder="如：VIP, 意向客户"
-                placeholderStyle="color: #64748b"
-                value={newCustomer.tags}
-                onInput={(e) => setNewCustomer({ ...newCustomer, tags: e.detail.value })}
-              />
+            <View style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <View>
+                <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px', display: 'block' }}>姓名</Text>
+                <View style={{ backgroundColor: '#1e293b', borderRadius: '12px', padding: '12px 16px', border: '1px solid #1e3a5f' }}>
+                  <Input
+                    style={{ fontSize: '14px', color: '#ffffff', width: '100%' }}
+                    placeholder="请输入姓名"
+                    placeholderStyle="color: #64748b"
+                    value={newCustomer.name}
+                    onInput={(e) => setNewCustomer({ ...newCustomer, name: e.detail.value })}
+                  />
+                </View>
+              </View>
+
+              <View>
+                <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px', display: 'block' }}>手机号</Text>
+                <View style={{ backgroundColor: '#1e293b', borderRadius: '12px', padding: '12px 16px', border: '1px solid #1e3a5f' }}>
+                  <Input
+                    style={{ fontSize: '14px', color: '#ffffff', width: '100%' }}
+                    placeholder="请输入手机号"
+                    placeholderStyle="color: #64748b"
+                    value={newCustomer.phone}
+                    onInput={(e) => setNewCustomer({ ...newCustomer, phone: e.detail.value })}
+                  />
+                </View>
+              </View>
+
+              <View>
+                <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px', display: 'block' }}>微信号</Text>
+                <View style={{ backgroundColor: '#1e293b', borderRadius: '12px', padding: '12px 16px', border: '1px solid #1e3a5f' }}>
+                  <Input
+                    style={{ fontSize: '14px', color: '#ffffff', width: '100%' }}
+                    placeholder="请输入微信号（选填）"
+                    placeholderStyle="color: #64748b"
+                    value={newCustomer.wechat}
+                    onInput={(e) => setNewCustomer({ ...newCustomer, wechat: e.detail.value })}
+                  />
+                </View>
+              </View>
+
+              <View>
+                <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px', display: 'block' }}>来源</Text>
+                <ScrollView scrollX style={{ whiteSpace: 'nowrap' }}>
+                  <View style={{ display: 'inline-flex', gap: '12px' }}>
+                    {sources.slice(1).map((source) => (
+                      <View
+                        key={source}
+                        style={{
+                          flexShrink: 0,
+                          padding: '10px 16px',
+                          backgroundColor: newCustomer.source === source ? '#38bdf8' : '#1e293b',
+                          borderRadius: '12px',
+                        }}
+                        onClick={() => setNewCustomer({ ...newCustomer, source })}
+                      >
+                        <Text style={{ fontSize: '14px', color: newCustomer.source === source ? '#000' : '#94a3b8' }}>{source}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </ScrollView>
+              </View>
+
+              <View>
+                <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px', display: 'block' }}>标签（逗号分隔）</Text>
+                <View style={{ backgroundColor: '#1e293b', borderRadius: '12px', padding: '12px 16px', border: '1px solid #1e3a5f' }}>
+                  <Input
+                    style={{ fontSize: '14px', color: '#ffffff', width: '100%' }}
+                    placeholder="如：VIP, 意向客户"
+                    placeholderStyle="color: #64748b"
+                    value={newCustomer.tags}
+                    onInput={(e) => setNewCustomer({ ...newCustomer, tags: e.detail.value })}
+                  />
+                </View>
+              </View>
+
+              <View>
+                <Text style={{ fontSize: '13px', color: '#71717a', marginBottom: '8px', display: 'block' }}>备注</Text>
+                <View style={{ backgroundColor: '#1e293b', borderRadius: '12px', padding: '12px 16px', border: '1px solid #1e3a5f' }}>
+                  <Input
+                    style={{ fontSize: '14px', color: '#ffffff', width: '100%' }}
+                    placeholder="请输入备注（选填）"
+                    placeholderStyle="color: #64748b"
+                    value={newCustomer.remark}
+                    onInput={(e) => setNewCustomer({ ...newCustomer, remark: e.detail.value })}
+                  />
+                </View>
+              </View>
             </View>
 
-            <View className="form-group">
-              <Text className="form-label">备注</Text>
-              <Input
-                className="form-input"
-                placeholder="请输入备注（选填）"
-                placeholderStyle="color: #64748b"
-                value={newCustomer.remark}
-                onInput={(e) => setNewCustomer({ ...newCustomer, remark: e.detail.value })}
-              />
-            </View>
-
-            <View className="action-btn-primary" onClick={handleAddCustomer}>
-              <Text className="action-btn-primary-text">添加客户</Text>
+            <View
+              style={{ marginTop: '24px', backgroundColor: '#38bdf8', borderRadius: '12px', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onClick={handleAddCustomer}
+            >
+              <Text style={{ fontSize: '15px', fontWeight: '600', color: '#000' }}>添加客户</Text>
             </View>
           </View>
         </View>
