@@ -49,13 +49,14 @@ function LoginForm() {
 
       const data = await res.json();
       if (data.success) {
-        router.push(redirect);
+        // 使用硬导航确保cookie生效
+        window.location.href = redirect;
       } else {
         setError(data.error || '登录失败');
+        setLoading(false);
       }
     } catch (err) {
       setError('登录失败，请重试');
-    } finally {
       setLoading(false);
     }
   };

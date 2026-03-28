@@ -60,14 +60,16 @@ export async function POST(request: NextRequest) {
       response.cookies.set('admin_token', 'authenticated', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: 'lax',
+        path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7天
       });
       
       response.cookies.set('admin_user', JSON.stringify(userInfo), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: 'lax',
+        path: '/',
         maxAge: 60 * 60 * 24 * 7, // 7天
       });
       
@@ -116,7 +118,15 @@ export async function GET(request: NextRequest) {
 // 登出
 export async function DELETE() {
   const response = NextResponse.json({ success: true });
-  response.cookies.delete('admin_token');
-  response.cookies.delete('admin_user');
+  response.cookies.set('admin_token', '', {
+    httpOnly: true,
+    path: '/',
+    maxAge: 0,
+  });
+  response.cookies.set('admin_user', '', {
+    httpOnly: true,
+    path: '/',
+    maxAge: 0,
+  });
   return response;
 }
