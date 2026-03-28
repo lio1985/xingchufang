@@ -1,5 +1,5 @@
 # ===================================
-# 多阶段构建 - 仅后端
+# 多阶段构建 - 仅后端（不使用 workspace）
 # ===================================
 FROM node:20 AS builder
 
@@ -8,12 +8,11 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm
 
-# 创建完整的 workspace 结构
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY server/package.json ./server/package.json
+# 只复制 server 的 package.json
+COPY server/package.json ./server/
 
-# 安装所有依赖（包括 server 的依赖）
-RUN pnpm install --frozen-lockfile --ignore-scripts
+# 安装 server 的依赖（不使用 workspace）
+RUN cd server && pnpm install --frozen-lockfile --ignore-scripts
 
 # 复制后端源代码
 COPY server ./server
@@ -32,12 +31,11 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm
 
-# 创建 workspace 结构
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY server/package.json ./server/package.json
+# 复制 server 的 package.json
+COPY server/package.json ./server/
 
-# 安装生产依赖
-RUN pnpm install --prod --frozen-lockfile --ignore-scripts
+# 安装生产依赖（不使用 workspace）
+RUN cd server && pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # 从构建阶段复制后端产物
 COPY --from=builder /app/server/dist ./server/dist
