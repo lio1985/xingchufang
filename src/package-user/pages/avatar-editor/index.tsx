@@ -5,6 +5,9 @@ import { ArrowLeft, Camera, User, Check, LogIn } from 'lucide-react-taro';
 import { Network } from '@/network';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 
+// 全局环境变量声明（由 defineConstants 注入）
+declare const PROJECT_DOMAIN: string;
+
 export default function AvatarEditorPage() {
   // 登录状态检查
   const { isLoggedIn, loading: authLoading } = useAuthGuard({ requireLogin: false });
@@ -78,15 +81,74 @@ export default function AvatarEditorPage() {
         url: '/api/user/upload-avatar',
         filePath: selectedImage,
         hasToken: !!token,
+        isWeapp,
       });
 
+      // H5 环境使用 fetch 手动上传（绕过 Coze SW 拦截）
+      if (!isWeapp && selectedImage.startsWith('blob:')) {
+        console.log('H5 环境，使用 fetch 手动上传');
+        
+        // 获取 blob 文件
+        const response = await fetch(selectedImage);
+        const blob = await response.blob();
+        const file = new File([blob], 'avatar.jpg', { type: blob.type || 'image/jpeg' });
+        
+        // 构建 FormData
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // 获取正确的 API URL
+        const apiBaseUrl = typeof PROJECT_DOMAIN !== 'undefined' 
+          ? PROJECT_DOMAIN 
+          : window.location.origin;
+        const uploadUrl = `${apiBaseUrl}/api/user/upload-avatar`;
+        
+        console.log('H5 上传 URL:', uploadUrl);
+        
+        const uploadResponse = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        
+        const result = await uploadResponse.json();
+        console.log('H5 上传响应:', result);
+        
+        if (result.code === 200 && result.data?.avatarUrl) {
+          // 更新本地存储的用户信息
+          const updatedUser = {
+            ...userInfo,
+            avatar: result.data.avatarUrl,
+          };
+          Taro.setStorageSync('user', updatedUser);
+
+          setCurrentAvatar(result.data.avatarUrl);
+          setSelectedImage('');
+
+          Taro.showToast({
+            title: '头像更新成功',
+            icon: 'success',
+          });
+
+          // 延迟返回上一页
+          setTimeout(() => {
+            Taro.navigateBack();
+          }, 1500);
+        } else {
+          throw new Error(result.msg || '上传失败');
+        }
+        
+        setIsUploading(false);
+        return;
+      }
+
+      // 小程序环境使用 Taro.uploadFile
       const res = await Network.uploadFile({
         url: '/api/user/upload-avatar',
         filePath: selectedImage,
         name: 'file',
-        header: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       console.log('上传响应:', res);

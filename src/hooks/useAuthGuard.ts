@@ -97,10 +97,10 @@ const checkRolePermission = (
 /**
  * 获取用户信息
  */
-const fetchUserInfo = async (userId: string): Promise<UserInfo | null> => {
+const fetchUserInfo = async (): Promise<UserInfo | null> => {
   try {
     const res = await Network.request({
-      url: `/api/users/${userId}`,
+      url: '/api/user/profile',
       method: 'GET',
     });
 
@@ -109,13 +109,11 @@ const fetchUserInfo = async (userId: string): Promise<UserInfo | null> => {
     if (res.data?.code === 200 && res.data?.data) {
       return {
         id: res.data.data.id,
-        username: res.data.data.username,
+        username: res.data.data.openid,
         nickname: res.data.data.nickname,
-        avatar: res.data.data.avatar_url,
+        avatar: res.data.data.avatarUrl,
         role: res.data.data.role || 'guest',
         status: res.data.data.status || 'inactive',
-        teamId: res.data.data.team_id,
-        isTeamLeader: res.data.data.is_team_leader,
       };
     }
     return null;
@@ -185,7 +183,7 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
       }
 
       // 从服务器获取最新用户信息
-      const userInfo = await fetchUserInfo(storedUser.id);
+      const userInfo = await fetchUserInfo();
       
       if (!userInfo) {
         console.error('[权限守卫] 无法获取用户信息');
@@ -289,13 +287,11 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
 
   // 刷新用户信息
   const refreshUser = useCallback(async () => {
-    const storedUser = Taro.getStorageSync('user');
-    if (storedUser?.id) {
-      const userInfo = await fetchUserInfo(storedUser.id);
-      if (userInfo) {
-        Taro.setStorageSync('user', { ...storedUser, ...userInfo });
-        setUser(userInfo);
-      }
+    const userInfo = await fetchUserInfo();
+    if (userInfo) {
+      const storedUser = Taro.getStorageSync('user');
+      Taro.setStorageSync('user', { ...storedUser, ...userInfo });
+      setUser(userInfo);
     }
   }, []);
 
@@ -365,7 +361,7 @@ export const useLoginGuard = (): { loading: boolean; isLoggedIn: boolean; user: 
 
       if (storedUser && token) {
         // 获取最新用户信息
-        const userInfo = await fetchUserInfo(storedUser.id);
+        const userInfo = await fetchUserInfo();
         if (userInfo && userInfo.status === 'active') {
           setUser(userInfo);
           setIsLoggedIn(true);
