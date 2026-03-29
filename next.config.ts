@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // 配置 turbopack 根目录以消除多 lockfile 警告
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 export default nextConfig;
