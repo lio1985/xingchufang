@@ -292,10 +292,7 @@ function LoginForm() {
 
         {/* 登录卡片 */}
         <Card className="shadow-xl border-0">
-          <CardHeader className="space-y-1 pb-2">
-            <CardTitle className="text-lg text-center">账号登录</CardTitle>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="username">账号</Label>
