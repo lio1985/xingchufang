@@ -20,7 +20,27 @@ export async function GET(
     if (error) throw new Error(`查询商品失败: ${error.message}`);
     if (!data) throw new Error('商品不存在');
 
-    return NextResponse.json({ success: true, data });
+    // 查询推荐状态
+    const { data: recommendations } = await client
+      .from('product_recommendations')
+      .select('recommend_type, start_date, end_date')
+      .eq('product_id', productId);
+
+    // 处理推荐状态，过滤过期推荐
+    const now = new Date().toISOString();
+    const activeRecommendations = (recommendations || []).filter((rec: any) => {
+      if (rec.start_date && rec.start_date > now) return false;
+      if (rec.end_date && rec.end_date < now) return false;
+      return true;
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      data: {
+        ...data,
+        recommend_types: activeRecommendations.map((r: any) => r.recommend_type),
+      }
+    });
   } catch (error: any) {
     console.error('获取商品详情失败:', error);
     return NextResponse.json(

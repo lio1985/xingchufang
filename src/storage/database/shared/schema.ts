@@ -1,4 +1,4 @@
-import { pgTable, serial, timestamp, varchar, integer, text, boolean, index, numeric } from "drizzle-orm/pg-core"
+import { pgTable, serial, timestamp, varchar, integer, text, boolean, index, numeric, unique } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
@@ -7,6 +7,30 @@ export const healthCheck = pgTable("health_check", {
 	id: serial().notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),
 });
+
+// 推荐类型枚举
+export type RecommendType = 'hot' | 'new' | 'sale' | 'featured';
+
+// 商品推荐表
+export const productRecommendations = pgTable(
+  "product_recommendations",
+  {
+    id: serial().primaryKey(),
+    product_id: integer("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+    recommend_type: varchar("recommend_type", { length: 20 }).notNull(), // hot/new/sale/featured
+    start_date: timestamp("start_date", { withTimezone: true }),
+    end_date: timestamp("end_date", { withTimezone: true }),
+    sort_order: integer("sort_order").default(0).notNull(),
+    created_by: varchar("created_by", { length: 50 }),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp("updated_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("product_recommendations_type_idx").on(table.recommend_type),
+    index("product_recommendations_product_id_idx").on(table.product_id),
+    unique("product_recommendations_unique").on(table.product_id, table.recommend_type),
+  ]
+);
 
 // 商品表
 export const products = pgTable(

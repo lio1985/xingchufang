@@ -13,7 +13,15 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp, Shield, Eye, Menu, LogOut, ChevronLeft, ChevronRight, Filter, Settings, Heart } from 'lucide-react';
+import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp, Shield, Eye, Menu, LogOut, ChevronLeft, ChevronRight, Filter, Settings, Heart, Flame, Sparkles, DollarSign, Award, Star } from 'lucide-react';
+
+// 推荐类型配置
+const RECOMMEND_TYPES = {
+  hot: { label: '爆款推荐', color: 'bg-red-500', icon: Flame },
+  new: { label: '新品上架', color: 'bg-green-500', icon: Sparkles },
+  sale: { label: '特价专区', color: 'bg-orange-500', icon: DollarSign },
+  featured: { label: '精选商品', color: 'bg-blue-500', icon: Award },
+} as const;
 
 interface User {
   username: string;
@@ -32,6 +40,21 @@ interface Product {
   level2_category: string | null;
   primary_image_url?: string;
   is_favorited?: boolean;
+  recommend_types?: string[];
+}
+
+interface Recommendation {
+  id: number;
+  product_id: number;
+  recommend_type: keyof typeof RECOMMEND_TYPES;
+  products: {
+    id: number;
+    name: string;
+    brand: string | null;
+    price: string | null;
+    level2_category: string | null;
+  };
+  primary_image_url?: string;
 }
 
 interface FilterOptions {
@@ -62,6 +85,14 @@ export default function Home() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [favoritesCount, setFavoritesCount] = useState(0);
+  
+  // 推荐商品状态
+  const [recommendations, setRecommendations] = useState<Record<string, Recommendation[]>>({
+    hot: [],
+    new: [],
+    sale: [],
+    featured: [],
+  });
 
   // 检查登录状态
   useEffect(() => {
@@ -99,6 +130,38 @@ export default function Home() {
         });
     }
   }, [currentUser]);
+
+  // 获取推荐商品
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const res = await fetch('/api/recommendations?activeOnly=true&withProducts=true&limit=20');
+        const data = await res.json();
+        
+        if (data.success) {
+          // 按类型分组
+          const grouped: Record<string, Recommendation[]> = {
+            hot: [],
+            new: [],
+            sale: [],
+            featured: [],
+          };
+          
+          (data.data || []).forEach((item: Recommendation) => {
+            if (grouped[item.recommend_type]) {
+              grouped[item.recommend_type].push(item);
+            }
+          });
+          
+          setRecommendations(grouped);
+        }
+      } catch (error) {
+        console.error('获取推荐商品失败:', error);
+      }
+    };
+    
+    fetchRecommendations();
+  }, []);
 
   // 检查商品收藏状态
   const checkFavoritesStatus = async (productIds: number[]) => {
@@ -681,6 +744,66 @@ export default function Home() {
           )}
         </div>
 
+        {/* 推荐商品区域 */}
+        {Object.values(recommendations).some(arr => arr.length > 0) && (
+          <div className="mb-6 space-y-6">
+            {(['hot', 'new', 'sale', 'featured'] as const).map((type) => {
+              const items = recommendations[type];
+              if (items.length === 0) return null;
+              
+              const config = RECOMMEND_TYPES[type];
+              const Icon = config.icon;
+              
+              return (
+                <div key={type} className="bg-white rounded-lg shadow-sm border p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`p-1.5 rounded-lg ${config.color}`}>
+                        <Icon className="h-4 w-4 text-white" />
+                      </div>
+                      <h2 className="text-base md:text-lg font-semibold">{config.label}</h2>
+                    </div>
+                    <Badge variant="secondary">{items.length}件</Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {items.slice(0, 6).map((item) => (
+                      <div
+                        key={item.id}
+                        className="cursor-pointer group"
+                        onClick={() => router.push(`/products/${item.product_id}`)}
+                      >
+                        <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-2 relative">
+                          {item.primary_image_url ? (
+                            <img
+                              src={item.primary_image_url}
+                              alt={item.products?.name || ''}
+                              className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <ImageIcon className="h-8 w-8 text-gray-300" />
+                            </div>
+                          )}
+                          <Badge className={`absolute top-1 left-1 ${config.color} text-white text-[10px]`}>
+                            {type === 'hot' ? '爆款' : type === 'new' ? '新款' : type === 'sale' ? '特价' : '精选'}
+                          </Badge>
+                        </div>
+                        <h3 className="text-xs line-clamp-2 text-gray-700 group-hover:text-blue-600">
+                          {item.products?.name}
+                        </h3>
+                        {item.products?.price && (
+                          <p className="text-sm font-bold text-red-600 mt-0.5">¥{item.products.price}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* 统计信息 */}
         <div className="mb-4 flex items-center justify-between">
           <p className="text-sm md:text-base text-gray-600">
@@ -706,6 +829,23 @@ export default function Home() {
                     />
                   ) : (
                     <ImageIcon className="h-10 w-10 md:h-12 md:w-12 text-gray-300" />
+                  )}
+                  {/* 推荐标签 */}
+                  {product.recommend_types && product.recommend_types.length > 0 && (
+                    <div className="absolute top-1 left-1 flex flex-wrap gap-0.5">
+                      {product.recommend_types.map((type) => {
+                        const config = RECOMMEND_TYPES[type as keyof typeof RECOMMEND_TYPES];
+                        if (!config) return null;
+                        return (
+                          <Badge 
+                            key={type} 
+                            className={`${config.color} text-white text-[9px] md:text-[10px] px-1 py-0`}
+                          >
+                            {type === 'hot' ? '爆款' : type === 'new' ? '新款' : type === 'sale' ? '特价' : '精选'}
+                          </Badge>
+                        );
+                      })}
+                    </div>
                   )}
                   {/* 收藏按钮 */}
                   <button

@@ -121,7 +121,7 @@ async function fallbackSearch(request: NextRequest) {
   });
 }
 
-// 为商品列表附加主图URL
+// 为商品列表附加主图URL和推荐状态
 async function attachPrimaryImages(products: any[]) {
   if (!products || products.length === 0) return products;
 
@@ -137,7 +137,16 @@ async function attachPrimaryImages(products: any[]) {
 
   if (error) {
     console.warn('查询主图失败:', error.message);
-    return products;
+  }
+
+  // 批量查询推荐状态
+  const { data: recommendations, error: recError } = await client
+    .from('product_recommendations')
+    .select('product_id, recommend_type')
+    .in('product_id', productIds);
+
+  if (recError) {
+    console.warn('查询推荐状态失败:', recError.message);
   }
 
   // 创建产品ID到图片key的映射
@@ -146,21 +155,34 @@ async function attachPrimaryImages(products: any[]) {
     imageMap.set(img.product_id, img.image_key);
   }
 
+  // 创建产品ID到推荐类型的映射
+  const recommendationMap = new Map<number, string[]>();
+  for (const rec of recommendations || []) {
+    const types = recommendationMap.get(rec.product_id) || [];
+    types.push(rec.recommend_type);
+    recommendationMap.set(rec.product_id, types);
+  }
+
   // 为每个产品生成主图URL
   return Promise.all(products.map(async (product) => {
     const imageKey = imageMap.get(product.id);
+    let primaryImageUrl = null;
+    
     if (imageKey) {
       try {
-        const url = await storage.generatePresignedUrl({
+        primaryImageUrl = await storage.generatePresignedUrl({
           key: imageKey,
           expireTime: 86400, // 1天有效期
         });
-        return { ...product, primary_image_url: url };
       } catch (e) {
         console.warn(`生成图片URL失败: product_id=${product.id}`, e);
-        return product;
       }
     }
-    return product;
+
+    return { 
+      ...product, 
+      primary_image_url: primaryImageUrl,
+      recommend_types: recommendationMap.get(product.id) || [],
+    };
   }));
 }

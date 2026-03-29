@@ -42,7 +42,20 @@ import {
   Square,
   Building2,
   FolderTree,
+  Star,
+  Flame,
+  Sparkles,
+  DollarSign,
+  Award,
 } from 'lucide-react';
+
+// 推荐类型配置
+const RECOMMEND_TYPES = {
+  hot: { label: '爆款', color: 'bg-red-500', icon: Flame },
+  new: { label: '新款', color: 'bg-green-500', icon: Sparkles },
+  sale: { label: '特价', color: 'bg-orange-500', icon: DollarSign },
+  featured: { label: '精选', color: 'bg-blue-500', icon: Award },
+} as const;
 
 interface Stats {
   totalProducts: number;
@@ -870,7 +883,7 @@ export default function AdminPage() {
                 <CardTitle>快捷操作</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   <Button
                     variant="outline"
                     className="h-20 flex flex-col gap-2"
@@ -902,6 +915,14 @@ export default function AdminPage() {
                   >
                     <ImageIcon className="h-5 w-5" />
                     <span>图片管理</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col gap-2 bg-yellow-50 border-yellow-200 hover:bg-yellow-100"
+                    onClick={() => router.push('/admin/recommendations')}
+                  >
+                    <Star className="h-5 w-5 text-yellow-600" />
+                    <span>推荐管理</span>
                   </Button>
                 </div>
               </CardContent>
@@ -1000,6 +1021,14 @@ export default function AdminPage() {
                         </td>
                         <td className="py-3 px-2">
                           <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => router.push(`/admin/recommendations?productId=${product.id}&productName=${encodeURIComponent(product.name)}`)}
+                              title="设为推荐"
+                            >
+                              <Star className="h-4 w-4" />
+                            </Button>
                             <Button
                               variant="ghost"
                               size="sm"

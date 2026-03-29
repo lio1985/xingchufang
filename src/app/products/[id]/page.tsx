@@ -5,8 +5,16 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Upload, Trash2, Star, ImageIcon, Shield, Eye, MoreVertical, Heart } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Star, ImageIcon, Shield, Eye, MoreVertical, Heart, Flame, Sparkles, DollarSign, Award } from 'lucide-react';
 import { compressImage, getImageInfo, shouldCompress } from '@/lib/image-compress';
+
+// 推荐类型配置
+const RECOMMEND_TYPES = {
+  hot: { label: '爆款', color: 'bg-red-500', icon: Flame },
+  new: { label: '新款', color: 'bg-green-500', icon: Sparkles },
+  sale: { label: '特价', color: 'bg-orange-500', icon: DollarSign },
+  featured: { label: '精选', color: 'bg-blue-500', icon: Award },
+} as const;
 
 interface User {
   username: string;
@@ -28,6 +36,7 @@ interface Product {
   warranty: string | null;
   selling_points: string | null;
   remarks: string | null;
+  recommend_types?: string[];
 }
 
 interface ProductImage {
@@ -330,7 +339,28 @@ export default function ProductDetailPage({
           
           {/* 商品名称 */}
           <div className="mt-2 md:mt-4">
-            <h1 className="text-lg md:text-2xl font-bold line-clamp-2">{product.name}</h1>
+            <div className="flex items-start gap-2 flex-wrap">
+              <h1 className="text-lg md:text-2xl font-bold line-clamp-2">{product.name}</h1>
+              {/* 推荐标签 */}
+              {product.recommend_types && product.recommend_types.length > 0 && (
+                <div className="flex gap-1 flex-wrap">
+                  {product.recommend_types.map((type) => {
+                    const config = RECOMMEND_TYPES[type as keyof typeof RECOMMEND_TYPES];
+                    if (!config) return null;
+                    const Icon = config.icon;
+                    return (
+                      <Badge 
+                        key={type} 
+                        className={`${config.color} text-white text-xs gap-1`}
+                      >
+                        <Icon className="h-3 w-3" />
+                        {config.label}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
             <p className="text-blue-100 text-xs md:text-sm mt-1">
               {product.product_code && <span>编码: {product.product_code}</span>}
             </p>

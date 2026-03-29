@@ -12,6 +12,7 @@
 - 🔐 简单权限管理（管理员密码保护）
 - 📊 数据导出（导出为Excel）
 - 📱 响应式设计（支持手机端）
+- ⭐ 商品推荐管理（爆款、新款、特价、精选）
 
 ### 版本技术栈
 
@@ -40,14 +41,21 @@
 │   │   │   ├── filter-options/route.ts # 筛选选项接口
 │   │   │   ├── images/                 # 图片相关接口
 │   │   │   │   └── batch-import/route.ts # 批量导入图片
-│   │   │   └── products/               # 商品相关接口
-│   │   │       ├── route.ts            # 商品列表接口
-│   │   │       ├── export/route.ts     # 商品导出接口
-│   │   │       └── [id]/               # 商品详情相关
-│   │   │           ├── route.ts        # 商品详情接口
-│   │   │           └── images/         # 图片管理
-│   │   │               ├── route.ts    # 图片CRUD
-│   │   │               └── primary/route.ts # 设置主图
+│   │   │   ├── products/               # 商品相关接口
+│   │   │   │   ├── route.ts            # 商品列表接口
+│   │   │   │   ├── export/route.ts     # 商品导出接口
+│   │   │   │   └── [id]/               # 商品详情相关
+│   │   │   │       ├── route.ts        # 商品详情接口
+│   │   │   │       └── images/         # 图片管理
+│   │   │   │           ├── route.ts    # 图片CRUD
+│   │   │   │           └── primary/route.ts # 设置主图
+│   │   │   └── recommendations/        # 推荐管理接口
+│   │   │       ├── route.ts            # 推荐增删改查
+│   │   │       └── check/route.ts      # 批量检查推荐状态
+│   │   ├── admin/          # 管理后台
+│   │   │   ├── page.tsx               # 管理后台首页
+│   │   │   └── recommendations/        # 推荐管理页面
+│   │   │       └── page.tsx
 │   │   ├── batch-import/   # 批量导入页面
 │   │   ├── login/          # 登录页面
 │   │   ├── products/[id]/  # 商品详情页面
@@ -91,11 +99,31 @@
 - is_primary: 是否主图
 - created_at: 创建时间
 
+### product_recommendations（商品推荐表）
+- id: 推荐ID（主键）
+- product_id: 商品ID（外键）
+- recommend_type: 推荐类型（hot/new/sale/featured）
+- start_date: 推荐开始时间（可选）
+- end_date: 推荐结束时间（可选）
+- sort_order: 排序权重
+- created_by: 创建人
+- created_at/updated_at: 时间戳
+- 唯一约束: (product_id, recommend_type)
+
+## 推荐类型说明
+
+| 类型 | 标识 | 显示标签 | 颜色 | 说明 |
+|------|------|---------|------|------|
+| 爆款 | hot | 爆款 | 红色 | 热销商品推荐 |
+| 新款 | new | 新款 | 绿色 | 新品上架推荐 |
+| 特价款 | sale | 特价 | 橙色 | 促销活动商品 |
+| 精选 | featured | 精选 | 蓝色 | 优质商品推荐 |
+
 ## 权限管理
 
 系统使用简单的管理员密码保护机制：
 - 默认密码：`admin123`（可通过环境变量 `ADMIN_PASSWORD` 修改）
-- 管理员权限：上传图片、批量导入、设置主图、删除图片
+- 管理员权限：上传图片、批量导入、设置主图、删除图片、管理推荐
 - 普通用户：浏览商品、搜索筛选、导出数据
 
 ## 包管理规范
@@ -165,6 +193,28 @@
 
 ### DELETE /api/auth
 登出
+
+### GET /api/recommendations
+获取推荐列表
+- 参数：type（推荐类型）, activeOnly（只获取有效的）, withProducts（包含商品详情）, limit
+- 返回：推荐列表
+
+### POST /api/recommendations
+添加推荐（需要管理员权限）
+- 参数：productId, recommendType, startDate, endDate, sortOrder
+
+### PATCH /api/recommendations
+更新推荐（需要管理员权限）
+- 参数：id, recommendType, startDate, endDate, sortOrder
+
+### DELETE /api/recommendations
+删除推荐（需要管理员权限）
+- 参数：id 或 productId + recommendType
+
+### GET /api/recommendations/check
+批量检查商品推荐状态
+- 参数：productIds（逗号分隔的商品ID）
+- 返回：每个商品的推荐状态
 
 
 
