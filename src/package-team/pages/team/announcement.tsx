@@ -37,38 +37,19 @@ export default function TeamAnnouncement() {
   const fetchAnnouncements = async () => {
     setLoading(true);
     try {
-      // 模拟数据 - 实际需要对接后端API
-      setAnnouncements([
-        {
-          id: '1',
-          title: '本月销售目标调整通知',
-          content: '各位团队成员，经公司研究决定，本月销售目标调整为：每人需完成新增客户20个，成交金额5万元以上。请各位努力完成目标！',
-          priority: 'high',
-          created_at: new Date().toISOString(),
-          author: { nickname: '张队长' },
-          is_read: false,
-        },
-        {
-          id: '2',
-          title: '团队周会通知',
-          content: '本周五下午3点召开团队周会，请各位准时参加。会议地点：二楼会议室。会议主题：本周业绩复盘及下周计划。',
-          priority: 'medium',
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-          author: { nickname: '张队长' },
-          is_read: true,
-        },
-        {
-          id: '3',
-          title: '新产品培训通知',
-          content: '下周一上午10点将进行新产品知识培训，请各位准时参加。培训内容：新品功能介绍、卖点提炼、销售话术。',
-          priority: 'low',
-          created_at: new Date(Date.now() - 172800000).toISOString(),
-          author: { nickname: '李经理' },
-          is_read: true,
-        },
-      ]);
+      const res = await Network.request({
+        url: '/api/teams/my/announcements',
+        method: 'GET',
+      });
+      if (res.data?.code === 200 && res.data?.data) {
+        setAnnouncements(res.data.data);
+      } else {
+        // 后端未返回数据时设置为空数组
+        setAnnouncements([]);
+      }
     } catch (error) {
       console.error('获取公告失败:', error);
+      setAnnouncements([]);
     } finally {
       setLoading(false);
     }

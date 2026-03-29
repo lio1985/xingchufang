@@ -75,45 +75,12 @@ const ShareManagePage = () => {
       if (response.data?.success && response.data?.data) {
         setPermissions(response.data.data);
       } else {
-        // 模拟数据
-        setPermissions([
-          {
-            id: '1',
-            lexiconId: 'l1',
-            lexiconName: '产品介绍语料库',
-            shareScope: 'department',
-            targetUsers: [],
-            targetDepartments: ['市场部', '销售部'],
-            createdBy: { id: 'u1', name: '张三' },
-            createdAt: '2024-03-20',
-          },
-          {
-            id: '2',
-            lexiconId: 'l2',
-            lexiconName: '客户服务话术',
-            shareScope: 'all',
-            targetUsers: [],
-            targetDepartments: [],
-            createdBy: { id: 'u2', name: '李四' },
-            createdAt: '2024-03-18',
-          },
-          {
-            id: '3',
-            lexiconId: 'l3',
-            lexiconName: '营销推广文案',
-            shareScope: 'custom',
-            targetUsers: [
-              { id: 'u1', name: '张三', department: '市场部' },
-              { id: 'u2', name: '李四', department: '销售部' },
-            ],
-            targetDepartments: [],
-            createdBy: { id: 'u3', name: '王五' },
-            createdAt: '2024-03-19',
-          },
-        ]);
+        // 后端未返回数据时设置为空数组
+        setPermissions([]);
       }
     } catch (error) {
       console.error('加载共享权限失败:', error);
+      setPermissions([]);
     } finally {
       setLoading(false);
     }

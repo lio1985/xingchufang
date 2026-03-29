@@ -80,66 +80,15 @@ const DataStatsPage = () => {
       if (response.data?.code === 200 && response.data?.data) {
         setDashboardData(response.data.data);
       } else {
-        // 如果接口失败，使用模拟数据
-        setDashboardData(generateMockData());
+        // 如果接口失败，设置空数据
+        setDashboardData(null);
       }
     } catch (error) {
       console.error('[DataStats] 加载失败:', error);
-      // 使用模拟数据
-      setDashboardData(generateMockData());
+      // 接口失败时设置空数据
+      setDashboardData(null);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const generateMockData = (): DashboardStats => {
-    if (isAdmin) {
-      return {
-        type: 'global',
-        stats: {
-          totalUsers: 156,
-          activeUsers: 89,
-          totalDialogs: 1234,
-          totalMessages: 5678,
-          totalLexicons: 234,
-          todayActiveUsers: 45,
-          todayDialogs: 123,
-          todayMessages: 456,
-        },
-        trends: Array.from({ length: 7 }, (_, i) => ({
-          date: `周${['一', '二', '三', '四', '五', '六', '日'][i]}`,
-          dialogCount: Math.floor(Math.random() * 100) + 50,
-          messageCount: Math.floor(Math.random() * 200) + 100,
-          activeUsers: Math.floor(Math.random() * 50) + 20,
-        })),
-      };
-    } else {
-      return {
-        type: 'personal',
-        personal: {
-          customerCount: Math.floor(Math.random() * 50) + 10,
-          totalDealValue: Math.floor(Math.random() * 50000) + 10000,
-          contentCount: Math.floor(Math.random() * 30) + 10,
-          dialogCount: Math.floor(Math.random() * 100) + 20,
-          messageCount: Math.floor(Math.random() * 300) + 50,
-          lexiconCount: Math.floor(Math.random() * 20) + 5,
-          trends: Array.from({ length: 7 }, (_, i) => ({
-            date: `周${['一', '二', '三', '四', '五', '六', '日'][i]}`,
-            dialogCount: Math.floor(Math.random() * 20) + 5,
-            messageCount: Math.floor(Math.random() * 50) + 10,
-          })),
-        },
-        team: {
-          teamId: 'mock-team',
-          memberCount: 5,
-          customerCount: Math.floor(Math.random() * 200) + 50,
-          totalDealValue: Math.floor(Math.random() * 200000) + 50000,
-          contentCount: Math.floor(Math.random() * 100) + 30,
-          dialogCount: Math.floor(Math.random() * 300) + 100,
-          messageCount: Math.floor(Math.random() * 800) + 200,
-          memberStats: [],
-        },
-      };
     }
   };
 

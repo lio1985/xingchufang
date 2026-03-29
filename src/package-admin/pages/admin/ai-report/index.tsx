@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
@@ -26,9 +26,17 @@ interface ReportSection {
   icon?: string;
 }
 
+interface ReportStats {
+  activeUsers: number;
+  usageCount: number;
+  conversationCount: number;
+  conversionRate: string;
+}
+
 export default function AdminAIReportPage() {
   const [generating, setGenerating] = useState(false);
   const [reportData, setReportData] = useState<ReportSection[] | null>(null);
+  const [reportStats, setReportStats] = useState<ReportStats | null>(null);
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter' | 'year'>('week');
 
   const timeRangeOptions = [
@@ -37,6 +45,27 @@ export default function AdminAIReportPage() {
     { value: 'quarter', label: '最近一季度', icon: Calendar },
     { value: 'year', label: '最近一年', icon: Calendar },
   ];
+
+  const loadReportStats = async () => {
+    try {
+      const res = await Network.request({
+        url: '/api/statistics/overview',
+        method: 'GET',
+      });
+
+      if (res.data && res.data.code === 200 && res.data.data) {
+        const data = res.data.data;
+        setReportStats({
+          activeUsers: data.activeUsers || 0,
+          usageCount: data.totalConversations || 0,
+          conversationCount: data.totalMessages || 0,
+          conversionRate: '0%',
+        });
+      }
+    } catch (error: any) {
+      console.error('加载统计数据失败:', error);
+    }
+  };
 
   const loadLatestReport = async () => {
     try {
@@ -47,11 +76,20 @@ export default function AdminAIReportPage() {
 
       if (res.data && res.data.code === 200) {
         setReportData(res.data.data.sections || []);
+        // 如果后端返回了统计数据，设置它
+        if (res.data.data.stats) {
+          setReportStats(res.data.data.stats);
+        }
       }
     } catch (error: any) {
       console.error('加载报告失败:', error);
     }
   };
+
+  useEffect(() => {
+    loadLatestReport();
+    loadReportStats();
+  }, []);
 
   const generateReport = async () => {
     setGenerating(true);
@@ -64,6 +102,13 @@ export default function AdminAIReportPage() {
 
       if (res.data && res.data.code === 200) {
         setReportData(res.data.data.sections || []);
+        // 如果后端返回了统计数据，设置它
+        if (res.data.data.stats) {
+          setReportStats(res.data.data.stats);
+        } else {
+          // 如果后端没有返回统计数据，尝试从统计接口获取
+          loadReportStats();
+        }
         Taro.showToast({ title: '报告创建成功', icon: 'success' });
       } else {
         throw new Error(res.data?.msg || '创建失败');
@@ -257,7 +302,7 @@ export default function AdminAIReportPage() {
                     <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(74, 222, 128, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                       <Users size={18} color="#4ade80" />
                     </View>
-                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>128</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{reportStats?.activeUsers || 0}</Text>
                     <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>活跃用户</Text>
                   </View>
 
@@ -271,7 +316,7 @@ export default function AdminAIReportPage() {
                     <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(56, 189, 248, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                       <ChartBar size={18} color="#38bdf8" />
                     </View>
-                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>1,234</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{reportStats?.usageCount || 0}</Text>
                     <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>使用频次</Text>
                   </View>
 
@@ -285,7 +330,7 @@ export default function AdminAIReportPage() {
                     <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(96, 165, 250, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                       <MessageSquare size={18} color="#60a5fa" />
                     </View>
-                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>567</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{reportStats?.conversationCount || 0}</Text>
                     <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>对话数量</Text>
                   </View>
 
@@ -299,7 +344,7 @@ export default function AdminAIReportPage() {
                     <View style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(168, 85, 247, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                       <TrendingUp size={18} color="#a855f7" />
                     </View>
-                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>42.3%</Text>
+                    <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>{reportStats?.conversionRate || '0%'}</Text>
                     <Text style={{ fontSize: '12px', color: '#71717a', display: 'block' }}>转化率</Text>
                   </View>
                 </View>

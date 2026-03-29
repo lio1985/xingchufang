@@ -80,45 +80,8 @@ const LexiconManagePage = () => {
       if (response.data?.success && response.data?.data) {
         setLexicons(response.data.data);
       } else {
-        // 模拟数据
-        setLexicons([
-          {
-            id: '1',
-            name: '产品介绍语料库',
-            description: '包含产品推广、特性介绍等内容',
-            category: 'product',
-            itemCount: 128,
-            isShared: true,
-            shareScope: 'department',
-            createdAt: '2024-01-15',
-            updatedAt: '2024-03-20',
-            createdBy: { id: 'u1', name: '张三' },
-          },
-          {
-            id: '2',
-            name: '客户服务话术',
-            description: '客服常用回复和话术模板',
-            category: 'service',
-            itemCount: 256,
-            isShared: true,
-            shareScope: 'all',
-            createdAt: '2024-02-10',
-            updatedAt: '2024-03-18',
-            createdBy: { id: 'u2', name: '李四' },
-          },
-          {
-            id: '3',
-            name: '营销推广文案',
-            description: '营销活动、促销文案集合',
-            category: 'marketing',
-            itemCount: 89,
-            isShared: false,
-            shareScope: 'private',
-            createdAt: '2024-03-01',
-            updatedAt: '2024-03-19',
-            createdBy: { id: 'u3', name: '王五' },
-          },
-        ]);
+        // 后端未返回数据时设置为空数组
+        setLexicons([]);
       }
     } catch (error) {
       console.error('加载语料库失败:', error);

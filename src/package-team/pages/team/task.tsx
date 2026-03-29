@@ -43,44 +43,19 @@ export default function TaskAssignment() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      // 模拟数据
-      setTasks([
-        {
-          id: '1',
-          title: '本周客户回访任务',
-          description: '对上周新增的意向客户进行电话回访，了解客户需求，推动成交进度。',
-          status: 'in_progress',
-          priority: 'high',
-          due_date: new Date(Date.now() + 86400000 * 2).toISOString(),
-          assignees: [
-            { id: '1', nickname: '李四' },
-            { id: '2', nickname: '王五' },
-          ],
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          title: '产品资料整理',
-          description: '整理本月新品的产品资料，包括功能说明、价格政策、促销方案等。',
-          status: 'pending',
-          priority: 'medium',
-          due_date: new Date(Date.now() + 86400000 * 5).toISOString(),
-          assignees: [{ id: '3', nickname: '赵六' }],
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: '3',
-          title: '月度销售报告',
-          description: '完成本月销售数据统计和分析，撰写销售报告。',
-          status: 'completed',
-          priority: 'high',
-          due_date: new Date(Date.now() - 86400000).toISOString(),
-          assignees: [{ id: '1', nickname: '李四' }],
-          created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
-        },
-      ]);
+      const res = await Network.request({
+        url: '/api/teams/my/tasks',
+        method: 'GET',
+      });
+      if (res.data?.code === 200 && res.data?.data) {
+        setTasks(res.data.data);
+      } else {
+        // 后端未返回数据时设置为空数组
+        setTasks([]);
+      }
     } catch (error) {
       console.error('获取任务失败:', error);
+      setTasks([]);
     } finally {
       setLoading(false);
     }

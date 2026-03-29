@@ -6,6 +6,7 @@ import {
   Send,
   Image as ImageIcon,
 } from 'lucide-react-taro';
+import { Network } from '@/network';
 
 interface Message {
   id: string;
@@ -31,57 +32,25 @@ export default function TeamChat() {
   const fetchMessages = async () => {
     setLoading(true);
     try {
-      // 模拟数据
-      const currentUser = Taro.getStorageSync('user');
-      setMessages([
-        {
-          id: '1',
-          content: '大家早上好！今天有什么计划吗？',
-          type: 'text',
-          sender_id: 'leader',
-          sender_name: '张队长',
-          created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-          is_mine: false,
-        },
-        {
-          id: '2',
-          content: '队长好！我今天计划拜访3个意向客户',
-          type: 'text',
-          sender_id: 'user1',
-          sender_name: '李四',
-          created_at: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-          is_mine: false,
-        },
-        {
-          id: '3',
-          content: '我准备完成上周的客户回访，有2个客户还在犹豫中',
-          type: 'text',
-          sender_id: 'user2',
-          sender_name: '王五',
-          created_at: new Date(Date.now() - 3600000).toISOString(),
-          is_mine: false,
-        },
-        {
-          id: '4',
-          content: '很好！大家加油，有问题随时沟通',
-          type: 'text',
-          sender_id: 'leader',
-          sender_name: '张队长',
-          created_at: new Date(Date.now() - 1800000).toISOString(),
-          is_mine: false,
-        },
-        {
-          id: '5',
-          content: '收到！',
-          type: 'text',
-          sender_id: currentUser?.id || 'me',
-          sender_name: currentUser?.nickname || '我',
-          created_at: new Date(Date.now() - 900000).toISOString(),
-          is_mine: true,
-        },
-      ]);
+      const res = await Network.request({
+        url: '/api/teams/my/chat-messages',
+        method: 'GET',
+      });
+      if (res.data?.code === 200 && res.data?.data) {
+        const currentUser = Taro.getStorageSync('user');
+        // 标记哪些消息是当前用户的
+        const formattedMessages = res.data.data.map((msg: any) => ({
+          ...msg,
+          is_mine: msg.sender_id === currentUser?.id,
+        }));
+        setMessages(formattedMessages);
+      } else {
+        // 后端未返回数据时设置为空数组
+        setMessages([]);
+      }
     } catch (error) {
       console.error('获取消息失败:', error);
+      setMessages([]);
     } finally {
       setLoading(false);
     }
