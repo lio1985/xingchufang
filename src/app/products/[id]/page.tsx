@@ -319,11 +319,11 @@ export default function ProductDetailPage({
               ) : (
                 <>
                   {/* 主图显示 - 移动端大图 */}
-                  <div className="relative mb-3 md:mb-4">
+                  <div className="relative mb-3 md:mb-4 bg-gray-100 rounded-lg">
                     <img
                       src={images[activeImageIndex]?.url}
                       alt="商品图片"
-                      className="w-full aspect-square md:aspect-video object-cover rounded-lg"
+                      className="w-full aspect-square md:aspect-video object-contain rounded-lg"
                     />
                     {images[activeImageIndex]?.is_primary && (
                       <Badge className="absolute top-2 left-2">主图</Badge>
