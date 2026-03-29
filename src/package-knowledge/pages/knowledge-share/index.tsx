@@ -1,70 +1,81 @@
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Building2,
-  Wrench,
-  FileText,
-  PenTool,
-  ChevronRight,
   BookOpen,
-  Settings,
-  Lightbulb,
   Lock,
 } from 'lucide-react-taro';
+import { Network } from '@/network';
 
-// 知识分类数据
-const knowledgeCategories = [
-  {
-    id: 'equipment-maintenance',
-    title: '商厨设备维修维保',
-    description: '设备维修保养指南与知识库',
-    icon: Wrench,
-    color: '#38bdf8',
-    bgColor: 'rgba(245, 158, 11, 0.2)',
-    count: 24,
-    subCategories: [
-      { id: 'product-manual', title: '产品使用说明书', count: 15 },
-      { id: 'design-knowledge', title: '商厨设计知识', count: 9 },
-    ]
-  },
-  {
-    id: 'company-policies',
-    title: '公司规章制度',
-    description: '企业管理制度与流程规范',
-    icon: Building2,
-    color: '#a855f7',
-    bgColor: 'rgba(168, 85, 247, 0.2)',
-    count: 12,
-  },
-  {
-    id: 'sales-skills',
-    title: '销售技巧',
-    description: '销售话术与客户沟通技巧',
-    icon: Lightbulb,
-    color: '#4ade80',
-    bgColor: 'rgba(34, 197, 94, 0.2)',
-    count: 18,
-  },
-  {
-    id: 'product-knowledge',
-    title: '产品知识',
-    description: '产品介绍与参数说明',
-    icon: Settings,
-    color: '#60a5fa',
-    bgColor: 'rgba(59, 130, 246, 0.2)',
-    count: 32,
-  },
-];
+interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  article_count: number;
+}
+
+interface CompanyStats {
+  total: number;
+  categories: number;
+  weeklyUpdates: number;
+}
 
 const KnowledgeSharePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [stats, setStats] = useState<CompanyStats>({ total: 0, categories: 0, weeklyUpdates: 0 });
+
+  // 加载数据
+  const loadData = useCallback(async () => {
+    try {
+      const [categoriesRes, statsRes] = await Promise.all([
+        Network.request({ url: '/api/knowledge/categories' }),
+        Network.request({ url: '/api/knowledge/company-stats' }),
+      ]);
+
+      console.log('分类数据:', categoriesRes.data);
+      console.log('统计数据:', statsRes.data);
+
+      if (categoriesRes.data?.code === 200 && categoriesRes.data?.data) {
+        setCategories(categoriesRes.data.data);
+      }
+
+      if (statsRes.data?.code === 200 && statsRes.data?.data) {
+        setStats(statsRes.data.data);
+      }
+    } catch (error) {
+      console.error('加载知识库数据失败:', error);
+    }
+  }, []);
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const user = Taro.getStorageSync('user');
+      const token = Taro.getStorageSync('token');
+      if (user && token) {
+        setIsLoggedIn(true);
+        setUserRole(user.role || 'guest');
+        // 登录后加载数据
+        await loadData();
+      } else {
+        setIsLoggedIn(false);
+        setUserRole(null);
+      }
+    } catch (e) {
+      console.log('获取用户信息失败');
+    } finally {
+      setLoading(false);
+    }
+  }, [loadData]);
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   // 使用 useEffect 替代 useDidShow 以支持 H5
   useEffect(() => {
@@ -80,25 +91,7 @@ const KnowledgeSharePage = () => {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
       };
     }
-  }, []);
-
-  const checkAuth = () => {
-    try {
-      const user = Taro.getStorageSync('user');
-      const token = Taro.getStorageSync('token');
-      if (user && token) {
-        setIsLoggedIn(true);
-        setUserRole(user.role || 'guest');
-      } else {
-        setIsLoggedIn(false);
-        setUserRole(null);
-      }
-    } catch (e) {
-      console.log('获取用户信息失败');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [checkAuth]);
 
   // 判断是否有权限（员工及以上权限）
   const canAccess = isLoggedIn && userRole && ['employee', 'team_leader', 'admin'].includes(userRole);
@@ -108,22 +101,8 @@ const KnowledgeSharePage = () => {
   };
 
   const handleCategoryClick = (categoryId: string) => {
-    if (categoryId === 'equipment-maintenance') {
-      // 商厨设备维修维保是主分类，展开子分类
-      return;
-    }
-    // 跳转到分类列表页面
-    handleNavigate(`/package-knowledge/pages/knowledge/category-list?category=${categoryId}`);
-  };
-
-  const handleSubCategoryClick = (subId: string) => {
-    if (subId === 'product-manual') {
-      handleNavigate('/package-knowledge/pages/knowledge/product-manual/index');
-    } else if (subId === 'design-knowledge') {
-      handleNavigate('/package-knowledge/pages/knowledge/design-knowledge/index');
-    } else {
-      Taro.showToast({ title: '功能开发中', icon: 'none' });
-    }
+    // 跳转到分类文章列表页面
+    handleNavigate(`/package-knowledge/pages/knowledge/article-list?categoryId=${categoryId}`);
   };
 
   // 加载中
@@ -180,27 +159,42 @@ const KnowledgeSharePage = () => {
             </View>
             <View style={{ display: 'flex', justifyContent: 'space-around', marginTop: '16px' }}>
               <View style={{ textAlign: 'center' }}>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff' }}>86</Text>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#ffffff' }}>{stats.total}</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>知识总数</Text>
               </View>
               <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
               <View style={{ textAlign: 'center' }}>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#38bdf8' }}>4</Text>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#38bdf8' }}>{stats.categories}</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>知识分类</Text>
               </View>
               <View style={{ width: '1px', backgroundColor: '#1e3a5f' }} />
               <View style={{ textAlign: 'center' }}>
-                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>12</Text>
+                <Text style={{ fontSize: '28px', fontWeight: '700', color: '#4ade80' }}>{stats.weeklyUpdates}</Text>
                 <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周更新</Text>
               </View>
             </View>
           </View>
 
+          {/* 空状态提示 */}
+          {categories.length === 0 && (
+            <View style={{
+              backgroundColor: '#111827',
+              border: '1px solid #1e3a5f',
+              borderRadius: '12px',
+              padding: '40px 20px',
+              textAlign: 'center'
+            }}
+            >
+              <BookOpen size={48} color="#71717a" style={{ display: 'block', margin: '0 auto 16px' }} />
+              <Text style={{ fontSize: '16px', color: '#94a3b8', display: 'block', marginBottom: '8px' }}>暂无知识分类</Text>
+              <Text style={{ fontSize: '14px', color: '#64748b', display: 'block' }}>点击下方&ldquo;新建知识&rdquo;添加内容</Text>
+            </View>
+          )}
+
           {/* 知识分类列表 */}
           <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>知识分类</Text>
           
-          {knowledgeCategories.map((category) => {
-            const CategoryIcon = category.icon;
+          {categories.map((category) => {
             return (
               <View
                 key={category.id}
@@ -212,7 +206,7 @@ const KnowledgeSharePage = () => {
                   overflow: 'hidden'
                 }}
               >
-                {/* 主分类 */}
+                {/* 分类卡片 */}
                 <View
                   style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}
                   onClick={() => handleCategoryClick(category.id)}
@@ -221,58 +215,25 @@ const KnowledgeSharePage = () => {
                     width: '48px',
                     height: '48px',
                     borderRadius: '12px',
-                    backgroundColor: category.bgColor,
+                    backgroundColor: category.color || 'rgba(56, 189, 248, 0.2)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0
                   }}
                   >
-                    <CategoryIcon size={24} color={category.color} />
+                    <BookOpen size={24} color={category.color?.replace('0.2', '1') || '#38bdf8'} />
                   </View>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>{category.title}</Text>
-                      <View style={{ padding: '4px 10px', borderRadius: '12px', backgroundColor: category.bgColor }}>
-                        <Text style={{ fontSize: '12px', color: category.color }}>{category.count}</Text>
+                      <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>{category.name}</Text>
+                      <View style={{ padding: '4px 10px', borderRadius: '12px', backgroundColor: category.color || 'rgba(56, 189, 248, 0.2)' }}>
+                        <Text style={{ fontSize: '12px', color: category.color?.replace('0.2', '1') || '#38bdf8' }}>{category.article_count}</Text>
                       </View>
                     </View>
-                    <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>{category.description}</Text>
+                    <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '4px' }}>{category.description || '暂无描述'}</Text>
                   </View>
                 </View>
-
-                {/* 子分类（仅商厨设备维修维保显示） */}
-                {category.subCategories && category.subCategories.length > 0 && (
-                  <View style={{ borderTop: '1px solid #1e3a5f' }}>
-                    {category.subCategories.map((sub, index) => (
-                      <View
-                        key={sub.id}
-                        style={{
-                          padding: '12px 16px 12px 76px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          borderBottom: index < category.subCategories!.length - 1 ? '1px solid #1e3a5f' : 'none',
-                          backgroundColor: '#111827'
-                        }}
-                        onClick={() => handleSubCategoryClick(sub.id)}
-                      >
-                        <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          {sub.id === 'product-manual' ? (
-                            <FileText size={16} color="#38bdf8" />
-                          ) : (
-                            <PenTool size={16} color="#38bdf8" />
-                          )}
-                          <Text style={{ fontSize: '14px', color: '#94a3b8' }}>{sub.title}</Text>
-                        </View>
-                        <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <Text style={{ fontSize: '12px', color: '#64748b' }}>{sub.count}篇</Text>
-                          <ChevronRight size={16} color="#64748b" />
-                        </View>
-                      </View>
-                    ))}
-                  </View>
-                )}
               </View>
             );
           })}

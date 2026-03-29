@@ -20,6 +20,92 @@ let KnowledgeController = class KnowledgeController {
     constructor(knowledgeService) {
         this.knowledgeService = knowledgeService;
     }
+    async getCategories(req) {
+        const data = await this.knowledgeService.getCategories();
+        return {
+            code: 200,
+            msg: '获取成功',
+            data,
+        };
+    }
+    async createCategory(req, body) {
+        const userId = req.user.id;
+        const data = await this.knowledgeService.createCategory(userId, body);
+        return {
+            code: 200,
+            msg: '创建成功',
+            data,
+        };
+    }
+    async updateCategory(req, id, body) {
+        const userId = req.user.id;
+        const data = await this.knowledgeService.updateCategory(userId, id, body);
+        return {
+            code: 200,
+            msg: '更新成功',
+            data,
+        };
+    }
+    async deleteCategory(req, id) {
+        const userId = req.user.id;
+        await this.knowledgeService.deleteCategory(userId, id);
+        return {
+            code: 200,
+            msg: '删除成功',
+            data: null,
+        };
+    }
+    async getArticles(req, categoryId, keyword, page, pageSize) {
+        const data = await this.knowledgeService.getArticles(categoryId, keyword || '', page ? parseInt(page) : 1, pageSize ? parseInt(pageSize) : 20);
+        return {
+            code: 200,
+            msg: '获取成功',
+            data,
+        };
+    }
+    async getArticleDetail(req, id) {
+        const data = await this.knowledgeService.getArticleById(id);
+        return {
+            code: 200,
+            msg: '获取成功',
+            data,
+        };
+    }
+    async createArticle(req, body) {
+        const userId = req.user.id;
+        const data = await this.knowledgeService.createArticle(userId, body);
+        return {
+            code: 200,
+            msg: '创建成功',
+            data,
+        };
+    }
+    async updateArticle(req, id, body) {
+        const userId = req.user.id;
+        const data = await this.knowledgeService.updateArticle(userId, id, body);
+        return {
+            code: 200,
+            msg: '更新成功',
+            data,
+        };
+    }
+    async deleteArticle(req, id) {
+        const userId = req.user.id;
+        await this.knowledgeService.deleteArticle(userId, id);
+        return {
+            code: 200,
+            msg: '删除成功',
+            data: null,
+        };
+    }
+    async getCompanyStats(req) {
+        const data = await this.knowledgeService.getCompanyStats();
+        return {
+            code: 200,
+            msg: '获取成功',
+            data,
+        };
+    }
     async getKnowledgeStats(req) {
         const userId = req.user.id;
         const data = await this.knowledgeService.getKnowledgeStats(userId);
@@ -61,6 +147,89 @@ let KnowledgeController = class KnowledgeController {
     }
 };
 exports.KnowledgeController = KnowledgeController;
+__decorate([
+    (0, common_1.Get)('categories'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "getCategories", null);
+__decorate([
+    (0, common_1.Post)('categories'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "createCategory", null);
+__decorate([
+    (0, common_1.Put)('categories/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "updateCategory", null);
+__decorate([
+    (0, common_1.Delete)('categories/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "deleteCategory", null);
+__decorate([
+    (0, common_1.Get)('articles'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)('categoryId')),
+    __param(2, (0, common_1.Query)('keyword')),
+    __param(3, (0, common_1.Query)('page')),
+    __param(4, (0, common_1.Query)('pageSize')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String, String, String]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "getArticles", null);
+__decorate([
+    (0, common_1.Get)('articles/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "getArticleDetail", null);
+__decorate([
+    (0, common_1.Post)('articles'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "createArticle", null);
+__decorate([
+    (0, common_1.Put)('articles/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "updateArticle", null);
+__decorate([
+    (0, common_1.Delete)('articles/:id'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "deleteArticle", null);
+__decorate([
+    (0, common_1.Get)('company-stats'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], KnowledgeController.prototype, "getCompanyStats", null);
 __decorate([
     (0, common_1.Get)('stats'),
     __param(0, (0, common_1.Req)()),

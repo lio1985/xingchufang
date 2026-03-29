@@ -488,3 +488,40 @@ export const orderTransfers = pgTable("order_transfers", {
 		}).onDelete("restrict"),
 	pgPolicy("Allow all transfers for authenticated", { as: "permissive", for: "all", to: ["authenticated"], using: sql`true`, withCheck: sql`true`  }),
 ]);
+
+// 知识分类表
+export const knowledgeCategories = pgTable("knowledge_categories", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: varchar({ length: 100 }).notNull(),
+	description: text(),
+	icon: varchar({ length: 50 }),
+	color: varchar({ length: 20 }),
+	parentId: uuid("parent_id"),
+	sortOrder: integer("sort_order").default(0),
+	isActive: boolean("is_active").default(true),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),
+}, (table) => [
+	index("idx_knowledge_categories_parent_id").on(table.parentId),
+	index("idx_knowledge_categories_sort_order").on(table.sortOrder),
+]);
+
+// 知识文章表
+export const knowledgeArticles = pgTable("knowledge_articles", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	categoryId: uuid("category_id").notNull().references(() => knowledgeCategories.id, { onDelete: "cascade" }),
+	title: varchar({ length: 200 }).notNull(),
+	content: text(),
+	summary: text(),
+	authorId: uuid("author_id").references(() => users.id, { onDelete: "set null" }),
+	viewCount: integer("view_count").default(0),
+	status: varchar({ length: 20 }).default('draft').notNull(),
+	tags: text().array(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow(),
+}, (table) => [
+	index("idx_knowledge_articles_category_id").on(table.categoryId),
+	index("idx_knowledge_articles_author_id").on(table.authorId),
+	index("idx_knowledge_articles_status").on(table.status),
+	index("idx_knowledge_articles_created_at").on(table.createdAt),
+]);

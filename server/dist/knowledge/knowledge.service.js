@@ -18,6 +18,246 @@ let KnowledgeService = class KnowledgeService {
         this.permissionService = permissionService;
         this.client = (0, supabase_client_1.getSupabaseClient)();
     }
+    async getCategories() {
+        const { data: categories, error } = await this.client
+            .from('knowledge_categories')
+            .select(`
+        id,
+        name,
+        description,
+        icon,
+        color,
+        parent_id,
+        sort_order,
+        is_active,
+        created_at
+      `)
+            .eq('is_active', true)
+            .order('sort_order', { ascending: true });
+        if (error) {
+            console.error('获取分类失败:', error);
+            return [];
+        }
+        const categoriesWithCount = await Promise.all((categories || []).map(async (category) => {
+            const { count } = await this.client
+                .from('knowledge_articles')
+                .select('id', { count: 'exact', head: true })
+                .eq('category_id', category.id)
+                .eq('status', 'published');
+            return {
+                ...category,
+                article_count: count || 0,
+            };
+        }));
+        return categoriesWithCount;
+    }
+    async createCategory(userId, body) {
+        await this.checkAdminPermission(userId);
+        const { data, error } = await this.client
+            .from('knowledge_categories')
+            .insert({
+            name: body.name,
+            description: body.description,
+            icon: body.icon,
+            color: body.color,
+            parent_id: body.parent_id,
+            sort_order: body.sort_order || 0,
+            is_active: true,
+        })
+            .select()
+            .single();
+        if (error) {
+            console.error('创建分类失败:', error);
+            throw new Error('创建分类失败');
+        }
+        return { ...data, article_count: 0 };
+    }
+    async updateCategory(userId, categoryId, body) {
+        await this.checkAdminPermission(userId);
+        const { data, error } = await this.client
+            .from('knowledge_categories')
+            .update({
+            name: body.name,
+            description: body.description,
+            icon: body.icon,
+            color: body.color,
+            sort_order: body.sort_order,
+            updated_at: new Date().toISOString(),
+        })
+            .eq('id', categoryId)
+            .select()
+            .single();
+        if (error) {
+            console.error('更新分类失败:', error);
+            throw new Error('更新分类失败');
+        }
+        const { count } = await this.client
+            .from('knowledge_articles')
+            .select('id', { count: 'exact', head: true })
+            .eq('category_id', categoryId)
+            .eq('status', 'published');
+        return { ...data, article_count: count || 0 };
+    }
+    async deleteCategory(userId, categoryId) {
+        await this.checkAdminPermission(userId);
+        const { error } = await this.client
+            .from('knowledge_categories')
+            .update({ is_active: false, updated_at: new Date().toISOString() })
+            .eq('id', categoryId);
+        if (error) {
+            console.error('删除分类失败:', error);
+            throw new Error('删除分类失败');
+        }
+    }
+    async getArticles(categoryId, keyword, page = 1, pageSize = 20) {
+        const offset = (page - 1) * pageSize;
+        let query = this.client
+            .from('knowledge_articles')
+            .select('id, category_id, title, summary, author_id, view_count, status, tags, created_at, updated_at', { count: 'exact' })
+            .eq('status', 'published')
+            .order('created_at', { ascending: false })
+            .range(offset, offset + pageSize - 1);
+        if (categoryId) {
+            query = query.eq('category_id', categoryId);
+        }
+        if (keyword) {
+            query = query.or(`title.ilike.%${keyword}%,content.ilike.%${keyword}%,summary.ilike.%${keyword}%`);
+        }
+        const { data, count, error } = await query;
+        if (error) {
+            console.error('获取文章列表失败:', error);
+            return { items: [], total: 0 };
+        }
+        return { items: data || [], total: count || 0 };
+    }
+    async getArticleById(articleId) {
+        const { data, error } = await this.client
+            .from('knowledge_articles')
+            .select('id, category_id, title, content, summary, author_id, view_count, status, tags, created_at, updated_at')
+            .eq('id', articleId)
+            .eq('status', 'published')
+            .single();
+        if (error) {
+            console.error('获取文章详情失败:', error);
+            return null;
+        }
+        await this.client
+            .from('knowledge_articles')
+            .update({ view_count: (data.view_count || 0) + 1 })
+            .eq('id', articleId);
+        return data;
+    }
+    async createArticle(userId, body) {
+        const { data, error } = await this.client
+            .from('knowledge_articles')
+            .insert({
+            category_id: body.category_id,
+            title: body.title,
+            content: body.content,
+            summary: body.summary,
+            author_id: userId,
+            status: body.status || 'draft',
+            tags: body.tags || [],
+        })
+            .select()
+            .single();
+        if (error) {
+            console.error('创建文章失败:', error);
+            throw new Error('创建文章失败');
+        }
+        return data;
+    }
+    async updateArticle(userId, articleId, body) {
+        const { data: article } = await this.client
+            .from('knowledge_articles')
+            .select('author_id')
+            .eq('id', articleId)
+            .single();
+        if (!article) {
+            throw new common_1.NotFoundException('文章不存在');
+        }
+        const isAdmin = await this.isAdmin(userId);
+        if (article.author_id !== userId && !isAdmin) {
+            throw new common_1.ForbiddenException('无权编辑此文章');
+        }
+        const { data, error } = await this.client
+            .from('knowledge_articles')
+            .update({
+            category_id: body.category_id,
+            title: body.title,
+            content: body.content,
+            summary: body.summary,
+            status: body.status,
+            tags: body.tags,
+            updated_at: new Date().toISOString(),
+        })
+            .eq('id', articleId)
+            .select()
+            .single();
+        if (error) {
+            console.error('更新文章失败:', error);
+            throw new Error('更新文章失败');
+        }
+        return data;
+    }
+    async deleteArticle(userId, articleId) {
+        const { data: article } = await this.client
+            .from('knowledge_articles')
+            .select('author_id')
+            .eq('id', articleId)
+            .single();
+        if (!article) {
+            throw new common_1.NotFoundException('文章不存在');
+        }
+        const isAdmin = await this.isAdmin(userId);
+        if (article.author_id !== userId && !isAdmin) {
+            throw new common_1.ForbiddenException('无权删除此文章');
+        }
+        const { error } = await this.client
+            .from('knowledge_articles')
+            .delete()
+            .eq('id', articleId);
+        if (error) {
+            console.error('删除文章失败:', error);
+            throw new Error('删除文章失败');
+        }
+    }
+    async getCompanyStats() {
+        const { count: total } = await this.client
+            .from('knowledge_articles')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'published');
+        const { count: categories } = await this.client
+            .from('knowledge_categories')
+            .select('id', { count: 'exact', head: true })
+            .eq('is_active', true);
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        const { count: weeklyUpdates } = await this.client
+            .from('knowledge_articles')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'published')
+            .gte('updated_at', oneWeekAgo.toISOString());
+        return {
+            total: total || 0,
+            categories: categories || 0,
+            weeklyUpdates: weeklyUpdates || 0,
+        };
+    }
+    async checkAdminPermission(userId) {
+        const isAdmin = await this.isAdmin(userId);
+        if (!isAdmin) {
+            throw new common_1.ForbiddenException('需要管理员权限');
+        }
+    }
+    async isAdmin(userId) {
+        const { data: user } = await this.client
+            .from('users')
+            .select('role')
+            .eq('id', userId)
+            .single();
+        return user?.role === 'admin';
+    }
     async getKnowledgeStats(userId) {
         const supabase = this.client;
         const [lexiconResult, knowledgeShareResult, productManualResult, designKnowledgeResult] = await Promise.all([
