@@ -32,6 +32,53 @@ export const productRecommendations = pgTable(
   ]
 );
 
+// 供应商代码映射表
+export const supplierCodes = pgTable(
+  "supplier_codes",
+  {
+    id: serial().primaryKey(),
+    supplier_name: varchar("supplier_name", { length: 100 }).notNull().unique(),
+    supplier_code: varchar("supplier_code", { length: 10 }).notNull().unique(),
+    description: text("description"),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp("updated_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("idx_supplier_codes_name").on(table.supplier_name),
+  ]
+);
+
+// 分类编码规则表
+export const categoryCodes = pgTable(
+  "category_codes",
+  {
+    id: serial().primaryKey(),
+    level1_category: varchar("level1_category", { length: 100 }),
+    level2_category: varchar("level2_category", { length: 100 }),
+    category_code: varchar("category_code", { length: 20 }).notNull(),
+    description: text("description"),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp("updated_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("idx_category_codes_code").on(table.category_code),
+    unique("category_codes_unique").on(table.level1_category, table.level2_category, table.category_code),
+  ]
+);
+
+// 编码配置表
+export const codeConfig = pgTable(
+  "code_config",
+  {
+    id: serial().primaryKey(),
+    config_key: varchar("config_key", { length: 50 }).notNull().unique(),
+    config_value: text("config_value").notNull(),
+    description: text("description"),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updated_at: timestamp("updated_at", { withTimezone: true }),
+  }
+);
+
 // 商品表
 export const products = pgTable(
   "products",

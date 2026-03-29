@@ -47,6 +47,7 @@ import {
   Sparkles,
   DollarSign,
   Award,
+  Settings,
 } from 'lucide-react';
 
 // 推荐类型配置
@@ -883,7 +884,7 @@ export default function AdminPage() {
                 <CardTitle>快捷操作</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
                   <Button
                     variant="outline"
                     className="h-20 flex flex-col gap-2"
@@ -923,6 +924,14 @@ export default function AdminPage() {
                   >
                     <Star className="h-5 w-5 text-yellow-600" />
                     <span>推荐管理</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col gap-2 bg-blue-50 border-blue-200 hover:bg-blue-100"
+                    onClick={() => router.push('/admin/code-rules')}
+                  >
+                    <Settings className="h-5 w-5 text-blue-600" />
+                    <span>编码管理</span>
                   </Button>
                 </div>
               </CardContent>
