@@ -5,6 +5,7 @@ export type UserRole = 'admin' | 'sales';
 
 // 用户信息接口
 export interface UserInfo {
+  id?: number;
   username: string;
   role: UserRole;
 }
@@ -71,12 +72,13 @@ export async function POST(request: NextRequest) {
       
       const { data: dbUser, error: dbError } = await client
         .from('admin_users')
-        .select('username, password_hash, role')
+        .select('id, username, password_hash, role')
         .eq('username', username)
         .single();
       
       if (!dbError && dbUser && dbUser.password_hash === password) {
         const userInfo: UserInfo = {
+          id: dbUser.id,
           username: dbUser.username,
           role: dbUser.role as UserRole,
         };
@@ -134,7 +136,8 @@ export async function POST(request: NextRequest) {
 // 创建认证响应
 function createAuthResponse(request: NextRequest, userInfo: UserInfo) {
   // 用户信息使用URL安全的Base64编码（去掉=填充）
-  const userValue = safeBase64Encode(`${userInfo.username}|${userInfo.role}`);
+  // 格式: userId|username|role
+  const userValue = safeBase64Encode(`${userInfo.id || 0}|${userInfo.username}|${userInfo.role}`);
   
   // 获取Cookie选项
   const cookieOptions = getCookieOptions(request);
@@ -149,8 +152,8 @@ function createAuthResponse(request: NextRequest, userInfo: UserInfo) {
   });
   
   // 设置Cookie - 将用户信息也编码到token中，确保不会丢失
-  // 格式: authenticated|username|role (Base64编码)
-  const tokenValue = safeBase64Encode(`authenticated|${userInfo.username}|${userInfo.role}`);
+  // 格式: authenticated|userId|username|role (Base64编码)
+  const tokenValue = safeBase64Encode(`authenticated|${userInfo.id || 0}|${userInfo.username}|${userInfo.role}`);
   
   response.cookies.set('admin_session', tokenValue, cookieOptions);
   // 同时设置兼容的旧Cookie
@@ -177,9 +180,19 @@ export async function GET(request: NextRequest) {
     try {
       const decodedValue = safeBase64Decode(sessionCookie.value);
       const parts = decodedValue.split('|');
+      // 支持新格式: authenticated|userId|username|role
+      if (parts.length >= 4 && parts[0] === 'authenticated') {
+        const user = { id: parseInt(parts[1]) || undefined, username: parts[2], role: parts[3] } as UserInfo;
+        console.log('[Auth GET] Session cookie authenticated:', user.username, 'id:', user.id, 'role:', user.role);
+        return NextResponse.json({
+          authenticated: true,
+          user,
+        });
+      }
+      // 兼容旧格式: authenticated|username|role
       if (parts.length >= 3 && parts[0] === 'authenticated') {
         const user = { username: parts[1], role: parts[2] } as UserInfo;
-        console.log('[Auth GET] Session cookie authenticated:', user.username, 'role:', user.role);
+        console.log('[Auth GET] Session cookie authenticated (legacy):', user.username, 'role:', user.role);
         return NextResponse.json({
           authenticated: true,
           user,

@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp, Shield, Eye, Menu, LogOut, ChevronLeft, ChevronRight, Filter, Settings } from 'lucide-react';
+import { Search, Upload, X, Image as ImageIcon, Download, TrendingUp, Shield, Eye, Menu, LogOut, ChevronLeft, ChevronRight, Filter, Settings, Heart } from 'lucide-react';
 
 interface User {
   username: string;
@@ -31,6 +31,7 @@ interface Product {
   level1_category: string | null;
   level2_category: string | null;
   primary_image_url?: string;
+  is_favorited?: boolean;
 }
 
 interface FilterOptions {
@@ -60,6 +61,7 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [favoritesCount, setFavoritesCount] = useState(0);
 
   // 检查登录状态
   useEffect(() => {
@@ -84,6 +86,64 @@ export default function Home() {
   
   // 是否为管理员
   const isAdmin = currentUser?.role === 'admin';
+
+  // 获取收藏数量
+  useEffect(() => {
+    if (currentUser) {
+      fetch('/api/favorites')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            setFavoritesCount(data.count || 0);
+          }
+        });
+    }
+  }, [currentUser]);
+
+  // 检查商品收藏状态
+  const checkFavoritesStatus = async (productIds: number[]) => {
+    if (!currentUser || productIds.length === 0) return;
+    
+    try {
+      const res = await fetch(`/api/favorites/check?productIds=${productIds.join(',')}`);
+      const data = await res.json();
+      
+      if (data.success) {
+        setProducts(prev => prev.map(p => ({
+          ...p,
+          is_favorited: data.data[p.id] || false,
+        })));
+      }
+    } catch (error) {
+      console.error('检查收藏状态失败:', error);
+    }
+  };
+
+  // 切换收藏状态
+  const toggleFavorite = async (e: React.MouseEvent, productId: number, isFavorited: boolean) => {
+    e.stopPropagation(); // 阻止触发卡片点击
+    
+    try {
+      if (isFavorited) {
+        await fetch(`/api/favorites?productId=${productId}`, { method: 'DELETE' });
+        setFavoritesCount(prev => Math.max(0, prev - 1));
+      } else {
+        await fetch('/api/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId }),
+        });
+        setFavoritesCount(prev => prev + 1);
+      }
+      
+      // 更新本地状态
+      setProducts(prev => prev.map(p => 
+        p.id === productId ? { ...p, is_favorited: !isFavorited } : p
+      ));
+    } catch (error) {
+      console.error('操作失败:', error);
+    }
+  };
 
   // 登出
   const handleLogout = async () => {
@@ -128,6 +188,11 @@ export default function Home() {
         setPage(data.data.page);
         setTotalPages(data.data.totalPages);
         setTotal(data.data.total);
+        // 检查收藏状态
+        const productIds = data.data.products.map((p: Product) => p.id);
+        if (productIds.length > 0) {
+          checkFavoritesStatus(productIds);
+        }
       }
     } catch (error) {
       console.error('搜索失败:', error);
@@ -170,6 +235,11 @@ export default function Home() {
           setPage(data.data.page);
           setTotalPages(data.data.totalPages);
           setTotal(data.data.total);
+          // 检查收藏状态
+          const productIds = data.data.products.map((p: Product) => p.id);
+          if (productIds.length > 0) {
+            checkFavoritesStatus(productIds);
+          }
         }
       } catch (error) {
         console.error('搜索失败:', error);
@@ -241,6 +311,20 @@ export default function Home() {
               >
                 <TrendingUp className="h-4 w-4 mr-2" />
                 数据统计
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push('/favorites')}
+                className="text-white hover:bg-blue-700 relative"
+              >
+                <Heart className="h-4 w-4 mr-2" />
+                选品清单
+                {favoritesCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {favoritesCount > 99 ? '99+' : favoritesCount}
+                  </span>
+                )}
               </Button>
               {isAdmin && (
                 <Button
@@ -340,6 +424,20 @@ export default function Home() {
                 >
                   <TrendingUp className="h-4 w-4 mr-2" />
                   数据统计
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { router.push('/favorites'); setShowMobileMenu(false); }}
+                  className="w-full justify-start text-white hover:bg-blue-700"
+                >
+                  <Heart className="h-4 w-4 mr-2" />
+                  选品清单
+                  {favoritesCount > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                      {favoritesCount}
+                    </span>
+                  )}
                 </Button>
                 {isAdmin && (
                   <Button
@@ -595,7 +693,21 @@ export default function Home() {
                   ) : (
                     <ImageIcon className="h-10 w-10 md:h-12 md:w-12 text-gray-300" />
                   )}
-                  <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2">
+                  {/* 收藏按钮 */}
+                  <button
+                    onClick={(e) => toggleFavorite(e, product.id, product.is_favorited || false)}
+                    className="absolute top-1.5 right-1.5 md:top-2 md:right-2 p-1.5 md:p-2 rounded-full bg-white/80 hover:bg-white shadow-sm transition-all"
+                    title={product.is_favorited ? '取消收藏' : '添加收藏'}
+                  >
+                    <Heart
+                      className={`h-4 w-4 md:h-5 md:w-5 transition-colors ${
+                        product.is_favorited 
+                          ? 'fill-red-500 text-red-500' 
+                          : 'text-gray-400 hover:text-red-400'
+                      }`}
+                    />
+                  </button>
+                  <div className="absolute bottom-1 left-1 md:bottom-2 md:left-2">
                     <Badge variant="secondary" className="text-[10px] md:text-xs px-1.5 py-0.5">
                       {isAdmin ? '上传' : '详情'}
                     </Badge>

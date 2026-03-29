@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Upload, Trash2, Star, ImageIcon, Shield, Eye, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Star, ImageIcon, Shield, Eye, MoreVertical, Heart } from 'lucide-react';
 import { compressImage, getImageInfo, shouldCompress } from '@/lib/image-compress';
 
 interface User {
@@ -52,6 +52,7 @@ export default function ProductDetailPage({
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showImageActions, setShowImageActions] = useState<number | null>(null);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   // 检查登录状态
   useEffect(() => {
@@ -98,6 +99,38 @@ export default function ProductDetailPage({
     fetchProduct();
     fetchImages();
   }, [id]);
+
+  // 检查收藏状态
+  useEffect(() => {
+    if (currentUser && id) {
+      fetch(`/api/favorites/check?productIds=${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            setIsFavorited(data.data[parseInt(id)] || false);
+          }
+        });
+    }
+  }, [currentUser, id]);
+
+  // 切换收藏状态
+  const toggleFavorite = async () => {
+    try {
+      if (isFavorited) {
+        await fetch(`/api/favorites?productId=${id}`, { method: 'DELETE' });
+        setIsFavorited(false);
+      } else {
+        await fetch('/api/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: parseInt(id) }),
+        });
+        setIsFavorited(true);
+      }
+    } catch (error) {
+      console.error('操作失败:', error);
+    }
+  };
 
   // 上传图片
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,6 +270,21 @@ export default function ProductDetailPage({
                 <span className="hidden md:inline">返回商品列表</span>
               </Button>
               <div className="md:hidden w-px h-6 bg-white/20" />
+              {/* 移动端收藏按钮 */}
+              {currentUser && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleFavorite}
+                  className="md:hidden text-white hover:bg-blue-700 p-2"
+                >
+                  <Heart
+                    className={`h-4 w-4 ${
+                      isFavorited ? 'fill-red-400 text-red-400' : ''
+                    }`}
+                  />
+                </Button>
+              )}
               {currentUser && (
                 <div className="md:hidden flex items-center gap-1 px-2 py-1 bg-white/10 rounded-full">
                   {currentUser.role === 'admin' ? (
@@ -249,18 +297,33 @@ export default function ProductDetailPage({
               )}
             </div>
             {currentUser && (
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
-                {currentUser.role === 'admin' ? (
-                  <Shield className="h-4 w-4 text-yellow-300" />
-                ) : (
-                  <Eye className="h-4 w-4 text-green-300" />
-                )}
-                <span className="text-sm text-white">
-                  {currentUser.username}
-                  <span className="text-xs text-blue-200 ml-1">
-                    ({currentUser.role === 'admin' ? '管理员' : '销售'})
+              <div className="hidden md:flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleFavorite}
+                  className="text-white hover:bg-blue-700"
+                >
+                  <Heart
+                    className={`h-4 w-4 mr-2 ${
+                      isFavorited ? 'fill-red-400 text-red-400' : ''
+                    }`}
+                  />
+                  {isFavorited ? '已收藏' : '收藏'}
+                </Button>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+                  {currentUser.role === 'admin' ? (
+                    <Shield className="h-4 w-4 text-yellow-300" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-green-300" />
+                  )}
+                  <span className="text-sm text-white">
+                    {currentUser.username}
+                    <span className="text-xs text-blue-200 ml-1">
+                      ({currentUser.role === 'admin' ? '管理员' : '销售'})
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
             )}
           </div>

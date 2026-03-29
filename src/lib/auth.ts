@@ -5,6 +5,7 @@ export type UserRole = 'admin' | 'sales';
 
 // 用户信息接口
 export interface UserInfo {
+  id?: number;
   username: string;
   role: UserRole;
 }
@@ -36,6 +37,20 @@ export function getAuthFromRequest(request: NextRequest): AuthResult {
   if (sessionCookie?.value) {
     const decoded = safeBase64Decode(sessionCookie.value);
     const parts = decoded.split('|');
+    // 支持新格式: authenticated|userId|username|role
+    if (parts.length >= 4 && parts[0] === 'authenticated') {
+      const user: UserInfo = { 
+        id: parseInt(parts[1]) || undefined, 
+        username: parts[2], 
+        role: parts[3] as UserRole 
+      };
+      return {
+        authenticated: true,
+        user,
+        isAdmin: user.role === 'admin',
+      };
+    }
+    // 兼容旧格式: authenticated|username|role
     if (parts.length >= 3 && parts[0] === 'authenticated') {
       const user: UserInfo = { username: parts[1], role: parts[2] as UserRole };
       return {
