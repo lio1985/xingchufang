@@ -63,7 +63,7 @@ export default function FavoritesPage() {
   const loadFavorites = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/favorites');
+      const res = await fetch('/api/favorites', { credentials: 'include' });
       const data = await res.json();
       if (data.success) {
         setFavorites(data.data || []);
@@ -80,6 +80,7 @@ export default function FavoritesPage() {
     try {
       const res = await fetch(`/api/favorites?productId=${productId}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
       const data = await res.json();
       if (data.success) {
@@ -94,7 +95,7 @@ export default function FavoritesPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const res = await fetch('/api/favorites/export');
+      const res = await fetch('/api/favorites/export', { credentials: 'include' });
       if (res.ok) {
         const blob = await res.blob();
         const url = window.URL.createObjectURL(blob);

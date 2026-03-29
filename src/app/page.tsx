@@ -125,7 +125,7 @@ function HomeContent() {
   // 获取收藏数量
   useEffect(() => {
     if (currentUser) {
-      fetch('/api/favorites')
+      fetch('/api/favorites', { credentials: 'include' })
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {
@@ -172,7 +172,7 @@ function HomeContent() {
     if (!currentUser || productIds.length === 0) return;
     
     try {
-      const res = await fetch(`/api/favorites/check?productIds=${productIds.join(',')}`);
+      const res = await fetch(`/api/favorites/check?productIds=${productIds.join(',')}`, { credentials: 'include' });
       const data = await res.json();
       
       if (data.success) {
@@ -192,13 +192,14 @@ function HomeContent() {
     
     try {
       if (isFavorited) {
-        await fetch(`/api/favorites?productId=${productId}`, { method: 'DELETE' });
+        await fetch(`/api/favorites?productId=${productId}`, { method: 'DELETE', credentials: 'include' });
         setFavoritesCount(prev => Math.max(0, prev - 1));
       } else {
         await fetch('/api/favorites', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ productId }),
+          credentials: 'include',
         });
         setFavoritesCount(prev => prev + 1);
       }

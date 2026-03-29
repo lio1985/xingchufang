@@ -65,7 +65,7 @@ export default function ProductDetailPage({
 
   // 检查登录状态
   useEffect(() => {
-    fetch('/api/auth')
+    fetch('/api/auth', { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {
         if (data.authenticated && data.user) {
@@ -112,7 +112,7 @@ export default function ProductDetailPage({
   // 检查收藏状态
   useEffect(() => {
     if (currentUser && id) {
-      fetch(`/api/favorites/check?productIds=${id}`)
+      fetch(`/api/favorites/check?productIds=${id}`, { credentials: 'include' })
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {
@@ -126,13 +126,14 @@ export default function ProductDetailPage({
   const toggleFavorite = async () => {
     try {
       if (isFavorited) {
-        await fetch(`/api/favorites?productId=${id}`, { method: 'DELETE' });
+        await fetch(`/api/favorites?productId=${id}`, { method: 'DELETE', credentials: 'include' });
         setIsFavorited(false);
       } else {
         await fetch('/api/favorites', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ productId: parseInt(id) }),
+          credentials: 'include',
         });
         setIsFavorited(true);
       }
