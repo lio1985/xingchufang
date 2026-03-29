@@ -223,10 +223,10 @@ const LoginPage = () => {
             </View>
           </View>
 
-          {/* 忘记密码 */}
+          {/* 修改密码 */}
           <View style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}>
             <Text style={{ fontSize: '14px', color: '#64748b' }} onClick={handleChangePassword}>
-              忘记密码？
+              修改密码
             </Text>
           </View>
 
