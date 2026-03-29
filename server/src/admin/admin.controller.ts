@@ -2,12 +2,13 @@ import { Controller, Get, Put, Post, Body, Param, Query, Request, UseGuards } fr
 import { UserService } from '../user/user.service';
 import { LexiconService } from '../database/lexicon/lexicon.service';
 import { StatisticsService } from '../statistics/statistics.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AdminGuard } from '../guards/admin.guard';
 import { ShareRecord, SharePermission } from '../share/types';
 import { getSupabaseClient } from '../storage/database/supabase-client';
 
 @Controller('admin')
-@UseGuards(AdminGuard)
+@UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminController {
   constructor(
     private readonly userService: UserService,

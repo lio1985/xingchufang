@@ -1,9 +1,10 @@
 import { Controller, Get, Delete, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AdminGuard } from '../guards/admin.guard';
 import { AdminKnowledgeShareService } from './admin-knowledge-share.service';
 
 @Controller('admin/knowledge-shares')
-@UseGuards(AdminGuard)
+@UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminKnowledgeShareController {
   constructor(
     private readonly adminKnowledgeShareService: AdminKnowledgeShareService

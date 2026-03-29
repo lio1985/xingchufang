@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AdminGuard } from '../guards/admin.guard';
 import { ActiveUserGuard } from '../guards/active-user.guard';
 import { CustomerManagementService } from '../customer-management/customer-management.service';
 import { getSupabaseClient } from '../storage/database/supabase-client';
 
 @Controller('admin/customers')
-@UseGuards(ActiveUserGuard, AdminGuard)
+@UseGuards(JwtAuthGuard, ActiveUserGuard, AdminGuard)
 export class AdminCustomerController {
   constructor(private readonly customerService: CustomerManagementService) {}
 
