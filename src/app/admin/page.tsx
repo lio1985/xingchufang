@@ -40,6 +40,8 @@ import {
   X,
   CheckSquare,
   Square,
+  Building2,
+  FolderTree,
 } from 'lucide-react';
 
 interface Stats {
@@ -70,7 +72,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'images' | 'data' | 'registrations'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'images' | 'suppliers' | 'categories' | 'registrations' | 'data'>('overview');
   
   // 数据状态
   const [stats, setStats] = useState<Stats | null>(null);
@@ -117,6 +119,45 @@ export default function AdminPage() {
   // 批量选择
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [showBatchDeleteConfirm, setShowBatchDeleteConfirm] = useState(false);
+
+  // 供应商管理
+  interface Supplier {
+    id: number;
+    name: string;
+    contact_person: string | null;
+    phone: string | null;
+    address: string | null;
+    remarks: string | null;
+  }
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [showSupplierDialog, setShowSupplierDialog] = useState(false);
+  const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
+  const [supplierForm, setSupplierForm] = useState({
+    name: '',
+    contact_person: '',
+    phone: '',
+    address: '',
+    remarks: '',
+  });
+
+  // 分类管理
+  interface Category {
+    id: number;
+    name: string;
+    level: number;
+    parent_id: number | null;
+    sort_order: number;
+    parent?: { id: number; name: string } | null;
+  }
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showCategoryDialog, setShowCategoryDialog] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [categoryForm, setCategoryForm] = useState({
+    name: '',
+    level: 1,
+    parent_id: null as number | null,
+    sort_order: 0,
+  });
 
   // 检查登录状态和权限
   useEffect(() => {
@@ -215,6 +256,32 @@ export default function AdminPage() {
     }
   };
 
+  // 加载供应商列表
+  const loadSuppliers = async () => {
+    try {
+      const res = await fetch('/api/admin/suppliers', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        setSuppliers(data.data);
+      }
+    } catch (error) {
+      console.error('加载供应商失败:', error);
+    }
+  };
+
+  // 加载分类列表
+  const loadCategories = async () => {
+    try {
+      const res = await fetch('/api/admin/categories', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        setCategories(data.data);
+      }
+    } catch (error) {
+      console.error('加载分类失败:', error);
+    }
+  };
+
   // 审核通过
   const handleApprove = async (registrationId: number, username: string) => {
     if (!confirm(`确定通过 ${username} 的注册申请吗？`)) return;
@@ -276,6 +343,10 @@ export default function AdminPage() {
       loadImages(1);
     } else if (activeTab === 'registrations') {
       loadRegistrations();
+    } else if (activeTab === 'suppliers') {
+      loadSuppliers();
+    } else if (activeTab === 'categories') {
+      loadCategories();
     }
   }, [activeTab, loading, currentUser]);
 
@@ -481,6 +552,184 @@ export default function AdminPage() {
     }
   };
 
+  // ========== 供应商管理 ==========
+  
+  // 打开新建供应商对话框
+  const openCreateSupplierDialog = () => {
+    setEditingSupplier(null);
+    setSupplierForm({
+      name: '',
+      contact_person: '',
+      phone: '',
+      address: '',
+      remarks: '',
+    });
+    setShowSupplierDialog(true);
+  };
+
+  // 打开编辑供应商对话框
+  const openEditSupplierDialog = (supplier: Supplier) => {
+    setEditingSupplier(supplier);
+    setSupplierForm({
+      name: supplier.name,
+      contact_person: supplier.contact_person || '',
+      phone: supplier.phone || '',
+      address: supplier.address || '',
+      remarks: supplier.remarks || '',
+    });
+    setShowSupplierDialog(true);
+  };
+
+  // 保存供应商
+  const handleSaveSupplier = async () => {
+    if (!supplierForm.name.trim()) {
+      alert('请输入供应商名称');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const url = editingSupplier
+        ? `/api/admin/suppliers`
+        : '/api/admin/suppliers';
+      const method = editingSupplier ? 'PUT' : 'POST';
+      const body = editingSupplier
+        ? { id: editingSupplier.id, ...supplierForm }
+        : supplierForm;
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setShowSupplierDialog(false);
+        loadSuppliers();
+        loadFilterOptions();
+      } else {
+        alert(data.error || '保存失败');
+      }
+    } catch (error) {
+      alert('保存失败');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // 删除供应商
+  const handleDeleteSupplier = async (id: number, name: string) => {
+    if (!confirm(`确定要删除供应商"${name}"吗？`)) return;
+
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/suppliers?id=${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadSuppliers();
+      } else {
+        alert(data.error || '删除失败');
+      }
+    } catch (error) {
+      alert('删除失败');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // ========== 分类管理 ==========
+
+  // 打开新建分类对话框
+  const openCreateCategoryDialog = (level: number = 1, parentId: number | null = null) => {
+    setEditingCategory(null);
+    setCategoryForm({
+      name: '',
+      level,
+      parent_id: parentId,
+      sort_order: 0,
+    });
+    setShowCategoryDialog(true);
+  };
+
+  // 打开编辑分类对话框
+  const openEditCategoryDialog = (category: Category) => {
+    setEditingCategory(category);
+    setCategoryForm({
+      name: category.name,
+      level: category.level,
+      parent_id: category.parent_id,
+      sort_order: category.sort_order,
+    });
+    setShowCategoryDialog(true);
+  };
+
+  // 保存分类
+  const handleSaveCategory = async () => {
+    if (!categoryForm.name.trim()) {
+      alert('请输入分类名称');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const url = editingCategory
+        ? '/api/admin/categories'
+        : '/api/admin/categories';
+      const method = editingCategory ? 'PUT' : 'POST';
+      const body = editingCategory
+        ? { id: editingCategory.id, ...categoryForm }
+        : categoryForm;
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setShowCategoryDialog(false);
+        loadCategories();
+        loadFilterOptions();
+      } else {
+        alert(data.error || '保存失败');
+      }
+    } catch (error) {
+      alert('保存失败');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // 删除分类
+  const handleDeleteCategory = async (id: number, name: string) => {
+    if (!confirm(`确定要删除分类"${name}"吗？`)) return;
+
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/admin/categories?id=${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadCategories();
+      } else {
+        alert(data.error || '删除失败');
+      }
+    } catch (error) {
+      alert('删除失败');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -536,6 +785,8 @@ export default function AdminPage() {
             { key: 'overview', label: '概览', icon: TrendingUp },
             { key: 'products', label: '商品管理', icon: Package },
             { key: 'images', label: '图片管理', icon: ImageIcon },
+            { key: 'suppliers', label: '供应商', icon: Building2 },
+            { key: 'categories', label: '产品分类', icon: FolderTree },
             { key: 'registrations', label: '用户审核', icon: Users },
             { key: 'data', label: '数据操作', icon: Database },
           ].map((tab) => (
@@ -989,6 +1240,161 @@ export default function AdminPage() {
           </Card>
         )}
 
+        {/* 供应商管理 */}
+        {activeTab === 'suppliers' && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>供应商管理 ({suppliers.length} 个)</CardTitle>
+                <Button size="sm" onClick={openCreateSupplierDialog}>
+                  <Plus className="h-4 w-4 mr-1" />
+                  新增供应商
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-2">ID</th>
+                      <th className="text-left py-3 px-2">供应商名称</th>
+                      <th className="text-left py-3 px-2">联系人</th>
+                      <th className="text-left py-3 px-2">电话</th>
+                      <th className="text-left py-3 px-2">地址</th>
+                      <th className="text-left py-3 px-2">备注</th>
+                      <th className="text-left py-3 px-2">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {suppliers.map((supplier) => (
+                      <tr key={supplier.id} className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-2">{supplier.id}</td>
+                        <td className="py-3 px-2 font-medium">{supplier.name}</td>
+                        <td className="py-3 px-2">{supplier.contact_person || '-'}</td>
+                        <td className="py-3 px-2">{supplier.phone || '-'}</td>
+                        <td className="py-3 px-2 max-w-[200px] truncate">{supplier.address || '-'}</td>
+                        <td className="py-3 px-2 max-w-[200px] truncate">{supplier.remarks || '-'}</td>
+                        <td className="py-3 px-2">
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openEditSupplierDialog(supplier)}
+                              title="编辑"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteSupplier(supplier.id, supplier.name)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              title="删除"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 分类管理 */}
+        {activeTab === 'categories' && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>产品分类管理</CardTitle>
+                <Button size="sm" onClick={() => openCreateCategoryDialog(1)}>
+                  <Plus className="h-4 w-4 mr-1" />
+                  新增一级分类
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* 一级分类 */}
+              {categories.filter(c => c.level === 1).map((level1Cat) => (
+                <div key={level1Cat.id} className="mb-4 border rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-gray-50">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="default">一级</Badge>
+                      <span className="font-medium">{level1Cat.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openCreateCategoryDialog(2, level1Cat.id)}
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        添加子分类
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditCategoryDialog(level1Cat)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteCategory(level1Cat.id, level1Cat.name)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  {/* 二级分类 */}
+                  <div className="p-3">
+                    {categories.filter(c => c.parent_id === level1Cat.id).length > 0 ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                        {categories
+                          .filter(c => c.parent_id === level1Cat.id)
+                          .map((level2Cat) => (
+                            <div
+                              key={level2Cat.id}
+                              className="flex items-center justify-between p-2 bg-gray-50 rounded border group"
+                            >
+                              <span className="text-sm">{level2Cat.name}</span>
+                              <div className="flex gap-1 opacity-0 group-hover:opacity-100">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openEditCategoryDialog(level2Cat)}
+                                  className="p-1 h-auto"
+                                >
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteCategory(level2Cat.id, level2Cat.name)}
+                                  className="p-1 h-auto text-red-600 hover:text-red-700"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-400">暂无子分类</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
         {/* 数据操作 */}
         {activeTab === 'data' && (
           <div className="grid md:grid-cols-2 gap-6">
@@ -1206,6 +1612,124 @@ export default function AdminPage() {
             </Button>
             <Button variant="destructive" onClick={handleBatchDelete} disabled={actionLoading}>
               {actionLoading ? '删除中...' : '确认删除'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 供应商对话框 */}
+      <Dialog open={showSupplierDialog} onOpenChange={setShowSupplierDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingSupplier ? '编辑供应商' : '新增供应商'}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">供应商名称 *</label>
+              <Input
+                value={supplierForm.name}
+                onChange={(e) => setSupplierForm({ ...supplierForm, name: e.target.value })}
+                placeholder="请输入供应商名称"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">联系人</label>
+                <Input
+                  value={supplierForm.contact_person}
+                  onChange={(e) => setSupplierForm({ ...supplierForm, contact_person: e.target.value })}
+                  placeholder="请输入联系人"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">电话</label>
+                <Input
+                  value={supplierForm.phone}
+                  onChange={(e) => setSupplierForm({ ...supplierForm, phone: e.target.value })}
+                  placeholder="请输入电话"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">地址</label>
+              <Input
+                value={supplierForm.address}
+                onChange={(e) => setSupplierForm({ ...supplierForm, address: e.target.value })}
+                placeholder="请输入地址"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">备注</label>
+              <Textarea
+                value={supplierForm.remarks}
+                onChange={(e) => setSupplierForm({ ...supplierForm, remarks: e.target.value })}
+                placeholder="请输入备注"
+                rows={2}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSupplierDialog(false)}>
+              取消
+            </Button>
+            <Button onClick={handleSaveSupplier} disabled={actionLoading}>
+              {actionLoading ? '保存中...' : '保存'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 分类对话框 */}
+      <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingCategory ? '编辑分类' : `新增${categoryForm.level === 1 ? '一级' : '二级'}分类`}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">分类名称 *</label>
+              <Input
+                value={categoryForm.name}
+                onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+                placeholder="请输入分类名称"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">排序（数字越小越靠前）</label>
+              <Input
+                type="number"
+                value={categoryForm.sort_order}
+                onChange={(e) => setCategoryForm({ ...categoryForm, sort_order: parseInt(e.target.value) || 0 })}
+                placeholder="0"
+              />
+            </div>
+            {categoryForm.level === 2 && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">父分类</label>
+                <Select
+                  value={categoryForm.parent_id?.toString() || ''}
+                  onValueChange={(value) => setCategoryForm({ ...categoryForm, parent_id: parseInt(value) || null })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="选择父分类" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.filter(c => c.level === 1).map((c) => (
+                      <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>
+              取消
+            </Button>
+            <Button onClick={handleSaveCategory} disabled={actionLoading}>
+              {actionLoading ? '保存中...' : '保存'}
             </Button>
           </DialogFooter>
         </DialogContent>
