@@ -21,6 +21,12 @@ let IntentRecognitionService = class IntentRecognitionService {
         console.log('=== 开始意图识别 ===');
         console.log('用户消息:', userMessage);
         console.log('对话历史长度:', conversationHistory.length);
+        const quickIntent = this.quickIntentRecognition(userMessage);
+        if (quickIntent) {
+            console.log('快速识别到意图:', quickIntent.type);
+            quickIntent.recommendedModel = this.recommendModel(quickIntent);
+            return quickIntent;
+        }
         const prompt = this.buildIntentPrompt(userMessage, conversationHistory);
         const messages = [
             {
@@ -55,6 +61,55 @@ let IntentRecognitionService = class IntentRecognitionService {
                 needsComplexUI: false
             };
         }
+    }
+    quickIntentRecognition(userMessage) {
+        const lowerMessage = userMessage.toLowerCase();
+        if (lowerMessage.includes('记一下') || lowerMessage.includes('记录') || lowerMessage.includes('备忘') || lowerMessage.includes('记个')) {
+            return {
+                type: 'quick_note',
+                confidence: 0.9,
+                extractedParams: { content: userMessage.replace(/^(记一下|记录|备忘|记个)/, '').trim() },
+                missingParams: [],
+                needsComplexUI: false
+            };
+        }
+        if (lowerMessage.includes('选题') || lowerMessage.includes('话题') || lowerMessage.includes('主题')) {
+            return {
+                type: 'topic_generation',
+                confidence: 0.8,
+                extractedParams: {},
+                missingParams: ['platforms'],
+                needsComplexUI: false
+            };
+        }
+        if (lowerMessage.includes('写脚本') || lowerMessage.includes('写文案') || lowerMessage.includes('生成内容') || lowerMessage.includes('帮我写')) {
+            return {
+                type: 'content_generation',
+                confidence: 0.8,
+                extractedParams: { topics: userMessage },
+                missingParams: ['platforms'],
+                needsComplexUI: false
+            };
+        }
+        if (lowerMessage.includes('优化') || lowerMessage.includes('去ai味') || lowerMessage.includes('改写') || lowerMessage.includes('润色')) {
+            return {
+                type: 'lexicon_optimize',
+                confidence: 0.8,
+                extractedParams: { inputText: userMessage },
+                missingParams: [],
+                needsComplexUI: false
+            };
+        }
+        if (lowerMessage.includes('爆款') || lowerMessage.includes('抖音链接') || lowerMessage.includes('分析视频')) {
+            return {
+                type: 'viral_replicate',
+                confidence: 0.8,
+                extractedParams: {},
+                missingParams: ['douyinUrl'],
+                needsComplexUI: false
+            };
+        }
+        return null;
     }
     buildIntentPrompt(userMessage, conversationHistory) {
         const historyContext = conversationHistory

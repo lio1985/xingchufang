@@ -161,6 +161,7 @@ let AiChatService = class AiChatService {
     }
     async chatWithLLM(message, history, model = 'doubao-seed-1-8-251228') {
         console.log('=== AI Chat: LLM对话 ===');
+        console.log('使用模型:', model);
         const messages = [
             {
                 role: 'system',
@@ -178,13 +179,29 @@ let AiChatService = class AiChatService {
                 content: message,
             },
         ];
-        const response = await this.llmClient.invoke(messages, {
-            model,
-            temperature: 0.7,
-            thinking: 'disabled',
-            caching: 'disabled',
-        });
-        return response.content;
+        try {
+            const response = await this.llmClient.invoke(messages, {
+                model,
+                temperature: 0.7,
+                thinking: 'disabled',
+                caching: 'disabled',
+            });
+            console.log('=== AI Chat: LLM响应成功 ===');
+            console.log('响应长度:', response.content?.length || 0);
+            return response.content || '抱歉，我暂时无法生成回复，请稍后再试。';
+        }
+        catch (error) {
+            console.error('=== AI Chat: LLM调用失败 ===');
+            console.error('错误信息:', error.message);
+            console.error('错误堆栈:', error.stack);
+            if (error.message?.includes('timeout') || error.message?.includes('ETIMEDOUT')) {
+                return '抱歉，响应超时了，请稍后再试。';
+            }
+            if (error.message?.includes('API key') || error.message?.includes('authentication')) {
+                return '抱歉，服务配置有误，请联系管理员。';
+            }
+            return `抱歉，服务暂时不可用，请稍后再试。${error.message ? `（错误: ${error.message}）` : ''}`;
+        }
     }
     generateParameterPrompt(intent) {
         const prompts = {

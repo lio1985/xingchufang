@@ -36,6 +36,14 @@ export class IntentRecognitionService {
     console.log('用户消息:', userMessage);
     console.log('对话历史长度:', conversationHistory.length);
 
+    // 简单关键词匹配，快速识别常见意图，避免每次都调用LLM
+    const quickIntent = this.quickIntentRecognition(userMessage);
+    if (quickIntent) {
+      console.log('快速识别到意图:', quickIntent.type);
+      quickIntent.recommendedModel = this.recommendModel(quickIntent);
+      return quickIntent;
+    }
+
     // 构建提示词
     const prompt = this.buildIntentPrompt(userMessage, conversationHistory);
 
@@ -79,6 +87,70 @@ export class IntentRecognitionService {
         needsComplexUI: false
       };
     }
+  }
+
+  /**
+   * 快速意图识别（基于关键词匹配）
+   */
+  private quickIntentRecognition(userMessage: string): Intent | null {
+    const lowerMessage = userMessage.toLowerCase();
+
+    // 灵感速记
+    if (lowerMessage.includes('记一下') || lowerMessage.includes('记录') || lowerMessage.includes('备忘') || lowerMessage.includes('记个')) {
+      return {
+        type: 'quick_note',
+        confidence: 0.9,
+        extractedParams: { content: userMessage.replace(/^(记一下|记录|备忘|记个)/, '').trim() },
+        missingParams: [],
+        needsComplexUI: false
+      };
+    }
+
+    // 选题生成
+    if (lowerMessage.includes('选题') || lowerMessage.includes('话题') || lowerMessage.includes('主题')) {
+      return {
+        type: 'topic_generation',
+        confidence: 0.8,
+        extractedParams: {},
+        missingParams: ['platforms'],
+        needsComplexUI: false
+      };
+    }
+
+    // 内容生成
+    if (lowerMessage.includes('写脚本') || lowerMessage.includes('写文案') || lowerMessage.includes('生成内容') || lowerMessage.includes('帮我写')) {
+      return {
+        type: 'content_generation',
+        confidence: 0.8,
+        extractedParams: { topics: userMessage },
+        missingParams: ['platforms'],
+        needsComplexUI: false
+      };
+    }
+
+    // 语料优化
+    if (lowerMessage.includes('优化') || lowerMessage.includes('去ai味') || lowerMessage.includes('改写') || lowerMessage.includes('润色')) {
+      return {
+        type: 'lexicon_optimize',
+        confidence: 0.8,
+        extractedParams: { inputText: userMessage },
+        missingParams: [],
+        needsComplexUI: false
+      };
+    }
+
+    // 爆款复刻
+    if (lowerMessage.includes('爆款') || lowerMessage.includes('抖音链接') || lowerMessage.includes('分析视频')) {
+      return {
+        type: 'viral_replicate',
+        confidence: 0.8,
+        extractedParams: {},
+        missingParams: ['douyinUrl'],
+        needsComplexUI: false
+      };
+    }
+
+    return null;
   }
 
   /**

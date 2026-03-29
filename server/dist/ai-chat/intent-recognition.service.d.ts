@@ -15,6 +15,7 @@ export declare class IntentRecognitionService {
     private llmClient;
     constructor();
     recognizeIntent(userMessage: string, conversationHistory?: Message[]): Promise<Intent>;
+    private quickIntentRecognition;
     private buildIntentPrompt;
     private parseIntentResponse;
     isParamsComplete(intent: Intent): boolean;

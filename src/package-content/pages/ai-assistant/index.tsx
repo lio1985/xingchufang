@@ -90,121 +90,63 @@ export default function AIAssistantPage() {
         requestData.knowledgeSources = selectedKnowledgeSources;
       }
 
-      // 调用 AI 接口
-      const response = await Network.request({
-        url: '/api/ai-chat/chat',
-        method: 'POST',
-        data: requestData,
-      });
+      console.log('[AI助手] 发送请求:', requestData);
 
-      if (response.data?.code === 200 && response.data?.data) {
+      // 调用 AI 接口（设置30秒超时）
+      const response = await Promise.race([
+        Network.request({
+          url: '/api/ai-chat/chat',
+          method: 'POST',
+          data: requestData,
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('请求超时，请稍后重试')), 30000)
+        ),
+      ]) as { data: { code?: number; data?: { content?: string; message?: string } } };
+
+      console.log('[AI助手] 收到响应:', response.data);
+
+      // 解析响应数据
+      const responseData = response.data;
+      let replyContent = '';
+
+      if (responseData?.code === 200 && responseData?.data) {
+        // 后端返回格式: { code: 200, data: { content: "回复内容" } }
+        replyContent = responseData.data.content || responseData.data.message || '';
+      }
+
+      if (replyContent) {
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: response.data.data.content || response.data.data.reply || '抱歉，我暂时无法回答这个问题。',
+          content: replyContent,
           timestamp: new Date(),
           knowledgeUsed: selectedKnowledgeSources.length > 0 ? selectedKnowledgeSources : undefined,
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
-        // 模拟回复
-        const mockReply = generateMockReply(userMessage.content);
-        const assistantMessage: Message = {
+        // 响应数据为空，显示错误
+        const errorMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: mockReply,
+          content: '抱歉，服务暂时无法响应，请稍后再试。',
           timestamp: new Date(),
         };
-        setMessages((prev) => [...prev, assistantMessage]);
+        setMessages((prev) => [...prev, errorMessage]);
       }
-    } catch (error) {
-      console.error('AI 回复失败:', error);
-      // 离线模拟回复
-      const mockReply = generateMockReply(userMessage.content);
-      const assistantMessage: Message = {
+    } catch (error: any) {
+      console.error('[AI助手] 请求失败:', error);
+      // 显示错误信息
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: mockReply,
+        content: `抱歉，网络请求失败，请检查网络连接后重试。${error.message ? `\n错误: ${error.message}` : ''}`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const generateMockReply = (input: string): string => {
-    if (input.includes('脚本')) {
-      return `好的，我来帮你写一个短视频脚本 📝
-
-【开场】(0-3秒)
-"姐妹们，今天分享一个超实用的小技巧！"
-
-【核心内容】(3-50秒)
-1. 先介绍背景...
-2. 展示具体步骤...
-3. 强调关键要点...
-
-【结尾】(50-60秒)
-"觉得有用的话记得点赞收藏哦~"
-
-需要我调整风格或内容吗？`;
-    }
-    if (input.includes('文案')) {
-      return `这是一段为你定制的产品文案：
-
-✨ 精选好物，品质之选
-每一个细节都经过精心打磨
-只为给你最好的体验
-
-🌟 为什么选择它？
-• 品质保证，放心使用
-• 设计贴心，使用便捷
-• 性价比高，值得入手
-
-喜欢这个风格吗？我可以再调整~`;
-    }
-    if (input.includes('选题') || input.includes('话题')) {
-      return `以下是近期热门选题方向 🔥
-
-1️⃣ 美食教程类
-   - "3分钟学会一道菜"
-   - "厨房小白必看技巧"
-
-2️⃣ 生活妙招类
-   - "居家收纳小技巧"
-   - "省钱省力小妙招"
-
-3️⃣ 好物推荐类
-   - "亲测好用的厨房神器"
-   - "提升幸福感的小物"
-
-需要我详细展开哪个方向吗？`;
-    }
-    if (input.includes('灵感')) {
-      return `这里有一些写作灵感 💡
-
-🎬 视频创意
-- 拍摄一道传统美食的制作过程
-- 分享一个厨房小技巧
-- 展示新品食材的创新做法
-
-📝 内容方向
-- 季节限定：春季养生食谱
-- 节日特辑：周末家庭聚餐
-- 挑战类：30天不重样早餐
-
-想深入哪个方向？`;
-    }
-    return `收到你的消息！我是星小帮，很高兴为你服务 🌟
-
-请告诉我你需要什么帮助：
-• 写脚本 - 撰写短视频脚本
-• 写文案 - 撰写产品文案
-• 找选题 - 发现热门话题
-• 灵感 - 获取写作灵感
-
-或者直接描述你的需求~`;
   };
 
   const handleQuickAction = (action: typeof quickActions[0]) => {
