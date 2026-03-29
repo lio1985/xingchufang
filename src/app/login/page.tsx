@@ -290,7 +290,7 @@ function LoginForm() {
               className="h-20 w-auto object-contain"
             />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">星厨房商品库</h1>
+          <h1 className="text-2xl font-bold text-gray-900">供应商产品库</h1>
           <p className="text-gray-500 text-sm mt-1">内部管理系统</p>
         </div>
 

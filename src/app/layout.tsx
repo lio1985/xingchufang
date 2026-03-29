@@ -4,11 +4,11 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: '星厨房商品库',
+    default: '供应商产品库',
     template: '%s | 星厨房',
   },
   description:
-    '星厨房商品库 - 快捷搜索选品系统，支持多人协作共享和图片上传管理。',
+    '供应商产品库 - 快捷搜索选品系统，支持多人协作共享和图片上传管理。',
   keywords: [
     '星厨房',
     '商品库',
@@ -22,10 +22,10 @@ export const metadata: Metadata = {
     apple: '/logo.png',
   },
   openGraph: {
-    title: '星厨房商品库',
+    title: '供应商产品库',
     description:
-      '星厨房商品库 - 快捷搜索选品系统，支持多人协作共享和图片上传管理。',
-    siteName: '星厨房商品库',
+      '供应商产品库 - 快捷搜索选品系统，支持多人协作共享和图片上传管理。',
+    siteName: '供应商产品库',
     locale: 'zh_CN',
     type: 'website',
   },
