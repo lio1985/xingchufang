@@ -14,8 +14,12 @@ const storage = new S3Storage({
 
 // 获取用户收藏列表
 export async function GET(request: NextRequest) {
+  console.log('[Favorites API] GET request received');
   const auth = requireAuth(request);
+  console.log('[Favorites API] Auth result:', JSON.stringify(auth));
+  
   if (!auth.authorized) {
+    console.log('[Favorites API] Unauthorized, returning 401');
     return NextResponse.json({ success: false, error: auth.error }, { status: 401 });
   }
 
@@ -24,6 +28,8 @@ export async function GET(request: NextRequest) {
     
     // 如果没有用户ID，需要先查询
     let userId = auth.user?.id;
+    console.log('[Favorites API] User ID from auth:', userId, 'Username:', auth.user?.username);
+    
     if (!userId && auth.user?.username) {
       const { data: userData } = await client
         .from('admin_users')
@@ -31,9 +37,11 @@ export async function GET(request: NextRequest) {
         .eq('username', auth.user.username)
         .single();
       userId = userData?.id;
+      console.log('[Favorites API] User ID from DB:', userId);
     }
 
     if (!userId) {
+      console.log('[Favorites API] User not found');
       return NextResponse.json({ success: false, error: '用户不存在' }, { status: 400 });
     }
 

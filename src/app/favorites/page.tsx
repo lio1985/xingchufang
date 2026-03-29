@@ -42,14 +42,26 @@ export default function FavoritesPage() {
 
   // 检查登录状态
   useEffect(() => {
+    console.log('[Favorites] Checking auth status...');
     fetch('/api/auth', { credentials: 'include' })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log('[Favorites] Auth response status:', res.status);
+        return res.json();
+      })
       .then((data) => {
+        console.log('[Favorites] Auth result:', JSON.stringify(data));
         if (data.authenticated && data.user) {
           setCurrentUser(data.user);
         } else {
-          router.push('/login');
+          console.log('[Favorites] Not authenticated, redirecting to login');
+          // 未登录时重定向到登录页，并记录原页面
+          router.push(`/login?redirect=/favorites`);
         }
+      })
+      .catch((err) => {
+        console.error('[Favorites] Auth check error:', err);
+        // 发生错误时也重定向到登录页
+        router.push(`/login?redirect=/favorites`);
       });
   }, [router]);
 
@@ -61,17 +73,34 @@ export default function FavoritesPage() {
   }, [currentUser]);
 
   const loadFavorites = async () => {
+    console.log('[Favorites] Loading favorites...');
     setLoading(true);
     try {
       const res = await fetch('/api/favorites', { credentials: 'include' });
+      console.log('[Favorites] Response status:', res.status);
+      
+      if (!res.ok) {
+        console.error('[Favorites] Response not ok:', res.status);
+        if (res.status === 401) {
+          // 未授权，重定向到登录页
+          router.push('/login?redirect=/favorites');
+          return;
+        }
+      }
+      
       const data = await res.json();
+      console.log('[Favorites] Data:', JSON.stringify(data));
       if (data.success) {
         setFavorites(data.data || []);
+        console.log('[Favorites] Set favorites count:', (data.data || []).length);
+      } else {
+        console.error('[Favorites] API error:', data.error);
       }
     } catch (error) {
       console.error('获取收藏列表失败:', error);
     } finally {
       setLoading(false);
+      console.log('[Favorites] Loading complete');
     }
   };
 
