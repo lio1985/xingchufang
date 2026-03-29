@@ -64,10 +64,10 @@ const TabHomePage = () => {
     role?: string;
   } | null>(null);
   const [stats, setStats] = useState({
-    todayNew: 12,
-    pendingFollow: 8,
+    todayNew: 0,
+    pendingFollow: 0,
     unreadMessage: 0,
-    weekContent: 15,
+    weekContent: 0,
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
 
@@ -78,7 +78,32 @@ const TabHomePage = () => {
     checkLoginStatus();
     fetchRecentOrders();
     fetchUnreadNotificationCount();
+    fetchHomeStats();
   }, []);
+
+  // 获取首页统计数据
+  const fetchHomeStats = async () => {
+    try {
+      // 获取客户统计
+      const customerStatsRes = await Network.request({
+        url: '/api/customers/statistics/overview',
+        method: 'GET',
+      });
+
+      console.log('[fetchHomeStats] 客户统计响应:', customerStatsRes.data);
+
+      if (customerStatsRes.data?.code === 200) {
+        const data = customerStatsRes.data.data;
+        setStats(prev => ({
+          ...prev,
+          todayNew: data?.todayNew || 0,
+          pendingFollow: data?.pendingFollowUp || 0,
+        }));
+      }
+    } catch (error) {
+      console.error('[fetchHomeStats] 获取首页统计失败:', error);
+    }
+  };
 
   // 页面显示时刷新数据 - 使用 useEffect 替代 useDidShow 以支持 H5
   useEffect(() => {

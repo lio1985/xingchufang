@@ -264,16 +264,46 @@ export class CustomerManagementService {
   // ========== 统计功能 ==========
 
   async getStatistics(userId: string, isAdmin: boolean) {
-    let query = this.supabase
+    // 获取今日新增客户数
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let todayQuery = this.supabase
+      .from('customers')
+      .select('id', { count: 'exact' })
+      .eq('is_deleted', false)
+      .gte('created_at', today.toISOString());
+
+    if (!isAdmin) {
+      todayQuery = todayQuery.eq('user_id', userId);
+    }
+
+    const { count: todayNew } = await todayQuery;
+
+    // 获取待跟进客户数（需要今日跟进的客户）
+    let pendingQuery = this.supabase
+      .from('customers')
+      .select('id', { count: 'exact' })
+      .eq('is_deleted', false)
+      .eq('status', 'normal'); // 正常状态的客户
+
+    if (!isAdmin) {
+      pendingQuery = pendingQuery.eq('user_id', userId);
+    }
+
+    const { count: pendingFollowUp } = await pendingQuery;
+
+    // 获取全部客户的状态分布
+    let statusQuery = this.supabase
       .from('customers')
       .select('status, order_status, estimated_amount')
       .eq('is_deleted', false);
 
     if (!isAdmin) {
-      query = query.eq('user_id', userId);
+      statusQuery = statusQuery.eq('user_id', userId);
     }
 
-    const { data: customers, error } = await query;
+    const { data: customers, error } = await statusQuery;
 
     if (error) {
       console.error('[CustomerService] Get statistics error:', error);
@@ -290,6 +320,8 @@ export class CustomerManagementService {
 
     return {
       total,
+      todayNew: todayNew || 0,
+      pendingFollowUp: pendingFollowUp || 0,
       statusDistribution: { normal, atRisk, lost },
       orderDistribution: { inProgress, completed },
       totalEstimatedAmount: totalAmount,

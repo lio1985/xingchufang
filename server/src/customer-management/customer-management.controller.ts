@@ -142,10 +142,12 @@ export class CustomerManagementController {
         msg: 'success', 
         data: {
           total: 0,
-          active: 0,
-          inactive: 0,
-          todayFollowUp: 0,
-          pendingFollowUp: 0
+          todayNew: 0,
+          pendingFollowUp: 0,
+          statusDistribution: { normal: 0, atRisk: 0, lost: 0 },
+          orderDistribution: { inProgress: 0, completed: 0 },
+          totalEstimatedAmount: 0,
+          conversionRate: '0'
         }
       };
     }

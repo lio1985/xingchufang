@@ -48,16 +48,8 @@ export declare class CustomerManagementController {
         msg: string;
         data: {
             total: number;
-            active: number;
-            inactive: number;
-            todayFollowUp: number;
+            todayNew: number;
             pendingFollowUp: number;
-        };
-    } | {
-        code: number;
-        msg: string;
-        data: {
-            total: number;
             statusDistribution: {
                 normal: number;
                 atRisk: number;

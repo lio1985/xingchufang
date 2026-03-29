@@ -19,6 +19,8 @@ export declare class CustomerManagementService {
     getFollowUps(customerId: string, userId: string, isAdmin: boolean): Promise<any[]>;
     getStatistics(userId: string, isAdmin: boolean): Promise<{
         total: number;
+        todayNew: number;
+        pendingFollowUp: number;
         statusDistribution: {
             normal: number;
             atRisk: number;

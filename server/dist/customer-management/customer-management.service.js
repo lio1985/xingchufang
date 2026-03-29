@@ -216,14 +216,34 @@ let CustomerManagementService = class CustomerManagementService {
         return followUps || [];
     }
     async getStatistics(userId, isAdmin) {
-        let query = this.supabase
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let todayQuery = this.supabase
+            .from('customers')
+            .select('id', { count: 'exact' })
+            .eq('is_deleted', false)
+            .gte('created_at', today.toISOString());
+        if (!isAdmin) {
+            todayQuery = todayQuery.eq('user_id', userId);
+        }
+        const { count: todayNew } = await todayQuery;
+        let pendingQuery = this.supabase
+            .from('customers')
+            .select('id', { count: 'exact' })
+            .eq('is_deleted', false)
+            .eq('status', 'normal');
+        if (!isAdmin) {
+            pendingQuery = pendingQuery.eq('user_id', userId);
+        }
+        const { count: pendingFollowUp } = await pendingQuery;
+        let statusQuery = this.supabase
             .from('customers')
             .select('status, order_status, estimated_amount')
             .eq('is_deleted', false);
         if (!isAdmin) {
-            query = query.eq('user_id', userId);
+            statusQuery = statusQuery.eq('user_id', userId);
         }
-        const { data: customers, error } = await query;
+        const { data: customers, error } = await statusQuery;
         if (error) {
             console.error('[CustomerService] Get statistics error:', error);
             throw new Error(`获取统计数据失败: ${error.message}`);
@@ -237,6 +257,8 @@ let CustomerManagementService = class CustomerManagementService {
         const totalAmount = customers?.reduce((sum, c) => sum + (parseFloat(c.estimated_amount) || 0), 0) || 0;
         return {
             total,
+            todayNew: todayNew || 0,
+            pendingFollowUp: pendingFollowUp || 0,
             statusDistribution: { normal, atRisk, lost },
             orderDistribution: { inProgress, completed },
             totalEstimatedAmount: totalAmount,
