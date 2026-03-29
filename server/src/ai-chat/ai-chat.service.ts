@@ -309,14 +309,14 @@ export class AiChatService {
    */
   private generateParameterPrompt(intent: Intent): string {
     const prompts: Record<string, string> = {
-      quick_note: '请告诉我您想记录的灵感内容。',
-      topic_generation: '请告诉我您想在哪些平台发布选题？（例如：抖音、小红书、视频号）',
-      content_generation: '请告诉我：\n1️⃣ 您想生成什么内容？\n2️⃣ 发布到哪些平台？\n3️⃣ 需要几个版本？',
-      lexicon_optimize: '请提供您想优化的文本内容。',
-      viral_replicate: '请提供您想分析的抖音视频链接。',
+      quick_note: '好的，请告诉我您想记录的灵感内容吧！',
+      topic_generation: '没问题！请问您想在哪些平台发布选题？比如抖音、小红书、视频号等？',
+      content_generation: '好的！为了更好地帮您生成内容，请告诉我：\n\n1️⃣ 您想生成什么类型的内容？（如短视频脚本、产品文案等）\n2️⃣ 发布到哪些平台？\n3️⃣ 需要几个版本？',
+      lexicon_optimize: '好的，请提供您想优化的文本内容，我来帮您改进！',
+      viral_replicate: '好的！请提供您想分析的抖音视频链接，我来帮您分析爆款要素。',
     };
 
-    return prompts[intent.type] || '请提供更多信息...';
+    return prompts[intent.type] || '请提供更多信息，我来帮您完成。';
   }
 
   /**

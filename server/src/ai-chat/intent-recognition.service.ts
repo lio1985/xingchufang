@@ -91,65 +91,70 @@ export class IntentRecognitionService {
 
   /**
    * 快速意图识别（基于关键词匹配）
+   * 只有当用户明确表达要执行某个功能时才匹配，否则返回 null 让 LLM 进行自然对话
    */
   private quickIntentRecognition(userMessage: string): Intent | null {
     const lowerMessage = userMessage.toLowerCase();
 
-    // 灵感速记
-    if (lowerMessage.includes('记一下') || lowerMessage.includes('记录') || lowerMessage.includes('备忘') || lowerMessage.includes('记个')) {
-      return {
-        type: 'quick_note',
-        confidence: 0.9,
-        extractedParams: { content: userMessage.replace(/^(记一下|记录|备忘|记个)/, '').trim() },
-        missingParams: [],
-        needsComplexUI: false
-      };
+    // 灵感速记 - 必须包含明确的记录动作
+    if (lowerMessage.match(/^(记一下|记录|备忘|记个|帮我记|保存)/)) {
+      const content = userMessage.replace(/^(记一下|记录|备忘|记个|帮我记|保存)/, '').trim();
+      if (content) {
+        return {
+          type: 'quick_note',
+          confidence: 0.95,
+          extractedParams: { content },
+          missingParams: [],
+          needsComplexUI: false
+        };
+      }
     }
 
-    // 选题生成
-    if (lowerMessage.includes('选题') || lowerMessage.includes('话题') || lowerMessage.includes('主题')) {
+    // 选题生成 - 必须明确要求生成选题
+    if (lowerMessage.match(/(生成|给我|帮我找|我要).*(选题|话题|主题)/) || lowerMessage.match(/(选题|话题|主题).*(生成|列表)/)) {
       return {
         type: 'topic_generation',
-        confidence: 0.8,
+        confidence: 0.9,
         extractedParams: {},
         missingParams: ['platforms'],
         needsComplexUI: false
       };
     }
 
-    // 内容生成
-    if (lowerMessage.includes('写脚本') || lowerMessage.includes('写文案') || lowerMessage.includes('生成内容') || lowerMessage.includes('帮我写')) {
+    // 内容生成 - 必须明确要求生成内容/脚本/文案
+    if (lowerMessage.match(/(帮我)?写(一个|个)?(脚本|文案|内容)/) || lowerMessage.match(/生成(内容|脚本|文案)/)) {
       return {
         type: 'content_generation',
-        confidence: 0.8,
+        confidence: 0.9,
         extractedParams: { topics: userMessage },
         missingParams: ['platforms'],
         needsComplexUI: false
       };
     }
 
-    // 语料优化
-    if (lowerMessage.includes('优化') || lowerMessage.includes('去ai味') || lowerMessage.includes('改写') || lowerMessage.includes('润色')) {
+    // 语料优化 - 必须明确要求优化/改写
+    if (lowerMessage.match(/(帮我)?(优化|改写|润色|去ai味)/)) {
       return {
         type: 'lexicon_optimize',
-        confidence: 0.8,
+        confidence: 0.9,
         extractedParams: { inputText: userMessage },
         missingParams: [],
         needsComplexUI: false
       };
     }
 
-    // 爆款复刻
-    if (lowerMessage.includes('爆款') || lowerMessage.includes('抖音链接') || lowerMessage.includes('分析视频')) {
+    // 爆款复刻 - 必须提到爆款分析或抖音链接
+    if (lowerMessage.includes('爆款') && (lowerMessage.includes('分析') || lowerMessage.includes('复刻'))) {
       return {
         type: 'viral_replicate',
-        confidence: 0.8,
+        confidence: 0.9,
         extractedParams: {},
         missingParams: ['douyinUrl'],
         needsComplexUI: false
       };
     }
 
+    // 未匹配到明确的意图，返回 null 让 LLM 进行自然对话
     return null;
   }
 
@@ -167,35 +172,48 @@ export class IntentRecognitionService {
     return `
 你是一个智能意图识别助手。请分析用户的消息，识别用户的意图并提取相关参数。
 
-## 支持的功能意图
+## 重要规则
 
-1. **quick_note**（灵感速记）：用户想要记录某个想法、笔记、灵感
+**如果用户只是聊天、问候、提供信息，没有明确要求执行某个功能，必须返回 type: "unknown"**
+
+例如：
+- "你好"、"嗨"、"你好啊" → unknown（普通问候）
+- "关于厨具的"、"是做厨具的" → unknown（只是在提供信息）
+- "我想写点东西" → unknown（没有明确要求执行功能）
+- "帮我写个脚本" → content_generation（明确要求执行功能）
+- "生成几个选题" → topic_generation（明确要求执行功能）
+
+## 支持的功能意图（只有用户明确要求时才匹配）
+
+1. **quick_note**（灵感速记）：用户明确要记录某个想法、笔记、灵感
    - 参数：content（必填）、tags（选填）
-   - 示例："记一下明天要做牛排"、"帮我记录一个想法"、"我有灵感了"
+   - 示例："记一下明天要做牛排"、"帮我记录一个想法"、"保存这个灵感"
 
-2. **topic_generation**（选题生成）：用户想要生成选题、话题、内容方向
+2. **topic_generation**（选题生成）：用户明确要生成选题、话题、内容方向
    - 参数：platforms（必填）、category（选填）、keywords（选填）
-   - 示例："帮我生成几个选题"、"生成美食类选题"、"生成抖音选题"
+   - 示例："帮我生成几个选题"、"生成美食类选题"、"给我一些抖音选题"
 
-3. **content_generation**（内容生成）：用户想要生成内容、脚本、文案
+3. **content_generation**（内容生成）：用户明确要生成内容、脚本、文案
    - 参数：topics（必填）、platforms（必填）、versions（选填，默认2）
-   - 示例："我要生成内容"、"帮我写个脚本"、"生成3个版本"
+   - 示例："帮我写个短视频脚本"、"生成产品文案"、"写一个抖音脚本"
 
-4. **lexicon_optimize**（语料优化）：用户想要优化文本、去AI味、改写文案
+4. **lexicon_optimize**（语料优化）：用户明确要优化文本、去AI味、改写文案
    - 参数：inputText（必填）、lexiconIds（选填）
-   - 示例："帮我优化这段文案"、"去AI味"、"改写一下"
+   - 示例："帮我优化这段文案"、"把这个去AI味"、"润色一下这段话"
 
-5. **viral_replicate**（爆款复刻）：用户想要分析爆款视频、分析热门内容
+5. **viral_replicate**（爆款复刻）：用户明确要分析爆款视频
    - 参数：douyinUrl（必填）
-   - 示例："分析这个爆款视频"、"复制爆款链接"、"抖音爆款分析"
+   - 示例："分析这个爆款视频"、"帮我复刻这个抖音爆款"
+
+6. **unknown**（普通对话）：用户的聊天、问候、咨询等，不需要执行特定功能
+   - 当用户没有明确要求执行上述功能时，返回此类型
 
 ## 分析要求
 
-1. 识别用户的主要意图类型
-2. 提取消息中已提供的参数
-3. 判断哪些必要参数缺失
+1. 判断用户是否明确要求执行某个功能
+2. 如果是，识别具体的功能类型并提取参数
+3. 如果不是（只是聊天、问候、提供信息），返回 type: "unknown"
 4. 评估识别的置信度（0-1之间）
-5. 判断是否需要复杂的UI交互（如需要多选、多步填写等）
 
 ## 当前对话上下文
 
@@ -221,6 +239,7 @@ ${userMessage}
 
 ## 注意事项
 
+- 当用户只是聊天、问候或提供信息时，type 必须是 "unknown"
 - confidence: 基于消息清晰度的置信度评分（0-1）
 - extractedParams: 从消息中提取的参数，如未提取到则为空对象 {}
 - missingParams: 必要参数列表，如果所有必要参数都已提供则为空数组 []
