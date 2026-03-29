@@ -30,6 +30,7 @@ interface Product {
   supplier: string | null;
   level1_category: string | null;
   level2_category: string | null;
+  primary_image_url?: string;
 }
 
 interface FilterOptions {
@@ -529,7 +530,15 @@ export default function Home() {
             >
               <CardHeader className="p-0">
                 <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
-                  <ImageIcon className="h-10 w-10 md:h-12 md:w-12 text-gray-300" />
+                  {product.primary_image_url ? (
+                    <img
+                      src={product.primary_image_url}
+                      alt={product.name}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <ImageIcon className="h-10 w-10 md:h-12 md:w-12 text-gray-300" />
+                  )}
                   <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2">
                     <Badge variant="secondary" className="text-[10px] md:text-xs px-1.5 py-0.5">
                       {isAdmin ? '上传' : '详情'}

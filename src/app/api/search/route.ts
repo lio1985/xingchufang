@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/storage/database/supabase-client';
+import { S3Storage } from 'coze-coding-dev-sdk';
+
+// 初始化对象存储
+const storage = new S3Storage({
+  endpointUrl: process.env.COZE_BUCKET_ENDPOINT_URL,
+  accessKey: '',
+  secretKey: '',
+  bucketName: process.env.COZE_BUCKET_NAME,
+  region: 'cn-beijing',
+});
 
 // 高级搜索（使用全文搜索）
 export async function GET(request: NextRequest) {
@@ -33,10 +43,13 @@ export async function GET(request: NextRequest) {
     // 提取总数
     const total = data && data.length > 0 ? data[0].total_count : 0;
 
+    // 为商品添加主图URL
+    const productsWithImages = await attachPrimaryImages(data || []);
+
     return NextResponse.json({
       success: true,
       data: {
-        products: data || [],
+        products: productsWithImages,
         total: total,
         page,
         pageSize,
@@ -93,14 +106,61 @@ async function fallbackSearch(request: NextRequest) {
 
   if (error) throw new Error(`查询商品失败: ${error.message}`);
 
+  // 为商品添加主图URL
+  const productsWithImages = await attachPrimaryImages(data || []);
+
   return NextResponse.json({
     success: true,
     data: {
-      products: data,
+      products: productsWithImages,
       total: count,
       page,
       pageSize,
       totalPages: Math.ceil((count || 0) / pageSize),
     },
   });
+}
+
+// 为商品列表附加主图URL
+async function attachPrimaryImages(products: any[]) {
+  if (!products || products.length === 0) return products;
+
+  const productIds = products.map(p => p.id);
+  const client = getSupabaseClient();
+
+  // 批量查询主图
+  const { data: images, error } = await client
+    .from('product_images')
+    .select('product_id, image_key')
+    .in('product_id', productIds)
+    .eq('is_primary', true);
+
+  if (error) {
+    console.warn('查询主图失败:', error.message);
+    return products;
+  }
+
+  // 创建产品ID到图片key的映射
+  const imageMap = new Map<number, string>();
+  for (const img of images || []) {
+    imageMap.set(img.product_id, img.image_key);
+  }
+
+  // 为每个产品生成主图URL
+  return Promise.all(products.map(async (product) => {
+    const imageKey = imageMap.get(product.id);
+    if (imageKey) {
+      try {
+        const url = await storage.generatePresignedUrl({
+          key: imageKey,
+          expireTime: 86400, // 1天有效期
+        });
+        return { ...product, primary_image_url: url };
+      } catch (e) {
+        console.warn(`生成图片URL失败: product_id=${product.id}`, e);
+        return product;
+      }
+    }
+    return product;
+  }));
 }
