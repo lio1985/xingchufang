@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,6 +41,8 @@ interface FilterOptions {
 
 export default function Home() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -101,7 +103,7 @@ export default function Home() {
   }, []);
 
   // 搜索商品
-  const searchProducts = async (pageNum = 1) => {
+  const searchProducts = async (pageNum = 1, updateUrl = true) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -111,6 +113,12 @@ export default function Home() {
       if (level2Category) params.append('level2Category', level2Category);
       params.append('page', String(pageNum));
       params.append('pageSize', '20');
+
+      // 更新URL（保留搜索状态，便于返回）
+      if (updateUrl) {
+        const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+        router.replace(newUrl, { scroll: false });
+      }
 
       const res = await fetch(`/api/search?${params}`);
       const data = await res.json();
@@ -128,9 +136,57 @@ export default function Home() {
     }
   };
 
-  // 初始加载
+  // 从URL读取参数并搜索
   useEffect(() => {
-    searchProducts(1);
+    const urlKeyword = searchParams.get('keyword') || '';
+    const urlSupplier = searchParams.get('supplier') || '';
+    const urlLevel1 = searchParams.get('level1Category') || '';
+    const urlLevel2 = searchParams.get('level2Category') || '';
+    const urlPage = parseInt(searchParams.get('page') || '1');
+
+    // 设置状态
+    setKeyword(urlKeyword);
+    setSupplier(urlSupplier);
+    setLevel1Category(urlLevel1);
+    setLevel2Category(urlLevel2);
+
+    // 执行搜索（不更新URL，因为URL已经是正确的）
+    const doSearch = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (urlKeyword) params.append('keyword', urlKeyword);
+        if (urlSupplier) params.append('supplier', urlSupplier);
+        if (urlLevel1) params.append('level1Category', urlLevel1);
+        if (urlLevel2) params.append('level2Category', urlLevel2);
+        params.append('page', String(urlPage));
+        params.append('pageSize', '20');
+
+        const res = await fetch(`/api/search?${params}`);
+        const data = await res.json();
+
+        if (data.success) {
+          setProducts(data.data.products);
+          setPage(data.data.page);
+          setTotalPages(data.data.totalPages);
+          setTotal(data.data.total);
+        }
+      } catch (error) {
+        console.error('搜索失败:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    doSearch();
+  }, []); // 只在首次加载时执行
+
+  // 筛选条件变化时搜索
+  useEffect(() => {
+    // 跳过首次渲染
+    const timer = setTimeout(() => {
+      searchProducts(1);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [supplier, level1Category, level2Category]);
 
   // 搜索按钮点击

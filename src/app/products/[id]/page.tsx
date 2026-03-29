@@ -231,7 +231,7 @@ export default function ProductDetailPage({
                 variant="ghost"
                 size="sm"
                 className="text-white hover:bg-blue-700 p-2 md:p-3"
-                onClick={() => router.push('/')}
+                onClick={() => router.back()}
               >
                 <ArrowLeft className="h-5 w-5 md:h-4 md:w-4 md:mr-2" />
                 <span className="hidden md:inline">返回商品列表</span>
