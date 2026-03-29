@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -85,6 +85,10 @@ function HomeContent() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [favoritesCount, setFavoritesCount] = useState(0);
+  
+  // 用于跟踪是否正在从URL恢复状态（避免重复搜索）
+  const isRestoringFromUrl = useRef(true);
+  const lastSearchParams = useRef<string>('');
   
   // 推荐商品状态
   const [recommendations, setRecommendations] = useState<Record<string, Recommendation[]>>({
@@ -239,6 +243,8 @@ function HomeContent() {
 
       // 更新URL（保留搜索状态，便于返回）
       if (updateUrl) {
+        // 先更新 lastSearchParams，避免 URL 变化时重复搜索
+        lastSearchParams.current = `keyword=${keyword || ''}&supplier=${supplier || ''}&level1=${level1Category || ''}&level2=${level2Category || ''}&page=${pageNum}`;
         const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
         router.replace(newUrl, { scroll: false });
       }
@@ -271,6 +277,15 @@ function HomeContent() {
     const urlLevel1 = searchParams.get('level1Category') || '';
     const urlLevel2 = searchParams.get('level2Category') || '';
     const urlPage = parseInt(searchParams.get('page') || '1');
+
+    // 构建当前参数字符串用于比较
+    const currentParams = `keyword=${urlKeyword}&supplier=${urlSupplier}&level1=${urlLevel1}&level2=${urlLevel2}&page=${urlPage}`;
+    
+    // 如果参数没变化，跳过（避免重复搜索）
+    if (currentParams === lastSearchParams.current) {
+      return;
+    }
+    lastSearchParams.current = currentParams;
 
     // 设置状态
     setKeyword(urlKeyword);
@@ -311,11 +326,15 @@ function HomeContent() {
       }
     };
     doSearch();
-  }, []); // 只在首次加载时执行
+  }, [searchParams]); // 监听URL参数变化，支持从详情页返回时恢复搜索状态
 
-  // 筛选条件变化时搜索
+  // 筛选条件变化时搜索（跳过从URL恢复状态的情况）
   useEffect(() => {
-    // 跳过首次渲染
+    // 如果正在从URL恢复状态，跳过
+    if (isRestoringFromUrl.current) {
+      isRestoringFromUrl.current = false;
+      return;
+    }
     const timer = setTimeout(() => {
       searchProducts(1);
     }, 0);
