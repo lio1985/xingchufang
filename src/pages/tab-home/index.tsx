@@ -16,7 +16,7 @@ import {
   Radio,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
-import { useOnlineStatus, getUserOnlineStatus } from '@/hooks/useOnlineStatus';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
 // 用户角色枚举
 enum UserRole {
@@ -70,13 +70,9 @@ const TabHomePage = () => {
     weekContent: 15,
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
-  const [onlineStatus, setOnlineStatus] = useState<{ isOnline: boolean; lastSeenAt: string | null }>({
-    isOnline: false,
-    lastSeenAt: null,
-  });
 
-  // 使用在线状态 Hook
-  useOnlineStatus();
+  // 使用在线状态 Hook，直接获取返回的状态
+  const onlineStatus = useOnlineStatus();
 
   useEffect(() => {
     checkLoginStatus();
@@ -141,12 +137,6 @@ const TabHomePage = () => {
       const token = Taro.getStorageSync('token');
       if (user && token) {
         setUserInfo(user);
-        // 获取在线状态
-        if (user.id) {
-          getUserOnlineStatus(user.id).then(status => {
-            setOnlineStatus(status);
-          });
-        }
       }
     } catch (e) {
       console.log('获取用户信息失败');

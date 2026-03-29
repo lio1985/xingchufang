@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
 
@@ -8,18 +8,24 @@ let onlineStatusSupported = true;
 /**
  * 在线状态管理 Hook
  * 自动检测用户前台/后台状态，并同步到服务器
+ * @returns 当前在线状态
  */
-export function useOnlineStatus() {
+export function useOnlineStatus(): { isOnline: boolean; lastSeenAt: string | null } {
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const isOnlineRef = useRef(false);
+  const [status, setStatus] = useState<{ isOnline: boolean; lastSeenAt: string | null }>({
+    isOnline: false,
+    lastSeenAt: null,
+  });
 
   // 更新在线状态
   const updateStatus = useCallback(async (isOnline: boolean) => {
-    if (isOnlineRef.current === isOnline) return;
-
     // 如果后端不支持，直接更新本地状态
     if (!onlineStatusSupported) {
-      isOnlineRef.current = isOnline;
+      setStatus(prev => ({
+        ...prev,
+        isOnline,
+        lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
+      }));
       return;
     }
 
@@ -37,17 +43,30 @@ export function useOnlineStatus() {
       if (res.statusCode === 404 || res.data?.code === 404) {
         onlineStatusSupported = false;
         console.log('[OnlineStatus] 后端暂不支持此功能，已禁用');
+        setStatus(prev => ({
+          ...prev,
+          isOnline,
+          lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
+        }));
         return;
       }
 
-      isOnlineRef.current = isOnline;
+      const now = new Date().toISOString();
+      setStatus({
+        isOnline,
+        lastSeenAt: isOnline ? now : status.lastSeenAt,
+      });
       console.log(`[OnlineStatus] 状态已更新: ${isOnline ? '在线' : '离线'}`);
     } catch (error) {
       // 静默处理错误，标记接口不支持
       onlineStatusSupported = false;
-      isOnlineRef.current = isOnline;
+      setStatus(prev => ({
+        ...prev,
+        isOnline,
+        lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
+      }));
     }
-  }, []);
+  }, [status.lastSeenAt]);
 
   // 启动心跳
   const startHeartbeat = useCallback(() => {
@@ -56,11 +75,11 @@ export function useOnlineStatus() {
 
     // 每 30 秒发送一次心跳
     heartbeatIntervalRef.current = setInterval(() => {
-      if (isOnlineRef.current && onlineStatusSupported) {
+      if (status.isOnline && onlineStatusSupported) {
         updateStatus(true);
       }
     }, 30000);
-  }, [updateStatus]);
+  }, [status.isOnline, updateStatus]);
 
   // 停止心跳
   const stopHeartbeat = useCallback(() => {
@@ -105,7 +124,7 @@ export function useOnlineStatus() {
   // 组件挂载时设置为在线
   useEffect(() => {
     const userToken = Taro.getStorageSync('token');
-    if (userToken && onlineStatusSupported) {
+    if (userToken) {
       updateStatus(true);
       startHeartbeat();
     }
@@ -114,6 +133,8 @@ export function useOnlineStatus() {
       stopHeartbeat();
     };
   }, [updateStatus, startHeartbeat, stopHeartbeat]);
+
+  return status;
 }
 
 /**

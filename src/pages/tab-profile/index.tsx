@@ -12,7 +12,7 @@ import {
   Crown,
   Bell,
 } from 'lucide-react-taro';
-import { useOnlineStatus, getUserOnlineStatus } from '@/hooks/useOnlineStatus';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
 const TabProfilePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,13 +24,9 @@ const TabProfilePage = () => {
     avatar?: string;
     role?: string;
   } | null>(null);
-  const [onlineStatus, setOnlineStatus] = useState<{ isOnline: boolean; lastSeenAt: string | null }>({
-    isOnline: false,
-    lastSeenAt: null,
-  });
 
-  // 使用在线状态 Hook
-  useOnlineStatus();
+  // 使用在线状态 Hook，直接获取返回的状态
+  const onlineStatus = useOnlineStatus();
 
   useEffect(() => {
     try {
@@ -40,12 +36,6 @@ const TabProfilePage = () => {
         setIsLoggedIn(true);
         setUserInfo(user);
         setIsAdmin(user.role === 'admin');
-        // 获取在线状态
-        if (user.id) {
-          getUserOnlineStatus(user.id).then(status => {
-            setOnlineStatus(status);
-          });
-        }
       }
     } catch (e) {
       console.log('获取用户信息失败');
@@ -63,12 +53,6 @@ const TabProfilePage = () => {
           setIsLoggedIn(true);
           setUserInfo(user);
           setIsAdmin(user.role === 'admin');
-          // 刷新在线状态
-          if (user.id) {
-            getUserOnlineStatus(user.id).then(status => {
-              setOnlineStatus(status);
-            });
-          }
         } else {
           // 如果没有用户信息或 token，重置状态
           setIsLoggedIn(false);
