@@ -550,7 +550,10 @@ const TabHomePage = () => {
                 justifyContent: 'center',
                 gap: '6px',
               }}
-              onClick={() => handleNav('/package-live/pages/live-data/import')}
+              onClick={() => {
+                console.log('Navigate to live-data import');
+                handleNav('/package-live/pages/live-data/import');
+              }}
             >
               <Text style={{ fontSize: '14px' }}>📤</Text>
               <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>上传数据</Text>
@@ -567,7 +570,10 @@ const TabHomePage = () => {
                 justifyContent: 'center',
                 gap: '6px',
               }}
-              onClick={() => handleNav('/package-live/pages/live-data/dashboard')}
+              onClick={() => {
+                console.log('Navigate to live-data dashboard');
+                handleNav('/package-live/pages/live-data/dashboard');
+              }}
             >
               <Text style={{ fontSize: '14px' }}>📊</Text>
               <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>数据统计</Text>
@@ -584,7 +590,10 @@ const TabHomePage = () => {
                 justifyContent: 'center',
                 gap: '6px',
               }}
-              onClick={() => handleNav('/package-live/pages/live-data/analysis')}
+              onClick={() => {
+                console.log('Navigate to live-data analysis');
+                handleNav('/package-live/pages/live-data/analysis');
+              }}
             >
               <Text style={{ fontSize: '14px' }}>🔍</Text>
               <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>数据分析</Text>

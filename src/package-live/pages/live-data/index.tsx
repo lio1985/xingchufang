@@ -190,9 +190,7 @@ export default function LiveDataPage() {
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
-          cursor: 'pointer',
         }}
-        hoverClass="bg-slate-800"
         onClick={() => {
           console.log('Navigate to import page');
           Taro.navigateTo({ url: '/package-live/pages/live-data/import' });
@@ -227,9 +225,7 @@ export default function LiveDataPage() {
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
-          cursor: 'pointer',
         }}
-        hoverClass="bg-slate-800"
         onClick={() => {
           console.log('Navigate to import page (excel)');
           Taro.navigateTo({ url: '/package-live/pages/live-data/import?method=excel' });
@@ -264,9 +260,7 @@ export default function LiveDataPage() {
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
-          cursor: 'pointer',
         }}
-        hoverClass="bg-slate-800"
         onClick={() => {
           console.log('Navigate to import page (screenshot)');
           Taro.navigateTo({ url: '/package-live/pages/live-data/import?method=screenshot' });
@@ -591,85 +585,101 @@ export default function LiveDataPage() {
         {showUserPicker && (
           <View
             style={{
-              position: 'absolute',
-              top: '130px',
-              left: '20px',
-              right: '20px',
-              backgroundColor: '#1e293b',
-              borderRadius: '12px',
-              maxHeight: '300px',
-              overflow: 'auto',
-              zIndex: 1000,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 999,
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              paddingTop: '140px',
             }}
+            onClick={() => setShowUserPicker(false)}
           >
-            <ScrollView scrollY style={{ maxHeight: '280px' }}>
-              <View
-                style={{
-                  padding: '14px 16px',
-                  borderBottom: '1px solid #1e3a5f',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  backgroundColor: !selectedUserId ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
-                }}
-                onClick={() => {
-                  setSelectedUserId('');
-                  setShowUserPicker(false);
-                }}
-              >
-                <Users size={18} color={!selectedUserId ? '#38bdf8' : '#71717a'} />
-                <Text style={{ fontSize: '14px', color: !selectedUserId ? '#38bdf8' : '#f1f5f9', fontWeight: !selectedUserId ? '600' : '400' }}>
-                  全部用户
-                </Text>
-              </View>
-              {users.map((user) => (
+            <View
+              style={{
+                backgroundColor: '#1e293b',
+                borderRadius: '12px',
+                width: '90%',
+                maxWidth: '400px',
+                maxHeight: '300px',
+                overflow: 'hidden',
+                zIndex: 1000,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ScrollView scrollY style={{ maxHeight: '280px' }}>
                 <View
-                  key={user.id}
                   style={{
                     padding: '14px 16px',
                     borderBottom: '1px solid #1e3a5f',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    backgroundColor: selectedUserId === user.id ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+                    backgroundColor: !selectedUserId ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
                   }}
                   onClick={() => {
-                    setSelectedUserId(user.id);
+                    setSelectedUserId('');
                     setShowUserPicker(false);
                   }}
                 >
-                  <View style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    backgroundColor: '#1e3a5f',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    overflow: 'hidden',
-                  }}
-                  >
-                    {user.avatar_url ? (
-                      <View style={{ width: '100%', height: '100%', backgroundColor: '#38bdf8' }} />
-                    ) : (
-                      <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>{(user.nickname || 'U')[0]}</Text>
-                    )}
-                  </View>
-                  <Text style={{
-                    fontSize: '14px',
-                    color: selectedUserId === user.id ? '#38bdf8' : '#f1f5f9',
-                    fontWeight: selectedUserId === user.id ? '600' : '400',
-                  }}
-                  >
-                    {user.nickname || '未命名用户'}
-                  </Text>
-                  <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: 'auto' }}>
-                    {user.role === 'admin' ? '管理员' : '用户'}
+                  <Users size={18} color={!selectedUserId ? '#38bdf8' : '#71717a'} />
+                  <Text style={{ fontSize: '14px', color: !selectedUserId ? '#38bdf8' : '#f1f5f9', fontWeight: !selectedUserId ? '600' : '400' }}>
+                    全部用户
                   </Text>
                 </View>
-              ))}
-            </ScrollView>
+                {users.map((user) => (
+                  <View
+                    key={user.id}
+                    style={{
+                      padding: '14px 16px',
+                      borderBottom: '1px solid #1e3a5f',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      backgroundColor: selectedUserId === user.id ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+                    }}
+                    onClick={() => {
+                      setSelectedUserId(user.id);
+                      setShowUserPicker(false);
+                    }}
+                  >
+                    <View style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      backgroundColor: '#1e3a5f',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                    }}
+                    >
+                      {user.avatar_url ? (
+                        <View style={{ width: '100%', height: '100%', backgroundColor: '#38bdf8' }} />
+                      ) : (
+                        <Text style={{ fontSize: '14px', color: '#f1f5f9' }}>{(user.nickname || 'U')[0]}</Text>
+                      )}
+                    </View>
+                    <Text style={{
+                      fontSize: '14px',
+                      color: selectedUserId === user.id ? '#38bdf8' : '#f1f5f9',
+                      fontWeight: selectedUserId === user.id ? '600' : '400',
+                    }}
+                    >
+                      {user.nickname || '未命名用户'}
+                    </Text>
+                    <Text style={{ fontSize: '12px', color: '#71717a', marginLeft: 'auto' }}>
+                      {user.role === 'admin' ? '管理员' : '用户'}
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
           </View>
         )}
 
