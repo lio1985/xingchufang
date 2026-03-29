@@ -24,7 +24,7 @@ export class EquipmentOrdersController {
    * 创建订单（管理员）
    */
   @Post()
-  @UseGuards(ActiveUserGuard)
+  @UseGuards(ActiveUserGuard, AdminGuard)
   async create(@Body() dto: CreateOrderDto, @Req() req: any) {
     return this.ordersService.createOrder(dto, req.user.id);
   }
