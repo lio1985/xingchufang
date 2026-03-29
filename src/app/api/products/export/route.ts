@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     // 关键词搜索
     if (keyword) {
-      query = query.or(`name.ilike.%${keyword}%,brand.ilike.%${keyword}%,spec.ilike.%${keyword}%`);
+      query = query.or(`name.ilike.%${keyword}%,brand.ilike.%${keyword}%,spec.ilike.%${keyword}%,supplier.ilike.%${keyword}%`);
     }
 
     // 供应商筛选

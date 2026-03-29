@@ -19,9 +19,9 @@ export async function GET(request: NextRequest) {
       .from('products')
       .select('*', { count: 'exact' });
 
-    // 关键词搜索（搜索名称、品牌、规格）
+    // 关键词搜索（搜索名称、品牌、规格、供应商）
     if (keyword) {
-      query = query.or(`name.ilike.%${keyword}%,brand.ilike.%${keyword}%,spec.ilike.%${keyword}%`);
+      query = query.or(`name.ilike.%${keyword}%,brand.ilike.%${keyword}%,spec.ilike.%${keyword}%,supplier.ilike.%${keyword}%`);
     }
 
     // 供应商筛选

@@ -82,7 +82,7 @@ async function fallbackSearch(request: NextRequest) {
     .select('*', { count: 'exact' });
 
   if (keyword) {
-    query = query.or(`name.ilike.%${keyword}%,brand.ilike.%${keyword}%,spec.ilike.%${keyword}%`);
+    query = query.or(`name.ilike.%${keyword}%,brand.ilike.%${keyword}%,spec.ilike.%${keyword}%,supplier.ilike.%${keyword}%`);
   }
 
   if (supplier) {
