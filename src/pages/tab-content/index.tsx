@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
@@ -7,8 +8,70 @@ import {
   Sparkles,
   ChevronRight,
 } from 'lucide-react-taro';
+import { Network } from '@/network';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
+
+interface ContentStats {
+  weeklyCreations: number;
+  inspirationCount: number;
+}
 
 const TabContentPage = () => {
+  const { isLoggedIn } = useAuthGuard({ requireLogin: false });
+  const [stats, setStats] = useState<ContentStats>({
+    weeklyCreations: 0,
+    inspirationCount: 0,
+  });
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchStats();
+    }
+  }, [isLoggedIn]);
+
+  const fetchStats = async () => {
+    try {
+      // 并行获取选题统计和灵感数量
+      const [topicsRes, inspirationsRes] = await Promise.all([
+        Network.request({
+          url: '/api/topics/statistics',
+          method: 'GET',
+        }).catch(() => null),
+        Network.request({
+          url: '/api/inspirations',
+          method: 'GET',
+        }).catch(() => null),
+      ]);
+
+      let weeklyCreations = 0;
+      let inspirationCount = 0;
+
+      // 获取本周创作数（选题总数）
+      if (topicsRes?.data?.code === 200 && topicsRes?.data?.data) {
+        const topicStats = topicsRes.data.data;
+        // 统计本周创建的选题数
+        if (topicStats.statusCounts) {
+          weeklyCreations = Object.values(topicStats.statusCounts as Record<string, number>)
+            .reduce((sum, count) => sum + (count || 0), 0);
+        }
+      }
+
+      // 获取灵感数量
+      if (inspirationsRes?.data?.code === 200 && inspirationsRes?.data?.data) {
+        inspirationCount = Array.isArray(inspirationsRes.data.data)
+          ? inspirationsRes.data.data.length
+          : 0;
+      }
+
+      setStats({
+        weeklyCreations,
+        inspirationCount,
+      });
+    } catch (error) {
+      console.error('[TabContent] 获取统计数据失败:', error);
+    }
+  };
+
   const handleNav = (path: string) => {
     Taro.navigateTo({ url: path });
   };
@@ -42,11 +105,11 @@ const TabContentPage = () => {
       <View style={{ padding: '20px 20px 0' }}>
         <View style={{ display: 'flex', gap: '12px' }}>
           <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>15</Text>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>{stats.weeklyCreations}</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>本周创作</Text>
           </View>
           <View style={{ flex: 1, backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', padding: '16px' }}>
-            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#38bdf8' }}>42</Text>
+            <Text style={{ fontSize: '24px', fontWeight: '700', color: '#38bdf8' }}>{stats.inspirationCount}</Text>
             <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>灵感数量</Text>
           </View>
         </View>
