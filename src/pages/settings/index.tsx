@@ -9,7 +9,6 @@ import {
   Moon,
   Volume2,
   ChevronRight,
-  ChevronLeft,
   LogOut,
   Crown,
 } from 'lucide-react-taro';
@@ -69,15 +68,6 @@ const SettingsPage = () => {
           position: 'relative',
         }}
       >
-        <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
-          <View
-            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })}
-          >
-            <ChevronLeft size={24} color="#38bdf8" />
-            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
-          </View>
-        </View>
         <Text
           style={{
             fontSize: '20px',

@@ -8,7 +8,6 @@ import {
   CircleCheck,
   Link,
   Trash2,
-  ChevronLeft,
 } from 'lucide-react-taro';
 
 interface FavoriteItem {
@@ -109,27 +108,7 @@ export default function FavoriteListPage() {
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <View
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                backgroundColor: '#1e3a5f',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onClick={() => {
-                const pages = Taro.getCurrentPages();
-                if (pages.length > 1) {
-                  Taro.navigateBack();
-                } else {
-                  Taro.switchTab({ url: '/pages/tab-knowledge/index' });
-                }
-              }}
-            >
-              <ChevronLeft size={24} color="#f1f5f9" />
-            </View>
+            
             <View style={{ display: 'flex', alignItems: 'center' }}>
               <Heart size={24} color="#f87171" />
               <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginLeft: '8px' }}>个人收藏</Text>

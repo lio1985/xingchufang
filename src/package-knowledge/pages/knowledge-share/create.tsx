@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Network } from '@/network';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import {
-  ChevronLeft,
   Save,
   X,
   Image as ImageIcon,
@@ -458,9 +457,7 @@ const KnowledgeShareCreatePage = () => {
         zIndex: 100
       }}
       >
-        <View style={{ display: 'flex', alignItems: 'center' }} onClick={() => Taro.navigateBack()}>
-          <ChevronLeft size={24} color="#ffffff" />
-        </View>
+        
         <Text style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>新建知识</Text>
         <View
           style={{

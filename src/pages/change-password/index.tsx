@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Taro, { showToast } from '@tarojs/taro';
 import { View, Text, Input } from '@tarojs/components';
 import {
-  ChevronLeft,
   Lock,
   Eye,
   EyeOff,
@@ -122,14 +121,6 @@ const ChangePasswordPage = () => {
     }
   };
 
-  const handleGoBack = () => {
-    if (step === 2) {
-      setStep(1);
-    } else {
-      Taro.navigateBack();
-    }
-  };
-
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {/* 背景装饰 - 顶部光晕 */}
@@ -146,13 +137,6 @@ const ChangePasswordPage = () => {
 
       {/* 页面头部 */}
       <View style={{ padding: '48px 16px 20px', position: 'relative', zIndex: 1 }}>
-        <View
-          style={{ position: 'absolute', left: '16px', top: '48px', display: 'flex', alignItems: 'center', gap: '4px' }}
-          onClick={handleGoBack}
-        >
-          <ChevronLeft size={20} color="#38bdf8" />
-          <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
-        </View>
         <Text style={{ fontSize: '20px', fontWeight: '700', color: '#f1f5f9', display: 'block', textAlign: 'center' }}>
           修改密码
         </Text>

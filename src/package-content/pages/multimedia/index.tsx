@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
-  ChevronLeft,
   Upload,
   Image as ImageIcon,
   Music,
@@ -214,12 +213,7 @@ export default function MultimediaPage() {
         zIndex: 100,
       }}
       >
-        <View
-          onClick={() => Taro.navigateBack()}
-          style={{ padding: 8, marginLeft: -8 }}
-        >
-          <ChevronLeft size={24} color="#f1f5f9" />
-        </View>
+        
         <Text style={{ flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '600', color: '#f1f5f9' }}>
           多媒体管理
         </Text>

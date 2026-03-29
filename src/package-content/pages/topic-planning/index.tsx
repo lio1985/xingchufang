@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Input, Textarea, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
-  ChevronLeft,
   Plus,
   Search,
   ListFilter,
@@ -1433,9 +1432,7 @@ const TopicPlanningPage = () => {
         <View className="page-header" style={{ marginBottom: '20px' }}>
           <View className="header-top">
             <View className="header-left">
-              <View className="back-button" onClick={() => Taro.navigateBack()}>
-                <ChevronLeft size={32} color="#f1f5f9" />
-              </View>
+              
               <Text className="header-title">选题策划</Text>
             </View>
           </View>
@@ -1482,9 +1479,7 @@ const TopicPlanningPage = () => {
         <View className="page-header" style={{ marginBottom: '20px' }}>
           <View className="header-top">
             <View className="header-left">
-              <View className="back-button" onClick={() => Taro.navigateBack()}>
-                <ChevronLeft size={32} color="#f1f5f9" />
-              </View>
+              
               <Text className="header-title">选题策划</Text>
             </View>
           </View>
@@ -1502,9 +1497,7 @@ const TopicPlanningPage = () => {
       <View className="page-header">
         <View className="header-top" style={{ marginBottom: '16px' }}>
           <View className="header-left">
-            <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#f1f5f9" />
-            </View>
+            
             <Text className="header-title">选题策划</Text>
           </View>
           <View

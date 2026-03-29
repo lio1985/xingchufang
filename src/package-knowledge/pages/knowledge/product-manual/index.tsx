@@ -5,7 +5,6 @@ import {
   Search,
   ListFilter,
   ChevronRight,
-  ChevronLeft,
   Download,
   Eye,
   Clock,
@@ -104,27 +103,7 @@ const ProductManualPage = () => {
       <View style={{ padding: '48px 20px 16px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <View
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                backgroundColor: '#1e3a5f',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onClick={() => {
-                const pages = Taro.getCurrentPages();
-                if (pages.length > 1) {
-                  Taro.navigateBack();
-                } else {
-                  Taro.switchTab({ url: '/pages/tab-knowledge/index' });
-                }
-              }}
-            >
-              <ChevronLeft size={24} color="#f1f5f9" />
-            </View>
+            
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>产品使用说明书</Text>
           </View>
           <View style={{ display: 'flex', gap: '8px' }}>

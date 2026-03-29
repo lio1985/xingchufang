@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("../user/user.service");
 const lexicon_service_1 = require("../database/lexicon/lexicon.service");
 const statistics_service_1 = require("../statistics/statistics.service");
+const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const admin_guard_1 = require("../guards/admin.guard");
 const supabase_client_1 = require("../storage/database/supabase-client");
 let AdminController = class AdminController {
@@ -478,7 +479,7 @@ __decorate([
 ], AdminController.prototype, "getShareStats", null);
 exports.AdminController = AdminController = __decorate([
     (0, common_1.Controller)('admin'),
-    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
     __metadata("design:paramtypes", [user_service_1.UserService,
         lexicon_service_1.LexiconService,
         statistics_service_1.StatisticsService])

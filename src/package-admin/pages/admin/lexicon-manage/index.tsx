@@ -6,7 +6,6 @@ import {
   RefreshCw,
   Plus,
   Search,
-  ChevronLeft,
   Pencil,
   Trash2,
   Eye,
@@ -217,9 +216,7 @@ const LexiconManagePage = () => {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={22} color="#38bdf8" />
-          </View>
+          
           <Text className="admin-title">语料库管理</Text>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <View className="admin-action-btn" onClick={loadLexicons}>

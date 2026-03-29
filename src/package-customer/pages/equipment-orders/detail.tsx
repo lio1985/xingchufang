@@ -10,7 +10,6 @@ import {
   User,
   CircleCheck,
   ArrowRight,
-  ChevronLeft,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -250,16 +249,6 @@ const OrderDetailPage = () => {
     <ScrollView scrollY style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '120px' }}>
       {/* 头部状态卡片 */}
       <View style={{ backgroundColor: '#111827', padding: '48px 20px 20px', borderBottom: '1px solid #1e3a5f' }}>
-        {/* 返回按钮 */}
-        <View style={{ marginBottom: '16px' }}>
-          <View
-            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => Taro.navigateBack()}
-          >
-            <ChevronLeft size={24} color="#38bdf8" />
-            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
-          </View>
-        </View>
         <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {order.order_type === 'purchase' ? (
             <ShoppingCart size={28} color="#60a5fa" />

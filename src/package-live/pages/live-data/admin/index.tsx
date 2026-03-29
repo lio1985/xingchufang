@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { showToast, showLoading, hideLoading } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
 import { View, Text, ScrollView } from '@tarojs/components';
 import { Network } from '@/network';
 import {
-  ChevronLeft,
   RefreshCw,
   TrendingUp,
   Users,
@@ -11,6 +10,7 @@ import {
   Heart,
   ShoppingCart,
   Video,
+  Activity,
 } from 'lucide-react-taro';
 
 interface AdminStats {
@@ -73,9 +73,9 @@ export default function LiveDataAdminPage() {
 
   const handleRefresh = async () => {
     setLoading(true);
-    showLoading({ title: '加载中...' });
+    Taro.showLoading({ title: '加载中...' });
     await fetchStats();
-    hideLoading();
+    Taro.hideLoading();
     setLoading(false);
   };
 
@@ -153,9 +153,8 @@ export default function LiveDataAdminPage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                onClick={() => showToast({ title: '返回功能', icon: 'none' })}
               >
-                <ChevronLeft size={22} color="#38bdf8" />
+                <Activity size={22} color="#38bdf8" />
               </View>
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <View

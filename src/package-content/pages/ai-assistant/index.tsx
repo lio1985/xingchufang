@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
-  ChevronLeft,
   Send,
   Sparkles,
   Lightbulb,
@@ -293,15 +292,6 @@ export default function AIAssistantPage() {
         position: 'relative',
       }}
       >
-        <View style={{ position: 'absolute', left: '16px', top: '48px' }}>
-          <View
-            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => Taro.switchTab({ url: '/pages/tab-content/index' })}
-          >
-            <ChevronLeft size={24} color="#38bdf8" />
-            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
-          </View>
-        </View>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <View style={{
             width: '36px',

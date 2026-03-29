@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Input, Textarea, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
-  ChevronLeft,
   Plus,
   Search,
   Star,
@@ -13,6 +12,7 @@ import {
   Pin,
   ArrowRight,
   Sparkles,
+  ChevronLeft,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 
@@ -276,12 +276,6 @@ const QuickNotePage = () => {
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <View
-              style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              onClick={() => Taro.navigateBack()}
-            >
-              <ChevronLeft size={24} color="#f1f5f9" />
-            </View>
             <View>
               <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>灵感速记</Text>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>{notes.length} 条笔记</Text>

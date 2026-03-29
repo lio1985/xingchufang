@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Input, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
-  ChevronLeft,
   RefreshCw,
   Search,
   X,
@@ -264,9 +263,7 @@ export default function AdminQuickNoteManagePage() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={22} color="#38bdf8" />
-          </View>
+          
           <Text className="admin-title">灵感速记管理</Text>
           <View className="admin-action-btn" onClick={loadData}>
             <RefreshCw size={22} color={loading ? '#64748b' : '#38bdf8'} />

@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminKnowledgeShareController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const admin_guard_1 = require("../guards/admin.guard");
 const admin_knowledge_share_service_1 = require("./admin-knowledge-share.service");
 let AdminKnowledgeShareController = class AdminKnowledgeShareController {
@@ -414,7 +415,7 @@ __decorate([
 ], AdminKnowledgeShareController.prototype, "exportReport", null);
 exports.AdminKnowledgeShareController = AdminKnowledgeShareController = __decorate([
     (0, common_1.Controller)('admin/knowledge-shares'),
-    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, admin_guard_1.AdminGuard),
     __metadata("design:paramtypes", [admin_knowledge_share_service_1.AdminKnowledgeShareService])
 ], AdminKnowledgeShareController);
 //# sourceMappingURL=admin-knowledge-share.controller.js.map

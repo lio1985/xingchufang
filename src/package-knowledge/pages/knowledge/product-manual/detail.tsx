@@ -8,7 +8,6 @@ import {
   Star,
   Clock,
   Eye,
-  ChevronLeft,
   CircleAlert,
 } from 'lucide-react-taro';
 
@@ -72,10 +71,6 @@ const ProductManualDetailPage = () => {
     console.log('Manual ID:', router.params.id);
   }, [router.params.id]);
 
-  const handleBack = () => {
-    Taro.navigateBack();
-  };
-
   const handleDownload = () => {
     Taro.showToast({ title: '开始下载PDF...', icon: 'success' });
   };
@@ -106,9 +101,7 @@ const ProductManualDetailPage = () => {
         zIndex: 100
       }}
       >
-        <View onClick={handleBack} style={{ display: 'flex', alignItems: 'center' }}>
-          <ChevronLeft size={24} color="#ffffff" />
-        </View>
+        <View style={{ width: '24px' }} />
         <Text style={{ flex: 1, textAlign: 'center', fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>说明书详情</Text>
         <View style={{ width: '24px' }} />
       </View>

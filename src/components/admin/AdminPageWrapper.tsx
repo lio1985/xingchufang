@@ -7,7 +7,7 @@ interface AdminPageWrapperProps {
   children: React.ReactNode;
   /** 页面标题 */
   title?: string;
-  /** 是否显示返回按钮 */
+  /** 是否显示返回按钮（默认不显示，小程序自带返回键） */
   showBack?: boolean;
   /** 自定义返回路径 */
   backPath?: string;
@@ -20,7 +20,7 @@ interface AdminPageWrapperProps {
 export const AdminPageWrapper: React.FC<AdminPageWrapperProps> = ({
   children,
   title,
-  showBack = true,
+  showBack = false,
   backPath,
 }) => {
   const { canAccess, loading, user, logout } = useAdminGuard();

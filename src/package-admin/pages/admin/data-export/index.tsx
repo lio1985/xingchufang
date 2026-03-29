@@ -6,7 +6,6 @@ import {
   Download,
   FileCode,
   FileSpreadsheet,
-  ChevronLeft,
   Users,
   BookOpen,
   ScrollText,
@@ -284,9 +283,7 @@ const DataExportPage: React.FC = () => {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={22} color="#38bdf8" />
-          </View>
+          
           <Text className="admin-title">数据导出</Text>
           <View
             className="admin-action-btn"

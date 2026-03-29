@@ -5,7 +5,6 @@ import {
   GraduationCap,
   Search,
   Play,
-  ChevronLeft,
   Clock,
   BookOpen,
   Award,
@@ -275,27 +274,7 @@ const NewsPage = () => {
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         {/* 返回按钮和标题 */}
         <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-          <View
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
-              backgroundColor: '#1e293b',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onClick={() => {
-              const pages = Taro.getCurrentPages();
-              if (pages.length > 1) {
-                Taro.navigateBack();
-              } else {
-                Taro.switchTab({ url: '/pages/tab-knowledge/index' });
-              }
-            }}
-          >
-            <ChevronLeft size={20} color="#ef4444" />
-          </View>
+          
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <GraduationCap size={24} color="#ef4444" />
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>课程培训</Text>

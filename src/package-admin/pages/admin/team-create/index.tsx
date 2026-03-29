@@ -3,7 +3,6 @@ import Taro from '@tarojs/taro';
 import { View, Text, Input, Textarea } from '@tarojs/components';
 import { Network } from '@/network';
 import {
-  ChevronLeft,
   Users,
   Info,
 } from 'lucide-react-taro';
@@ -57,9 +56,7 @@ export default function TeamCreate() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={22} color="#38bdf8" />
-          </View>
+          
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <View
               style={{

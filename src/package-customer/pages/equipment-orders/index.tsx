@@ -6,7 +6,6 @@ import {
   Package,
   Eye,
   ChevronRight,
-  ChevronLeft,
   Plus,
   Clock,
   Phone,
@@ -378,12 +377,6 @@ const EquipmentOrdersPage = () => {
       <View style={{ padding: '48px 20px 16px', backgroundColor: colors.backgroundSecondary, borderBottom: `1px solid ${colors.border}` }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.sm }}>
           <View style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
-            <View
-              style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: colors.border, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              onClick={() => Taro.switchTab({ url: '/pages/tab-customer/index' })}
-            >
-              <ChevronLeft size={24} color={colors.textSecondary} />
-            </View>
             <View style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
               <ShoppingCart size={24} color={colors.primary} />
               <Text style={{ fontSize: fontSize.xxl, fontWeight: '700', color: colors.textPrimary }}>获取客资</Text>

@@ -5,7 +5,6 @@ import {
   Link2,
   RefreshCw,
   Search,
-  ChevronLeft,
   X,
   Globe,
   Lock,
@@ -195,9 +194,7 @@ const ShareManagePage = () => {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={22} color="#38bdf8" />
-          </View>
+          
           <Text className="admin-title">共享管理</Text>
           <View
             className="admin-action-btn"

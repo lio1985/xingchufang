@@ -1,7 +1,7 @@
 import { View, Text, Textarea, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState } from 'react';
-import { ShoppingCart, Package, ChevronRight, ChevronLeft } from 'lucide-react-taro';
+import { ShoppingCart, Package, ChevronRight} from 'lucide-react-taro';
 import { Network } from '@/network';
 
 const CreateOrderPage = () => {
@@ -109,16 +109,6 @@ const CreateOrderPage = () => {
     <ScrollView scrollY style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '100px' }}>
       {/* 页面头部 */}
       <View style={{ backgroundColor: '#111827', padding: '48px 20px 20px', borderBottom: '1px solid #1e3a5f' }}>
-        {/* 返回按钮 */}
-        <View style={{ marginBottom: '16px' }}>
-          <View
-            style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-            onClick={() => Taro.navigateBack()}
-          >
-            <ChevronLeft size={24} color="#38bdf8" />
-            <Text style={{ fontSize: '14px', color: '#38bdf8' }}>返回</Text>
-          </View>
-        </View>
       </View>
 
       {/* 订单类型选择 */}

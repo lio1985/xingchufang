@@ -10,7 +10,6 @@ import {
   Download,
   Bell,
   TrendingUp,
-  ChevronLeft,
   TriangleAlert,
   FileChartColumn,
   Database,
@@ -296,12 +295,6 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-          <View
-            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={() => Taro.switchTab({ url: '/pages/tab-profile/index' })}
-          >
-            <ChevronLeft size={24} color="#f1f5f9" />
-          </View>
           <View>
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>数据监控</Text>
             <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>全局数据统计与快捷入口</Text>

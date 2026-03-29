@@ -10,7 +10,6 @@ import {
   Plus,
   Search,
   ChevronRight,
-  ChevronLeft,
   CircleDollarSign,
 } from 'lucide-react-taro';
 
@@ -160,20 +159,7 @@ export default function RecycleStoreList() {
       {/* 页面头部 */}
       <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
-          <View
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '12px',
-              backgroundColor: '#1e3a5f',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onClick={() => Taro.navigateBack()}
-          >
-            <ChevronLeft size={24} color="#38bdf8" />
-          </View>
+          
           <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff' }}>整店回收</Text>
         </View>
         <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginLeft: '56px' }}>回收业务全流程管理</Text>

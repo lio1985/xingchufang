@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Taro, { showToast } from '@tarojs/taro'
 import { View, Text, Input } from '@tarojs/components'
 import { Network } from '@/network'
-import { Lightbulb, User, Lock, Eye, EyeOff, ChevronLeft } from 'lucide-react-taro'
+import { Lightbulb, User, Lock, Eye, EyeOff} from 'lucide-react-taro'
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('')
@@ -85,24 +85,6 @@ const RegisterPage = () => {
         pointerEvents: 'none' 
       }}
       />
-
-      {/* 返回按钮 */}
-      <View 
-        style={{ 
-          position: 'absolute', 
-          top: '48px', 
-          left: '16px', 
-          padding: '8px 12px',
-          zIndex: 20,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px'
-        }} 
-        onClick={() => Taro.navigateBack()}
-      >
-        <ChevronLeft size={20} color="#94a3b8" />
-        <Text style={{ fontSize: '14px', color: '#94a3b8' }}>返回</Text>
-      </View>
 
       {/* 主内容区 */}
       <View style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 24px', position: 'relative', zIndex: 1 }}>

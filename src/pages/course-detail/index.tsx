@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, RichText } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import {
-  ChevronLeft,
   Clock,
   BookOpen,
   Award,
@@ -256,30 +255,7 @@ export default function CourseDetailPage() {
           }}
         />
         {/* 返回按钮 */}
-        <View
-          style={{
-            position: 'absolute',
-            top: '48px',
-            left: '16px',
-            width: '36px',
-            height: '36px',
-            borderRadius: '18px',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onClick={() => {
-            const pages = Taro.getCurrentPages();
-            if (pages.length > 1) {
-              Taro.navigateBack();
-            } else {
-              Taro.switchTab({ url: '/pages/tab-knowledge/index' });
-            }
-          }}
-        >
-          <ChevronLeft size={24} color="#ffffff" />
-        </View>
+        
         {/* 标题 */}
         <View style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px' }}>
           <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block', marginBottom: '8px' }}>

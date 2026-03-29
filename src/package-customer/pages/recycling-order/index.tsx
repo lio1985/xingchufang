@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
-  ChevronLeft,
   Plus,
   Search,
   Package,
@@ -184,9 +183,7 @@ const RecyclingOrderPage = () => {
       <View className="page-header">
         <View className="header-top">
           <View className="header-left">
-            <View className="back-button" onClick={() => Taro.navigateBack()}>
-              <ChevronLeft size={32} color="#f1f5f9" />
-            </View>
+            
             <View className="header-title-group">
               <Text className="header-title">回收订单</Text>
               <Text className="header-subtitle">{orders.length} 个订单</Text>

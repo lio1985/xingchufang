@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminCustomerController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const admin_guard_1 = require("../guards/admin.guard");
 const active_user_guard_1 = require("../guards/active-user.guard");
 const customer_management_service_1 = require("../customer-management/customer-management.service");
@@ -226,7 +227,7 @@ __decorate([
 ], AdminCustomerController.prototype, "exportCustomers", null);
 exports.AdminCustomerController = AdminCustomerController = __decorate([
     (0, common_1.Controller)('admin/customers'),
-    (0, common_1.UseGuards)(active_user_guard_1.ActiveUserGuard, admin_guard_1.AdminGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, active_user_guard_1.ActiveUserGuard, admin_guard_1.AdminGuard),
     __metadata("design:paramtypes", [customer_management_service_1.CustomerManagementService])
 ], AdminCustomerController);
 //# sourceMappingURL=admin-customer.controller.js.map

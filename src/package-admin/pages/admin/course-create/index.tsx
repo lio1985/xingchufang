@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {
-  ChevronLeft,
   Upload,
   FileText,
   Image,
@@ -229,20 +228,7 @@ export default function CourseCreatePage() {
       {/* Header */}
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827' }}>
         <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <View
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onClick={() => Taro.navigateBack()}
-          >
-            <ChevronLeft size={18} color="#ef4444" />
-          </View>
+          
           <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff' }}>创建课程</Text>
           <View style={{ width: '32px' }} />
         </View>

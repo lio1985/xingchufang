@@ -7,7 +7,6 @@ import {
   Star,
   Clock,
   Eye,
-  ChevronLeft,
   Lightbulb,
   ThumbsUp,
 } from 'lucide-react-taro';
@@ -97,10 +96,6 @@ const DesignKnowledgeDetailPage = () => {
     console.log('Knowledge ID:', router.params.id);
   }, [router.params.id]);
 
-  const handleBack = () => {
-    Taro.navigateBack();
-  };
-
   const handleShare = () => {
     Taro.showToast({ title: '分享功能开发中', icon: 'none' });
   };
@@ -132,9 +127,7 @@ const DesignKnowledgeDetailPage = () => {
         zIndex: 100
       }}
       >
-        <View onClick={handleBack} style={{ display: 'flex', alignItems: 'center' }}>
-          <ChevronLeft size={24} color="#ffffff" />
-        </View>
+        <View style={{ width: '24px' }} />
         <Text style={{ flex: 1, textAlign: 'center', fontSize: '16px', fontWeight: '600', color: '#ffffff' }}>知识详情</Text>
         <View style={{ width: '24px' }} />
       </View>

@@ -6,7 +6,6 @@ import {
   ListFilter,
   Download,
   RefreshCw,
-  ChevronLeft,
   CircleCheck,
   CircleX,
   Clock,
@@ -177,9 +176,7 @@ export default function AdminAuditPage() {
       {/* Header */}
       <View className="admin-header">
         <View className="admin-header-content">
-          <View className="admin-back-btn" onClick={() => Taro.navigateBack()}>
-            <ChevronLeft size={22} color="#38bdf8" />
-          </View>
+          
           <Text className="admin-title">审计日志</Text>
           <View
             className="admin-action-btn"

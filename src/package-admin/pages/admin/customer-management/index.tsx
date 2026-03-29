@@ -3,7 +3,6 @@ import Taro from '@tarojs/taro';
 import { View, Text, ScrollView, Input } from '@tarojs/components';
 import { Network } from '@/network';
 import {
-  ChevronLeft,
   DollarSign,
   Target,
   TrendingUp,
@@ -387,20 +386,7 @@ export default function AdminCustomerManagement() {
         <View style={{ padding: '0 16px 12px' }}>
           <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <View
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={() => Taro.navigateBack()}
-              >
-                <ChevronLeft size={22} color="#38bdf8" />
-              </View>
+              
               <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <View
                   style={{

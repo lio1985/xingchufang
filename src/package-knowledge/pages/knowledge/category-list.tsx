@@ -3,7 +3,6 @@ import Taro, { useRouter } from '@tarojs/taro';
 import { useEffect, useState } from 'react';
 import { Network } from '@/network';
 import {
-  ChevronLeft,
   Search,
   Eye,
   Clock,
@@ -98,20 +97,7 @@ export default function KnowledgeCategoryListPage() {
       {/* 页面头部 */}
       <View style={{ padding: '48px 20px 16px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-          <View
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: '#1e3a5f',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            onClick={() => Taro.navigateBack()}
-          >
-            <ChevronLeft size={24} color="#f1f5f9" />
-          </View>
+          
           <FileText size={24} color={categoryInfo.color} />
           <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>{categoryInfo.name}</Text>
         </View>

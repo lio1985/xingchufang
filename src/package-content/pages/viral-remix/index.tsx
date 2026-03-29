@@ -3,7 +3,6 @@ import Taro, { useLoad, showToast } from '@tarojs/taro'
 import { View, Text, CheckboxGroup, Textarea } from '@tarojs/components'
 import { Network } from '@/network'
 import {
-  ChevronLeft,
   Sparkles,
   BookOpen,
   Building2,
@@ -201,12 +200,7 @@ export default function ViralRemixPage() {
       {/* 头部导航 */}
       <View style={{ padding: '48px 20px 16px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <View
-            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={() => Taro.navigateBack()}
-          >
-            <ChevronLeft size={24} color="#f1f5f9" />
-          </View>
+          
           <View style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sparkles size={24} color="#38bdf8" />
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>二创改写</Text>

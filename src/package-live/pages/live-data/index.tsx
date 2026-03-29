@@ -3,7 +3,6 @@ import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
 import {
-  ChevronLeft,
   ChevronRight,
   Radio,
   Upload,
@@ -538,19 +537,7 @@ export default function LiveDataPage() {
       {/* Header */}
       <View style={{ padding: '48px 20px 20px', backgroundColor: '#111827', borderBottom: '1px solid #1e3a5f' }}>
         <View style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-          <View
-            style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={() => {
-              const pages = Taro.getCurrentPages();
-              if (pages.length > 1) {
-                Taro.navigateBack();
-              } else {
-                Taro.redirectTo({ url: '/pages/tab-profile/index' });
-              }
-            }}
-          >
-            <ChevronLeft size={24} color="#f1f5f9" />
-          </View>
+          
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: '20px', fontWeight: '700', color: '#ffffff', display: 'block' }}>直播数据</Text>
             <Text style={{ fontSize: '13px', color: '#71717a', display: 'block', marginTop: '2px' }}>直播数据分析与管理</Text>
