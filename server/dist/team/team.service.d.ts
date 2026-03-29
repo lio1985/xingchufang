@@ -61,4 +61,45 @@ export declare class TeamService {
         }[];
     } | null>;
     getAvailableUsers(userId: string, search?: string): Promise<any[]>;
+    getTeamTasks(userId: string): Promise<{
+        id: any;
+        title: any;
+        description: any;
+        status: any;
+        priority: any;
+        due_date: any;
+        created_at: any;
+        assignees: any;
+    }[]>;
+    createTeamTask(userId: string, body: any): Promise<any>;
+    updateTeamTask(userId: string, taskId: string, body: any): Promise<any>;
+    deleteTeamTask(userId: string, taskId: string): Promise<{
+        success: boolean;
+    }>;
+    getTeamAnnouncements(userId: string): Promise<{
+        id: any;
+        title: any;
+        content: any;
+        priority: any;
+        created_at: any;
+        author: {
+            nickname: any;
+            avatar_url: any;
+        } | null;
+        is_read: boolean;
+    }[]>;
+    createTeamAnnouncement(userId: string, body: any): Promise<any>;
+    markAnnouncementRead(userId: string, announcementId: string): Promise<{
+        success: boolean;
+    }>;
+    getTeamChatMessages(userId: string): Promise<{
+        id: any;
+        content: any;
+        type: any;
+        sender_id: any;
+        sender_name: any;
+        sender_avatar: any;
+        created_at: any;
+    }[]>;
+    sendTeamChatMessage(userId: string, body: any): Promise<any>;
 }

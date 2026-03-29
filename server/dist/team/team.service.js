@@ -362,6 +362,229 @@ let TeamService = class TeamService {
             phone: u.phone ? `${u.phone.slice(0, 3)}****${u.phone.slice(-4)}` : null,
         }));
     }
+    async getTeamTasks(userId) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const team = await this.getUserTeam(userId);
+        if (!team) {
+            return [];
+        }
+        const { data: tasks, error } = await supabase
+            .from('team_tasks')
+            .select(`
+        *,
+        assignees:team_task_assignees(
+          user_id,
+          users(id, nickname, avatar_url)
+        )
+      `)
+            .eq('team_id', team.id)
+            .order('created_at', { ascending: false });
+        if (error) {
+            console.error('获取团队任务失败:', error);
+            return [];
+        }
+        return (tasks || []).map(task => ({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            status: task.status || 'pending',
+            priority: task.priority || 'medium',
+            due_date: task.due_date,
+            created_at: task.created_at,
+            assignees: (task.assignees || []).map((a) => ({
+                id: a.user_id,
+                nickname: a.users?.nickname,
+                avatar_url: a.users?.avatar_url,
+            })),
+        }));
+    }
+    async createTeamTask(userId, body) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const team = await this.getUserTeam(userId);
+        if (!team) {
+            throw new common_1.BadRequestException('您不在任何团队中');
+        }
+        const isAdmin = await this.permissionService.isAdmin(userId);
+        const isTeamLeader = await this.isTeamLeaderOfTeam(userId, team.id);
+        if (!isAdmin && !isTeamLeader) {
+            throw new common_1.ForbiddenException('无权创建团队任务');
+        }
+        const { data: task, error } = await supabase
+            .from('team_tasks')
+            .insert({
+            team_id: team.id,
+            title: body.title,
+            description: body.description,
+            status: body.status || 'pending',
+            priority: body.priority || 'medium',
+            due_date: body.due_date,
+            created_by: userId,
+        })
+            .select()
+            .single();
+        if (error) {
+            throw new common_1.BadRequestException('创建任务失败');
+        }
+        if (body.assignees && body.assignees.length > 0) {
+            const assigneeRecords = body.assignees.map((assigneeId) => ({
+                task_id: task.id,
+                user_id: assigneeId,
+            }));
+            await supabase.from('team_task_assignees').insert(assigneeRecords);
+        }
+        return task;
+    }
+    async updateTeamTask(userId, taskId, body) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const { data: task, error } = await supabase
+            .from('team_tasks')
+            .update(body)
+            .eq('id', taskId)
+            .select()
+            .single();
+        if (error) {
+            throw new common_1.BadRequestException('更新任务失败');
+        }
+        return task;
+    }
+    async deleteTeamTask(userId, taskId) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const { error } = await supabase
+            .from('team_tasks')
+            .delete()
+            .eq('id', taskId);
+        if (error) {
+            throw new common_1.BadRequestException('删除任务失败');
+        }
+        return { success: true };
+    }
+    async getTeamAnnouncements(userId) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const team = await this.getUserTeam(userId);
+        if (!team) {
+            return [];
+        }
+        const { data: announcements, error } = await supabase
+            .from('team_announcements')
+            .select(`
+        *,
+        author:users(id, nickname, avatar_url)
+      `)
+            .eq('team_id', team.id)
+            .order('created_at', { ascending: false });
+        if (error) {
+            console.error('获取团队公告失败:', error);
+            return [];
+        }
+        const { data: readRecords } = await supabase
+            .from('team_announcement_reads')
+            .select('announcement_id')
+            .eq('user_id', userId);
+        const readIds = new Set((readRecords || []).map(r => r.announcement_id));
+        return (announcements || []).map(ann => ({
+            id: ann.id,
+            title: ann.title,
+            content: ann.content,
+            priority: ann.priority || 'medium',
+            created_at: ann.created_at,
+            author: ann.author ? {
+                nickname: ann.author.nickname,
+                avatar_url: ann.author.avatar_url,
+            } : null,
+            is_read: readIds.has(ann.id),
+        }));
+    }
+    async createTeamAnnouncement(userId, body) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const team = await this.getUserTeam(userId);
+        if (!team) {
+            throw new common_1.BadRequestException('您不在任何团队中');
+        }
+        const isAdmin = await this.permissionService.isAdmin(userId);
+        const isTeamLeader = await this.isTeamLeaderOfTeam(userId, team.id);
+        if (!isAdmin && !isTeamLeader) {
+            throw new common_1.ForbiddenException('无权创建团队公告');
+        }
+        const { data: announcement, error } = await supabase
+            .from('team_announcements')
+            .insert({
+            team_id: team.id,
+            title: body.title,
+            content: body.content,
+            priority: body.priority || 'medium',
+            author_id: userId,
+        })
+            .select()
+            .single();
+        if (error) {
+            throw new common_1.BadRequestException('创建公告失败');
+        }
+        return announcement;
+    }
+    async markAnnouncementRead(userId, announcementId) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const { error } = await supabase
+            .from('team_announcement_reads')
+            .upsert({
+            announcement_id: announcementId,
+            user_id: userId,
+            read_at: new Date().toISOString(),
+        });
+        if (error) {
+            console.error('标记已读失败:', error);
+        }
+        return { success: true };
+    }
+    async getTeamChatMessages(userId) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const team = await this.getUserTeam(userId);
+        if (!team) {
+            return [];
+        }
+        const { data: messages, error } = await supabase
+            .from('team_chat_messages')
+            .select(`
+        *,
+        sender:users(id, nickname, avatar_url)
+      `)
+            .eq('team_id', team.id)
+            .order('created_at', { ascending: true })
+            .limit(100);
+        if (error) {
+            console.error('获取聊天消息失败:', error);
+            return [];
+        }
+        return (messages || []).map(msg => ({
+            id: msg.id,
+            content: msg.content,
+            type: msg.type || 'text',
+            sender_id: msg.sender_id,
+            sender_name: msg.sender?.nickname || '未知用户',
+            sender_avatar: msg.sender?.avatar_url,
+            created_at: msg.created_at,
+        }));
+    }
+    async sendTeamChatMessage(userId, body) {
+        const supabase = (0, supabase_client_1.getSupabaseClient)();
+        const team = await this.getUserTeam(userId);
+        if (!team) {
+            throw new common_1.BadRequestException('您不在任何团队中');
+        }
+        const { data: message, error } = await supabase
+            .from('team_chat_messages')
+            .insert({
+            team_id: team.id,
+            sender_id: userId,
+            content: body.content,
+            type: body.type || 'text',
+        })
+            .select()
+            .single();
+        if (error) {
+            throw new common_1.BadRequestException('发送消息失败');
+        }
+        return message;
+    }
 };
 exports.TeamService = TeamService;
 exports.TeamService = TeamService = __decorate([

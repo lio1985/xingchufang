@@ -364,6 +364,16 @@ const DataStatsPage = () => {
           <RefreshCw size={48} color="#38bdf8" />
           <Text style={{ fontSize: '14px', color: '#71717a', marginTop: '16px', display: 'block' }}>加载中...</Text>
         </View>
+      ) : !dashboardData ? (
+        <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px' }}>
+          <View style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: 'rgba(56, 189, 248, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+            <Activity size={40} color="#38bdf8" />
+          </View>
+          <Text style={{ fontSize: '16px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px', display: 'block' }}>暂无数据</Text>
+          <Text style={{ fontSize: '14px', color: '#71717a', textAlign: 'center', display: 'block' }}>
+            {isAdmin ? '暂无统计数据，请稍后再试' : '暂无个人数据，开始使用后即可查看统计'}
+          </Text>
+        </View>
       ) : isAdmin ? (
         renderAdminView()
       ) : (

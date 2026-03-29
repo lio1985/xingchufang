@@ -56,6 +56,33 @@ let TeamController = class TeamController {
     async transferLeadership(req, id, newLeaderId) {
         return this.teamService.transferLeadership(req.user.id, id, newLeaderId);
     }
+    async getMyTeamTasks(req) {
+        return this.teamService.getTeamTasks(req.user.id);
+    }
+    async createTeamTask(req, body) {
+        return this.teamService.createTeamTask(req.user.id, body);
+    }
+    async updateTeamTask(req, taskId, body) {
+        return this.teamService.updateTeamTask(req.user.id, taskId, body);
+    }
+    async deleteTeamTask(req, taskId) {
+        return this.teamService.deleteTeamTask(req.user.id, taskId);
+    }
+    async getMyTeamAnnouncements(req) {
+        return this.teamService.getTeamAnnouncements(req.user.id);
+    }
+    async createTeamAnnouncement(req, body) {
+        return this.teamService.createTeamAnnouncement(req.user.id, body);
+    }
+    async markAnnouncementRead(req, announcementId) {
+        return this.teamService.markAnnouncementRead(req.user.id, announcementId);
+    }
+    async getMyTeamChatMessages(req) {
+        return this.teamService.getTeamChatMessages(req.user.id);
+    }
+    async sendTeamChatMessage(req, body) {
+        return this.teamService.sendTeamChatMessage(req.user.id, body);
+    }
 };
 exports.TeamController = TeamController;
 __decorate([
@@ -151,6 +178,76 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", Promise)
 ], TeamController.prototype, "transferLeadership", null);
+__decorate([
+    (0, common_1.Get)('my/tasks'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "getMyTeamTasks", null);
+__decorate([
+    (0, common_1.Post)('my/tasks'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "createTeamTask", null);
+__decorate([
+    (0, common_1.Put)('my/tasks/:taskId'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('taskId')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, Object]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "updateTeamTask", null);
+__decorate([
+    (0, common_1.Delete)('my/tasks/:taskId'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('taskId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "deleteTeamTask", null);
+__decorate([
+    (0, common_1.Get)('my/announcements'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "getMyTeamAnnouncements", null);
+__decorate([
+    (0, common_1.Post)('my/announcements'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "createTeamAnnouncement", null);
+__decorate([
+    (0, common_1.Post)('my/announcements/:announcementId/read'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('announcementId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "markAnnouncementRead", null);
+__decorate([
+    (0, common_1.Get)('my/chat-messages'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "getMyTeamChatMessages", null);
+__decorate([
+    (0, common_1.Post)('my/chat-messages'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], TeamController.prototype, "sendTeamChatMessage", null);
 exports.TeamController = TeamController = __decorate([
     (0, common_1.Controller)('teams'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

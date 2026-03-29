@@ -760,3 +760,110 @@ CREATE TRIGGER update_inspiration_items_updated_at
 -- 初始化完成
 -- ============================================================================
 SELECT 'All tables created successfully with unified UUID schema' AS status;
+
+
+-- 团队任务表
+CREATE TABLE IF NOT EXISTS team_tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'in_progress', 'completed', 'cancelled')),
+  priority VARCHAR(20) DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
+  due_date TIMESTAMPTZ,
+  created_by UUID REFERENCES users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 团队任务负责人关联表
+CREATE TABLE IF NOT EXISTS team_task_assignees (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  task_id UUID NOT NULL REFERENCES team_tasks(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(task_id, user_id)
+);
+
+-- 团队公告表
+CREATE TABLE IF NOT EXISTS team_announcements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  title VARCHAR(200) NOT NULL,
+  content TEXT NOT NULL,
+  priority VARCHAR(20) DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
+  author_id UUID REFERENCES users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 团队公告已读记录表
+CREATE TABLE IF NOT EXISTS team_announcement_reads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  announcement_id UUID NOT NULL REFERENCES team_announcements(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  read_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(announcement_id, user_id)
+);
+
+-- 团队聊天消息表
+CREATE TABLE IF NOT EXISTS team_chat_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  sender_id UUID NOT NULL REFERENCES users(id),
+  content TEXT NOT NULL,
+  type VARCHAR(20) DEFAULT 'text' CHECK (type IN ('text', 'image', 'file')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 创建索引
+CREATE INDEX IF NOT EXISTS idx_team_tasks_team_id ON team_tasks(team_id);
+CREATE INDEX IF NOT EXISTS idx_team_tasks_status ON team_tasks(status);
+CREATE INDEX IF NOT EXISTS idx_team_task_assignees_task_id ON team_task_assignees(task_id);
+CREATE INDEX IF NOT EXISTS idx_team_announcements_team_id ON team_announcements(team_id);
+CREATE INDEX IF NOT EXISTS idx_team_announcement_reads_user_id ON team_announcement_reads(user_id);
+CREATE INDEX IF NOT EXISTS idx_team_chat_messages_team_id ON team_chat_messages(team_id);
+CREATE INDEX IF NOT EXISTS idx_team_chat_messages_created_at ON team_chat_messages(created_at);
+
+-- 启用 RLS
+ALTER TABLE team_tasks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_task_assignees ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_announcements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_announcement_reads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_chat_messages ENABLE ROW LEVEL SECURITY;
+
+-- RLS 策略：团队成员可以查看任务
+CREATE POLICY "团队成员可以查看任务" ON team_tasks
+  FOR SELECT USING (
+    team_id IN (SELECT team_id FROM users WHERE id = auth.uid())
+  );
+
+-- RLS 策略：队长可以创建、更新、删除任务
+CREATE POLICY "队长可以管理任务" ON team_tasks
+  FOR ALL USING (
+    team_id IN (SELECT id FROM teams WHERE leader_id = auth.uid())
+  );
+
+-- RLS 策略：团队成员可以查看公告
+CREATE POLICY "团队成员可以查看公告" ON team_announcements
+  FOR SELECT USING (
+    team_id IN (SELECT team_id FROM users WHERE id = auth.uid())
+  );
+
+-- RLS 策略：队长可以管理公告
+CREATE POLICY "队长可以管理公告" ON team_announcements
+  FOR ALL USING (
+    team_id IN (SELECT id FROM teams WHERE leader_id = auth.uid())
+  );
+
+-- RLS 策略：团队成员可以查看聊天消息
+CREATE POLICY "团队成员可以查看聊天消息" ON team_chat_messages
+  FOR SELECT USING (
+    team_id IN (SELECT team_id FROM users WHERE id = auth.uid())
+  );
+
+-- RLS 策略：团队成员可以发送消息
+CREATE POLICY "团队成员可以发送消息" ON team_chat_messages
+  FOR INSERT WITH CHECK (
+    team_id IN (SELECT team_id FROM users WHERE id = auth.uid())
+  );

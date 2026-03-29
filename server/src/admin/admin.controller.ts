@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Post, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Post, Delete, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { LexiconService } from '../database/lexicon/lexicon.service';
 import { StatisticsService } from '../statistics/statistics.service';
@@ -513,6 +513,237 @@ export class AdminController {
         msg: error.message,
         data: null,
       };
+    }
+  }
+
+  /**
+   * 获取语料库列表（管理员视图）
+   */
+  @Get('lexicons')
+  async getLexicons(
+    @Request() req,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
+    @Query('category') category?: string,
+    @Query('search') search?: string,
+  ) {
+    try {
+      const client = getSupabaseClient();
+      const pageNum = page ? parseInt(page.toString()) : 1;
+      const limit = pageSize ? parseInt(pageSize.toString()) : 100;
+      const from = (pageNum - 1) * limit;
+      const to = from + limit - 1;
+
+      let query = client
+        .from('lexicons')
+        .select(`
+          id,
+          title,
+          content,
+          category,
+          type,
+          product_id,
+          tags,
+          user_id,
+          is_shared,
+          share_scope,
+          created_at,
+          updated_at,
+          users(id, nickname, employee_id)
+        `, { count: 'exact' });
+
+      if (category && category !== 'all') {
+        query = query.eq('category', category);
+      }
+
+      if (search) {
+        query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
+      }
+
+      const { data, count, error } = await query
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      if (error) {
+        console.error('获取语料库列表失败:', error);
+        return { success: false, message: '获取语料库列表失败', data: null };
+      }
+
+      const transformedData = (data || []).map((item: any) => ({
+        id: item.id,
+        name: item.title,
+        description: item.content?.substring(0, 100) || '',
+        category: item.category,
+        itemCount: 1, // 简化：每条记录算1个条目
+        isShared: item.is_shared,
+        shareScope: item.share_scope,
+        createdAt: item.created_at?.split('T')[0],
+        updatedAt: item.updated_at?.split('T')[0],
+        createdBy: item.users ? {
+          id: item.users.id,
+          name: item.users.nickname || item.users.employee_id,
+        } : null,
+      }));
+
+      return {
+        success: true,
+        data: transformedData,
+        total: count || 0,
+        page: pageNum,
+        pageSize: limit,
+      };
+    } catch (error) {
+      console.error('获取语料库列表失败:', error);
+      return { success: false, message: '获取语料库列表失败', data: null };
+    }
+  }
+
+  /**
+   * 删除语料库（管理员）
+   */
+  @Delete('lexicons/:id')
+  async deleteLexicon(@Request() req, @Param('id') id: string) {
+    try {
+      const client = getSupabaseClient();
+      const { error } = await client
+        .from('lexicons')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        return { success: false, message: '删除失败' };
+      }
+
+      return { success: true, message: '删除成功' };
+    } catch (error) {
+      console.error('删除语料库失败:', error);
+      return { success: false, message: '删除失败' };
+    }
+  }
+
+  /**
+   * 获取共享权限列表
+   */
+  @Get('share/permissions')
+  async getSharePermissions(
+    @Request() req,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
+  ) {
+    try {
+      const client = getSupabaseClient();
+      const pageNum = page ? parseInt(page.toString()) : 1;
+      const limit = pageSize ? parseInt(pageSize.toString()) : 100;
+      const from = (pageNum - 1) * limit;
+      const to = from + limit - 1;
+
+      // 查询共享的语料库及其共享信息
+      const { data, count, error } = await client
+        .from('lexicons')
+        .select(`
+          id,
+          title,
+          share_scope,
+          is_shared,
+          created_at,
+          user_id,
+          users(id, nickname)
+        `, { count: 'exact' })
+        .eq('is_shared', true)
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      if (error) {
+        console.error('获取共享权限列表失败:', error);
+        return { success: false, message: '获取共享权限列表失败', data: null };
+      }
+
+      // 查询共享目标
+      const lexiconIds = (data || []).map((item: any) => item.id);
+      let shareTargets: any[] = [];
+      
+      if (lexiconIds.length > 0) {
+        const { data: targetsData } = await client
+          .from('share_permissions')
+          .select(`
+            lexicon_id,
+            target_user_id,
+            target_department_id,
+            users(id, nickname, department_id)
+          `)
+          .in('lexicon_id', lexiconIds);
+
+        shareTargets = targetsData || [];
+      }
+
+      // 组装数据
+      const transformedData = (data || []).map((item: any) => {
+        const targets = shareTargets.filter((t: any) => t.lexicon_id === item.id);
+        const targetUsers = targets
+          .filter((t: any) => t.target_user_id)
+          .map((t: any) => ({
+            id: t.users?.id,
+            name: t.users?.nickname,
+            department: t.users?.department_id,
+          }));
+
+        const targetDepartments = targets
+          .filter((t: any) => t.target_department_id)
+          .map((t: any) => t.target_department_id);
+
+        return {
+          id: item.id,
+          lexiconId: item.id,
+          lexiconName: item.title,
+          shareScope: item.share_scope,
+          targetUsers: targetUsers,
+          targetDepartments: targetDepartments,
+          createdBy: item.users ? {
+            id: item.users.id,
+            name: item.users.nickname,
+          } : null,
+          createdAt: item.created_at?.split('T')[0],
+        };
+      });
+
+      return {
+        success: true,
+        data: transformedData,
+        total: count || 0,
+        page: pageNum,
+        pageSize: limit,
+      };
+    } catch (error) {
+      console.error('获取共享权限列表失败:', error);
+      return { success: false, message: '获取共享权限列表失败', data: null };
+    }
+  }
+
+  /**
+   * 撤销共享权限
+   */
+  @Delete('share/permissions/:id')
+  async revokeSharePermission(@Request() req, @Param('id') id: string) {
+    try {
+      const client = getSupabaseClient();
+      
+      // 更新语料库为未共享
+      const { error } = await client
+        .from('lexicons')
+        .update({
+          is_shared: false,
+          share_scope: 'private',
+        })
+        .eq('id', id);
+
+      if (error) {
+        return { success: false, message: '撤销失败' };
+      }
+
+      return { success: true, message: '撤销成功' };
+    } catch (error) {
+      console.error('撤销共享权限失败:', error);
+      return { success: false, message: '撤销失败' };
     }
   }
 }

@@ -51,4 +51,45 @@ export declare class TeamController {
     transferLeadership(req: any, id: string, newLeaderId: string): Promise<{
         success: boolean;
     }>;
+    getMyTeamTasks(req: any): Promise<{
+        id: any;
+        title: any;
+        description: any;
+        status: any;
+        priority: any;
+        due_date: any;
+        created_at: any;
+        assignees: any;
+    }[]>;
+    createTeamTask(req: any, body: any): Promise<any>;
+    updateTeamTask(req: any, taskId: string, body: any): Promise<any>;
+    deleteTeamTask(req: any, taskId: string): Promise<{
+        success: boolean;
+    }>;
+    getMyTeamAnnouncements(req: any): Promise<{
+        id: any;
+        title: any;
+        content: any;
+        priority: any;
+        created_at: any;
+        author: {
+            nickname: any;
+            avatar_url: any;
+        } | null;
+        is_read: boolean;
+    }[]>;
+    createTeamAnnouncement(req: any, body: any): Promise<any>;
+    markAnnouncementRead(req: any, announcementId: string): Promise<{
+        success: boolean;
+    }>;
+    getMyTeamChatMessages(req: any): Promise<{
+        id: any;
+        content: any;
+        type: any;
+        sender_id: any;
+        sender_name: any;
+        sender_avatar: any;
+        created_at: any;
+    }[]>;
+    sendTeamChatMessage(req: any, body: any): Promise<any>;
 }

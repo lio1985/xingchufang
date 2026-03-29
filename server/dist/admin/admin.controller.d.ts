@@ -151,4 +151,72 @@ export declare class AdminController {
         msg: any;
         data: null;
     }>;
+    getLexicons(req: any, page?: number, pageSize?: number, category?: string, search?: string): Promise<{
+        success: boolean;
+        message: string;
+        data: null;
+        total?: undefined;
+        page?: undefined;
+        pageSize?: undefined;
+    } | {
+        success: boolean;
+        data: {
+            id: any;
+            name: any;
+            description: any;
+            category: any;
+            itemCount: number;
+            isShared: any;
+            shareScope: any;
+            createdAt: any;
+            updatedAt: any;
+            createdBy: {
+                id: any;
+                name: any;
+            } | null;
+        }[];
+        total: number;
+        page: number;
+        pageSize: number;
+        message?: undefined;
+    }>;
+    deleteLexicon(req: any, id: string): Promise<{
+        success: boolean;
+        message: string;
+    }>;
+    getSharePermissions(req: any, page?: number, pageSize?: number): Promise<{
+        success: boolean;
+        message: string;
+        data: null;
+        total?: undefined;
+        page?: undefined;
+        pageSize?: undefined;
+    } | {
+        success: boolean;
+        data: {
+            id: any;
+            lexiconId: any;
+            lexiconName: any;
+            shareScope: any;
+            targetUsers: {
+                id: any;
+                name: any;
+                department: any;
+            }[];
+            targetDepartments: any[];
+            createdBy: {
+                id: any;
+                name: any;
+            } | null;
+            createdAt: any;
+        }[];
+        total: number;
+        page: number;
+        pageSize: number;
+        message?: undefined;
+    }>;
+    revokeSharePermission(req: any, id: string): Promise<{
+        success: boolean;
+        message: string;
+    }>;
 }
