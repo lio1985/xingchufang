@@ -10,6 +10,9 @@ const adminOnlyPaths = ['/admin'];
 // 静态资源路径前缀
 const staticPrefixes = ['/_next', '/favicon.ico', '/images', '/icons'];
 
+// 静态资源文件扩展名
+const staticExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp', '.woff', '.woff2', '.ttf', '.eot'];
+
 // URL安全的Base64解码
 const safeBase64Decode = (str: string): string => {
   try {
@@ -58,6 +61,11 @@ export function middleware(request: NextRequest) {
 
   // 检查是否是静态资源
   if (staticPrefixes.some(prefix => pathname.startsWith(prefix))) {
+    return NextResponse.next();
+  }
+
+  // 检查是否是静态文件（根据扩展名）
+  if (staticExtensions.some(ext => pathname.endsWith(ext))) {
     return NextResponse.next();
   }
 
