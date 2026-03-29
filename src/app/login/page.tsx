@@ -283,8 +283,12 @@ function LoginForm() {
       <div className="w-full max-w-md">
         {/* Logo和标题 */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg mb-3">
-            <span className="text-3xl">⭐</span>
+          <div className="inline-flex items-center justify-center mb-3">
+            <img 
+              src="/logo.png" 
+              alt="星厨房" 
+              className="h-20 w-auto object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">星厨房商品库</h1>
           <p className="text-gray-500 text-sm mt-1">内部管理系统</p>

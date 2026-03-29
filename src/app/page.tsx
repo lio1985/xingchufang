@@ -287,9 +287,16 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4">
           {/* 桌面端头部 */}
           <div className="hidden md:flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">⭐ 星厨房商品库</h1>
-              <p className="text-blue-100 text-sm mt-1">快捷搜索选品系统 · 多人协作共享</p>
+            <div className="flex items-center gap-3">
+              <img 
+                src="/logo.png" 
+                alt="星厨房" 
+                className="h-10 w-auto object-contain"
+              />
+              <div>
+                <h1 className="text-xl font-bold">商品库</h1>
+                <p className="text-blue-100 text-xs">快捷搜索选品系统 · 多人协作共享</p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               {isAdmin && (
@@ -376,7 +383,14 @@ export default function Home() {
           {/* 移动端头部 */}
           <div className="md:hidden">
             <div className="flex items-center justify-between">
-              <h1 className="text-lg font-bold">⭐ 星厨房商品库</h1>
+              <div className="flex items-center gap-2">
+                <img 
+                  src="/logo.png" 
+                  alt="星厨房" 
+                  className="h-8 w-auto object-contain"
+                />
+                <h1 className="text-lg font-bold">商品库</h1>
+              </div>
               <div className="flex items-center gap-2">
                 {currentUser && (
                   <div className="flex items-center gap-1 px-2 py-1 bg-white/10 rounded-full">
@@ -780,9 +794,13 @@ export default function Home() {
 
       {/* 底部 */}
       <footer className="bg-white border-t mt-8 md:mt-12 py-4 md:py-6">
-        <div className="container mx-auto px-4 text-center text-gray-500 text-xs md:text-sm">
-          <p>星厨房商品库 · 快捷搜索选品系统</p>
-          <p className="mt-1 hidden md:block">多人协作共享 · 图片上传管理</p>
+        <div className="container mx-auto px-4 text-center">
+          <img 
+            src="/logo.png" 
+            alt="星厨房" 
+            className="h-8 w-auto mx-auto mb-2 opacity-60"
+          />
+          <p className="text-gray-500 text-xs md:text-sm">快捷搜索选品系统 · 多人协作共享</p>
         </div>
       </footer>
     </div>
