@@ -128,9 +128,6 @@ export default function AdminAIReportPage() {
     Taro.showToast({ title: '报告导出成功', icon: 'success' });
   };
 
-  // 用 Number 包装避免压缩器bug
-  const buttonOpacity = Number(generating ? '0.6' : '1');
-
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* Header */}
@@ -216,7 +213,6 @@ export default function AdminAIReportPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                opacity: buttonOpacity,
               }}
               onClick={generateReport}
             >
