@@ -91,6 +91,21 @@ export default defineConfig<'vite'>(async (merge, _env) => {
           },
         },
         {
+          name: 'remove-empty-css-comments',
+          generateBundle(_, bundle) {
+            // 移除 JS 文件中的 /* empty css */ 注释
+            for (const fileName in bundle) {
+              if (fileName.endsWith('.js')) {
+                const chunk = bundle[fileName];
+                if (chunk.type === 'chunk' && typeof chunk.code === 'string') {
+                  // 匹配 /* empty css */ 和变体（包含不同空格数量）
+                  chunk.code = chunk.code.replace(/\/\*\s*empty\s+css\s*\*\/\s*/g, '');
+                }
+              }
+            }
+          },
+        },
+        {
           name: 'chunk-split-plugin',
           config(config) {
             // 优化 chunk 拆分，避免单个文件过大

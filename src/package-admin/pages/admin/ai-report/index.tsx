@@ -17,8 +17,6 @@ import {
   Settings,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
-import '@/styles/pages.css';
-import '@/styles/admin.css';
 
 interface ReportSection {
   title: string;
