@@ -72,16 +72,30 @@ export async function POST(request: NextRequest) {
       
       const { data: dbUser, error: dbError } = await client
         .from('admin_users')
-        .select('id, username, password_hash, role')
+        .select('id, username, password_hash, role, status')
         .eq('username', username)
         .single();
       
       if (!dbError && dbUser && dbUser.password_hash === password) {
+        // 检查用户状态
+        if (dbUser.status === 'disabled') {
+          return NextResponse.json(
+            { success: false, error: '该账号已被禁用，请联系管理员' },
+            { status: 403 }
+          );
+        }
+        
         const userInfo: UserInfo = {
           id: dbUser.id,
           username: dbUser.username,
           role: dbUser.role as UserRole,
         };
+        
+        // 更新最后登录时间
+        await client
+          .from('admin_users')
+          .update({ last_login_at: new Date().toISOString() })
+          .eq('id', dbUser.id);
         
         return createAuthResponse(request, userInfo);
       }
@@ -233,11 +247,19 @@ export async function GET(request: NextRequest) {
       
       const { data: dbUser, error } = await client
         .from('admin_users')
-        .select('id')
+        .select('id, status')
         .eq('username', user.username)
         .single();
       
       if (!error && dbUser) {
+        // 检查用户状态
+        if (dbUser.status === 'disabled') {
+          console.log('[Auth GET] User is disabled:', user.username);
+          return NextResponse.json({
+            authenticated: false,
+            user: null,
+          });
+        }
         user.id = dbUser.id;
         console.log('[Auth GET] Fetched user id from database:', user.id, 'for user:', user.username);
       } else {

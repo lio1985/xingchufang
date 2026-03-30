@@ -86,7 +86,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'images' | 'suppliers' | 'categories' | 'registrations' | 'data'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'images' | 'suppliers' | 'categories' | 'registrations' | 'users' | 'data'>('overview');
   
   // 数据状态
   const [stats, setStats] = useState<Stats | null>(null);
@@ -110,6 +110,18 @@ export default function AdminPage() {
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [registrationStatus, setRegistrationStatus] = useState<'pending' | 'all'>('pending');
   const [registrationLoading, setRegistrationLoading] = useState(false);
+  
+  // 用户管理
+  interface User {
+    id: number;
+    username: string;
+    role: string;
+    status: string;
+    created_at: string;
+    last_login_at: string | null;
+  }
+  const [users, setUsers] = useState<User[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
   
   // 新建/编辑商品
   const [showProductDialog, setShowProductDialog] = useState(false);
@@ -296,6 +308,71 @@ export default function AdminPage() {
     }
   };
 
+  // 加载用户列表
+  const loadUsers = async () => {
+    setUsersLoading(true);
+    try {
+      const res = await fetch('/api/admin/users', { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        setUsers(data.data);
+      }
+    } catch (error) {
+      console.error('加载用户列表失败:', error);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  // 更新用户状态
+  const handleUpdateUserStatus = async (userId: number, status: string) => {
+    const statusText = status === 'active' ? '激活' : status === 'disabled' ? '禁用' : status;
+    if (!confirm(`确定要${statusText}该用户吗？`)) return;
+    
+    setUsersLoading(true);
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id: userId, status }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadUsers();
+      } else {
+        alert(data.error || '操作失败');
+      }
+    } catch (error) {
+      alert('操作失败');
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  // 删除用户
+  const handleDeleteUser = async (userId: number, username: string) => {
+    if (!confirm(`确定要删除用户 "${username}" 吗？此操作不可恢复。`)) return;
+    
+    setUsersLoading(true);
+    try {
+      const res = await fetch(`/api/admin/users?id=${userId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadUsers();
+      } else {
+        alert(data.error || '删除失败');
+      }
+    } catch (error) {
+      alert('删除失败');
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
   // 审核通过
   const handleApprove = async (registrationId: number, username: string) => {
     if (!confirm(`确定通过 ${username} 的注册申请吗？`)) return;
@@ -361,6 +438,8 @@ export default function AdminPage() {
       loadSuppliers();
     } else if (activeTab === 'categories') {
       loadCategories();
+    } else if (activeTab === 'users') {
+      loadUsers();
     }
   }, [activeTab, loading, currentUser]);
 
@@ -802,6 +881,7 @@ export default function AdminPage() {
             { key: 'suppliers', label: '供应商', icon: Building2 },
             { key: 'categories', label: '产品分类', icon: FolderTree },
             { key: 'registrations', label: '用户审核', icon: Users },
+            { key: 'users', label: '用户管理', icon: Shield },
             { key: 'data', label: '数据操作', icon: Database },
           ].map((tab) => (
             <Button
@@ -1266,6 +1346,107 @@ export default function AdminPage() {
                               <span className="text-gray-400 text-xs">
                                 {reg.reviewed_by && `由 ${reg.reviewed_by} 处理`}
                               </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 用户管理 */}
+        {activeTab === 'users' && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>用户管理 ({users.length} 个)</CardTitle>
+                <Button variant="outline" size="sm" onClick={loadUsers}>
+                  <RefreshCw className="h-4 w-4 mr-1" />
+                  刷新
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {usersLoading ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+                  加载中...
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-3 px-2">ID</th>
+                        <th className="text-left py-3 px-2">用户名</th>
+                        <th className="text-left py-3 px-2">角色</th>
+                        <th className="text-left py-3 px-2">状态</th>
+                        <th className="text-left py-3 px-2">创建时间</th>
+                        <th className="text-left py-3 px-2">最后登录</th>
+                        <th className="text-left py-3 px-2">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user) => (
+                        <tr key={user.id} className="border-b hover:bg-gray-50">
+                          <td className="py-3 px-2">{user.id}</td>
+                          <td className="py-3 px-2 font-medium">{user.username}</td>
+                          <td className="py-3 px-2">
+                            <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                              {user.role === 'admin' ? '管理员' : '销售'}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-2">
+                            <Badge
+                              variant={user.status === 'active' ? 'default' : 'destructive'}
+                              className={user.status === 'active' ? 'bg-green-500 hover:bg-green-600' : ''}
+                            >
+                              {user.status === 'active' ? '正常' : '已禁用'}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-2 text-gray-500">
+                            {new Date(user.created_at).toLocaleString('zh-CN')}
+                          </td>
+                          <td className="py-3 px-2 text-gray-500">
+                            {user.last_login_at ? new Date(user.last_login_at).toLocaleString('zh-CN') : '-'}
+                          </td>
+                          <td className="py-3 px-2">
+                            {user.username === 'admin' ? (
+                              <span className="text-gray-400 text-xs">超级管理员</span>
+                            ) : (
+                              <div className="flex gap-1">
+                                {user.status === 'active' ? (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleUpdateUserStatus(user.id, 'disabled')}
+                                    className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                                  >
+                                    禁用
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleUpdateUserStatus(user.id, 'active')}
+                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                  >
+                                    激活
+                                  </Button>
+                                )}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDeleteUser(user.id, user.username)}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  删除
+                                </Button>
+                              </div>
                             )}
                           </td>
                         </tr>
