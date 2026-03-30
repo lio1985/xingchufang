@@ -26,14 +26,10 @@ export async function GET(request: NextRequest) {
     const uniqueProductIds = new Set(productsWithImagesData?.map(img => img.product_id) || []);
     const productsWithImages = uniqueProductIds.size;
 
-    // 获取供应商数量
-    const { data: suppliersData } = await client
-      .from('products')
-      .select('supplier');
-    
-    const uniqueSuppliers = new Set(
-      suppliersData?.filter(s => s.supplier).map(s => s.supplier) || []
-    );
+    // 获取供应商数量（从 suppliers 表获取，与供应商管理页面一致）
+    const { count: totalSuppliers } = await client
+      .from('suppliers')
+      .select('*', { count: 'exact', head: true });
 
     // 获取分类数量
     const { data: categoriesData } = await client
@@ -50,7 +46,7 @@ export async function GET(request: NextRequest) {
         totalProducts: totalProducts || 0,
         productsWithImages,
         productsWithoutImages: (totalProducts || 0) - productsWithImages,
-        totalSuppliers: uniqueSuppliers.size,
+        totalSuppliers: totalSuppliers || 0,
         totalCategories: uniqueCategories.size,
       },
     });
