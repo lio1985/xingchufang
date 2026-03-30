@@ -175,6 +175,8 @@ export async function GET(request: NextRequest) {
   
   console.log('[Auth GET] Cookies - session:', sessionCookie?.value ? 'exists' : 'none', 'token:', token?.value, 'userCookie:', userCookie?.value ? 'exists' : 'none');
   
+  let user: UserInfo | null = null;
+  
   // 优先使用新的session cookie
   if (sessionCookie?.value) {
     try {
@@ -182,21 +184,13 @@ export async function GET(request: NextRequest) {
       const parts = decodedValue.split('|');
       // 支持新格式: authenticated|userId|username|role
       if (parts.length >= 4 && parts[0] === 'authenticated') {
-        const user = { id: parseInt(parts[1]) || undefined, username: parts[2], role: parts[3] } as UserInfo;
+        user = { id: parseInt(parts[1]) || undefined, username: parts[2], role: parts[3] as UserRole };
         console.log('[Auth GET] Session cookie authenticated:', user.username, 'id:', user.id, 'role:', user.role);
-        return NextResponse.json({
-          authenticated: true,
-          user,
-        });
       }
       // 兼容旧格式: authenticated|username|role
-      if (parts.length >= 3 && parts[0] === 'authenticated') {
-        const user = { username: parts[1], role: parts[2] } as UserInfo;
+      else if (parts.length >= 3 && parts[0] === 'authenticated') {
+        user = { username: parts[1], role: parts[2] as UserRole };
         console.log('[Auth GET] Session cookie authenticated (legacy):', user.username, 'role:', user.role);
-        return NextResponse.json({
-          authenticated: true,
-          user,
-        });
       }
     } catch (e) {
       console.error('[Auth GET] Failed to parse session cookie:', e);
@@ -204,24 +198,61 @@ export async function GET(request: NextRequest) {
   }
   
   // 回退到旧的cookie格式
-  if (token?.value === 'authenticated' && userCookie?.value) {
+  if (!user && token?.value === 'authenticated' && userCookie?.value) {
     try {
       // 解析URL安全的Base64编码的用户信息
       const decodedValue = safeBase64Decode(userCookie.value);
       console.log('[Auth GET] Decoded user value:', decodedValue);
       
-      const [username, role] = decodedValue.split('|');
-      if (username && role) {
-        const user = { username, role } as UserInfo;
-        console.log('[Auth GET] Authenticated user:', username, 'role:', role);
-        return NextResponse.json({
-          authenticated: true,
-          user,
-        });
+      const parts = decodedValue.split('|');
+      // 支持格式: userId|username|role 或 username|role
+      if (parts.length >= 3) {
+        const potentialId = parseInt(parts[0]);
+        if (!isNaN(potentialId)) {
+          user = { id: potentialId, username: parts[1], role: parts[2] as UserRole };
+        } else {
+          user = { username: parts[0], role: parts[1] as UserRole };
+        }
+      } else if (parts.length === 2) {
+        user = { username: parts[0], role: parts[1] as UserRole };
+      }
+      
+      if (user) {
+        console.log('[Auth GET] Authenticated user from old cookie:', user.username, 'role:', user.role);
       }
     } catch (e) {
       console.error('[Auth GET] Failed to parse user cookie:', e);
     }
+  }
+  
+  // 如果用户已认证但没有 id，从数据库查询
+  if (user && !user.id) {
+    try {
+      const { getSupabaseClient } = await import('@/storage/database/supabase-client');
+      const client = getSupabaseClient();
+      
+      const { data: dbUser, error } = await client
+        .from('admin_users')
+        .select('id')
+        .eq('username', user.username)
+        .single();
+      
+      if (!error && dbUser) {
+        user.id = dbUser.id;
+        console.log('[Auth GET] Fetched user id from database:', user.id, 'for user:', user.username);
+      } else {
+        console.log('[Auth GET] Failed to fetch user id from database:', error);
+      }
+    } catch (e) {
+      console.error('[Auth GET] Database query error:', e);
+    }
+  }
+  
+  if (user) {
+    return NextResponse.json({
+      authenticated: true,
+      user,
+    });
   }
   
   return NextResponse.json({
