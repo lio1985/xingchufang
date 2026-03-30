@@ -20,8 +20,11 @@ let AiChatService = class AiChatService {
         this.intentRecognitionService = intentRecognitionService;
         this.conversationManagerService = conversationManagerService;
         this.functionExecutorService = functionExecutorService;
+        this.endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
         const config = new coze_coding_dev_sdk_1.Config();
         this.llmClient = new coze_coding_dev_sdk_1.LLMClient(config);
+        console.log('=== AI Chat: 初始化 ===');
+        console.log('接入点 ID:', this.endpointId);
     }
     async handleMessage(request) {
         console.log('=== AI Chat: 开始处理消息 ===');
@@ -47,9 +50,8 @@ let AiChatService = class AiChatService {
             await this.conversationManagerService.addMessage(conversationId, 'user', request.message);
             const history = await this.conversationManagerService.getConversationHistory(conversationId);
             const intent = await this.intentRecognitionService.recognizeIntent(request.message, history);
-            const modelToUse = request.model || intent.recommendedModel || 'doubao-seed-2-0-pro-260215';
-            console.log('使用模型:', modelToUse);
-            console.log('推荐模型:', intent.recommendedModel);
+            const modelToUse = this.endpointId;
+            console.log('使用模型(接入点ID):', modelToUse);
             if (intent.type === 'unknown') {
                 const response = await this.chatWithLLM(request.message, history, modelToUse);
                 await this.conversationManagerService.addMessage(conversationId, 'assistant', response);
@@ -144,7 +146,7 @@ let AiChatService = class AiChatService {
         const intent = conversation.currentIntent;
         const isComplete = this.validateParams(intent, params);
         if (isComplete) {
-            const modelToUse = intent.recommendedModel || 'doubao-seed-2-0-pro-260215';
+            const modelToUse = this.endpointId;
             return await this.executeFunction(conversationId, intent, conversation.userId, modelToUse);
         }
         else {
@@ -159,7 +161,7 @@ let AiChatService = class AiChatService {
             };
         }
     }
-    async chatWithLLM(message, history, model = 'doubao-seed-1-8-251228') {
+    async chatWithLLM(message, history, model) {
         console.log('=== AI Chat: LLM对话 ===');
         console.log('使用模型:', model);
         const messages = [

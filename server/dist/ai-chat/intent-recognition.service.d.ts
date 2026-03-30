@@ -13,6 +13,7 @@ export interface Message {
 }
 export declare class IntentRecognitionService {
     private llmClient;
+    private readonly endpointId;
     constructor();
     recognizeIntent(userMessage: string, conversationHistory?: Message[]): Promise<Intent>;
     private quickIntentRecognition;

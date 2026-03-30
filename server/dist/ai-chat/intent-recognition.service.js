@@ -14,8 +14,11 @@ const common_1 = require("@nestjs/common");
 const coze_coding_dev_sdk_1 = require("coze-coding-dev-sdk");
 let IntentRecognitionService = class IntentRecognitionService {
     constructor() {
+        this.endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
         const config = new coze_coding_dev_sdk_1.Config();
         this.llmClient = new coze_coding_dev_sdk_1.LLMClient(config);
+        console.log('=== IntentRecognition: 初始化 ===');
+        console.log('接入点 ID:', this.endpointId);
     }
     async recognizeIntent(userMessage, conversationHistory = []) {
         console.log('=== 开始意图识别 ===');
@@ -40,7 +43,7 @@ let IntentRecognitionService = class IntentRecognitionService {
         ];
         try {
             const response = await this.llmClient.invoke(messages, {
-                model: 'doubao-seed-1-8-251228',
+                model: this.endpointId,
                 temperature: 0.3,
                 thinking: 'disabled',
                 caching: 'disabled'

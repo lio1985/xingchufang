@@ -19,10 +19,14 @@ export interface Message {
 @Injectable()
 export class IntentRecognitionService {
   private llmClient: LLMClient;
+  // 豆包接入点 ID（从环境变量读取）
+  private readonly endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
 
   constructor() {
     const config = new Config();
     this.llmClient = new LLMClient(config);
+    console.log('=== IntentRecognition: 初始化 ===');
+    console.log('接入点 ID:', this.endpointId);
   }
 
   /**
@@ -61,7 +65,7 @@ export class IntentRecognitionService {
 
     try {
       const response = await this.llmClient.invoke(messages, {
-        model: 'doubao-seed-1-8-251228',
+        model: this.endpointId,
         temperature: 0.3,
         thinking: 'disabled',
         caching: 'disabled'

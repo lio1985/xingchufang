@@ -20,6 +20,7 @@ export declare class AiChatService {
     private conversationManagerService;
     private functionExecutorService;
     private llmClient;
+    private readonly endpointId;
     constructor(intentRecognitionService: IntentRecognitionService, conversationManagerService: ConversationManagerService, functionExecutorService: FunctionExecutorService);
     handleMessage(request: ChatRequest): Promise<ChatResponse>;
     private collectParameters;

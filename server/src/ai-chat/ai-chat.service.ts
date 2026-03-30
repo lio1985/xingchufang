@@ -23,6 +23,8 @@ export interface ChatResponse {
 @Injectable()
 export class AiChatService {
   private llmClient: LLMClient;
+  // 豆包接入点 ID（从环境变量读取）
+  private readonly endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
 
   constructor(
     private intentRecognitionService: IntentRecognitionService,
@@ -31,6 +33,8 @@ export class AiChatService {
   ) {
     const config = new Config();
     this.llmClient = new LLMClient(config);
+    console.log('=== AI Chat: 初始化 ===');
+    console.log('接入点 ID:', this.endpointId);
   }
 
   /**
@@ -74,10 +78,9 @@ export class AiChatService {
       // 4. 识别用户意图
       const intent = await this.intentRecognitionService.recognizeIntent(request.message, history);
 
-      // 使用推荐的模型（如果用户没有指定模型）
-      const modelToUse = request.model || intent.recommendedModel || 'doubao-seed-2-0-pro-260215';
-      console.log('使用模型:', modelToUse);
-      console.log('推荐模型:', intent.recommendedModel);
+      // 使用接入点 ID 作为模型名（豆包 API 要求）
+      const modelToUse = this.endpointId;
+      console.log('使用模型(接入点ID):', modelToUse);
 
       // 5. 根据意图处理
       if (intent.type === 'unknown') {
@@ -229,7 +232,7 @@ export class AiChatService {
 
     if (isComplete) {
       // 参数完整，执行功能
-      const modelToUse = intent.recommendedModel || 'doubao-seed-2-0-pro-260215';
+      const modelToUse = this.endpointId;
       return await this.executeFunction(conversationId, intent, conversation.userId, modelToUse);
     } else {
       // 参数仍不完整，继续收集
@@ -253,7 +256,7 @@ export class AiChatService {
   private async chatWithLLM(
     message: string,
     history: Message[],
-    model: string = 'doubao-seed-1-8-251228'
+    model: string
   ): Promise<string> {
     console.log('=== AI Chat: LLM对话 ===');
     console.log('使用模型:', model);
