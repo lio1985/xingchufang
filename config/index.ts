@@ -100,6 +100,9 @@ export default defineConfig<'vite'>(async (merge, _env) => {
                 if (chunk.type === 'chunk' && typeof chunk.code === 'string') {
                   // 匹配 /* empty css */ 和变体（包含不同空格数量）
                   chunk.code = chunk.code.replace(/\/\*\s*empty\s+css\s*\*\/\s*/g, '');
+                  // 修复 Taro 编译器 bug: require("..."), var l= 应该是 require("..."); var l=
+                  // 这是页面配置生成时的语法错误
+                  chunk.code = chunk.code.replace(/\), var l=\{navigationBarTitleText/g, '); var l={navigationBarTitleText');
                 }
               }
             }
