@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LLMClient, Config } from 'coze-coding-dev-sdk';
+import { DoubaoLLMService } from './doubao-llm.service';
 import { IntentRecognitionService, Intent, Message } from './intent-recognition.service';
 import { ConversationManagerService } from './conversation-manager.service';
 import { FunctionExecutorService } from './function-executor.service';
@@ -22,17 +22,15 @@ export interface ChatResponse {
 
 @Injectable()
 export class AiChatService {
-  private llmClient: LLMClient;
   // 豆包接入点 ID（从环境变量读取）
   private readonly endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
 
   constructor(
+    private doubaoLLMService: DoubaoLLMService,
     private intentRecognitionService: IntentRecognitionService,
     private conversationManagerService: ConversationManagerService,
     private functionExecutorService: FunctionExecutorService,
   ) {
-    const config = new Config();
-    this.llmClient = new LLMClient(config);
     console.log('=== AI Chat: 初始化 ===');
     console.log('接入点 ID:', this.endpointId);
   }
@@ -280,11 +278,8 @@ export class AiChatService {
     ];
 
     try {
-      const response = await this.llmClient.invoke(messages, {
-        model,
+      const response = await this.doubaoLLMService.invoke(messages, {
         temperature: 0.7,
-        thinking: 'disabled',
-        caching: 'disabled',
       });
 
       console.log('=== AI Chat: LLM响应成功 ===');

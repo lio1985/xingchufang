@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { LLMClient, Config } from 'coze-coding-dev-sdk';
+import { DoubaoLLMService } from './doubao-llm.service';
 
 export interface Intent {
   type: 'quick_note' | 'topic_generation' | 'content_generation' | 'lexicon_optimize' | 'viral_replicate' | 'unknown';
@@ -18,13 +18,12 @@ export interface Message {
 
 @Injectable()
 export class IntentRecognitionService {
-  private llmClient: LLMClient;
   // 豆包接入点 ID（从环境变量读取）
   private readonly endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
 
-  constructor() {
-    const config = new Config();
-    this.llmClient = new LLMClient(config);
+  constructor(
+    private doubaoLLMService: DoubaoLLMService,
+  ) {
     console.log('=== IntentRecognition: 初始化 ===');
     console.log('接入点 ID:', this.endpointId);
   }
@@ -64,11 +63,8 @@ export class IntentRecognitionService {
     ];
 
     try {
-      const response = await this.llmClient.invoke(messages, {
-        model: this.endpointId,
+      const response = await this.doubaoLLMService.invoke(messages, {
         temperature: 0.3,
-        thinking: 'disabled',
-        caching: 'disabled'
       });
 
       // 解析LLM响应

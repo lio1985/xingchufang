@@ -4,18 +4,21 @@ import { AiChatService } from './ai-chat.service';
 import { IntentRecognitionService } from './intent-recognition.service';
 import { ConversationManagerService } from './conversation-manager.service';
 import { FunctionExecutorService } from './function-executor.service';
+import { DoubaoLLMService } from './doubao-llm.service';
 import { ContentGenerationModule } from '../content-generation/content-generation.module';
 
 @Module({
   imports: [ContentGenerationModule],
   controllers: [AiChatController],
   providers: [
+    DoubaoLLMService,
     AiChatService,
     IntentRecognitionService,
     ConversationManagerService,
     FunctionExecutorService,
   ],
   exports: [
+    DoubaoLLMService,
     AiChatService,
     IntentRecognitionService,
     ConversationManagerService,
