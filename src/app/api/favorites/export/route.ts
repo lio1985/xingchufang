@@ -112,11 +112,15 @@ export async function GET(request: NextRequest) {
     const bom = '\uFEFF';
     const csvBuffer = Buffer.from(bom + csvContent, 'utf-8');
 
+    // 对文件名进行 URL 编码以支持中文
+    const filename = `选品清单_${new Date().toISOString().split('T')[0]}.csv`;
+    const encodedFilename = encodeURIComponent(filename);
+
     // 返回CSV文件
     return new NextResponse(csvBuffer, {
       headers: {
         'Content-Type': 'text/csv; charset=utf-8',
-        'Content-Disposition': `attachment; filename="选品清单_${new Date().toISOString().split('T')[0]}.csv"`,
+        'Content-Disposition': `attachment; filename="${encodedFilename}"; filename*=UTF-8''${encodedFilename}`,
       },
     });
   } catch (error: any) {
