@@ -93,9 +93,9 @@ export default function CodeGeneratePage() {
     
     try {
       const params = new URLSearchParams();
-      if (selectedSupplier) params.append('supplier', selectedSupplier);
-      if (selectedLevel1) params.append('level1Category', selectedLevel1);
-      if (selectedLevel2) params.append('level2Category', selectedLevel2);
+      if (selectedSupplier && selectedSupplier !== 'all') params.append('supplier', selectedSupplier);
+      if (selectedLevel1 && selectedLevel1 !== 'all') params.append('level1Category', selectedLevel1);
+      if (selectedLevel2 && selectedLevel2 !== 'all') params.append('level2Category', selectedLevel2);
       params.append('limit', '500');
       
       const res = await fetch(`/api/generate-codes?${params}`);
@@ -151,9 +151,9 @@ export default function CodeGeneratePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productIds: Array.from(selectedIds),
-          supplier: selectedSupplier,
-          level1Category: selectedLevel1,
-          level2Category: selectedLevel2,
+          supplier: selectedSupplier !== 'all' ? selectedSupplier : undefined,
+          level1Category: selectedLevel1 !== 'all' ? selectedLevel1 : undefined,
+          level2Category: selectedLevel2 !== 'all' ? selectedLevel2 : undefined,
         }),
       });
 
@@ -233,7 +233,7 @@ export default function CodeGeneratePage() {
                     <SelectValue placeholder="全部供应商" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">全部供应商</SelectItem>
+                    <SelectItem value="all">全部供应商</SelectItem>
                     {filterOptions.suppliers.map((s) => (
                       <SelectItem key={s} value={s}>{s}</SelectItem>
                     ))}
@@ -248,7 +248,7 @@ export default function CodeGeneratePage() {
                     <SelectValue placeholder="全部分类" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">全部分类</SelectItem>
+                    <SelectItem value="all">全部分类</SelectItem>
                     {filterOptions.level1Categories.map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
@@ -263,7 +263,7 @@ export default function CodeGeneratePage() {
                     <SelectValue placeholder="全部分类" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">全部分类</SelectItem>
+                    <SelectItem value="all">全部分类</SelectItem>
                     {filterOptions.level2Categories.map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
