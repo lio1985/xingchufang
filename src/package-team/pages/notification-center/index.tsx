@@ -188,7 +188,7 @@ const NotificationCenterPage = () => {
                   borderRadius: '12px',
                   padding: '16px',
                   marginBottom: '12px',
-                  opacity: notification.is_read ? 0.8 : 1,
+                  opacity: notification.is_read ? '0.8' : '1',
                 }}
                 onClick={() => handleNotificationClick(notification)}
               >

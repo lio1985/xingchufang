@@ -607,7 +607,7 @@ export default function CourseDetailPage() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              opacity: updatingProgress ? 0.6 : 1,
+              opacity: updatingProgress ? '0.6' : '1',
             }}
             onClick={() => {
               if (isInProgress) {

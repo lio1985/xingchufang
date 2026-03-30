@@ -386,7 +386,7 @@ export default function TaskSchedulePage() {
                     borderWidth: 1,
                     borderColor: '#1e3a5f',
                     padding: 16,
-                    opacity: task.status === 'cancelled' ? 0.6 : 1,
+                    opacity: task.status === 'cancelled' ? '0.6' : '1',
                   }}
                 >
                   {/* 顶部：状态和操作 */}

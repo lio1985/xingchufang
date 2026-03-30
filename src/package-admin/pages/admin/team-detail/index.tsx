@@ -367,7 +367,7 @@ export default function TeamDetail() {
                 </View>
                 <View
                   className="action-button action-button-primary"
-                  style={{ opacity: saving || !editName.trim() ? 0.6 : 1 }}
+                  style={{ opacity: saving || !editName.trim() ? '0.6' : '1' }}
                   onClick={handleSaveEdit}
                 >
                   <Text>{saving ? '保存中...' : '保存'}</Text>

@@ -705,7 +705,7 @@ const SendNotificationPage = () => {
           {/* 发送按钮 */}
           <View
             className="action-btn-primary"
-            style={{ marginTop: '20px', opacity: sending ? 0.6 : 1 }}
+            style={{ marginTop: '20px', opacity: sending ? '0.6' : '1' }}
             onClick={handleSend}
           >
             <Send size={28} color="#000" />

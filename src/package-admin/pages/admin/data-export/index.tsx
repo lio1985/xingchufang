@@ -516,7 +516,7 @@ const DataExportPage: React.FC = () => {
               {/* 导出按钮 */}
               <View
                 className="action-btn-primary"
-                style={{ marginTop: '20px', opacity: exporting ? 0.6 : 1 }}
+                style={{ marginTop: '20px', opacity: exporting ? '0.6' : '1' }}
                 onClick={handleExport}
               >
                 <Download size={28} color="#000" />

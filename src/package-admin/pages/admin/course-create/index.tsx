@@ -580,7 +580,7 @@ export default function CourseCreatePage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            opacity: loading ? 0.5 : 1,
+            opacity: loading ? '0.5' : '1',
           }}
           onClick={() => !loading && handleSubmit(false)}
         >
@@ -595,7 +595,7 @@ export default function CourseCreatePage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            opacity: loading ? 0.5 : 1,
+            opacity: loading ? '0.5' : '1',
           }}
           onClick={() => !loading && handleSubmit(true)}
         >

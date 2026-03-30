@@ -492,7 +492,7 @@ export default function AvatarEditorPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: isUploading || !selectedImage ? 0.6 : 1,
+              opacity: isUploading || !selectedImage ? '0.6' : '1',
             }}
           >
             <Text style={{ fontSize: '14px', color: '#ffffff', fontWeight: '500' }}>
