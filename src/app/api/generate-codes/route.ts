@@ -220,7 +220,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { productIds, supplier, level1Category, level2Category } = body;
+    const { productIds, supplier, level1Category, level2Category, generateAll } = body;
+
+    // 如果 generateAll 为 true，则为所有缺少编码的商品生成编码
+    if (generateAll) {
+      return await generateAllMissingCodes();
+    }
 
     if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
       return NextResponse.json(
@@ -354,6 +359,150 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('生成编码失败:', error);
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+// 批量生成所有缺失的编码
+async function generateAllMissingCodes() {
+  const client = getSupabaseClient();
+
+  try {
+    // 获取配置
+    const { data: configData } = await client
+      .from('code_config')
+      .select('*');
+    
+    const configMap = new Map((configData || []).map(c => [c.config_key, c.config_value]));
+    const sequenceLength = parseInt(configMap.get('sequence_length') || '3');
+    const padChar = configMap.get('sequence_pad') || '0';
+
+    // 获取供应商代码映射
+    const { data: supplierCodes } = await client
+      .from('supplier_codes')
+      .select('*');
+    const supplierCodeMap = new Map((supplierCodes || []).map(s => [s.supplier_name, s.supplier_code]));
+
+    // 获取分类编码映射
+    const { data: categoryCodes } = await client
+      .from('category_codes')
+      .select('*');
+
+    const findCategoryCode = (level1: string | null, level2: string | null): string | null => {
+      if (!categoryCodes) return null;
+      const exact = categoryCodes.find(c => 
+        c.level1_category === level1 && c.level2_category === level2
+      );
+      if (exact) return exact.category_code;
+      const level1Match = categoryCodes.find(c => 
+        c.level1_category === level1 && !c.level2_category
+      );
+      if (level1Match) return level1Match.category_code;
+      return null;
+    };
+
+    // 查询所有缺少编码的商品
+    const { data: productsWithoutCode, error } = await client
+      .from('products')
+      .select('id, name, supplier, level1_category, level2_category')
+      .is('product_code', null)
+      .order('id');
+
+    if (error) throw new Error(`查询商品失败: ${error.message}`);
+
+    if (!productsWithoutCode || productsWithoutCode.length === 0) {
+      return NextResponse.json({
+        success: true,
+        data: { updated: 0, skipped: 0 },
+        message: '没有需要生成编码的商品',
+      });
+    }
+
+    // 计算每个组合的最大序号
+    const maxSequenceMap = new Map<string, number>();
+    const { data: existingCodes } = await client
+      .from('products')
+      .select('product_code, supplier, level1_category, level2_category')
+      .not('product_code', 'is', null);
+
+    (existingCodes || []).forEach((p: any) => {
+      if (!p.product_code) return;
+      const parts = p.product_code.split('-');
+      if (parts.length >= 3) {
+        const key = `${p.supplier || ''}-${p.level1_category || ''}-${p.level2_category || ''}`;
+        const seq = parseInt(parts[parts.length - 1]) || 0;
+        const currentMax = maxSequenceMap.get(key) || 0;
+        if (seq > currentMax) {
+          maxSequenceMap.set(key, seq);
+        }
+      }
+    });
+
+    // 按供应商+分类分组
+    const groupedProducts = new Map<string, typeof productsWithoutCode>();
+    (productsWithoutCode || []).forEach(p => {
+      const key = `${p.supplier || ''}-${p.level1_category || ''}-${p.level2_category || ''}`;
+      if (!groupedProducts.has(key)) {
+        groupedProducts.set(key, []);
+      }
+      groupedProducts.get(key)!.push(p);
+    });
+
+    // 更新编码
+    let updatedCount = 0;
+    let skippedCount = 0;
+    const errors: string[] = [];
+
+    for (const [key, prods] of groupedProducts) {
+      const first = prods[0];
+      const supplierCode = first.supplier ? supplierCodeMap.get(first.supplier) : null;
+      const categoryCode = findCategoryCode(first.level1_category, first.level2_category);
+
+      if (!supplierCode || !categoryCode) {
+        skippedCount += prods.length;
+        continue;
+      }
+
+      let sequence = maxSequenceMap.get(key) || 0;
+
+      for (const product of prods) {
+        sequence++;
+        const paddedSeq = sequence.toString().padStart(sequenceLength, padChar);
+        const newCode = `${supplierCode}-${categoryCode}-${paddedSeq}`;
+
+        const { error: updateError } = await client
+          .from('products')
+          .update({ 
+            product_code: newCode,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', product.id);
+
+        if (updateError) {
+          errors.push(`商品 ${product.name} 更新失败: ${updateError.message}`);
+        } else {
+          updatedCount++;
+        }
+      }
+
+      // 更新最大序号
+      maxSequenceMap.set(key, sequence);
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        updated: updatedCount,
+        skipped: skippedCount,
+        errors: errors.length > 0 ? errors.slice(0, 10) : undefined, // 只返回前10个错误
+      },
+      message: `成功生成 ${updatedCount} 个商品编码${skippedCount > 0 ? `，跳过 ${skippedCount} 个（缺少供应商代码或分类编码）` : ''}`,
+    });
+  } catch (error: any) {
+    console.error('批量生成编码失败:', error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
