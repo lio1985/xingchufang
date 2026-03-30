@@ -8,14 +8,26 @@ let onlineStatusSupported = true;
 /**
  * 在线状态管理 Hook
  * 自动检测用户前台/后台状态，并同步到服务器
- * @returns 当前在线状态
+ * @returns 当前在线状态和手动设置方法
  */
-export function useOnlineStatus(): { isOnline: boolean; lastSeenAt: string | null } {
+export function useOnlineStatus(): { 
+  isOnline: boolean; 
+  lastSeenAt: string | null;
+  setOnline: (online: boolean) => void;
+} {
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [status, setStatus] = useState<{ isOnline: boolean; lastSeenAt: string | null }>({
     isOnline: false,
     lastSeenAt: null,
   });
+
+  // 停止心跳
+  const stopHeartbeat = useCallback(() => {
+    if (heartbeatIntervalRef.current) {
+      clearInterval(heartbeatIntervalRef.current);
+      heartbeatIntervalRef.current = null;
+    }
+  }, []);
 
   // 更新在线状态
   const updateStatus = useCallback(async (isOnline: boolean) => {
@@ -26,12 +38,22 @@ export function useOnlineStatus(): { isOnline: boolean; lastSeenAt: string | nul
         isOnline,
         lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
       }));
+      console.log(`[OnlineStatus] 本地状态已更新: ${isOnline ? '在线' : '离线'}`);
       return;
     }
 
     try {
       const token = Taro.getStorageSync('token');
-      if (!token) return;
+      if (!token) {
+        // 没有登录时直接设置本地状态
+        setStatus(prev => ({
+          ...prev,
+          isOnline,
+          lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
+        }));
+        console.log(`[OnlineStatus] 无token，本地状态已更新: ${isOnline ? '在线' : '离线'}`);
+        return;
+      }
 
       const res = await Network.request({
         url: '/api/user/online-status',
@@ -70,29 +92,37 @@ export function useOnlineStatus(): { isOnline: boolean; lastSeenAt: string | nul
 
   // 启动心跳
   const startHeartbeat = useCallback(() => {
+    // 先停止之前的心跳
+    stopHeartbeat();
+    
     // 如果后端不支持，不启动心跳
     if (!onlineStatusSupported) return;
 
     // 每 30 秒发送一次心跳
     heartbeatIntervalRef.current = setInterval(() => {
-      if (status.isOnline && onlineStatusSupported) {
+      const token = Taro.getStorageSync('token');
+      if (token && onlineStatusSupported) {
         updateStatus(true);
       }
     }, 30000);
-  }, [status.isOnline, updateStatus]);
+  }, [updateStatus, stopHeartbeat]);
 
-  // 停止心跳
-  const stopHeartbeat = useCallback(() => {
-    if (heartbeatIntervalRef.current) {
-      clearInterval(heartbeatIntervalRef.current);
-      heartbeatIntervalRef.current = null;
+  // 手动设置在线状态（供外部调用）
+  const setOnline = useCallback((online: boolean) => {
+    console.log(`[OnlineStatus] 手动设置在线状态: ${online ? '在线' : '离线'}`);
+    updateStatus(online);
+    if (online) {
+      startHeartbeat();
+    } else {
+      stopHeartbeat();
     }
-  }, []);
+  }, [updateStatus, startHeartbeat, stopHeartbeat]);
 
   // 页面显示时设置为在线
   useEffect(() => {
     const handleShow = () => {
-      if (onlineStatusSupported) {
+      const token = Taro.getStorageSync('token');
+      if (token) {
         updateStatus(true);
         startHeartbeat();
       }
@@ -109,7 +139,8 @@ export function useOnlineStatus(): { isOnline: boolean; lastSeenAt: string | nul
   useEffect(() => {
     const handleHide = () => {
       stopHeartbeat();
-      if (onlineStatusSupported) {
+      const token = Taro.getStorageSync('token');
+      if (token && onlineStatusSupported) {
         updateStatus(false);
       }
     };
@@ -121,7 +152,7 @@ export function useOnlineStatus(): { isOnline: boolean; lastSeenAt: string | nul
     };
   }, [updateStatus, stopHeartbeat]);
 
-  // 组件挂载时设置为在线
+  // 组件挂载时检查登录状态
   useEffect(() => {
     const userToken = Taro.getStorageSync('token');
     if (userToken) {
@@ -134,7 +165,10 @@ export function useOnlineStatus(): { isOnline: boolean; lastSeenAt: string | nul
     };
   }, [updateStatus, startHeartbeat, stopHeartbeat]);
 
-  return status;
+  return {
+    ...status,
+    setOnline,
+  };
 }
 
 /**

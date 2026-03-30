@@ -38,6 +38,8 @@ const TabProfilePage = () => {
         setIsLoggedIn(true);
         setUserInfo(user);
         setIsAdmin(user.role === 'admin');
+        // 登录成功后设置在线状态
+        onlineStatus.setOnline(true);
       } else {
         // 如果没有用户信息或 token，重置状态
         setIsLoggedIn(false);
