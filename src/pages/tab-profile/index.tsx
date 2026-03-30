@@ -1,5 +1,5 @@
 import { View, Text, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import {
   User,
@@ -28,55 +28,37 @@ const TabProfilePage = () => {
   // 使用在线状态 Hook，直接获取返回的状态
   const onlineStatus = useOnlineStatus();
 
-  useEffect(() => {
+  // 刷新用户信息的函数
+  const refreshUserInfo = () => {
     try {
       const user = Taro.getStorageSync('user');
       const token = Taro.getStorageSync('token');
+      console.log('refreshUserInfo - user:', user, 'token:', token);
       if (user && token) {
         setIsLoggedIn(true);
         setUserInfo(user);
         setIsAdmin(user.role === 'admin');
+      } else {
+        // 如果没有用户信息或 token，重置状态
+        setIsLoggedIn(false);
+        setUserInfo(null);
+        setIsAdmin(false);
       }
     } catch (e) {
-      console.log('获取用户信息失败');
+      console.log('刷新用户信息失败');
     }
-  }, []);
+  };
 
-  // 监听页面显示，刷新用户信息 - 使用 useEffect 替代 useDidShow 以支持 H5
+  // 初始化时检查登录状态
   useEffect(() => {
-    const refreshUserInfo = () => {
-      try {
-        const user = Taro.getStorageSync('user');
-        const token = Taro.getStorageSync('token');
-        console.log('refreshUserInfo - user:', user, 'token:', token);
-        if (user && token) {
-          setIsLoggedIn(true);
-          setUserInfo(user);
-          setIsAdmin(user.role === 'admin');
-        } else {
-          // 如果没有用户信息或 token，重置状态
-          setIsLoggedIn(false);
-          setUserInfo(null);
-          setIsAdmin(false);
-        }
-      } catch (e) {
-        console.log('刷新用户信息失败');
-      }
-    };
-
-    // H5 环境使用 visibilitychange 事件
-    if (typeof document !== 'undefined') {
-      const handleVisibilityChange = () => {
-        if (document.visibilityState === 'visible') {
-          refreshUserInfo();
-        }
-      };
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-      return () => {
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-      };
-    }
+    refreshUserInfo();
   }, []);
+
+  // 小程序端使用 useDidShow 监听页面显示
+  useDidShow(() => {
+    console.log('[tab-profile] useDidShow 触发，刷新用户信息');
+    refreshUserInfo();
+  });
 
   const handleLogin = () => {
     Taro.navigateTo({ url: '/pages/login/index' });

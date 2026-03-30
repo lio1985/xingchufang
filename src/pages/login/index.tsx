@@ -84,26 +84,28 @@ const LoginPage = () => {
 
       console.log('[登录] 登录成功，准备跳转');
       
-      // 先跳转，再显示 toast
-      console.log('[登录] 执行跳转到我的页面');
-      Taro.switchTab({ 
-        url: '/pages/tab-profile/index',
-        success: () => {
-          console.log('[登录] switchTab 成功');
-          setTimeout(() => {
-            Taro.showToast({
-              title: '登录成功',
-              icon: 'success',
-              duration: 1500,
-            });
-          }, 300);
-        },
-        fail: (err) => {
-          console.error('[登录] switchTab 失败:', err);
-          // 如果 switchTab 失败，尝试其他方式
-          Taro.reLaunch({ url: '/pages/tab-home/index' });
-        }
+      // 先显示成功提示，再跳转
+      Taro.showToast({
+        title: '登录成功',
+        icon: 'success',
+        duration: 1500,
       });
+      
+      // 延迟跳转，确保 toast 显示完成
+      setTimeout(() => {
+        console.log('[登录] 执行跳转到我的页面');
+        Taro.switchTab({ 
+          url: '/pages/tab-profile/index',
+          success: () => {
+            console.log('[登录] switchTab 成功');
+          },
+          fail: (err) => {
+            console.error('[登录] switchTab 失败:', err);
+            // 如果 switchTab 失败，尝试 reLaunch
+            Taro.reLaunch({ url: '/pages/tab-home/index' });
+          }
+        });
+      }, 500);
     } catch (error: any) {
       console.error('登录接口异常=', error);
 
