@@ -166,7 +166,6 @@ const LoginPage = () => {
               <Text style={{ fontSize: '12px', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Star Kitchen</Text>
             </View>
           </View>
-          <Text style={{ fontSize: '16px', color: '#94a3b8', marginTop: '24px' }}>欢迎回来，创作者</Text>
         </View>
 
         {/* 登录表单 */}
@@ -267,11 +266,6 @@ const LoginPage = () => {
               立即注册
             </Text>
           </View>
-        </View>
-
-        {/* 底部版权 */}
-        <View style={{ padding: '32px 0', textAlign: 'center' }}>
-          <Text style={{ fontSize: '12px', color: '#334155' }}>星厨房 · 让创作更高效</Text>
         </View>
       </View>
     </View>
