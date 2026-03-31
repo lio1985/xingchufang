@@ -16,6 +16,7 @@ import {
   Check,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 
 interface Message {
   id: string;
@@ -46,6 +47,7 @@ const quickActions = [
 ];
 
 export default function AIAssistantPage() {
+  const { isLoggedIn } = useAuthGuard({ requireLogin: false });
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -59,6 +61,11 @@ export default function AIAssistantPage() {
   const [showKnowledgePicker, setShowKnowledgePicker] = useState(false);
   const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<string[]>([]);
   const [knowledgeContext, setKnowledgeContext] = useState<string>('');
+
+  // 未登录时不渲染任何内容
+  if (!isLoggedIn) {
+    return null;
+  }
 
   const handleSend = async () => {
     if (!inputText.trim() || isLoading) return;
