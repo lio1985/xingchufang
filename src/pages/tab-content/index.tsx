@@ -7,6 +7,8 @@ import {
   PenTool,
   Sparkles,
   ChevronRight,
+  Lock,
+  User,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -17,7 +19,7 @@ interface ContentStats {
 }
 
 const TabContentPage = () => {
-  const { isLoggedIn } = useAuthGuard({ requireLogin: false });
+  const { isLoggedIn, userInfo } = useAuthGuard({ requireLogin: false });
   const [stats, setStats] = useState<ContentStats>({
     weeklyCreations: 0,
     inspirationCount: 0,
@@ -73,9 +75,122 @@ const TabContentPage = () => {
   };
 
   const handleNav = (path: string) => {
+    if (!isLoggedIn) {
+      Taro.showModal({
+        title: '请先登录',
+        content: '登录后即可使用内容创作功能',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            Taro.navigateTo({ url: '/pages/login/index' });
+          }
+        }
+      });
+      return;
+    }
     Taro.navigateTo({ url: path });
   };
 
+  const handleLogin = () => {
+    Taro.navigateTo({ url: '/pages/login/index' });
+  };
+
+  // 未登录状态显示
+  if (!isLoggedIn) {
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
+        {/* 页面头部 */}
+        <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
+          <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>内容创作</Text>
+          <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>释放你的写作潜能</Text>
+        </View>
+
+        {/* 未登录提示 */}
+        <View style={{ padding: '40px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <View style={{ 
+            width: '80px', 
+            height: '80px', 
+            borderRadius: '50%', 
+            backgroundColor: 'rgba(56, 189, 248, 0.1)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            marginBottom: '24px'
+          }}>
+            <Lock size={40} color="#38bdf8" />
+          </View>
+          
+          <Text style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginBottom: '12px', textAlign: 'center' }}>
+            登录后解锁创作功能
+          </Text>
+          
+          <Text style={{ fontSize: '14px', color: '#71717a', textAlign: 'center', marginBottom: '32px', lineHeight: '22px' }}>
+            灵感速记、选题策划、内容写作{'\n'}助力你的内容创作之旅
+          </Text>
+
+          <View
+            style={{ 
+              backgroundColor: '#38bdf8', 
+              borderRadius: '12px', 
+              padding: '16px 48px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            onClick={handleLogin}
+          >
+            <User size={20} color="#000" />
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#0c4a6e' }}>立即登录</Text>
+          </View>
+        </View>
+
+        {/* 功能预览（灰色显示） */}
+        <View style={{ padding: '0 20px' }}>
+          <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '12px', fontWeight: '500' }}>创作工具</Text>
+          
+          <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden', opacity: 0.6 }}>
+            {/* 灵感速记 */}
+            <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}>
+              <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245, 158, 11, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Lightbulb size={20} color="#38bdf8" />
+              </View>
+              <View style={{ flex: 1, marginLeft: '12px' }}>
+                <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>灵感速记</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>快速捕捉灵感</Text>
+              </View>
+              <Lock size={18} color="#64748b" />
+            </View>
+
+            {/* 选题策划 */}
+            <View style={{ display: 'flex', alignItems: 'center', padding: '16px', borderBottom: '1px solid #1e3a5f' }}>
+              <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(6, 182, 212, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Target size={20} color="#06b6d4" />
+              </View>
+              <View style={{ flex: 1, marginLeft: '12px' }}>
+                <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>选题策划</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>热门选题方向</Text>
+              </View>
+              <Lock size={18} color="#64748b" />
+            </View>
+
+            {/* 内容写作 */}
+            <View style={{ display: 'flex', alignItems: 'center', padding: '16px' }}>
+              <View style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(139, 92, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <PenTool size={20} color="#8b5cf6" />
+              </View>
+              <View style={{ flex: 1, marginLeft: '12px' }}>
+                <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>内容写作</Text>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>高效产出优质内容</Text>
+              </View>
+              <Lock size={18} color="#64748b" />
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // 已登录状态显示完整功能
   return (
     <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
       {/* 页面头部 */}
