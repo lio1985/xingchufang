@@ -23,11 +23,8 @@ const TabContentPage = () => {
     inspirationCount: 0,
   });
 
-  // 未登录直接跳转到登录页
   useEffect(() => {
-    if (!isLoggedIn) {
-      Taro.redirectTo({ url: '/pages/login/index' });
-    } else {
+    if (isLoggedIn) {
       fetchStats();
     }
   }, [isLoggedIn]);
