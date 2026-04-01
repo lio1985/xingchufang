@@ -1,6 +1,6 @@
 import { View, Text } from '@tarojs/components';
 import Taro, { useDidShow } from '@tarojs/taro';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Heart,
   Building2,
@@ -8,13 +8,61 @@ import {
   GraduationCap,
   Search,
   Play,
+  BookOpen,
 } from 'lucide-react-taro';
+import { Network } from '@/network';
 import CustomTabBar from '@/custom-tab-bar';
+
+interface LearningRecord {
+  id: string;
+  course_id: string;
+  progress: number;
+  status: string;
+  time_spent: number;
+  last_position: number;
+  updated_at: string;
+  course: {
+    id: string;
+    title: string;
+    cover_image: string | null;
+    duration: number;
+    category?: {
+      id: string;
+      name: string;
+    };
+  };
+}
 
 const TabKnowledgePage = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [learningRecords, setLearningRecords] = useState<LearningRecord[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  // 获取学习记录
+  const fetchLearningRecords = useCallback(async () => {
+    try {
+      const token = Taro.getStorageSync('token');
+      if (!token) return;
+      
+      setLoading(true);
+      const res = await Network.request({
+        url: '/api/course/user/learnings',
+        method: 'GET',
+        data: { limit: 5 },
+      });
+
+      if (res.data?.code === 200 && res.data?.data?.list) {
+        setLearningRecords(res.data.data.list);
+      }
+    } catch (error) {
+      console.error('获取学习记录失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // 初始化用户信息
   useEffect(() => {
     try {
       const user = Taro.getStorageSync('user');
@@ -27,6 +75,13 @@ const TabKnowledgePage = () => {
       console.log('获取用户信息失败');
     }
   }, []);
+
+  // 登录状态变化时获取学习记录
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchLearningRecords();
+    }
+  }, [isLoggedIn, fetchLearningRecords]);
 
   // 监听页面显示，刷新用户信息 - 使用 useEffect 替代 useDidShow 以支持 H5
   useEffect(() => {
@@ -51,6 +106,7 @@ const TabKnowledgePage = () => {
       const handleVisibilityChange = () => {
         if (document.visibilityState === 'visible') {
           refreshUserInfo();
+          fetchLearningRecords();
         }
       };
       document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -58,11 +114,12 @@ const TabKnowledgePage = () => {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
       };
     }
-  }, []);
+  }, [fetchLearningRecords]);
 
   // 页面显示时刷新 TabBar
   useDidShow(() => {
     Taro.eventCenter.trigger('tabBarRefresh');
+    fetchLearningRecords();
   });
 
   // 判断是否有权限查看公司资料（员工及以上权限）
@@ -70,6 +127,21 @@ const TabKnowledgePage = () => {
 
   const handleNav = (path: string) => {
     Taro.navigateTo({ url: path });
+  };
+
+  // 格式化时间
+  const formatDuration = (minutes: number) => {
+    if (minutes < 60) return `${minutes}分钟`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}小时${mins}分` : `${hours}小时`;
+  };
+
+  // 获取状态显示
+  const getStatusText = (status: string, progress: number) => {
+    if (status === 'completed') return '已完成';
+    if (status === 'in_progress') return `学习进度 ${progress}%`;
+    return '未开始';
   };
 
   return (
@@ -158,41 +230,49 @@ const TabKnowledgePage = () => {
         </View>
         
         <View style={{ backgroundColor: '#111827', border: '1px solid #1e3a5f', borderRadius: '12px', overflow: 'hidden' }}>
-          {/* 课程项1 */}
-          <View
-            style={{ padding: '16px', borderBottom: '1px solid #1e3a5f' }}
-            onClick={() => handleNav('/package-content/pages/news/index')}
-          >
-            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>内容创作入门指南</Text>
-              <View style={{ display: 'flex', alignItems: 'center' }}>
-                <Play size={14} color="#38bdf8" />
-                <Text style={{ fontSize: '12px', color: '#38bdf8', marginLeft: '4px' }}>继续</Text>
+          {loading ? (
+            <View style={{ padding: '24px', textAlign: 'center' }}>
+              <Text style={{ fontSize: '14px', color: '#71717a' }}>加载中...</Text>
+            </View>
+          ) : !isLoggedIn ? (
+            <View style={{ padding: '24px', textAlign: 'center' }}>
+              <BookOpen size={32} color="#64748b" style={{ display: 'block', margin: '0 auto 12px' }} />
+              <Text style={{ fontSize: '14px', color: '#71717a' }}>登录后查看学习记录</Text>
+            </View>
+          ) : learningRecords.length === 0 ? (
+            <View style={{ padding: '24px', textAlign: 'center' }}>
+              <BookOpen size={32} color="#64748b" style={{ display: 'block', margin: '0 auto 12px' }} />
+              <Text style={{ fontSize: '14px', color: '#71717a' }}>暂无学习记录</Text>
+              <Text style={{ fontSize: '12px', color: '#64748b', display: 'block', marginTop: '4px' }}>开始学习课程吧</Text>
+            </View>
+          ) : (
+            learningRecords.map((record, index) => (
+              <View
+                key={record.id}
+                style={{ padding: '16px', borderBottom: index < learningRecords.length - 1 ? '1px solid #1e3a5f' : 'none' }}
+                onClick={() => handleNav(`/pages/course-detail/index?id=${record.course_id}`)}
+              >
+                <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {record.course?.title || '未知课程'}
+                  </Text>
+                  <View style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                    <Play size={14} color={record.status === 'completed' ? '#22c55e' : '#38bdf8'} />
+                    <Text style={{ fontSize: '12px', color: record.status === 'completed' ? '#22c55e' : '#38bdf8', marginLeft: '4px' }}>
+                      {record.status === 'completed' ? '已完成' : '继续'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
+                  <View style={{ height: '100%', width: `${record.progress || 0}%`, backgroundColor: record.status === 'completed' ? '#22c55e' : '#38bdf8', borderRadius: '2px' }} />
+                </View>
+                <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>
+                  {getStatusText(record.status, record.progress)}
+                  {record.time_spent > 0 && ` · 已学习 ${formatDuration(record.time_spent)}`}
+                </Text>
               </View>
-            </View>
-            <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
-              <View style={{ height: '100%', width: '60%', backgroundColor: '#38bdf8', borderRadius: '2px' }} />
-            </View>
-            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 7/12 课时 · 60%</Text>
-          </View>
-
-          {/* 课程项2 */}
-          <View
-            style={{ padding: '16px' }}
-            onClick={() => handleNav('/package-content/pages/news/index')}
-          >
-            <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: '16px', color: '#ffffff', fontWeight: '500' }}>客户沟通技巧</Text>
-              <View style={{ display: 'flex', alignItems: 'center' }}>
-                <Play size={14} color="#38bdf8" />
-                <Text style={{ fontSize: '12px', color: '#38bdf8', marginLeft: '4px' }}>继续</Text>
-              </View>
-            </View>
-            <View style={{ height: '4px', backgroundColor: '#1e3a5f', borderRadius: '2px', marginTop: '12px', overflow: 'hidden' }}>
-              <View style={{ height: '100%', width: '30%', backgroundColor: '#38bdf8', borderRadius: '2px' }} />
-            </View>
-            <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '8px' }}>已完成 2/8 课时 · 30%</Text>
-          </View>
+            ))
+          )}
         </View>
       </View>
       <CustomTabBar />
