@@ -618,7 +618,13 @@ const TabHomePage = () => {
 
         {/* 其他快捷入口 */}
         <View style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          {quickActions.filter(a => a.id !== 'orders' && a.id !== 'live-data').map((action) => {
+          {quickActions.filter(a => {
+            // 过滤掉 orders 和 live-data（已单独渲染）
+            if (a.id === 'orders' || a.id === 'live-data') return false;
+            // 星小帮需要登录才显示
+            if (a.id === 'ai' && !userInfo) return false;
+            return true;
+          }).map((action) => {
             const IconComp = action.icon;
             if (action.isHighlight) {
               return (
