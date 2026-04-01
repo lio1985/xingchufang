@@ -93,6 +93,9 @@ const createUrl = (url: string): string => {
 // 仅在开发环境输出调试日志
 const isDev = typeof process !== 'undefined' && process.env.NODE_ENV === 'development';
 
+// 默认请求超时时间（30秒）
+const DEFAULT_TIMEOUT = 30000;
+
 export const request: typeof Taro.request = option => {
     const token = Taro.getStorageSync('token');
     const header = option.header || {};
@@ -102,12 +105,16 @@ export const request: typeof Taro.request = option => {
         header['Authorization'] = `Bearer ${token}`;
     }
 
+    // 添加超时配置
+    const timeout = option.timeout || DEFAULT_TIMEOUT;
+
     // 仅开发环境输出日志，且不输出敏感信息
     if (isDev) {
         console.log('[Network] Request:', {
             url: createUrl(option.url),
             method: option.method || 'GET',
             hasToken: !!token,
+            timeout,
         });
     }
 
@@ -115,6 +122,7 @@ export const request: typeof Taro.request = option => {
         ...option,
         url: createUrl(option.url),
         header,
+        timeout,
     });
 
     // 仅开发环境输出响应日志
@@ -144,17 +152,25 @@ export const uploadFile: typeof Taro.uploadFile = option => {
         header['Authorization'] = `Bearer ${token}`;
     }
 
+    // 添加超时配置
+    const timeout = option.timeout || DEFAULT_TIMEOUT;
+
     return Taro.uploadFile({
         ...option,
         url: createUrl(option.url),
         header,
+        timeout,
     })
 }
 
 export const downloadFile: typeof Taro.downloadFile = option => {
+    // 添加超时配置
+    const timeout = option.timeout || DEFAULT_TIMEOUT;
+
     return Taro.downloadFile({
         ...option,
         url: createUrl(option.url),
+        timeout,
     })
 }
 
