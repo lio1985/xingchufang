@@ -7,6 +7,7 @@ import {
   PenTool,
   Sparkles,
   ChevronRight,
+  Lock,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -69,14 +70,54 @@ const TabContentPage = () => {
     Taro.navigateTo({ url: path });
   };
 
-  // 未登录状态 - 不显示任何功能入口
+  const handleLogin = () => {
+    Taro.navigateTo({ url: '/pages/login/index' });
+  };
+
+  // 未登录状态 - 显示登录引导
   if (!isLoggedIn) {
     return (
-      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px', display: 'flex', flexDirection: 'column' }}>
         {/* 页面头部 */}
         <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
           <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>内容创作</Text>
-          <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>登录后查看创作功能</Text>
+        </View>
+
+        {/* 未登录提示 */}
+        <View style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+          <View style={{ 
+            width: '80px', 
+            height: '80px', 
+            borderRadius: '50%', 
+            backgroundColor: 'rgba(56, 189, 248, 0.15)', 
+            border: '2px solid rgba(56, 189, 248, 0.3)',
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            marginBottom: '24px'
+          }}
+          >
+            <Lock size={36} color="#38bdf8" />
+          </View>
+          <Text style={{ fontSize: '18px', fontWeight: '600', color: '#ffffff', display: 'block', marginBottom: '8px' }}>
+            登录后查看创作功能
+          </Text>
+          <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', textAlign: 'center', marginBottom: '32px', lineHeight: '22px' }}>
+            使用星小帮 AI 写作助手、灵感速记、{'\n'}选题策划等内容创作工具
+          </Text>
+          <View
+            style={{ 
+              backgroundColor: '#38bdf8', 
+              borderRadius: '12px', 
+              padding: '14px 48px',
+              boxShadow: '0 4px 16px rgba(56, 189, 248, 0.3)'
+            }}
+            onClick={handleLogin}
+          >
+            <Text style={{ fontSize: '16px', fontWeight: '600', color: '#0c4a6e' }}>
+              立即登录
+            </Text>
+          </View>
         </View>
       </View>
     );
