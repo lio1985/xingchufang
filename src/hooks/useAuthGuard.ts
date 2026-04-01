@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
 
@@ -94,33 +94,47 @@ const checkRolePermission = (
   return ROLE_LEVEL[userRole] >= ROLE_LEVEL[requiredRole];
 };
 
+// 全局标记，防止多个组件同时请求
+let isFetchingUserInfo = false;
+let fetchUserInfoPromise: Promise<UserInfo | null> | null = null;
+
 /**
- * 获取用户信息
+ * 获取用户信息（带缓存和防重复请求）
  */
 const fetchUserInfo = async (): Promise<UserInfo | null> => {
-  try {
-    const res = await Network.request({
-      url: '/api/user/profile',
-      method: 'GET',
-    });
-
-    console.log('[权限守卫] 获取用户信息响应:', res.data);
-
-    if (res.data?.code === 200 && res.data?.data) {
-      return {
-        id: res.data.data.id,
-        username: res.data.data.openid,
-        nickname: res.data.data.nickname,
-        avatar: res.data.data.avatarUrl,
-        role: res.data.data.role || 'guest',
-        status: res.data.data.status || 'inactive',
-      };
-    }
-    return null;
-  } catch (error) {
-    console.error('[权限守卫] 获取用户信息失败:', error);
-    return null;
+  // 如果正在请求中，返回同一个 Promise
+  if (isFetchingUserInfo && fetchUserInfoPromise) {
+    return fetchUserInfoPromise;
   }
+
+  isFetchingUserInfo = true;
+  fetchUserInfoPromise = (async () => {
+    try {
+      const res = await Network.request({
+        url: '/api/user/profile',
+        method: 'GET',
+      });
+
+      if (res.data?.code === 200 && res.data?.data) {
+        return {
+          id: res.data.data.id,
+          username: res.data.data.openid,
+          nickname: res.data.data.nickname,
+          avatar: res.data.data.avatarUrl,
+          role: res.data.data.role || 'guest',
+          status: res.data.data.status || 'inactive',
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('[权限守卫] 获取用户信息失败:', error);
+      return null;
+    } finally {
+      isFetchingUserInfo = false;
+    }
+  })();
+
+  return fetchUserInfoPromise;
 };
 
 /**
@@ -155,6 +169,10 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
   const [canAccess, setCanAccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserInfo | null>(null);
+  
+  // 使用 ref 防止重复执行
+  const hasCheckedRef = useRef(false);
+  const isCheckingRef = useRef(false);
 
   // 派生状态
   const role = user?.role || null;
@@ -166,6 +184,13 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
 
   // 检查权限
   const checkAuth = useCallback(async () => {
+    // 防止重复检查
+    if (hasCheckedRef.current || isCheckingRef.current) {
+      return;
+    }
+    
+    isCheckingRef.current = true;
+    
     try {
       const storedUser = Taro.getStorageSync('user');
       const token = Taro.getStorageSync('token');
@@ -179,6 +204,7 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
           }, 500);
         }
         setLoading(false);
+        hasCheckedRef.current = true;
         return;
       }
 
@@ -194,6 +220,7 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
           }, 500);
         }
         setLoading(false);
+        hasCheckedRef.current = true;
         return;
       }
 
@@ -212,12 +239,14 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
           Taro.redirectTo({ url: loginPath });
         }, 500);
         setLoading(false);
+        hasCheckedRef.current = true;
         return;
       }
 
       if (userInfo.status === 'inactive') {
         Taro.showToast({ title: '账号未激活', icon: 'none' });
         setLoading(false);
+        hasCheckedRef.current = true;
         return;
       }
 
@@ -229,6 +258,7 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
             Taro.switchTab({ url: forbiddenPath });
           }, 500);
           setLoading(false);
+          hasCheckedRef.current = true;
           return;
         }
       } else if (requiredRole) {
@@ -238,11 +268,13 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
             Taro.switchTab({ url: forbiddenPath });
           }, 500);
           setLoading(false);
+          hasCheckedRef.current = true;
           return;
         }
       }
 
       setCanAccess(true);
+      hasCheckedRef.current = true;
     } catch (error) {
       console.error('[权限守卫] 权限检查失败:', error);
       if (requireLogin) {
@@ -253,8 +285,10 @@ export const useAuthGuard = (options: AuthGuardOptions = {}): AuthGuardResult =>
       }
     } finally {
       setLoading(false);
+      isCheckingRef.current = false;
     }
-  }, [requireLogin, requiredRole, allowedRoles, loginPath, forbiddenPath, forbiddenMessage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     checkAuth();
@@ -353,9 +387,18 @@ export const useLoginGuard = (): { loading: boolean; isLoggedIn: boolean; user: 
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
+  
+  // 使用 ref 防止重复执行
+  const hasCheckedRef = useRef(false);
 
   useEffect(() => {
     const checkLogin = async () => {
+      // 防止重复检查
+      if (hasCheckedRef.current) {
+        return;
+      }
+      hasCheckedRef.current = true;
+      
       const storedUser = Taro.getStorageSync('user');
       const token = Taro.getStorageSync('token');
 
