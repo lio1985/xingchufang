@@ -1,5 +1,5 @@
 import { View, Text } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import {
   Heart,
@@ -9,6 +9,7 @@ import {
   Search,
   Play,
 } from 'lucide-react-taro';
+import CustomTabBar from '@/custom-tab-bar';
 
 const TabKnowledgePage = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -58,6 +59,11 @@ const TabKnowledgePage = () => {
       };
     }
   }, []);
+
+  // 页面显示时刷新 TabBar
+  useDidShow(() => {
+    Taro.eventCenter.trigger('tabBarRefresh');
+  });
 
   // 判断是否有权限查看公司资料（员工及以上权限）
   const canViewCompanyData = isLoggedIn && userRole && ['employee', 'team_leader', 'admin'].includes(userRole);
@@ -189,6 +195,7 @@ const TabKnowledgePage = () => {
           </View>
         </View>
       </View>
+      <CustomTabBar />
     </View>
   );
 };

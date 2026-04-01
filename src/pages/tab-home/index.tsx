@@ -1,5 +1,5 @@
 import { View, Text, Image, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import {
   Sparkles,
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
+import CustomTabBar from '@/custom-tab-bar';
 
 // 用户角色枚举
 enum UserRole {
@@ -80,6 +81,11 @@ const TabHomePage = () => {
     fetchUnreadNotificationCount();
     fetchHomeStats();
   }, []);
+
+  // 页面显示时刷新 TabBar
+  useDidShow(() => {
+    Taro.eventCenter.trigger('tabBarRefresh');
+  });
 
   // 获取首页统计数据
   const fetchHomeStats = async () => {
@@ -700,6 +706,7 @@ const TabHomePage = () => {
           })}
         </View>
       </View>
+      <CustomTabBar />
     </View>
   );
 };

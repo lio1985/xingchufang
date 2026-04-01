@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import {
   Lightbulb,
   Target,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
+import CustomTabBar from '@/custom-tab-bar';
 
 interface ContentStats {
   weeklyCreations: number;
@@ -29,6 +30,11 @@ const TabContentPage = () => {
       fetchStats();
     }
   }, [isLoggedIn]);
+
+  // 页面显示时刷新 TabBar
+  useDidShow(() => {
+    Taro.eventCenter.trigger('tabBarRefresh');
+  });
 
   const fetchStats = async () => {
     try {
@@ -119,6 +125,7 @@ const TabContentPage = () => {
             </Text>
           </View>
         </View>
+        <CustomTabBar />
       </View>
     );
   }
@@ -214,6 +221,7 @@ const TabContentPage = () => {
           </View>
         </View>
       </View>
+      <CustomTabBar />
     </View>
   );
 };

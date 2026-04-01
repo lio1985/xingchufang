@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import {
   UserPlus,
   Store,
@@ -10,6 +10,7 @@ import {
 } from 'lucide-react-taro';
 import { Network } from '@/network';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
+import CustomTabBar from '@/custom-tab-bar';
 
 interface CustomerStats {
   todayNew: number;
@@ -38,6 +39,11 @@ const TabCustomerPage = () => {
       fetchData();
     }
   }, [isLoggedIn]);
+
+  // 页面显示时刷新 TabBar
+  useDidShow(() => {
+    Taro.eventCenter.trigger('tabBarRefresh');
+  });
 
   const fetchData = async () => {
     setLoading(true);
@@ -206,6 +212,7 @@ const TabCustomerPage = () => {
           </View>
         )}
       </View>
+      <CustomTabBar />
     </View>
   );
 };

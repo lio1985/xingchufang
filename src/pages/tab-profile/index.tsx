@@ -13,6 +13,7 @@ import {
   Bell,
 } from 'lucide-react-taro';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
+import CustomTabBar from '@/custom-tab-bar';
 
 const TabProfilePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -60,6 +61,7 @@ const TabProfilePage = () => {
   useDidShow(() => {
     console.log('[tab-profile] useDidShow 触发，刷新用户信息');
     refreshUserInfo();
+    Taro.eventCenter.trigger('tabBarRefresh');
   });
 
   const handleLogin = () => {
@@ -313,6 +315,7 @@ const TabProfilePage = () => {
       <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 0' }}>
         <Text style={{ fontSize: '12px', color: '#334155' }}>星厨房内容创作助手 v1.0.0</Text>
       </View>
+      <CustomTabBar />
     </View>
   );
 };

@@ -82,6 +82,9 @@ const LoginPage = () => {
       Taro.setStorageSync('user', user);
       console.log('[登录] 用户信息已存储');
 
+      // 触发 TabBar 刷新，确保登录后内容创作 Tab 显示
+      Taro.eventCenter.trigger('tabBarRefresh');
+
       console.log('[登录] 登录成功，准备跳转');
       
       // 先显示成功提示，再跳转

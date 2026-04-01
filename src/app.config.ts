@@ -155,6 +155,7 @@ export default defineAppConfig({
   // 移除 lazyCodeLoading 配置，避免生成循环引用的 comp 组件
   // lazyCodeLoading: 'requiredComponents',
   tabBar: {
+    custom: true,
     color: '#71717a',
     selectedColor: '#f59e0b',
     backgroundColor: '#141416',
