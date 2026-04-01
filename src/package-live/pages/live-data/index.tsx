@@ -192,7 +192,7 @@ export default function LiveDataPage() {
         }}
         onClick={() => {
           console.log('Navigate to import page');
-          Taro.navigateTo({ url: '/package-live/pages/live-data/import' });
+          Taro.navigateTo({ url: '/package-live/pages/live-data/import/index' });
         }}
       >
         <View
@@ -227,7 +227,7 @@ export default function LiveDataPage() {
         }}
         onClick={() => {
           console.log('Navigate to import page (excel)');
-          Taro.navigateTo({ url: '/package-live/pages/live-data/import?method=excel' });
+          Taro.navigateTo({ url: '/package-live/pages/live-data/import/index?method=excel' });
         }}
       >
         <View
@@ -262,7 +262,7 @@ export default function LiveDataPage() {
         }}
         onClick={() => {
           console.log('Navigate to import page (screenshot)');
-          Taro.navigateTo({ url: '/package-live/pages/live-data/import?method=screenshot' });
+          Taro.navigateTo({ url: '/package-live/pages/live-data/import/index?method=screenshot' });
         }}
       >
         <View

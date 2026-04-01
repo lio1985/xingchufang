@@ -548,7 +548,7 @@ const TabHomePage = () => {
               }}
               onClick={() => {
                 console.log('Navigate to live-data import');
-                handleNav('/package-live/pages/live-data/import');
+                handleNav('/package-live/pages/live-data/import/index');
               }}
             >
               <Text style={{ fontSize: '14px' }}>📤</Text>
