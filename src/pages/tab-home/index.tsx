@@ -16,7 +16,6 @@ import {
   Radio,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
-import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import CustomTabBar from '@/custom-tab-bar';
 
 // 用户角色枚举
@@ -71,9 +70,6 @@ const TabHomePage = () => {
     weekContent: 0,
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
-
-  // 使用在线状态 Hook，直接获取返回的状态
-  const onlineStatus = useOnlineStatus();
 
   useEffect(() => {
     checkLoginStatus();
@@ -326,27 +322,6 @@ const TabHomePage = () => {
             <View style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
               <Text style={{ fontSize: '13px', color: '#71717a', display: 'block' }}>
                 {formatDate()}
-              </Text>
-              <View
-                style={{
-                  width: '4px',
-                  height: '4px',
-                  borderRadius: '50%',
-                  backgroundColor: '#3b3f4c',
-                  margin: '0 8px',
-                }}
-              />
-              <View
-                style={{
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  backgroundColor: onlineStatus.isOnline ? '#22c55e' : '#64748b',
-                  marginRight: '4px',
-                }}
-              />
-              <Text style={{ fontSize: '12px', color: onlineStatus.isOnline ? '#22c55e' : '#64748b' }}>
-                {onlineStatus.isOnline ? '在线' : '离线'}
               </Text>
             </View>
           </View>

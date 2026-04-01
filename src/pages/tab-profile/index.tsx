@@ -12,7 +12,6 @@ import {
   Crown,
   Bell,
 } from 'lucide-react-taro';
-import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import CustomTabBar from '@/custom-tab-bar';
 
 const TabProfilePage = () => {
@@ -26,10 +25,7 @@ const TabProfilePage = () => {
     role?: string;
   } | null>(null);
 
-  // 使用在线状态 Hook，直接获取返回的状态
-  const { isOnline: isUserOnline } = useOnlineStatus();
-
-  // 刷新用户信息的函数 - 不依赖 setOnlineStatus，避免循环依赖
+  // 刷新用户信息的函数
   const refreshUserInfo = useCallback(() => {
     try {
       const user = Taro.getStorageSync('user');
@@ -142,20 +138,9 @@ const TabProfilePage = () => {
               <Text style={{ fontSize: '20px', fontWeight: '600', color: '#ffffff', display: 'block' }}>
                 {userInfo?.nickname || userInfo?.username || '用户'}
               </Text>
-              <View style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
-                <View
-                  style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    backgroundColor: isUserOnline ? '#22c55e' : '#64748b',
-                    marginRight: '6px',
-                  }}
-                />
-                <Text style={{ fontSize: '12px', color: isUserOnline ? '#22c55e' : '#64748b' }}>
-                  {isUserOnline ? '在线' : '离线'}
-                </Text>
-              </View>
+              <Text style={{ fontSize: '12px', color: '#71717a', display: 'block', marginTop: '4px' }}>
+                {userInfo?.role === 'admin' ? '管理员' : userInfo?.role === 'team_leader' ? '团队队长' : userInfo?.role === 'employee' ? '员工' : '用户'}
+              </Text>
             </View>
           </View>
         ) : (
