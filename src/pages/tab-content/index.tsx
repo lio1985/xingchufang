@@ -10,7 +10,6 @@ import {
   Lock,
 } from 'lucide-react-taro';
 import { Network } from '@/network';
-import { useAuthGuard } from '@/hooks/useAuthGuard';
 import CustomTabBar from '@/custom-tab-bar';
 
 interface ContentStats {
@@ -19,20 +18,39 @@ interface ContentStats {
 }
 
 const TabContentPage = () => {
-  const { isLoggedIn } = useAuthGuard({ requireLogin: false });
+  // 直接从 storage 检查登录状态，避免异步延迟
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [stats, setStats] = useState<ContentStats>({
     weeklyCreations: 0,
     inspirationCount: 0,
   });
 
+  // 检查登录状态
+  const checkLoginStatus = () => {
+    try {
+      const user = Taro.getStorageSync('user');
+      const token = Taro.getStorageSync('token');
+      const loggedIn = !!(user && token);
+      console.log('[TabContent] 登录状态检查:', { hasUser: !!user, hasToken: !!token, loggedIn });
+      setIsLoggedIn(loggedIn);
+      return loggedIn;
+    } catch (e) {
+      console.error('[TabContent] 检查登录状态失败:', e);
+      setIsLoggedIn(false);
+      return false;
+    }
+  };
+
   useEffect(() => {
-    if (isLoggedIn) {
+    const loggedIn = checkLoginStatus();
+    if (loggedIn) {
       fetchStats();
     }
-  }, [isLoggedIn]);
+  }, []);
 
-  // 页面显示时刷新 TabBar
+  // 页面显示时刷新
   useDidShow(() => {
+    checkLoginStatus();
     Taro.eventCenter.trigger('tabBarRefresh');
   });
 
