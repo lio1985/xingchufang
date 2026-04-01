@@ -59,7 +59,7 @@ const LiveAnalysisPage = () => {
       if (response.data?.success) {
         showToast({ title: '创建成功', icon: 'success' });
         // 跳转到详情页查看分析结果
-        navigateTo({ url: `/pages/live-data/detail/index?id=${liveId}` });
+        navigateTo({ url: `/package-live/pages/live-data/detail/index?id=${liveId}` });
       } else {
         throw new Error(response.data?.message || '创建失败');
       }
@@ -115,7 +115,7 @@ const LiveAnalysisPage = () => {
                   {item.hasAnalysis ? (
                     <View
                       className="action-btn primary"
-                      onClick={() => navigateTo({ url: `/pages/live-data/detail/index?id=${item.id}` })}
+                      onClick={() => navigateTo({ url: `/package-live/pages/live-data/detail/index?id=${item.id}` })}
                     >
                       <Text>查看分析报告</Text>
                       <Text>{">"}</Text>

@@ -394,7 +394,7 @@ export default function LiveDataPage() {
                 padding: '12px',
                 marginBottom: '8px',
               }}
-              onClick={() => Taro.navigateTo({ url: `/pages/live-data/detail?id=${stream.id}` })}
+              onClick={() => Taro.navigateTo({ url: `/package-live/pages/live-data/detail/index?id=${stream.id}` })}
             >
               <View style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <Text style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff' }}>{stream.title}</Text>

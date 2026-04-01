@@ -73,7 +73,7 @@ const LiveDataListPage = () => {
   };
 
   const goToDetail = (id: string) => {
-    navigateTo({ url: `/pages/live-data/detail/index?id=${id}` });
+    navigateTo({ url: `/package-live/pages/live-data/detail/index?id=${id}` });
   };
 
   return (
