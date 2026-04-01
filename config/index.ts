@@ -99,8 +99,8 @@ export default defineConfig<'vite'>(async (merge, _env) => {
             if (chunk.fileName.endsWith('.js')) {
               // 移除 /* empty css */ 注释
               let fixed = code.replace(/\/\*\s*empty\s+css\s*\*\/\s*/g, '');
-              // 修复 require("..."), var l= -> require("..."); var l=
-              fixed = fixed.replace(/(require\([^)]+\)),(\s*var\s+\w+\s*=)/g, '$1;$2');
+              // 修复 require("..."), var/let/const x= -> require("..."); var/let/const x=
+              fixed = fixed.replace(/(require\([^)]+\)),(\s*(?:var|let|const)\s+\w+\s*=)/g, '$1;$2');
               return fixed;
             }
             return null;
@@ -117,8 +117,8 @@ export default defineConfig<'vite'>(async (merge, _env) => {
                   const original = code;
                   // 移除 /* empty css */ 注释
                   code = code.replace(/\/\*\s*empty\s+css\s*\*\/\s*/g, '');
-                  // 修复 require("..."), var l= -> require("..."); var l=
-                  code = code.replace(/(require\([^)]+\)),(\s*var\s+\w+\s*=)/g, '$1;$2');
+                  // 修复 require("..."), var/let/const x= -> require("..."); var/let/const x=
+                  code = code.replace(/(require\([^)]+\)),(\s*(?:var|let|const)\s+\w+\s*=)/g, '$1;$2');
                   if (code !== original) {
                     await fs.writeFile(filePath, code);
                   }
