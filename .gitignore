@@ -47,3 +47,12 @@ assets/*.png
 assets/*.jpg
 assets/*.jpeg
 assets/*.gif
+
+# 临时构建文件
+*.b64
+part*.*
+dist-web-chunk-*
+dist-web-part-*
+
+# SWC 缓存
+.swc/
