@@ -179,12 +179,6 @@ export default defineAppConfig({
         selectedIconPath: './assets/tabbar/book-open-active.png',
       },
       {
-        pagePath: 'pages/tab-content/index',
-        text: '内容创作',
-        iconPath: './assets/tabbar/pen-tool.png',
-        selectedIconPath: './assets/tabbar/pen-tool-active.png',
-      },
-      {
         pagePath: 'pages/tab-profile/index',
         text: '我',
         iconPath: './assets/tabbar/user.png',

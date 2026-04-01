@@ -621,8 +621,8 @@ const TabHomePage = () => {
           {quickActions.filter(a => {
             // 过滤掉 orders 和 live-data（已单独渲染）
             if (a.id === 'orders' || a.id === 'live-data') return false;
-            // 星小帮需要登录才显示
-            if (a.id === 'ai' && !userInfo) return false;
+            // 星小帮和灵感速记需要登录才显示（内容创作相关功能）
+            if ((a.id === 'ai' || a.id === 'idea') && !userInfo) return false;
             return true;
           }).map((action) => {
             const IconComp = action.icon;
