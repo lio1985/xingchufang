@@ -2,13 +2,20 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Taro from '@tarojs/taro';
 import { Network } from '@/network';
 
-// 标记后端是否支持 online-status 接口
-let onlineStatusSupported = true;
+// 全局状态，避免多个组件同时使用时重复请求
+let globalOnlineStatusSupported = true;
+let lastUpdateTime = 0;
+let isUpdating = false; // 防止并发更新
+const UPDATE_THROTTLE = 5000; // 5秒节流
+
+// 全局在线状态
+let globalIsOnline = false;
+let globalLastSeenAt: string | null = null;
 
 /**
  * 在线状态管理 Hook
  * 自动检测用户前台/后台状态，并同步到服务器
- * @returns 当前在线状态和手动设置方法
+ * 注意：此 hook 使用全局状态，多个组件同时使用时只会发送一次请求
  */
 export function useOnlineStatus(): { 
   isOnline: boolean; 
@@ -16,10 +23,8 @@ export function useOnlineStatus(): {
   setOnline: (online: boolean) => void;
 } {
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [status, setStatus] = useState<{ isOnline: boolean; lastSeenAt: string | null }>({
-    isOnline: false,
-    lastSeenAt: null,
-  });
+  const [isOnline, setIsOnline] = useState(globalIsOnline);
+  const [lastSeenAt, setLastSeenAt] = useState<string | null>(globalLastSeenAt);
 
   // 停止心跳
   const stopHeartbeat = useCallback(() => {
@@ -29,87 +34,114 @@ export function useOnlineStatus(): {
     }
   }, []);
 
-  // 更新在线状态
-  const updateStatus = useCallback(async (isOnline: boolean) => {
+  // 更新在线状态 - 使用全局变量防止重复请求
+  const updateStatus = useCallback(async (online: boolean, force = false) => {
+    // 防止并发更新
+    if (isUpdating) {
+      return;
+    }
+
+    // 节流检查（强制更新除外）
+    const now = Date.now();
+    if (!force && now - lastUpdateTime < UPDATE_THROTTLE) {
+      return;
+    }
+
+    // 如果状态没有变化，跳过
+    if (!force && online === globalIsOnline) {
+      return;
+    }
+
+    isUpdating = true;
+    lastUpdateTime = now;
+
     // 如果后端不支持，直接更新本地状态
-    if (!onlineStatusSupported) {
-      setStatus(prev => ({
-        ...prev,
-        isOnline,
-        lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
-      }));
-      console.log(`[OnlineStatus] 本地状态已更新: ${isOnline ? '在线' : '离线'}`);
+    if (!globalOnlineStatusSupported) {
+      globalIsOnline = online;
+      if (online) {
+        globalLastSeenAt = new Date().toISOString();
+      }
+      setIsOnline(online);
+      if (online) {
+        setLastSeenAt(new Date().toISOString());
+      }
+      isUpdating = false;
       return;
     }
 
     try {
       const token = Taro.getStorageSync('token');
       if (!token) {
-        // 没有登录时直接设置本地状态
-        setStatus(prev => ({
-          ...prev,
-          isOnline,
-          lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
-        }));
-        console.log(`[OnlineStatus] 无token，本地状态已更新: ${isOnline ? '在线' : '离线'}`);
+        globalIsOnline = online;
+        if (online) {
+          globalLastSeenAt = new Date().toISOString();
+        }
+        setIsOnline(online);
+        if (online) {
+          setLastSeenAt(new Date().toISOString());
+        }
+        isUpdating = false;
         return;
       }
 
       const res = await Network.request({
         url: '/api/user/online-status',
         method: 'POST',
-        data: { isOnline },
+        data: { isOnline: online },
       });
 
-      // 如果返回 404，标记接口不支持
       if (res.statusCode === 404 || res.data?.code === 404) {
-        onlineStatusSupported = false;
-        console.log('[OnlineStatus] 后端暂不支持此功能，已禁用');
-        setStatus(prev => ({
-          ...prev,
-          isOnline,
-          lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
-        }));
+        globalOnlineStatusSupported = false;
+        globalIsOnline = online;
+        if (online) {
+          globalLastSeenAt = new Date().toISOString();
+        }
+        setIsOnline(online);
+        if (online) {
+          setLastSeenAt(new Date().toISOString());
+        }
+        isUpdating = false;
         return;
       }
 
-      const now = new Date().toISOString();
-      setStatus({
-        isOnline,
-        lastSeenAt: isOnline ? now : status.lastSeenAt,
-      });
-      console.log(`[OnlineStatus] 状态已更新: ${isOnline ? '在线' : '离线'}`);
+      globalIsOnline = online;
+      if (online) {
+        globalLastSeenAt = new Date().toISOString();
+      }
+      setIsOnline(online);
+      if (online) {
+        setLastSeenAt(new Date().toISOString());
+      }
     } catch (error) {
-      // 静默处理错误，标记接口不支持
-      onlineStatusSupported = false;
-      setStatus(prev => ({
-        ...prev,
-        isOnline,
-        lastSeenAt: isOnline ? new Date().toISOString() : prev.lastSeenAt,
-      }));
+      globalOnlineStatusSupported = false;
+      globalIsOnline = online;
+      if (online) {
+        globalLastSeenAt = new Date().toISOString();
+      }
+      setIsOnline(online);
+      if (online) {
+        setLastSeenAt(new Date().toISOString());
+      }
+    } finally {
+      isUpdating = false;
     }
-  }, [status.lastSeenAt]);
+  }, []);
 
   // 启动心跳
   const startHeartbeat = useCallback(() => {
-    // 先停止之前的心跳
     stopHeartbeat();
+    if (!globalOnlineStatusSupported) return;
     
-    // 如果后端不支持，不启动心跳
-    if (!onlineStatusSupported) return;
-
-    // 每 30 秒发送一次心跳
     heartbeatIntervalRef.current = setInterval(() => {
       const token = Taro.getStorageSync('token');
-      if (token && onlineStatusSupported) {
-        updateStatus(true);
+      if (token && globalOnlineStatusSupported) {
+        updateStatus(true, true); // 心跳强制更新
       }
     }, 30000);
   }, [updateStatus, stopHeartbeat]);
 
-  // 手动设置在线状态（供外部调用）
+  // 手动设置在线状态
   const setOnline = useCallback((online: boolean) => {
-    console.log(`[OnlineStatus] 手动设置在线状态: ${online ? '在线' : '离线'}`);
     updateStatus(online);
     if (online) {
       startHeartbeat();
@@ -118,45 +150,11 @@ export function useOnlineStatus(): {
     }
   }, [updateStatus, startHeartbeat, stopHeartbeat]);
 
-  // 页面显示时设置为在线
-  useEffect(() => {
-    const handleShow = () => {
-      const token = Taro.getStorageSync('token');
-      if (token) {
-        updateStatus(true);
-        startHeartbeat();
-      }
-    };
-
-    Taro.eventCenter.on('onShow', handleShow);
-
-    return () => {
-      Taro.eventCenter.off('onShow', handleShow);
-    };
-  }, [updateStatus, startHeartbeat]);
-
-  // 页面隐藏时设置为离线
-  useEffect(() => {
-    const handleHide = () => {
-      stopHeartbeat();
-      const token = Taro.getStorageSync('token');
-      if (token && onlineStatusSupported) {
-        updateStatus(false);
-      }
-    };
-
-    Taro.eventCenter.on('onHide', handleHide);
-
-    return () => {
-      Taro.eventCenter.off('onHide', handleHide);
-    };
-  }, [updateStatus, stopHeartbeat]);
-
-  // 组件挂载时检查登录状态
+  // 组件挂载时检查登录状态 - 只执行一次
   useEffect(() => {
     const userToken = Taro.getStorageSync('token');
     if (userToken) {
-      updateStatus(true);
+      updateStatus(true, true);
       startHeartbeat();
     }
 
@@ -166,7 +164,8 @@ export function useOnlineStatus(): {
   }, [updateStatus, startHeartbeat, stopHeartbeat]);
 
   return {
-    ...status,
+    isOnline,
+    lastSeenAt,
     setOnline,
   };
 }
@@ -179,7 +178,7 @@ export async function getUserOnlineStatus(userId: string): Promise<{
   lastSeenAt: string | null;
 }> {
   // 如果后端不支持，返回默认值
-  if (!onlineStatusSupported) {
+  if (!globalOnlineStatusSupported) {
     return { isOnline: false, lastSeenAt: null };
   }
 
@@ -191,7 +190,7 @@ export async function getUserOnlineStatus(userId: string): Promise<{
 
     // 如果返回 404，标记接口不支持
     if (res.statusCode === 404 || res.data?.code === 404) {
-      onlineStatusSupported = false;
+      globalOnlineStatusSupported = false;
       return { isOnline: false, lastSeenAt: null };
     }
 
@@ -218,7 +217,7 @@ export async function getBatchOnlineStatus(userIds: string[]): Promise<Record<st
   }
 
   // 如果后端不支持，返回空对象
-  if (!onlineStatusSupported) {
+  if (!globalOnlineStatusSupported) {
     return {};
   }
 
@@ -231,7 +230,7 @@ export async function getBatchOnlineStatus(userIds: string[]): Promise<Record<st
 
     // 如果返回 404，标记接口不支持
     if (res.statusCode === 404 || res.data?.code === 404) {
-      onlineStatusSupported = false;
+      globalOnlineStatusSupported = false;
       return {};
     }
 

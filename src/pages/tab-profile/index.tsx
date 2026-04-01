@@ -27,20 +27,17 @@ const TabProfilePage = () => {
   } | null>(null);
 
   // 使用在线状态 Hook，直接获取返回的状态
-  const onlineStatus = useOnlineStatus();
+  const { isOnline: isUserOnline } = useOnlineStatus();
 
-  // 刷新用户信息的函数
+  // 刷新用户信息的函数 - 不依赖 setOnlineStatus，避免循环依赖
   const refreshUserInfo = useCallback(() => {
     try {
       const user = Taro.getStorageSync('user');
       const token = Taro.getStorageSync('token');
-      console.log('refreshUserInfo - user:', user, 'token:', token);
       if (user && token) {
         setIsLoggedIn(true);
         setUserInfo(user);
         setIsAdmin(user.role === 'admin');
-        // 登录成功后设置在线状态
-        onlineStatus.setOnline(true);
       } else {
         // 如果没有用户信息或 token，重置状态
         setIsLoggedIn(false);
@@ -50,16 +47,15 @@ const TabProfilePage = () => {
     } catch (e) {
       console.log('刷新用户信息失败');
     }
-  }, [onlineStatus]);
+  }, []);
 
-  // 初始化时检查登录状态
+  // 初始化时检查登录状态 - 只执行一次
   useEffect(() => {
     refreshUserInfo();
   }, [refreshUserInfo]);
 
   // 小程序端使用 useDidShow 监听页面显示
   useDidShow(() => {
-    console.log('[tab-profile] useDidShow 触发，刷新用户信息');
     refreshUserInfo();
     Taro.eventCenter.trigger('tabBarRefresh');
   });
@@ -152,12 +148,12 @@ const TabProfilePage = () => {
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    backgroundColor: onlineStatus.isOnline ? '#22c55e' : '#64748b',
+                    backgroundColor: isUserOnline ? '#22c55e' : '#64748b',
                     marginRight: '6px',
                   }}
                 />
-                <Text style={{ fontSize: '12px', color: onlineStatus.isOnline ? '#22c55e' : '#64748b' }}>
-                  {onlineStatus.isOnline ? '在线' : '离线'}
+                <Text style={{ fontSize: '12px', color: isUserOnline ? '#22c55e' : '#64748b' }}>
+                  {isUserOnline ? '在线' : '离线'}
                 </Text>
               </View>
             </View>
