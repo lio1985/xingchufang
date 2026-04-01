@@ -1,6 +1,6 @@
 import { View, Text, Image } from '@tarojs/components';
 import Taro, { useDidShow } from '@tarojs/taro';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   User,
   Settings,
@@ -29,7 +29,7 @@ const TabProfilePage = () => {
   const onlineStatus = useOnlineStatus();
 
   // 刷新用户信息的函数
-  const refreshUserInfo = () => {
+  const refreshUserInfo = useCallback(() => {
     try {
       const user = Taro.getStorageSync('user');
       const token = Taro.getStorageSync('token');
@@ -49,12 +49,12 @@ const TabProfilePage = () => {
     } catch (e) {
       console.log('刷新用户信息失败');
     }
-  };
+  }, [onlineStatus]);
 
   // 初始化时检查登录状态
   useEffect(() => {
     refreshUserInfo();
-  }, []);
+  }, [refreshUserInfo]);
 
   // 小程序端使用 useDidShow 监听页面显示
   useDidShow(() => {

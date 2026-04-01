@@ -69,9 +69,17 @@ const TabContentPage = () => {
     Taro.navigateTo({ url: path });
   };
 
-  // 未登录时不渲染任何内容
+  // 未登录状态 - 不显示任何功能入口
   if (!isLoggedIn) {
-    return null;
+    return (
+      <View style={{ minHeight: '100vh', backgroundColor: '#0a0f1a', paddingBottom: '60px' }}>
+        {/* 页面头部 */}
+        <View style={{ padding: '48px 20px 24px', backgroundColor: '#111827' }}>
+          <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', display: 'block' }}>内容创作</Text>
+          <Text style={{ fontSize: '14px', color: '#71717a', display: 'block', marginTop: '8px' }}>登录后查看创作功能</Text>
+        </View>
+      </View>
+    );
   }
 
   // 已登录状态显示完整功能
