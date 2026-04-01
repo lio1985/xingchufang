@@ -1,15 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsEnum, IsDateString } from 'class-validator';
-
-export enum RecycleStatus {
-  PENDING = 'pending',
-  CONTACTED = 'contacted',
-  ASSESSING = 'assessing',
-  NEGOTIATING = 'negotiating',
-  DEAL = 'deal',
-  RECYCLING = 'recycling',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled'
-}
+import { IsString, IsOptional, IsNumber, IsDateString } from 'class-validator';
 
 export class CreateRecycleStoreDto {
   @IsString()
@@ -63,8 +52,8 @@ export class CreateRecycleStoreDto {
   close_reason?: string;
 
   @IsOptional()
-  @IsEnum(RecycleStatus)
-  recycle_status?: RecycleStatus;
+  @IsString()
+  recycle_status?: string; // 移除严格枚举验证
 
   @IsOptional()
   @IsString()
@@ -104,15 +93,15 @@ export class CreateRecycleStoreDto {
 
   @IsOptional()
   @IsDateString()
-  firstFollowUpAt?: string;
+  first_follow_up_at?: string;
 
   @IsOptional()
   @IsString()
-  firstFollowUpContent?: string;
+  first_follow_up_content?: string;
 
   @IsOptional()
   @IsString()
-  firstFollowUpMethod?: string;
+  first_follow_up_method?: string;
 }
 
 export class UpdateRecycleStoreDto {
@@ -168,8 +157,8 @@ export class UpdateRecycleStoreDto {
   close_reason?: string;
 
   @IsOptional()
-  @IsEnum(RecycleStatus)
-  recycle_status?: RecycleStatus;
+  @IsString()
+  recycle_status?: string;
 
   @IsOptional()
   @IsString()
@@ -234,8 +223,8 @@ export class RecycleStoreQueryDto {
   pageSize?: number;
 
   @IsOptional()
-  @IsEnum(RecycleStatus)
-  status?: RecycleStatus;
+  @IsString()
+  status?: string;
 
   @IsOptional()
   @IsString()

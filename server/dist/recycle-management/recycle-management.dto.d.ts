@@ -1,13 +1,3 @@
-export declare enum RecycleStatus {
-    PENDING = "pending",
-    CONTACTED = "contacted",
-    ASSESSING = "assessing",
-    NEGOTIATING = "negotiating",
-    DEAL = "deal",
-    RECYCLING = "recycling",
-    COMPLETED = "completed",
-    CANCELLED = "cancelled"
-}
 export declare class CreateRecycleStoreDto {
     store_name: string;
     phone?: string;
@@ -25,7 +15,7 @@ export declare class CreateRecycleStoreDto {
     area_size?: number;
     open_date?: string;
     close_reason?: string;
-    recycle_status?: RecycleStatus;
+    recycle_status?: string;
     estimated_devices?: string;
     estimated_value?: number;
     purchase_price?: number;
@@ -35,9 +25,9 @@ export declare class CreateRecycleStoreDto {
     recycle_date?: string;
     device_count?: number;
     device_status?: string;
-    firstFollowUpAt?: string;
-    firstFollowUpContent?: string;
-    firstFollowUpMethod?: string;
+    first_follow_up_at?: string;
+    first_follow_up_content?: string;
+    first_follow_up_method?: string;
 }
 export declare class UpdateRecycleStoreDto {
     store_name?: string;
@@ -56,7 +46,7 @@ export declare class UpdateRecycleStoreDto {
     area_size?: number;
     open_date?: string;
     close_reason?: string;
-    recycle_status?: RecycleStatus;
+    recycle_status?: string;
     estimated_devices?: string;
     estimated_value?: number;
     purchase_price?: number;
@@ -76,7 +66,7 @@ export declare class CreateFollowUpDto {
 export declare class RecycleStoreQueryDto {
     page?: number;
     pageSize?: number;
-    status?: RecycleStatus;
+    status?: string;
     keyword?: string;
     orderBy?: string;
     order?: string;

@@ -23,11 +23,19 @@ export declare class RecycleManagementController {
         code: number;
         msg: string;
         data: any;
+    } | {
+        code: number;
+        msg: any;
+        data: null;
     }>;
     updateStore(req: any, id: string, dto: UpdateRecycleStoreDto): Promise<{
         code: number;
         msg: string;
         data: any;
+    } | {
+        code: number;
+        msg: any;
+        data: null;
     }>;
     deleteStore(req: any, id: string): Promise<{
         code: number;

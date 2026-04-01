@@ -9,19 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RecycleStoreQueryDto = exports.CreateFollowUpDto = exports.UpdateRecycleStoreDto = exports.CreateRecycleStoreDto = exports.RecycleStatus = void 0;
+exports.RecycleStoreQueryDto = exports.CreateFollowUpDto = exports.UpdateRecycleStoreDto = exports.CreateRecycleStoreDto = void 0;
 const class_validator_1 = require("class-validator");
-var RecycleStatus;
-(function (RecycleStatus) {
-    RecycleStatus["PENDING"] = "pending";
-    RecycleStatus["CONTACTED"] = "contacted";
-    RecycleStatus["ASSESSING"] = "assessing";
-    RecycleStatus["NEGOTIATING"] = "negotiating";
-    RecycleStatus["DEAL"] = "deal";
-    RecycleStatus["RECYCLING"] = "recycling";
-    RecycleStatus["COMPLETED"] = "completed";
-    RecycleStatus["CANCELLED"] = "cancelled";
-})(RecycleStatus || (exports.RecycleStatus = RecycleStatus = {}));
 class CreateRecycleStoreDto {
 }
 exports.CreateRecycleStoreDto = CreateRecycleStoreDto;
@@ -85,7 +74,7 @@ __decorate([
 ], CreateRecycleStoreDto.prototype, "close_reason", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(RecycleStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateRecycleStoreDto.prototype, "recycle_status", void 0);
 __decorate([
@@ -137,17 +126,17 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], CreateRecycleStoreDto.prototype, "firstFollowUpAt", void 0);
+], CreateRecycleStoreDto.prototype, "first_follow_up_at", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateRecycleStoreDto.prototype, "firstFollowUpContent", void 0);
+], CreateRecycleStoreDto.prototype, "first_follow_up_content", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateRecycleStoreDto.prototype, "firstFollowUpMethod", void 0);
+], CreateRecycleStoreDto.prototype, "first_follow_up_method", void 0);
 class UpdateRecycleStoreDto {
 }
 exports.UpdateRecycleStoreDto = UpdateRecycleStoreDto;
@@ -212,7 +201,7 @@ __decorate([
 ], UpdateRecycleStoreDto.prototype, "close_reason", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(RecycleStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateRecycleStoreDto.prototype, "recycle_status", void 0);
 __decorate([
@@ -296,7 +285,7 @@ __decorate([
 ], RecycleStoreQueryDto.prototype, "pageSize", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(RecycleStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RecycleStoreQueryDto.prototype, "status", void 0);
 __decorate([

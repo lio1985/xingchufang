@@ -64,25 +64,45 @@ let RecycleManagementController = class RecycleManagementController {
         };
     }
     async createStore(req, dto) {
-        const userId = req.user?.id;
-        console.log('[RecycleController] Create store:', { userId, dto });
-        const store = await this.recycleService.createStore(dto, userId);
-        return {
-            code: 200,
-            msg: '创建成功',
-            data: store
-        };
+        try {
+            const userId = req.user?.id;
+            console.log('[RecycleController] Create store:', { userId, dto });
+            const store = await this.recycleService.createStore(dto, userId);
+            return {
+                code: 200,
+                msg: '创建成功',
+                data: store
+            };
+        }
+        catch (error) {
+            console.error('[RecycleController] Create store error:', error);
+            return {
+                code: 500,
+                msg: error.message || '创建失败',
+                data: null
+            };
+        }
     }
     async updateStore(req, id, dto) {
-        const userId = req.user?.id;
-        const isAdmin = req.user?.role === 'admin';
-        console.log('[RecycleController] Update store:', { id, userId, isAdmin, dto });
-        const store = await this.recycleService.updateStore(id, dto, userId, isAdmin);
-        return {
-            code: 200,
-            msg: '更新成功',
-            data: store
-        };
+        try {
+            const userId = req.user?.id;
+            const isAdmin = req.user?.role === 'admin';
+            console.log('[RecycleController] Update store:', { id, userId, isAdmin, dto });
+            const store = await this.recycleService.updateStore(id, dto, userId, isAdmin);
+            return {
+                code: 200,
+                msg: '更新成功',
+                data: store
+            };
+        }
+        catch (error) {
+            console.error('[RecycleController] Update store error:', error);
+            return {
+                code: 500,
+                msg: error.message || '更新失败',
+                data: null
+            };
+        }
     }
     async deleteStore(req, id) {
         const userId = req.user?.id;

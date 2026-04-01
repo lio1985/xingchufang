@@ -77,17 +77,26 @@ export class RecycleManagementController {
   @Post('stores')
   @UseGuards(ActiveUserGuard)
   async createStore(@Request() req, @Body() dto: CreateRecycleStoreDto) {
-    const userId = req.user?.id;
+    try {
+      const userId = req.user?.id;
 
-    console.log('[RecycleController] Create store:', { userId, dto });
+      console.log('[RecycleController] Create store:', { userId, dto });
 
-    const store = await this.recycleService.createStore(dto, userId);
+      const store = await this.recycleService.createStore(dto, userId);
 
-    return {
-      code: 200,
-      msg: '创建成功',
-      data: store
-    };
+      return {
+        code: 200,
+        msg: '创建成功',
+        data: store
+      };
+    } catch (error) {
+      console.error('[RecycleController] Create store error:', error);
+      return {
+        code: 500,
+        msg: error.message || '创建失败',
+        data: null
+      };
+    }
   }
 
   /**
@@ -100,18 +109,27 @@ export class RecycleManagementController {
     @Param('id') id: string,
     @Body() dto: UpdateRecycleStoreDto
   ) {
-    const userId = req.user?.id;
-    const isAdmin = req.user?.role === 'admin';
+    try {
+      const userId = req.user?.id;
+      const isAdmin = req.user?.role === 'admin';
 
-    console.log('[RecycleController] Update store:', { id, userId, isAdmin, dto });
+      console.log('[RecycleController] Update store:', { id, userId, isAdmin, dto });
 
-    const store = await this.recycleService.updateStore(id, dto, userId, isAdmin);
+      const store = await this.recycleService.updateStore(id, dto, userId, isAdmin);
 
-    return {
-      code: 200,
-      msg: '更新成功',
-      data: store
-    };
+      return {
+        code: 200,
+        msg: '更新成功',
+        data: store
+      };
+    } catch (error) {
+      console.error('[RecycleController] Update store error:', error);
+      return {
+        code: 500,
+        msg: error.message || '更新失败',
+        data: null
+      };
+    }
   }
 
   /**

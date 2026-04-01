@@ -82,72 +82,140 @@ export class RecycleManagementService {
   }
 
   async createStore(dto: CreateRecycleStoreDto, userId: string) {
-    const { data: store, error } = await this.supabase
-      .from('recycle_stores')
-      .insert({
-        ...dto,
+    try {
+      // 准备插入数据
+      const insertData: Record<string, any> = {
+        store_name: dto.store_name,
         user_id: userId,
-        first_follow_up_at: dto.firstFollowUpAt || new Date().toISOString()
-      })
-      .select()
-      .single();
+        first_follow_up_at: dto.first_follow_up_at || new Date().toISOString()
+      };
 
-    if (error) {
-      console.error('[RecycleService] Create store error:', error);
-      throw new Error(`创建回收门店失败: ${error.message}`);
+      // 可选字段
+      if (dto.phone !== undefined) insertData.phone = dto.phone;
+      if (dto.wechat !== undefined) insertData.wechat = dto.wechat;
+      if (dto.xiaohongshu !== undefined) insertData.xiaohongshu = dto.xiaohongshu;
+      if (dto.douyin !== undefined) insertData.douyin = dto.douyin;
+      if (dto.city !== undefined) insertData.city = dto.city;
+      if (dto.address !== undefined) insertData.address = dto.address;
+      if (dto.location !== undefined) insertData.location = dto.location;
+      if (dto.business_type !== undefined) insertData.business_type = dto.business_type;
+      if (dto.area_size !== undefined) insertData.area_size = dto.area_size;
+      if (dto.open_date !== undefined) insertData.open_date = dto.open_date;
+      if (dto.close_reason !== undefined) insertData.close_reason = dto.close_reason;
+      if (dto.recycle_status !== undefined) insertData.recycle_status = dto.recycle_status;
+      if (dto.estimated_devices !== undefined) insertData.estimated_devices = dto.estimated_devices;
+      if (dto.estimated_value !== undefined) insertData.estimated_value = dto.estimated_value;
+      if (dto.purchase_price !== undefined) insertData.purchase_price = dto.purchase_price;
+      if (dto.transport_cost !== undefined) insertData.transport_cost = dto.transport_cost;
+      if (dto.labor_cost !== undefined) insertData.labor_cost = dto.labor_cost;
+      if (dto.total_cost !== undefined) insertData.total_cost = dto.total_cost;
+      if (dto.recycle_date !== undefined) insertData.recycle_date = dto.recycle_date;
+      if (dto.device_count !== undefined) insertData.device_count = dto.device_count;
+      if (dto.device_status !== undefined) insertData.device_status = dto.device_status;
+
+      console.log('[RecycleService] Creating store with data:', JSON.stringify(insertData));
+
+      const { data: store, error } = await this.supabase
+        .from('recycle_stores')
+        .insert(insertData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('[RecycleService] Create store error:', error);
+        throw new Error(`创建回收门店失败: ${error.message}`);
+      }
+
+      // 如果有第一轮跟进内容，创建跟进记录
+      if (dto.first_follow_up_content) {
+        await this.supabase.from('recycle_follow_ups').insert({
+          store_id: store.id,
+          user_id: userId,
+          follow_up_time: dto.first_follow_up_at || new Date().toISOString(),
+          content: dto.first_follow_up_content,
+          follow_up_method: dto.first_follow_up_method
+        });
+      }
+
+      return store;
+    } catch (error) {
+      console.error('[RecycleService] Create store exception:', error);
+      throw error;
     }
-
-    // 如果有第一轮跟进内容，创建跟进记录
-    if (dto.firstFollowUpContent) {
-      await this.supabase.from('recycle_follow_ups').insert({
-        store_id: store.id,
-        user_id: userId,
-        follow_up_time: dto.firstFollowUpAt || new Date().toISOString(),
-        content: dto.firstFollowUpContent,
-        follow_up_method: dto.firstFollowUpMethod
-      });
-    }
-
-    return store;
   }
 
   async updateStore(id: string, dto: UpdateRecycleStoreDto, userId: string, isAdmin: boolean) {
-    // 检查门店是否存在
-    const { data: existingStore } = await this.supabase
-      .from('recycle_stores')
-      .select('*')
-      .eq('id', id)
-      .eq('is_deleted', false)
-      .single();
+    try {
+      // 检查门店是否存在
+      const { data: existingStore } = await this.supabase
+        .from('recycle_stores')
+        .select('*')
+        .eq('id', id)
+        .eq('is_deleted', false)
+        .single();
 
-    if (!existingStore) {
-      throw new NotFoundException('回收门店不存在');
+      if (!existingStore) {
+        throw new NotFoundException('回收门店不存在');
+      }
+
+      // 权限检查
+      if (!isAdmin && existingStore.user_id !== userId) {
+        throw new ForbiddenException('无权修改此门店');
+      }
+
+      // 准备更新数据
+      const updateData: Record<string, any> = {
+        updated_at: new Date().toISOString()
+      };
+
+      // 可选字段
+      if (dto.store_name !== undefined) updateData.store_name = dto.store_name;
+      if (dto.phone !== undefined) updateData.phone = dto.phone;
+      if (dto.wechat !== undefined) updateData.wechat = dto.wechat;
+      if (dto.xiaohongshu !== undefined) updateData.xiaohongshu = dto.xiaohongshu;
+      if (dto.douyin !== undefined) updateData.douyin = dto.douyin;
+      if (dto.city !== undefined) updateData.city = dto.city;
+      if (dto.address !== undefined) updateData.address = dto.address;
+      if (dto.location !== undefined) updateData.location = dto.location;
+      if (dto.business_type !== undefined) updateData.business_type = dto.business_type;
+      if (dto.area_size !== undefined) updateData.area_size = dto.area_size;
+      if (dto.open_date !== undefined) updateData.open_date = dto.open_date;
+      if (dto.close_reason !== undefined) updateData.close_reason = dto.close_reason;
+      if (dto.recycle_status !== undefined) updateData.recycle_status = dto.recycle_status;
+      if (dto.estimated_devices !== undefined) updateData.estimated_devices = dto.estimated_devices;
+      if (dto.estimated_value !== undefined) updateData.estimated_value = dto.estimated_value;
+      if (dto.purchase_price !== undefined) updateData.purchase_price = dto.purchase_price;
+      if (dto.transport_cost !== undefined) updateData.transport_cost = dto.transport_cost;
+      if (dto.labor_cost !== undefined) updateData.labor_cost = dto.labor_cost;
+      if (dto.total_cost !== undefined) updateData.total_cost = dto.total_cost;
+      if (dto.recycle_date !== undefined) updateData.recycle_date = dto.recycle_date;
+      if (dto.device_count !== undefined) updateData.device_count = dto.device_count;
+      if (dto.device_status !== undefined) updateData.device_status = dto.device_status;
+
+      // 记录状态变更
+      if (dto.recycle_status && dto.recycle_status !== existingStore.recycle_status) {
+        console.log(`[RecycleService] Status change: ${existingStore.recycle_status} -> ${dto.recycle_status}`);
+      }
+
+      console.log('[RecycleService] Updating store with data:', JSON.stringify(updateData));
+
+      const { data: store, error } = await this.supabase
+        .from('recycle_stores')
+        .update(updateData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('[RecycleService] Update store error:', error);
+        throw new Error(`更新回收门店失败: ${error.message}`);
+      }
+
+      return store;
+    } catch (error) {
+      console.error('[RecycleService] Update store exception:', error);
+      throw error;
     }
-
-    // 权限检查
-    if (!isAdmin && existingStore.user_id !== userId) {
-      throw new ForbiddenException('无权修改此门店');
-    }
-
-    // 记录状态变更
-    if (dto.recycle_status && dto.recycle_status !== existingStore.recycle_status) {
-      // 可以在这里添加状态变更历史记录
-      console.log(`[RecycleService] Status change: ${existingStore.recycle_status} -> ${dto.recycle_status}`);
-    }
-
-    const { data: store, error } = await this.supabase
-      .from('recycle_stores')
-      .update(dto)
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('[RecycleService] Update store error:', error);
-      throw new Error(`更新回收门店失败: ${error.message}`);
-    }
-
-    return store;
   }
 
   async deleteStore(id: string, userId: string, isAdmin: boolean) {
