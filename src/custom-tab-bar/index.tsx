@@ -2,38 +2,50 @@ import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useEffect, useState, useCallback } from 'react';
 
+// 导入图标
+import layoutDashboardIcon from '@/assets/tabbar/layout-dashboard.png';
+import layoutDashboardActiveIcon from '@/assets/tabbar/layout-dashboard-active.png';
+import usersIcon from '@/assets/tabbar/users.png';
+import usersActiveIcon from '@/assets/tabbar/users-active.png';
+import bookOpenIcon from '@/assets/tabbar/book-open.png';
+import bookOpenActiveIcon from '@/assets/tabbar/book-open-active.png';
+import penToolIcon from '@/assets/tabbar/pen-tool.png';
+import penToolActiveIcon from '@/assets/tabbar/pen-tool-active.png';
+import userIcon from '@/assets/tabbar/user.png';
+import userActiveIcon from '@/assets/tabbar/user-active.png';
+
 // TabBar 配置
 const TAB_LIST = [
   {
     pagePath: '/pages/tab-home/index',
     text: '工作台',
-    iconPath: './assets/tabbar/layout-dashboard.png',
-    selectedIconPath: './assets/tabbar/layout-dashboard-active.png',
+    icon: layoutDashboardIcon,
+    activeIcon: layoutDashboardActiveIcon,
   },
   {
     pagePath: '/pages/tab-customer/index',
     text: '客资管理',
-    iconPath: './assets/tabbar/users.png',
-    selectedIconPath: './assets/tabbar/users-active.png',
+    icon: usersIcon,
+    activeIcon: usersActiveIcon,
   },
   {
     pagePath: '/pages/tab-knowledge/index',
     text: '知识库',
-    iconPath: './assets/tabbar/book-open.png',
-    selectedIconPath: './assets/tabbar/book-open-active.png',
+    icon: bookOpenIcon,
+    activeIcon: bookOpenActiveIcon,
   },
   {
     pagePath: '/pages/tab-content/index',
     text: '内容创作',
-    iconPath: './assets/tabbar/pen-tool.png',
-    selectedIconPath: './assets/tabbar/pen-tool-active.png',
+    icon: penToolIcon,
+    activeIcon: penToolActiveIcon,
     requireLogin: true, // 需要登录才显示
   },
   {
     pagePath: '/pages/tab-profile/index',
     text: '我',
-    iconPath: './assets/tabbar/user.png',
-    selectedIconPath: './assets/tabbar/user-active.png',
+    icon: userIcon,
+    activeIcon: userActiveIcon,
   },
 ];
 
@@ -133,7 +145,7 @@ export default function CustomTabBar() {
             onClick={() => switchTab(tab.pagePath, actualIndex)}
           >
             <Image
-              src={isSelected ? tab.selectedIconPath : tab.iconPath}
+              src={isSelected ? tab.activeIcon : tab.icon}
               style={{ width: '24px', height: '24px' }}
               mode="aspectFit"
             />
