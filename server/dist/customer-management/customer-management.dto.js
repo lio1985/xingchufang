@@ -85,14 +85,14 @@ __decorate([
 ], CreateCustomerDto.prototype, "location", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerSource),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "source", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerType),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "customerType", void 0);
+], CreateCustomerDto.prototype, "customer_type", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
@@ -100,39 +100,39 @@ __decorate([
 ], CreateCustomerDto.prototype, "requirements", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsDecimal)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "estimatedAmount", void 0);
+], CreateCustomerDto.prototype, "estimated_amount", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "firstFollowUpAt", void 0);
+], CreateCustomerDto.prototype, "first_follow_up_at", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "firstFollowUpContent", void 0);
+], CreateCustomerDto.prototype, "first_follow_up_content", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "firstFollowUpMethod", void 0);
+], CreateCustomerDto.prototype, "first_follow_up_method", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCustomerDto.prototype, "status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(OrderBelonging),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "orderBelonging", void 0);
+], CreateCustomerDto.prototype, "order_belonging", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(OrderStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateCustomerDto.prototype, "orderStatus", void 0);
+], CreateCustomerDto.prototype, "order_status", void 0);
 class UpdateCustomerDto {
 }
 exports.UpdateCustomerDto = UpdateCustomerDto;
@@ -177,14 +177,14 @@ __decorate([
 ], UpdateCustomerDto.prototype, "location", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerSource),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateCustomerDto.prototype, "source", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerType),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateCustomerDto.prototype, "customerType", void 0);
+], UpdateCustomerDto.prototype, "customer_type", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
@@ -192,24 +192,24 @@ __decorate([
 ], UpdateCustomerDto.prototype, "requirements", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsDecimal)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateCustomerDto.prototype, "estimatedAmount", void 0);
+], UpdateCustomerDto.prototype, "estimated_amount", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateCustomerDto.prototype, "status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(OrderBelonging),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateCustomerDto.prototype, "orderBelonging", void 0);
+], UpdateCustomerDto.prototype, "order_belonging", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(OrderStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateCustomerDto.prototype, "orderStatus", void 0);
+], UpdateCustomerDto.prototype, "order_status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
@@ -251,24 +251,24 @@ __decorate([
 ], CustomerQueryDto.prototype, "pageSize", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CustomerQueryDto.prototype, "status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CustomerType),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CustomerQueryDto.prototype, "customerType", void 0);
+], CustomerQueryDto.prototype, "customer_type", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(OrderBelonging),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CustomerQueryDto.prototype, "orderBelonging", void 0);
+], CustomerQueryDto.prototype, "order_belonging", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(OrderStatus),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CustomerQueryDto.prototype, "orderStatus", void 0);
+], CustomerQueryDto.prototype, "order_status", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),

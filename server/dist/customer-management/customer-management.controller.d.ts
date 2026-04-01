@@ -23,11 +23,19 @@ export declare class CustomerManagementController {
         code: number;
         msg: string;
         data: any;
+    } | {
+        code: number;
+        msg: any;
+        data: null;
     }>;
     updateCustomer(id: string, dto: UpdateCustomerDto, req: any): Promise<{
         code: number;
         msg: string;
         data: any;
+    } | {
+        code: number;
+        msg: any;
+        data: null;
     }>;
     deleteCustomer(id: string, req: any): Promise<{
         code: number;

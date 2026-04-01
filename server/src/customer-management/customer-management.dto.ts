@@ -67,44 +67,44 @@ export class CreateCustomerDto {
   };
 
   @IsOptional()
-  @IsEnum(CustomerSource)
-  source?: CustomerSource; // 客户来源
+  @IsString()
+  source?: string; // 客户来源（前端发送中文：抖音、小红书等）
 
   @IsOptional()
-  @IsEnum(CustomerType)
-  customerType?: CustomerType; // 客户类别
+  @IsString()
+  customer_type?: string; // 客户类别（前端发送中文：餐饮小白创业、餐饮老板、其他）
 
   @IsOptional()
   @IsString()
   requirements?: string; // 客户需求
 
   @IsOptional()
-  @IsDecimal()
-  estimatedAmount?: string; // 预计销售金额
+  @IsString()
+  estimated_amount?: string; // 预计销售金额
 
   @IsOptional()
   @IsDateString()
-  firstFollowUpAt?: string; // 第一轮跟进时间
+  first_follow_up_at?: string; // 第一轮跟进时间
 
   @IsOptional()
   @IsString()
-  firstFollowUpContent?: string; // 第一轮跟进内容
+  first_follow_up_content?: string; // 第一轮跟进内容
 
   @IsOptional()
   @IsString()
-  firstFollowUpMethod?: string; // 第一轮跟进方式
+  first_follow_up_method?: string; // 第一轮跟进方式
 
   @IsOptional()
-  @IsEnum(CustomerStatus)
-  status?: CustomerStatus; // 客户状态
+  @IsString()
+  status?: string; // 客户状态（normal, at_risk, lost）
 
   @IsOptional()
-  @IsEnum(OrderBelonging)
-  orderBelonging?: OrderBelonging; // 订单归属
+  @IsString()
+  order_belonging?: string; // 订单归属（星厨房总仓、巴国城店、五里店董家溪店）
 
   @IsOptional()
-  @IsEnum(OrderStatus)
-  orderStatus?: OrderStatus; // 订单状态
+  @IsString()
+  order_status?: string; // 订单状态（in_progress, completed）
 }
 
 export class UpdateCustomerDto {
@@ -144,32 +144,32 @@ export class UpdateCustomerDto {
   };
 
   @IsOptional()
-  @IsEnum(CustomerSource)
-  source?: CustomerSource;
+  @IsString()
+  source?: string;
 
   @IsOptional()
-  @IsEnum(CustomerType)
-  customerType?: CustomerType;
+  @IsString()
+  customer_type?: string;
 
   @IsOptional()
   @IsString()
   requirements?: string;
 
   @IsOptional()
-  @IsDecimal()
-  estimatedAmount?: string;
+  @IsString()
+  estimated_amount?: string;
 
   @IsOptional()
-  @IsEnum(CustomerStatus)
-  status?: CustomerStatus;
+  @IsString()
+  status?: string;
 
   @IsOptional()
-  @IsEnum(OrderBelonging)
-  orderBelonging?: OrderBelonging;
+  @IsString()
+  order_belonging?: string;
 
   @IsOptional()
-  @IsEnum(OrderStatus)
-  orderStatus?: OrderStatus;
+  @IsString()
+  order_status?: string;
 
   @IsOptional()
   @IsString()
@@ -202,20 +202,20 @@ export class CustomerQueryDto {
   pageSize?: number;
 
   @IsOptional()
-  @IsEnum(CustomerStatus)
-  status?: CustomerStatus;
+  @IsString()
+  status?: string; // normal, at_risk, lost
 
   @IsOptional()
-  @IsEnum(CustomerType)
-  customerType?: CustomerType;
+  @IsString()
+  customer_type?: string; // 餐饮小白创业, 餐饮老板, 其他
 
   @IsOptional()
-  @IsEnum(OrderBelonging)
-  orderBelonging?: OrderBelonging;
+  @IsString()
+  order_belonging?: string; // 星厨房总仓, 巴国城店, 五里店董家溪店
 
   @IsOptional()
-  @IsEnum(OrderStatus)
-  orderStatus?: OrderStatus;
+  @IsString()
+  order_status?: string; // in_progress, completed
 
   @IsOptional()
   @IsString()

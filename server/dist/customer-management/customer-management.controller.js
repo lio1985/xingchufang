@@ -56,19 +56,31 @@ let CustomerManagementController = class CustomerManagementController {
         return { code: 200, msg: 'success', data: customer };
     }
     async createCustomer(dto, req) {
-        console.log('[CustomerController] Create customer, name:', dto.name);
-        const userId = req.user?.id;
-        const customer = await this.customerService.createCustomer(dto, userId);
-        console.log('[CustomerController] Create customer success:', customer.id);
-        return { code: 200, msg: 'success', data: customer };
+        try {
+            console.log('[CustomerController] Create customer, dto:', JSON.stringify(dto));
+            const userId = req.user?.id;
+            const customer = await this.customerService.createCustomer(dto, userId);
+            console.log('[CustomerController] Create customer success:', customer.id);
+            return { code: 200, msg: 'success', data: customer };
+        }
+        catch (error) {
+            console.error('[CustomerController] Create customer error:', error);
+            return { code: 500, msg: error.message || '创建客户失败', data: null };
+        }
     }
     async updateCustomer(id, dto, req) {
-        console.log('[CustomerController] Update customer:', id);
-        const userId = req.user?.id;
-        const isAdmin = req.user?.role === 'admin';
-        const customer = await this.customerService.updateCustomer(id, dto, userId, isAdmin);
-        console.log('[CustomerController] Update customer success:', id);
-        return { code: 200, msg: 'success', data: customer };
+        try {
+            console.log('[CustomerController] Update customer:', id, 'dto:', JSON.stringify(dto));
+            const userId = req.user?.id;
+            const isAdmin = req.user?.role === 'admin';
+            const customer = await this.customerService.updateCustomer(id, dto, userId, isAdmin);
+            console.log('[CustomerController] Update customer success:', id);
+            return { code: 200, msg: 'success', data: customer };
+        }
+        catch (error) {
+            console.error('[CustomerController] Update customer error:', error);
+            return { code: 500, msg: error.message || '更新客户失败', data: null };
+        }
     }
     async deleteCustomer(id, req) {
         console.log('[CustomerController] Delete customer:', id);

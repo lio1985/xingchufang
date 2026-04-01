@@ -37,16 +37,16 @@ export declare class CreateCustomerDto {
         longitude: number;
         address: string;
     };
-    source?: CustomerSource;
-    customerType?: CustomerType;
+    source?: string;
+    customer_type?: string;
     requirements?: string;
-    estimatedAmount?: string;
-    firstFollowUpAt?: string;
-    firstFollowUpContent?: string;
-    firstFollowUpMethod?: string;
-    status?: CustomerStatus;
-    orderBelonging?: OrderBelonging;
-    orderStatus?: OrderStatus;
+    estimated_amount?: string;
+    first_follow_up_at?: string;
+    first_follow_up_content?: string;
+    first_follow_up_method?: string;
+    status?: string;
+    order_belonging?: string;
+    order_status?: string;
 }
 export declare class UpdateCustomerDto {
     name?: string;
@@ -61,13 +61,13 @@ export declare class UpdateCustomerDto {
         longitude: number;
         address: string;
     };
-    source?: CustomerSource;
-    customerType?: CustomerType;
+    source?: string;
+    customer_type?: string;
     requirements?: string;
-    estimatedAmount?: string;
-    status?: CustomerStatus;
-    orderBelonging?: OrderBelonging;
-    orderStatus?: OrderStatus;
+    estimated_amount?: string;
+    status?: string;
+    order_belonging?: string;
+    order_status?: string;
     statusChangeReason?: string;
 }
 export declare class CreateFollowUpDto {
@@ -79,10 +79,10 @@ export declare class CreateFollowUpDto {
 export declare class CustomerQueryDto {
     page?: number;
     pageSize?: number;
-    status?: CustomerStatus;
-    customerType?: CustomerType;
-    orderBelonging?: OrderBelonging;
-    orderStatus?: OrderStatus;
+    status?: string;
+    customer_type?: string;
+    order_belonging?: string;
+    order_status?: string;
     keyword?: string;
     userId?: string;
     orderBy?: string;

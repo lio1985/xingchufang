@@ -18,7 +18,7 @@ let CustomerManagementService = class CustomerManagementService {
         this.supabase = this.databaseService.getClient();
     }
     async getCustomers(userId, isAdmin, query) {
-        const { page = 1, pageSize = 20, status, customerType, orderBelonging, keyword, orderBy = 'updated_at', order = 'desc' } = query;
+        const { page = 1, pageSize = 20, status, customer_type, order_belonging, order_status, keyword, orderBy = 'updated_at', order = 'desc' } = query;
         let dbQuery = this.supabase
             .from('customers')
             .select('*', { count: 'exact' })
@@ -32,14 +32,14 @@ let CustomerManagementService = class CustomerManagementService {
         if (status) {
             dbQuery = dbQuery.eq('status', status);
         }
-        if (customerType) {
-            dbQuery = dbQuery.eq('customer_type', customerType);
+        if (customer_type) {
+            dbQuery = dbQuery.eq('customer_type', customer_type);
         }
-        if (orderBelonging) {
-            dbQuery = dbQuery.eq('order_belonging', orderBelonging);
+        if (order_belonging) {
+            dbQuery = dbQuery.eq('order_belonging', order_belonging);
         }
-        if (query.orderStatus) {
-            dbQuery = dbQuery.eq('order_status', query.orderStatus);
+        if (order_status) {
+            dbQuery = dbQuery.eq('order_status', order_status);
         }
         if (keyword) {
             dbQuery = dbQuery.or(`name.ilike.%${keyword}%,phone.ilike.%${keyword}%,wechat.ilike.%${keyword}%`);
@@ -77,66 +77,138 @@ let CustomerManagementService = class CustomerManagementService {
         return customer;
     }
     async createCustomer(dto, userId) {
-        const { data: customer, error } = await this.supabase
-            .from('customers')
-            .insert({
-            ...dto,
-            user_id: userId,
-            first_follow_up_at: dto.firstFollowUpAt || new Date().toISOString()
-        })
-            .select()
-            .single();
-        if (error) {
-            console.error('[CustomerService] Create customer error:', error);
-            throw new Error(`创建客户失败: ${error.message}`);
-        }
-        if (dto.firstFollowUpContent) {
-            await this.supabase.from('customer_follow_ups').insert({
-                customer_id: customer.id,
+        try {
+            const insertData = {
+                name: dto.name,
                 user_id: userId,
-                follow_up_time: dto.firstFollowUpAt || new Date().toISOString(),
-                content: dto.firstFollowUpContent,
-                follow_up_method: dto.firstFollowUpMethod || 'other'
-            });
+            };
+            if (dto.wechat)
+                insertData.wechat = dto.wechat;
+            if (dto.xiaohongshu)
+                insertData.xiaohongshu = dto.xiaohongshu;
+            if (dto.douyin)
+                insertData.douyin = dto.douyin;
+            if (dto.phone)
+                insertData.phone = dto.phone;
+            if (dto.category)
+                insertData.category = dto.category;
+            if (dto.city)
+                insertData.city = dto.city;
+            if (dto.location)
+                insertData.location = dto.location;
+            if (dto.source)
+                insertData.source = dto.source;
+            if (dto.customer_type)
+                insertData.customer_type = dto.customer_type;
+            if (dto.requirements)
+                insertData.requirements = dto.requirements;
+            if (dto.estimated_amount)
+                insertData.estimated_amount = dto.estimated_amount;
+            if (dto.status)
+                insertData.status = dto.status;
+            if (dto.order_belonging)
+                insertData.order_belonging = dto.order_belonging;
+            if (dto.order_status)
+                insertData.order_status = dto.order_status;
+            insertData.first_follow_up_at = dto.first_follow_up_at || new Date().toISOString();
+            console.log('[CustomerService] Inserting customer data:', JSON.stringify(insertData));
+            const { data: customer, error } = await this.supabase
+                .from('customers')
+                .insert(insertData)
+                .select()
+                .single();
+            if (error) {
+                console.error('[CustomerService] Create customer error:', error);
+                throw new Error(`创建客户失败: ${error.message}`);
+            }
+            if (dto.first_follow_up_content) {
+                await this.supabase.from('customer_follow_ups').insert({
+                    customer_id: customer.id,
+                    user_id: userId,
+                    follow_up_time: dto.first_follow_up_at || new Date().toISOString(),
+                    content: dto.first_follow_up_content,
+                    follow_up_method: dto.first_follow_up_method || 'other'
+                });
+            }
+            return customer;
         }
-        return customer;
+        catch (error) {
+            console.error('[CustomerService] Create customer exception:', error);
+            throw error;
+        }
     }
     async updateCustomer(id, dto, userId, isAdmin) {
-        const { data: existing } = await this.supabase
-            .from('customers')
-            .select('user_id, status')
-            .eq('id', id)
-            .eq('is_deleted', false)
-            .single();
-        if (!existing) {
-            throw new common_1.NotFoundException('客户不存在');
+        try {
+            const { data: existing } = await this.supabase
+                .from('customers')
+                .select('user_id, status')
+                .eq('id', id)
+                .eq('is_deleted', false)
+                .single();
+            if (!existing) {
+                throw new common_1.NotFoundException('客户不存在');
+            }
+            if (!isAdmin && existing.user_id !== userId) {
+                throw new common_1.ForbiddenException('无权修改此客户');
+            }
+            const updateData = {
+                updated_at: new Date().toISOString()
+            };
+            if (dto.name !== undefined)
+                updateData.name = dto.name;
+            if (dto.wechat !== undefined)
+                updateData.wechat = dto.wechat;
+            if (dto.xiaohongshu !== undefined)
+                updateData.xiaohongshu = dto.xiaohongshu;
+            if (dto.douyin !== undefined)
+                updateData.douyin = dto.douyin;
+            if (dto.phone !== undefined)
+                updateData.phone = dto.phone;
+            if (dto.category !== undefined)
+                updateData.category = dto.category;
+            if (dto.city !== undefined)
+                updateData.city = dto.city;
+            if (dto.location !== undefined)
+                updateData.location = dto.location;
+            if (dto.source !== undefined)
+                updateData.source = dto.source;
+            if (dto.customer_type !== undefined)
+                updateData.customer_type = dto.customer_type;
+            if (dto.requirements !== undefined)
+                updateData.requirements = dto.requirements;
+            if (dto.estimated_amount !== undefined)
+                updateData.estimated_amount = dto.estimated_amount;
+            if (dto.order_belonging !== undefined)
+                updateData.order_belonging = dto.order_belonging;
+            if (dto.order_status !== undefined)
+                updateData.order_status = dto.order_status;
+            if (dto.status && dto.status !== existing.status) {
+                updateData.status = dto.status;
+                await this.supabase.from('customer_status_history').insert({
+                    customer_id: id,
+                    user_id: userId,
+                    old_status: existing.status,
+                    new_status: dto.status,
+                    reason: dto.statusChangeReason
+                });
+            }
+            console.log('[CustomerService] Updating customer data:', JSON.stringify(updateData));
+            const { data: customer, error } = await this.supabase
+                .from('customers')
+                .update(updateData)
+                .eq('id', id)
+                .select()
+                .single();
+            if (error) {
+                console.error('[CustomerService] Update customer error:', error);
+                throw new Error(`更新客户失败: ${error.message}`);
+            }
+            return customer;
         }
-        if (!isAdmin && existing.user_id !== userId) {
-            throw new common_1.ForbiddenException('无权修改此客户');
+        catch (error) {
+            console.error('[CustomerService] Update customer exception:', error);
+            throw error;
         }
-        if (dto.status && dto.status !== existing.status) {
-            await this.supabase.from('customer_status_history').insert({
-                customer_id: id,
-                user_id: userId,
-                old_status: existing.status,
-                new_status: dto.status,
-                reason: dto.statusChangeReason
-            });
-        }
-        const { data: customer, error } = await this.supabase
-            .from('customers')
-            .update({
-            ...dto,
-            updated_at: new Date().toISOString()
-        })
-            .eq('id', id)
-            .select()
-            .single();
-        if (error) {
-            console.error('[CustomerService] Update customer error:', error);
-            throw new Error(`更新客户失败: ${error.message}`);
-        }
-        return customer;
     }
     async deleteCustomer(id, userId, isAdmin) {
         const { data: existing } = await this.supabase
