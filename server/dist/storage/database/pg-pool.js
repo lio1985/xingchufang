@@ -25,19 +25,36 @@ function loadEnv() {
 function getPool() {
     if (!pool) {
         loadEnv();
-        const supabaseUrl = process.env.COZE_SUPABASE_URL || '';
-        const supabaseKey = process.env.COZE_SUPABASE_SERVICE_ROLE_KEY || '';
-        const match = supabaseUrl.match(/https:\/\/([a-zA-Z0-9]+)\.supabase\.co/);
-        const projectRef = match ? match[1] : '';
-        const connectionString = process.env.DATABASE_URL ||
-            `postgresql://postgres.${projectRef}:${encodeURIComponent(supabaseKey)}@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres`;
+        let connectionString = process.env.DATABASE_URL;
+        if (!connectionString) {
+            const supabaseUrl = process.env.COZE_SUPABASE_URL || '';
+            const match = supabaseUrl.match(/https:\/\/([a-zA-Z0-9]+)\.supabase\.co/);
+            const projectRef = match ? match[1] : '';
+            if (projectRef && process.env.COZE_SUPABASE_DB_PASSWORD) {
+                connectionString = `postgresql://postgres.${projectRef}:${encodeURIComponent(process.env.COZE_SUPABASE_DB_PASSWORD)}@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres`;
+            }
+            else if (projectRef) {
+                const supabaseKey = process.env.COZE_SUPABASE_SERVICE_ROLE_KEY || '';
+                connectionString = `postgresql://postgres.${projectRef}:${encodeURIComponent(supabaseKey)}@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres`;
+            }
+        }
+        if (!connectionString) {
+            console.error('[PgPool] ERROR: No database connection string available');
+            throw new Error('Database connection string not configured');
+        }
+        console.log('[PgPool] Creating database pool...');
         pool = new pg_1.Pool({
             connectionString,
             max: 5,
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 10000,
         });
-        console.log('[PgPool] Database pool created');
+        pool.on('error', (err) => {
+            console.error('[PgPool] Unexpected error on idle client:', err);
+        });
+        pool.query('SELECT 1')
+            .then(() => console.log('[PgPool] Database connection test successful'))
+            .catch((err) => console.error('[PgPool] Database connection test failed:', err.message));
     }
     return pool;
 }

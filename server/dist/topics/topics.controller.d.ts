@@ -26,6 +26,10 @@ export declare class TopicsController {
         code: number;
         msg: string;
         data: import("./topics.service").Topic;
+    } | {
+        code: number;
+        msg: any;
+        data: null;
     }>;
     update(req: any, id: string, dto: UpdateTopicDto): Promise<{
         code: number;

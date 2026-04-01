@@ -60,7 +60,6 @@ export interface TopicQueryDto {
     pageSize?: number;
 }
 export declare class TopicsService {
-    private client;
     private llmClient;
     constructor();
     getAll(userId: string, query: TopicQueryDto): Promise<{
