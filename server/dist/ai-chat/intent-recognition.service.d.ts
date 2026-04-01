@@ -1,3 +1,4 @@
+import { DoubaoLLMService } from './doubao-llm.service';
 export interface Intent {
     type: 'quick_note' | 'topic_generation' | 'content_generation' | 'lexicon_optimize' | 'viral_replicate' | 'unknown';
     confidence: number;
@@ -12,9 +13,9 @@ export interface Message {
     timestamp?: number;
 }
 export declare class IntentRecognitionService {
-    private llmClient;
+    private doubaoLLMService;
     private readonly endpointId;
-    constructor();
+    constructor(doubaoLLMService: DoubaoLLMService);
     recognizeIntent(userMessage: string, conversationHistory?: Message[]): Promise<Intent>;
     private quickIntentRecognition;
     private buildIntentPrompt;

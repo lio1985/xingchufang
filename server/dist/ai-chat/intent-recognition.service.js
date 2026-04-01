@@ -11,12 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IntentRecognitionService = void 0;
 const common_1 = require("@nestjs/common");
-const coze_coding_dev_sdk_1 = require("coze-coding-dev-sdk");
+const doubao_llm_service_1 = require("./doubao-llm.service");
 let IntentRecognitionService = class IntentRecognitionService {
-    constructor() {
+    constructor(doubaoLLMService) {
+        this.doubaoLLMService = doubaoLLMService;
         this.endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
-        const config = new coze_coding_dev_sdk_1.Config();
-        this.llmClient = new coze_coding_dev_sdk_1.LLMClient(config);
         console.log('=== IntentRecognition: 初始化 ===');
         console.log('接入点 ID:', this.endpointId);
     }
@@ -42,11 +41,8 @@ let IntentRecognitionService = class IntentRecognitionService {
             }
         ];
         try {
-            const response = await this.llmClient.invoke(messages, {
-                model: this.endpointId,
+            const response = await this.doubaoLLMService.invoke(messages, {
                 temperature: 0.3,
-                thinking: 'disabled',
-                caching: 'disabled'
             });
             const intent = this.parseIntentResponse(response.content);
             intent.recommendedModel = this.recommendModel(intent);
@@ -277,6 +273,6 @@ ${userMessage}
 exports.IntentRecognitionService = IntentRecognitionService;
 exports.IntentRecognitionService = IntentRecognitionService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [doubao_llm_service_1.DoubaoLLMService])
 ], IntentRecognitionService);
 //# sourceMappingURL=intent-recognition.service.js.map

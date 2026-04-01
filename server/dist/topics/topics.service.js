@@ -292,40 +292,56 @@ ${topic.inspiration_data ? `灵感数据：${JSON.stringify(topic.inspiration_da
         await pool.query(query, [status, ids, userId]);
     }
     async getStatistics(userId) {
-        const pool = (0, pg_pool_1.getPool)();
-        const statusQuery = 'SELECT status, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY status';
-        const statusResult = await pool.query(statusQuery, [userId]);
-        const statusCounts = {
-            draft: 0,
-            in_progress: 0,
-            published: 0,
-            archived: 0,
-        };
-        statusResult.rows.forEach(row => {
-            if (statusCounts.hasOwnProperty(row.status)) {
-                statusCounts[row.status] = parseInt(row.count, 10);
-            }
-        });
-        const categoryQuery = 'SELECT category, COUNT(*) as count FROM topics WHERE user_id = $1 AND category IS NOT NULL GROUP BY category';
-        const categoryResult = await pool.query(categoryQuery, [userId]);
-        const categoryCounts = {};
-        categoryResult.rows.forEach(row => {
-            categoryCounts[row.category] = parseInt(row.count, 10);
-        });
-        const platformQuery = 'SELECT platform, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY platform';
-        const platformResult = await pool.query(platformQuery, [userId]);
-        const platformCounts = {};
-        platformResult.rows.forEach(row => {
-            platformCounts[row.platform] = parseInt(row.count, 10);
-        });
-        const totalQuery = 'SELECT COUNT(*) as total FROM topics WHERE user_id = $1';
-        const totalResult = await pool.query(totalQuery, [userId]);
-        return {
-            total: parseInt(totalResult.rows[0].total, 10),
-            byStatus: statusCounts,
-            byCategory: categoryCounts,
-            byPlatform: platformCounts,
-        };
+        try {
+            const pool = (0, pg_pool_1.getPool)();
+            const statusQuery = 'SELECT status, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY status';
+            const statusResult = await pool.query(statusQuery, [userId]);
+            const statusCounts = {
+                draft: 0,
+                in_progress: 0,
+                published: 0,
+                archived: 0,
+            };
+            statusResult.rows.forEach(row => {
+                if (statusCounts.hasOwnProperty(row.status)) {
+                    statusCounts[row.status] = parseInt(row.count, 10);
+                }
+            });
+            const categoryQuery = 'SELECT category, COUNT(*) as count FROM topics WHERE user_id = $1 AND category IS NOT NULL GROUP BY category';
+            const categoryResult = await pool.query(categoryQuery, [userId]);
+            const categoryCounts = {};
+            categoryResult.rows.forEach(row => {
+                categoryCounts[row.category] = parseInt(row.count, 10);
+            });
+            const platformQuery = 'SELECT platform, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY platform';
+            const platformResult = await pool.query(platformQuery, [userId]);
+            const platformCounts = {};
+            platformResult.rows.forEach(row => {
+                platformCounts[row.platform] = parseInt(row.count, 10);
+            });
+            const totalQuery = 'SELECT COUNT(*) as total FROM topics WHERE user_id = $1';
+            const totalResult = await pool.query(totalQuery, [userId]);
+            return {
+                total: parseInt(totalResult.rows[0].total, 10),
+                byStatus: statusCounts,
+                byCategory: categoryCounts,
+                byPlatform: platformCounts,
+            };
+        }
+        catch (error) {
+            console.error('[TopicsService] 获取统计数据失败:', error);
+            return {
+                total: 0,
+                byStatus: {
+                    draft: 0,
+                    in_progress: 0,
+                    published: 0,
+                    archived: 0,
+                },
+                byCategory: {},
+                byPlatform: {},
+            };
+        }
     }
 };
 exports.TopicsService = TopicsService;

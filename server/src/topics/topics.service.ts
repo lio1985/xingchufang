@@ -419,52 +419,68 @@ ${topic.inspiration_data ? `灵感数据：${JSON.stringify(topic.inspiration_da
    * 获取统计数据
    */
   async getStatistics(userId: string): Promise<Record<string, any>> {
-    const pool = getPool();
+    try {
+      const pool = getPool();
 
-    // 获取各状态数量
-    const statusQuery = 'SELECT status, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY status';
-    const statusResult = await pool.query(statusQuery, [userId]);
-    
-    const statusCounts: Record<string, number> = {
-      draft: 0,
-      in_progress: 0,
-      published: 0,
-      archived: 0,
-    };
-    
-    statusResult.rows.forEach(row => {
-      if (statusCounts.hasOwnProperty(row.status)) {
-        statusCounts[row.status] = parseInt(row.count, 10);
-      }
-    });
+      // 获取各状态数量
+      const statusQuery = 'SELECT status, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY status';
+      const statusResult = await pool.query(statusQuery, [userId]);
+      
+      const statusCounts: Record<string, number> = {
+        draft: 0,
+        in_progress: 0,
+        published: 0,
+        archived: 0,
+      };
+      
+      statusResult.rows.forEach(row => {
+        if (statusCounts.hasOwnProperty(row.status)) {
+          statusCounts[row.status] = parseInt(row.count, 10);
+        }
+      });
 
-    // 获取分类分布
-    const categoryQuery = 'SELECT category, COUNT(*) as count FROM topics WHERE user_id = $1 AND category IS NOT NULL GROUP BY category';
-    const categoryResult = await pool.query(categoryQuery, [userId]);
-    
-    const categoryCounts: Record<string, number> = {};
-    categoryResult.rows.forEach(row => {
-      categoryCounts[row.category] = parseInt(row.count, 10);
-    });
+      // 获取分类分布
+      const categoryQuery = 'SELECT category, COUNT(*) as count FROM topics WHERE user_id = $1 AND category IS NOT NULL GROUP BY category';
+      const categoryResult = await pool.query(categoryQuery, [userId]);
+      
+      const categoryCounts: Record<string, number> = {};
+      categoryResult.rows.forEach(row => {
+        categoryCounts[row.category] = parseInt(row.count, 10);
+      });
 
-    // 获取平台分布
-    const platformQuery = 'SELECT platform, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY platform';
-    const platformResult = await pool.query(platformQuery, [userId]);
-    
-    const platformCounts: Record<string, number> = {};
-    platformResult.rows.forEach(row => {
-      platformCounts[row.platform] = parseInt(row.count, 10);
-    });
+      // 获取平台分布
+      const platformQuery = 'SELECT platform, COUNT(*) as count FROM topics WHERE user_id = $1 GROUP BY platform';
+      const platformResult = await pool.query(platformQuery, [userId]);
+      
+      const platformCounts: Record<string, number> = {};
+      platformResult.rows.forEach(row => {
+        platformCounts[row.platform] = parseInt(row.count, 10);
+      });
 
-    // 获取总数
-    const totalQuery = 'SELECT COUNT(*) as total FROM topics WHERE user_id = $1';
-    const totalResult = await pool.query(totalQuery, [userId]);
+      // 获取总数
+      const totalQuery = 'SELECT COUNT(*) as total FROM topics WHERE user_id = $1';
+      const totalResult = await pool.query(totalQuery, [userId]);
 
-    return {
-      total: parseInt(totalResult.rows[0].total, 10),
-      byStatus: statusCounts,
-      byCategory: categoryCounts,
-      byPlatform: platformCounts,
-    };
+      return {
+        total: parseInt(totalResult.rows[0].total, 10),
+        byStatus: statusCounts,
+        byCategory: categoryCounts,
+        byPlatform: platformCounts,
+      };
+    } catch (error: any) {
+      console.error('[TopicsService] 获取统计数据失败:', error);
+      // 返回默认值，避免 500 错误
+      return {
+        total: 0,
+        byStatus: {
+          draft: 0,
+          in_progress: 0,
+          published: 0,
+          archived: 0,
+        },
+        byCategory: {},
+        byPlatform: {},
+      };
+    }
   }
 }

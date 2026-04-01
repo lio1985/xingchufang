@@ -13,6 +13,7 @@ const ai_chat_service_1 = require("./ai-chat.service");
 const intent_recognition_service_1 = require("./intent-recognition.service");
 const conversation_manager_service_1 = require("./conversation-manager.service");
 const function_executor_service_1 = require("./function-executor.service");
+const doubao_llm_service_1 = require("./doubao-llm.service");
 const content_generation_module_1 = require("../content-generation/content-generation.module");
 let AiChatModule = class AiChatModule {
 };
@@ -22,12 +23,14 @@ exports.AiChatModule = AiChatModule = __decorate([
         imports: [content_generation_module_1.ContentGenerationModule],
         controllers: [ai_chat_controller_1.AiChatController],
         providers: [
+            doubao_llm_service_1.DoubaoLLMService,
             ai_chat_service_1.AiChatService,
             intent_recognition_service_1.IntentRecognitionService,
             conversation_manager_service_1.ConversationManagerService,
             function_executor_service_1.FunctionExecutorService,
         ],
         exports: [
+            doubao_llm_service_1.DoubaoLLMService,
             ai_chat_service_1.AiChatService,
             intent_recognition_service_1.IntentRecognitionService,
             conversation_manager_service_1.ConversationManagerService,

@@ -11,18 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AiChatService = void 0;
 const common_1 = require("@nestjs/common");
-const coze_coding_dev_sdk_1 = require("coze-coding-dev-sdk");
+const doubao_llm_service_1 = require("./doubao-llm.service");
 const intent_recognition_service_1 = require("./intent-recognition.service");
 const conversation_manager_service_1 = require("./conversation-manager.service");
 const function_executor_service_1 = require("./function-executor.service");
 let AiChatService = class AiChatService {
-    constructor(intentRecognitionService, conversationManagerService, functionExecutorService) {
+    constructor(doubaoLLMService, intentRecognitionService, conversationManagerService, functionExecutorService) {
+        this.doubaoLLMService = doubaoLLMService;
         this.intentRecognitionService = intentRecognitionService;
         this.conversationManagerService = conversationManagerService;
         this.functionExecutorService = functionExecutorService;
         this.endpointId = process.env.DOUBAO_ENDPOINT_ID || 'ep-20260330092928-8pdcz';
-        const config = new coze_coding_dev_sdk_1.Config();
-        this.llmClient = new coze_coding_dev_sdk_1.LLMClient(config);
         console.log('=== AI Chat: 初始化 ===');
         console.log('接入点 ID:', this.endpointId);
     }
@@ -182,11 +181,8 @@ let AiChatService = class AiChatService {
             },
         ];
         try {
-            const response = await this.llmClient.invoke(messages, {
-                model,
+            const response = await this.doubaoLLMService.invoke(messages, {
                 temperature: 0.7,
-                thinking: 'disabled',
-                caching: 'disabled',
             });
             console.log('=== AI Chat: LLM响应成功 ===');
             console.log('响应长度:', response.content?.length || 0);
@@ -242,7 +238,8 @@ let AiChatService = class AiChatService {
 exports.AiChatService = AiChatService;
 exports.AiChatService = AiChatService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [intent_recognition_service_1.IntentRecognitionService,
+    __metadata("design:paramtypes", [doubao_llm_service_1.DoubaoLLMService,
+        intent_recognition_service_1.IntentRecognitionService,
         conversation_manager_service_1.ConversationManagerService,
         function_executor_service_1.FunctionExecutorService])
 ], AiChatService);
