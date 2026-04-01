@@ -91,18 +91,39 @@ export default defineConfig<'vite'>(async (merge, _env) => {
           },
         },
         {
-          name: 'remove-empty-css-comments',
-          generateBundle(_, bundle) {
-            // 移除 JS 文件中的 /* empty css */ 注释
+          name: 'fix-taro-bundle',
+          apply: 'build',
+          enforce: 'post',
+          renderChunk(code, chunk) {
+            // 只处理 JS 文件
+            if (chunk.fileName.endsWith('.js')) {
+              // 移除 /* empty css */ 注释
+              let fixed = code.replace(/\/\*\s*empty\s+css\s*\*\/\s*/g, '');
+              // 修复 require("..."), var l= -> require("..."); var l=
+              fixed = fixed.replace(/(require\([^)]+\)),(\s*var\s+\w+\s*=)/g, '$1;$2');
+              return fixed;
+            }
+            return null;
+          },
+          async writeBundle(_, bundle) {
+            // Taro 可能在 renderChunk 之后注入代码，需要再次检查并修复
+            const fs = await import('node:fs/promises');
+            const path = await import('node:path');
             for (const fileName in bundle) {
               if (fileName.endsWith('.js')) {
-                const chunk = bundle[fileName];
-                if (chunk.type === 'chunk' && typeof chunk.code === 'string') {
-                  // 匹配 /* empty css */ 和变体（包含不同空格数量）
-                  chunk.code = chunk.code.replace(/\/\*\s*empty\s+css\s*\*\/\s*/g, '');
-                  // 修复 Taro 编译器 bug: require("..."), var l= 应该是 require("..."); var l=
-                  // 这是页面配置生成时的语法错误
-                  chunk.code = chunk.code.replace(/\), var l=\{navigationBarTitleText/g, '); var l={navigationBarTitleText');
+                const filePath = path.resolve('dist-weapp', fileName);
+                try {
+                  let code = await fs.readFile(filePath, 'utf-8');
+                  const original = code;
+                  // 移除 /* empty css */ 注释
+                  code = code.replace(/\/\*\s*empty\s+css\s*\*\/\s*/g, '');
+                  // 修复 require("..."), var l= -> require("..."); var l=
+                  code = code.replace(/(require\([^)]+\)),(\s*var\s+\w+\s*=)/g, '$1;$2');
+                  if (code !== original) {
+                    await fs.writeFile(filePath, code);
+                  }
+                } catch {
+                  // 文件可能不在预期位置，忽略
                 }
               }
             }
