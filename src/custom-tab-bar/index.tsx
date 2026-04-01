@@ -102,12 +102,16 @@ export default function CustomTabBar() {
 
   return (
     <View 
-      className="flex flex-row w-full bg-[#141416] border-t border-zinc-800"
       style={{ 
         position: 'fixed', 
         bottom: 0, 
         left: 0, 
         right: 0,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        backgroundColor: '#141416',
+        borderTop: '1px solid #27272a',
         paddingBottom: 'env(safe-area-inset-bottom)',
         zIndex: 9999,
       }}
@@ -118,16 +122,27 @@ export default function CustomTabBar() {
         return (
           <View
             key={tab.pagePath}
-            className="flex-1 flex flex-col items-center justify-center py-2"
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '8px 0',
+            }}
             onClick={() => switchTab(tab.pagePath, actualIndex)}
           >
             <Image
               src={isSelected ? tab.selectedIconPath : tab.iconPath}
-              className="w-6 h-6"
+              style={{ width: '24px', height: '24px' }}
               mode="aspectFit"
             />
             <Text 
-              className={`text-[10px] mt-0.5 ${isSelected ? 'text-amber-500' : 'text-zinc-500'}`}
+              style={{
+                fontSize: '10px',
+                marginTop: '2px',
+                color: isSelected ? '#f59e0b' : '#71717a',
+              }}
             >
               {tab.text}
             </Text>
