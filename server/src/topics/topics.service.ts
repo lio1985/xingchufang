@@ -165,36 +165,41 @@ export class TopicsService {
   async create(userId: string, dto: CreateTopicDto): Promise<Topic> {
     const pool = getPool();
     
-    const query = `
-      INSERT INTO topics (
-        user_id, title, description, category, platform, content_type,
-        status, priority, tags, target_audience, key_points,
-        reference_urls, ai_analysis, inspiration_data, scheduled_date
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-      RETURNING *
-    `;
-    
-    const values = [
-      userId,
-      dto.title,
-      dto.description || null,
-      dto.category || null,
-      dto.platform || '公众号',
-      dto.content_type || '图文',
-      dto.status || 'draft',
-      dto.priority || 0,
-      dto.tags || null,
-      dto.target_audience || null,
-      dto.key_points || null,
-      dto.reference_urls || null,
-      dto.ai_analysis || null,
-      dto.inspiration_data || null,
-      dto.scheduled_date || null,
-    ];
-    
     try {
+      console.log('[TopicsService] 创建选题, userId:', userId, 'dto:', JSON.stringify(dto));
+      
+      const query = `
+        INSERT INTO topics (
+          user_id, title, description, category, platform, content_type,
+          status, priority, tags, target_audience, key_points,
+          reference_urls, ai_analysis, inspiration_data, scheduled_date
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+        RETURNING *
+      `;
+      
+      const values = [
+        userId,
+        dto.title,
+        dto.description || null,
+        dto.category || null,
+        dto.platform || '公众号',
+        dto.content_type || '图文',
+        dto.status || 'draft',
+        dto.priority || 0,
+        dto.tags || null,
+        dto.target_audience || null,
+        dto.key_points || null,
+        dto.reference_urls || null,
+        dto.ai_analysis || null,
+        dto.inspiration_data || null,
+        dto.scheduled_date || null,
+      ];
+      
+      console.log('[TopicsService] 执行 SQL, values:', values);
+      
       const result = await pool.query(query, values);
+      console.log('[TopicsService] 创建成功, result:', result.rows[0]);
       return result.rows[0] as Topic;
     } catch (error: any) {
       console.error('[TopicsService] 创建选题失败:', error);

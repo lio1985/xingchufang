@@ -76,17 +76,26 @@ export class TopicsController {
    */
   @Post()
   async create(@Req() req: any, @Body() dto: CreateTopicDto) {
-    console.log('=== 创建选题 ===');
-    console.log('用户ID:', req.user.id);
-    console.log('选题数据:', dto);
+    try {
+      console.log('=== 创建选题 ===');
+      console.log('用户ID:', req.user.id);
+      console.log('选题数据:', dto);
 
-    const topic = await this.topicsService.create(req.user.id, dto);
+      const topic = await this.topicsService.create(req.user.id, dto);
 
-    return {
-      code: 200,
-      msg: '创建成功',
-      data: topic,
-    };
+      return {
+        code: 200,
+        msg: '创建成功',
+        data: topic,
+      };
+    } catch (error) {
+      console.error('[TopicsController] 创建选题失败:', error);
+      return {
+        code: 500,
+        msg: error.message || '创建失败',
+        data: null,
+      };
+    }
   }
 
   /**
